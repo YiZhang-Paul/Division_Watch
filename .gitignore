@@ -17,6 +17,7 @@ note.txt
 # Editor directories and files
 .idea
 .vscode
+coverage
 *.suo
 *.ntvs*
 *.njsproj
