@@ -11,10 +11,10 @@ export class CanvasService {
     }
 
     public setShadowOptions(context: CanvasRenderingContext2D, option: ShadowOption | null): CanvasRenderingContext2D {
-        context.shadowColor = option?.color ?? context.shadowColor;
-        context.shadowOffsetX = option?.offsetX ?? context.shadowOffsetX;
-        context.shadowOffsetY = option?.offsetY ?? context.shadowOffsetY;
-        context.shadowBlur = option?.blur ?? context.shadowBlur;
+        context.shadowColor = option?.color ?? 'rgba(0, 0, 0, 0)';
+        context.shadowOffsetX = option?.offsetX ?? 0;
+        context.shadowOffsetY = option?.offsetY ?? 0;
+        context.shadowBlur = option?.blur ?? 0;
 
         return context;
     }
