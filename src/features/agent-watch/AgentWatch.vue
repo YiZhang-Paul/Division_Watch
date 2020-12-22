@@ -2,7 +2,7 @@
     <div class="agent-watch-container">
         <watch-base></watch-base>
         <time-display class="time-display"></time-display>
-        <img class="logo" src="../../assets/shd_tech.jpg">
+        <img class="logo" src="../../assets/images/shd_tech.jpg" draggable="false" />
     </div>
 </template>
 
