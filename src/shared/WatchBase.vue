@@ -56,7 +56,7 @@ export default class WatchBase extends Vue.with(WatchBaseProps) {
 
     private renderInnerRings(context: CanvasRenderingContext2D): void {
         this.renderRings(context, 3, new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095));
-        this.renderRings(context, 4, new RingOption(this.colorOption.innerRingShadow, 0.63, 0.016, 0.3));
+        this.renderRings(context, 4, new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3));
     }
 
     private renderRings(
