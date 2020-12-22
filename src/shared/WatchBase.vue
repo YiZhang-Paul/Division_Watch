@@ -33,6 +33,9 @@ import { Vue } from 'vue-class-component';
 
 import { RingOption } from '../core/data-model/ring-option';
 import { ShadowOption } from '../core/data-model/shadow-option';
+import { CanvasService } from '../core/services/canvas/canvas.service';
+
+const canvasService = new CanvasService();
 
 export default class WatchBase extends Vue {
 
@@ -69,18 +72,11 @@ export default class WatchBase extends Vue {
 
     private renderRings(ids: string[], ringOption: RingOption, shadowOption: ShadowOption | null = null): void {
         for (const id of ids) {
-            const canvas = document.getElementById(id) as HTMLCanvasElement;
-            const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-            const { offsetWidth: width } = canvas;
+            const context = canvasService.getRenderingContext2D(id);
             const { fill, margin, thickness, gap } = ringOption;
+            const radius = context.canvas.offsetWidth / 2;
             const angle = Math.PI + Math.PI * 2 / ids.length * (1 - gap);
-            const radius = width / 2;
-            canvas.width = width;
-            canvas.height = width;
-            context.shadowColor = shadowOption?.color ?? context.shadowColor;
-            context.shadowOffsetX = shadowOption?.offsetX ?? context.shadowOffsetX;
-            context.shadowOffsetY = shadowOption?.offsetY ?? context.shadowOffsetY;
-            context.shadowBlur = shadowOption?.blur ?? context.shadowBlur;
+            canvasService.setShadowOptions(context, shadowOption);
             context.fillStyle = fill;
             context.beginPath();
             context.arc(radius, radius, radius - margin, angle, Math.PI, true);
