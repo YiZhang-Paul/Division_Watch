@@ -1,6 +1,6 @@
 <template>
     <div class="base-layer">
-        <canvas id="background-canvas"></canvas>
+        <canvas :id="backgroundCanvasId"></canvas>
 
         <template v-for="setting in ringSettings">
             <canvas v-for="i in setting.total"
@@ -22,6 +22,8 @@ import { CanvasService } from '../core/services/canvas/canvas.service';
 const canvasService = new CanvasService();
 
 export default class WatchBase extends Vue {
+    public readonly backgroundCanvasId = 'background-canvas';
+
     public readonly ringSettings = [
         { prefix: 'border-rings-', total: 8 },
         { prefix: 'outer-rings-', total: 3 },
@@ -38,6 +40,7 @@ export default class WatchBase extends Vue {
         this.renderOuterRings();
         this.renderCenterRings();
         this.renderInnerRings();
+        this.renderScales();
     }
 
     private renderBorderRings(): void {
@@ -84,6 +87,30 @@ export default class WatchBase extends Vue {
             context.closePath();
         }
     }
+
+    private renderScales(): void {
+        const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
+        const radius = context.canvas.offsetWidth / 2;
+        context.strokeStyle = 'rgb(148, 75, 8)';
+        context.beginPath();
+        context.arc(radius, radius, radius * 0.89, 0, Math.PI * 2);
+        context.stroke();
+        context.closePath();
+
+        for (let i = 0; i < 120; ++i) {
+            const isSeparator = i % 9 === 0;
+            context.strokeStyle = 'rgb(249, 119, 0)';
+            context.lineWidth = isSeparator ? 3 : 1.5;
+            context.beginPath();
+            context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
+            context.lineTo(radius * (isSeparator ? 0.08 : 0.068), radius);
+            context.translate(radius, radius);
+            context.rotate(3 * Math.PI / 180);
+            context.translate(-radius, -radius);
+            context.stroke();
+            context.closePath();
+        }
+    }
 }
 </script>
 
@@ -108,7 +135,7 @@ canvas {
 }
 
 #background-canvas {
-    $gap: calc(2% + 10px);
+    $gap: 5.5%;
 
     margin: $gap;
     width: calc(100% - #{$gap} * 2);
