@@ -1,14 +1,7 @@
 <template>
     <div class="base-layer">
         <canvas :id="backgroundCanvasId"></canvas>
-
-        <template v-for="setting in ringSettings">
-            <canvas v-for="i in setting.total"
-                :key="i"
-                :id="setting.prefix + (i - 1)"
-                :style="{ transform: 'rotate(' + 360 / setting.total * (i - 1) + 'deg)' }">
-            </canvas>
-        </template>
+        <canvas :id="ringsCanvasId"></canvas>
     </div>
 </template>
 
@@ -23,67 +16,58 @@ const canvasService = new CanvasService();
 
 export default class WatchBase extends Vue {
     public readonly backgroundCanvasId = 'background-canvas';
-
-    public readonly ringSettings = [
-        { prefix: 'border-rings-', total: 8 },
-        { prefix: 'outer-rings-', total: 3 },
-        { prefix: 'center-rings-', total: 3 },
-        { prefix: 'inner-rings-', total: 4 }
-    ];
+    public readonly ringsCanvasId = 'rings-canvas';
 
     public mounted(): void {
         this.renderWatchBase();
     }
 
     private renderWatchBase(): void {
-        this.renderBorderRings();
-        this.renderOuterRings();
-        this.renderCenterRings();
-        this.renderInnerRings();
+        const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
+        this.renderBorderRings(context);
+        this.renderOuterRings(context);
+        this.renderInnerRings(context);
         this.renderScales();
     }
 
-    private renderBorderRings(): void {
-        const { prefix, total } = this.ringSettings[0];
-        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
+    private renderBorderRings(context: CanvasRenderingContext2D): void {
         const ringOption = new RingOption('rgb(243, 245, 108)', 0.04, 0.054, 0.067);
         const shadowOption = new ShadowOption('rgba(227, 94, 19, 0.95)', 14);
-        this.renderRings(ids, ringOption, shadowOption);
+        this.renderRings(context, 8, ringOption, shadowOption, 1.5);
     }
 
-    private renderOuterRings(): void {
-        const { prefix, total } = this.ringSettings[1];
-        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
+    private renderOuterRings(context: CanvasRenderingContext2D): void {
         const ringOption = new RingOption('rgb(253, 244, 30)', 0.19, 0.095, 0.095);
         const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
-        this.renderRings(ids, ringOption, shadowOption);
+        this.renderRings(context, 3, ringOption, shadowOption);
     }
 
-    private renderCenterRings(): void {
-        const { prefix, total } = this.ringSettings[2];
-        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.11, 0.095));
+    private renderInnerRings(context: CanvasRenderingContext2D): void {
+        this.renderRings(context, 3, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.11, 0.095));
+        this.renderRings(context, 4, new RingOption('rgba(119, 73, 31, 0.4)', 0.63, 0.016, 0.3));
     }
 
-    private renderInnerRings(): void {
-        const { prefix, total } = this.ringSettings[3];
-        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.63, 0.016, 0.3));
-    }
+    private renderRings(
+        context: CanvasRenderingContext2D,
+        total: number,
+        ringOption: RingOption,
+        shadowOption: ShadowOption | null = null,
+        rotate = 0
+    ): void {
+        const { fill, margin, thickness, gap } = ringOption;
+        const angle = Math.PI + Math.PI * 2 / total * (1 - gap);
+        const radius = context.canvas.offsetWidth / 2;
+        canvasService.setShadowOptions(context, shadowOption);
+        context.fillStyle = fill;
 
-    private renderRings(ids: string[], ringOption: RingOption, shadowOption: ShadowOption | null = null): void {
-        for (const id of ids) {
-            const context = canvasService.getRenderingContext2D(id);
-            const { fill, margin, thickness, gap } = ringOption;
-            const radius = context.canvas.offsetWidth / 2;
-            const angle = Math.PI + Math.PI * 2 / ids.length * (1 - gap);
-            canvasService.setShadowOptions(context, shadowOption);
-            context.fillStyle = fill;
+        for (let i = 0; i < total; ++i) {
+            canvasService.rotate(context, radius, radius, 360 / total * i + rotate);
             context.beginPath();
             context.arc(radius, radius, radius * (1 - margin), angle, Math.PI, true);
             context.lineTo(radius * (margin + thickness), radius);
             context.arc(radius, radius, radius * (1 - margin - thickness), Math.PI, angle);
             context.fill();
+            canvasService.rotate(context, radius, radius, -360 / total * i - rotate);
         }
     }
 
@@ -99,7 +83,7 @@ export default class WatchBase extends Vue {
         for (let i = 0; i < 3; ++i) {
             canvasService.rotate(context, radius, radius, 120 * i);
 
-            context.strokeStyle = 'rgb(249, 119, 0)';
+            context.strokeStyle = 'rgb(250, 137, 31)';
             context.lineWidth = 2;
             context.beginPath();
             context.moveTo(radius * 0.082, radius);
@@ -123,7 +107,7 @@ export default class WatchBase extends Vue {
 
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 9 === 0;
-            context.strokeStyle = 'rgb(249, 119, 0)';
+            context.strokeStyle = 'rgb(250, 137, 31)';
             context.lineWidth = isSeparator ? 3 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
@@ -141,7 +125,6 @@ export default class WatchBase extends Vue {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    transform: rotate(2.5deg);
 }
 
 canvas {
