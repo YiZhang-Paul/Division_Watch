@@ -43,7 +43,7 @@ export default class WatchBase extends Vue {
     private renderBorderRings(): void {
         const { prefix, total } = this.ringSettings[0];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        const ringOption = new RingOption('rgb(243, 245, 108)', 5, 7, 0.067);
+        const ringOption = new RingOption('rgb(243, 245, 108)', 0.04, 0.054, 0.067);
         const shadowOption = new ShadowOption('rgba(227, 94, 19, 0.95)', 14);
         this.renderRings(ids, ringOption, shadowOption);
     }
@@ -51,7 +51,7 @@ export default class WatchBase extends Vue {
     private renderOuterRings(): void {
         const { prefix, total } = this.ringSettings[1];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        const ringOption = new RingOption('rgb(253, 244, 30)', 25, 15, 0.095);
+        const ringOption = new RingOption('rgb(253, 244, 30)', 0.2, 0.12, 0.095);
         const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
         this.renderRings(ids, ringOption, shadowOption);
     }
@@ -59,13 +59,13 @@ export default class WatchBase extends Vue {
     private renderCenterRings(): void {
         const { prefix, total } = this.ringSettings[2];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 60, 15, 0.095));
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.12, 0.095));
     }
 
     private renderInnerRings(): void {
         const { prefix, total } = this.ringSettings[3];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 83, 2, 0.3));
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.66, 0.016, 0.3));
     }
 
     private renderRings(ids: string[], ringOption: RingOption, shadowOption: ShadowOption | null = null): void {
@@ -77,9 +77,9 @@ export default class WatchBase extends Vue {
             canvasService.setShadowOptions(context, shadowOption);
             context.fillStyle = fill;
             context.beginPath();
-            context.arc(radius, radius, radius - margin, angle, Math.PI, true);
-            context.lineTo(margin + thickness, radius);
-            context.arc(radius, radius, radius - margin - thickness, Math.PI, angle);
+            context.arc(radius, radius, radius * (1 - margin), angle, Math.PI, true);
+            context.lineTo(radius * (margin + thickness), radius);
+            context.arc(radius, radius, radius * (1 - margin - thickness), Math.PI, angle);
             context.fill();
             context.closePath();
         }
