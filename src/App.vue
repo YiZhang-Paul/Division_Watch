@@ -1,27 +1,44 @@
 <template>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <agent-watch class="watch-face"></agent-watch>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+
+import AgentWatch from './features/agent-watch/AgentWatch.vue';
 
 @Options({
     components: {
-        HelloWorld
+        AgentWatch
     }
 })
 export default class App extends Vue { }
 </script>
 
-<style>
+<style lang="scss">
+html, body, #app {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
 #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+    position: relative;
+    background-color: rgb(23, 36, 151);
+}
+
+.watch-face {
+    $dimension: 25vh;
+
+    position: absolute;
+    top: calc(#{$dimension} / 20);
+    right: calc(#{$dimension} / 20);
+    width: $dimension;
+    height: $dimension;
 }
 </style>
