@@ -36,10 +36,10 @@ export default class AgentWatch extends Vue { }
 
     .time-display {
         $width: 65%;
-        $height: 40%;
+        $height: 36%;
 
         position: absolute;
-        bottom: 20%;
+        bottom: 24%;
         right: calc(50% - #{$width} / 2);
         width: $width;
         height: $height;

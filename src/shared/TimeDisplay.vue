@@ -3,9 +3,17 @@
         <span>{{ dayOfWeek }}</span>
 
         <div class="time">
-            <span>{{ hour }}</span>
-            <span>{{ minute }}</span>
-            <span class="second">{{ second }}</span>
+            <div class="placeholder">
+                <span>88</span>
+                <span>88</span>
+                <span class="second">88</span>
+            </div>
+
+            <div>
+                <span>{{ hour }}</span>
+                <span>{{ minute }}</span>
+                <span class="second">{{ second }}</span>
+            </div>
         </div>
 
         <div class="date">
@@ -75,9 +83,19 @@ export default class TimeDisplay extends Vue {
     }
 
     .time {
+        position: relative;
         font-family: 'Digital Numbers';
-        font-size: 6.4rem;
-        align-items: flex-end;
+        font-size: 6.5rem;
+
+        div {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .placeholder {
+            position: absolute;
+            color: rgba(85, 85, 85, 0.1);
+        }
 
         .second {
             margin-bottom: 0.4rem;
@@ -88,6 +106,10 @@ export default class TimeDisplay extends Vue {
     .date {
         font-size: 2.5rem;
         color: rgb(255, 255, 255);
+
+        span:last-of-type {
+            margin-left: 2rem;
+        }
     }
 }
 </style>
