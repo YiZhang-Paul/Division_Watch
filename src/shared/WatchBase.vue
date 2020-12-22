@@ -1,6 +1,6 @@
 <template>
     <div class="base-layer">
-        <canvas id="base-canvas"></canvas>
+        <canvas id="background-canvas"></canvas>
 
         <canvas v-for="i in 8"
             :key="i"
@@ -31,6 +31,9 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
+import { RingOption } from '../core/data-model/ring-option';
+import { ShadowOption } from '../core/data-model/shadow-option';
+
 export default class WatchBase extends Vue {
 
     public mounted(): void {
@@ -41,73 +44,48 @@ export default class WatchBase extends Vue {
     }
 
     private renderOuterRings(): void {
-        for (let i = 0; i < 8; ++i) {
-            const canvas = document.getElementById(`outer-rings-${i}`) as HTMLCanvasElement;
-            const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-            const { offsetWidth: width } = canvas;
-            canvas.width = width;
-            canvas.height = width;
-            context.shadowColor = 'rgba(227, 94, 19, 0.95)';
-            context.shadowBlur = 14;
-            context.fillStyle = 'rgb(243, 245, 108)';
-            context.beginPath();
-            context.arc(width / 2, width / 2, width / 2 - 5, Math.PI * 1.233, Math.PI, true);
-            context.lineTo(12, width / 2);
-            context.arc(width / 2, width / 2, width / 2 - 12, Math.PI, Math.PI * 1.233);
-            context.fill();
-            context.closePath();
-        }
+        const ids = new Array(8).fill(0).map((_, i) => `outer-rings-${i}`);
+        const ringOption = new RingOption('rgb(243, 245, 108)', 5, 7, 0.067);
+        const shadowOption = new ShadowOption('rgba(227, 94, 19, 0.95)', 14);
+        this.renderRings(ids, ringOption, shadowOption);
     }
 
     private renderCenterRings(): void {
-        for (let i = 0; i < 3; ++i) {
-            const canvas = document.getElementById(`center-rings-${i}`) as HTMLCanvasElement;
-            const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-            const { offsetWidth: width } = canvas;
-            canvas.width = width;
-            canvas.height = width;
-            context.shadowColor = 'rgba(235, 249, 83, 0.9)';
-            context.shadowOffsetY = 1;
-            context.shadowBlur = 8;
-            context.fillStyle = 'rgb(253, 244, 30)';
-            context.beginPath();
-            context.arc(width / 2, width / 2, width / 2 - 25, Math.PI * 1.6, Math.PI, true);
-            context.lineTo(40, width / 2);
-            context.arc(width / 2, width / 2, width / 2 - 40, Math.PI, Math.PI * 1.6);
-            context.fill();
-            context.closePath();
-        }
+        const ids = new Array(3).fill(0).map((_, i) => `center-rings-${i}`);
+        const ringOption = new RingOption('rgb(253, 244, 30)', 25, 15, 0.095);
+        const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
+        this.renderRings(ids, ringOption, shadowOption);
     }
 
     private renderInnerRings(): void {
-        for (let i = 0; i < 3; ++i) {
-            const canvas = document.getElementById(`inner-rings-${i}`) as HTMLCanvasElement;
-            const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-            const { offsetWidth: width } = canvas;
-            canvas.width = width;
-            canvas.height = width;
-            context.fillStyle = 'rgba(119, 73, 31, 0.4)';
-            context.beginPath();
-            context.arc(width / 2, width / 2, width / 2 - 60, Math.PI * 1.6, Math.PI, true);
-            context.lineTo(75, width / 2);
-            context.arc(width / 2, width / 2, width / 2 - 75, Math.PI, Math.PI * 1.6);
-            context.fill();
-            context.closePath();
-        }
+        const ids = new Array(3).fill(0).map((_, i) => `inner-rings-${i}`);
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 60, 15, 0.095));
     }
 
     private renderCoreRings(): void {
-        for (let i = 0; i < 4; ++i) {
-            const canvas = document.getElementById(`core-rings-${i}`) as HTMLCanvasElement;
+        const ids = new Array(4).fill(0).map((_, i) => `core-rings-${i}`);
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 83, 2, 0.3));
+    }
+
+    private renderRings(ids: string[], ringOption: RingOption, shadowOption: ShadowOption | null = null): void {
+        for (const id of ids) {
+            const canvas = document.getElementById(id) as HTMLCanvasElement;
             const context = canvas.getContext('2d') as CanvasRenderingContext2D;
             const { offsetWidth: width } = canvas;
+            const { fill, margin, thickness, gap } = ringOption;
+            const angle = Math.PI + Math.PI * 2 / ids.length * (1 - gap);
+            const radius = width / 2;
             canvas.width = width;
             canvas.height = width;
-            context.fillStyle = 'rgba(119, 73, 31, 0.4)';
+            context.shadowColor = shadowOption?.color ?? context.shadowColor;
+            context.shadowOffsetX = shadowOption?.offsetX ?? context.shadowOffsetX;
+            context.shadowOffsetY = shadowOption?.offsetY ?? context.shadowOffsetY;
+            context.shadowBlur = shadowOption?.blur ?? context.shadowBlur;
+            context.fillStyle = fill;
             context.beginPath();
-            context.arc(width / 2, width / 2, width / 2 - 83, Math.PI * 1.33, Math.PI, true);
-            context.lineTo(85, width / 2);
-            context.arc(width / 2, width / 2, width / 2 - 85, Math.PI, Math.PI * 1.33);
+            context.arc(radius, radius, radius - margin, angle, Math.PI, true);
+            context.lineTo(margin + thickness, radius);
+            context.arc(radius, radius, radius - margin - thickness, Math.PI, angle);
             context.fill();
             context.closePath();
         }
@@ -135,7 +113,7 @@ canvas {
     height: calc(100% - #{$gap} * 2);
 }
 
-#base-canvas {
+#background-canvas {
     $gap: calc(2% + 10px);
 
     margin: $gap;
