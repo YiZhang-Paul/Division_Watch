@@ -54,7 +54,7 @@ export default class WatchBase extends Vue {
     private renderOuterRings(): void {
         const { prefix, total } = this.ringSettings[1];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        const ringOption = new RingOption('rgb(253, 244, 30)', 0.2, 0.12, 0.095);
+        const ringOption = new RingOption('rgb(253, 244, 30)', 0.19, 0.095, 0.095);
         const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
         this.renderRings(ids, ringOption, shadowOption);
     }
@@ -62,13 +62,13 @@ export default class WatchBase extends Vue {
     private renderCenterRings(): void {
         const { prefix, total } = this.ringSettings[2];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.12, 0.095));
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.11, 0.095));
     }
 
     private renderInnerRings(): void {
         const { prefix, total } = this.ringSettings[3];
         const ids = new Array(total).fill(0).map((_, i) => prefix + i);
-        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.66, 0.016, 0.3));
+        this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 0.63, 0.016, 0.3));
     }
 
     private renderRings(ids: string[], ringOption: RingOption, shadowOption: ShadowOption | null = null): void {
@@ -84,7 +84,6 @@ export default class WatchBase extends Vue {
             context.lineTo(radius * (margin + thickness), radius);
             context.arc(radius, radius, radius * (1 - margin - thickness), Math.PI, angle);
             context.fill();
-            context.closePath();
         }
     }
 
@@ -92,10 +91,35 @@ export default class WatchBase extends Vue {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
         context.strokeStyle = 'rgb(148, 75, 8)';
+        context.lineWidth = 1.5;
         context.beginPath();
-        context.arc(radius, radius, radius * 0.89, 0, Math.PI * 2);
+        context.arc(radius, radius, radius * 0.9, 0, Math.PI * 2);
         context.stroke();
-        context.closePath();
+
+        for (let i = 0; i < 3; ++i) {
+            canvasService.rotate(context, radius, radius, 120 * i);
+
+            context.strokeStyle = 'rgb(249, 119, 0)';
+            context.lineWidth = 2;
+            context.beginPath();
+            context.moveTo(radius * 0.082, radius);
+            context.lineTo(radius * 0.1, radius);
+            context.stroke();
+
+            context.beginPath();
+            canvasService.rotate(context, radius, radius, 108.5);
+            context.moveTo(radius * 0.082, radius);
+            context.lineTo(radius * 0.1, radius);
+            canvasService.rotate(context, radius, radius, -108.5);
+            context.stroke();
+
+            context.lineWidth = 2.5;
+            context.beginPath();
+            context.arc(radius, radius, radius * 0.9, Math.PI, Math.PI * 1.603);
+            context.stroke();
+
+            canvasService.rotate(context, radius, radius, -120 * i);
+        }
 
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 9 === 0;
@@ -103,12 +127,9 @@ export default class WatchBase extends Vue {
             context.lineWidth = isSeparator ? 3 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
-            context.lineTo(radius * (isSeparator ? 0.08 : 0.068), radius);
-            context.translate(radius, radius);
-            context.rotate(3 * Math.PI / 180);
-            context.translate(-radius, -radius);
+            context.lineTo(radius * (isSeparator ? 0.075 : 0.068), radius);
+            canvasService.rotate(context, radius, radius, 3);
             context.stroke();
-            context.closePath();
         }
     }
 }

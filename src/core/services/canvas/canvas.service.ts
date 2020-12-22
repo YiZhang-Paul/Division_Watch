@@ -18,4 +18,12 @@ export class CanvasService {
 
         return context;
     }
+
+    public rotate(context: CanvasRenderingContext2D, x: number, y: number, angle: number): CanvasRenderingContext2D {
+        context.translate(x, y);
+        context.rotate(angle * Math.PI / 180);
+        context.translate(-x, -y);
+
+        return context;
+    }
 }
