@@ -2,29 +2,13 @@
     <div class="base-layer">
         <canvas id="background-canvas"></canvas>
 
-        <canvas v-for="i in borderRings"
-            :key="i"
-            :id="'border-rings-' + (i - 1)"
-            :style="{ transform: 'rotate(' + 360 / borderRings * (i - 1) + 'deg)' }">
-        </canvas>
-
-        <canvas v-for="i in outerRings"
-            :key="i"
-            :id="'outer-rings-' + (i - 1)"
-            :style="{ transform: 'rotate(' + 360 / outerRings * (i - 1) + 'deg)' }">
-        </canvas>
-
-        <canvas v-for="i in centerRings"
-            :key="i"
-            :id="'center-rings-' + (i - 1)"
-            :style="{ transform: 'rotate(' + 360 / centerRings * (i - 1) + 'deg)' }">
-        </canvas>
-
-        <canvas v-for="i in innerRings"
-            :key="i"
-            :id="'inner-rings-' + (i - 1)"
-            :style="{ transform: 'rotate(' + 360 / innerRings * (i - 1) + 'deg)' }">
-        </canvas>
+        <template v-for="setting in ringSettings">
+            <canvas v-for="i in setting.total"
+                :key="i"
+                :id="setting.prefix + (i - 1)"
+                :style="{ transform: 'rotate(' + 360 / setting.total * (i - 1) + 'deg)' }">
+            </canvas>
+        </template>
     </div>
 </template>
 
@@ -38,10 +22,12 @@ import { CanvasService } from '../core/services/canvas/canvas.service';
 const canvasService = new CanvasService();
 
 export default class WatchBase extends Vue {
-    public readonly borderRings = 8;
-    public readonly outerRings = 3;
-    public readonly centerRings = 3;
-    public readonly innerRings = 4;
+    public readonly ringSettings = [
+        { prefix: 'border-rings-', total: 8 },
+        { prefix: 'outer-rings-', total: 3 },
+        { prefix: 'center-rings-', total: 3 },
+        { prefix: 'inner-rings-', total: 4 }
+    ];
 
     public mounted(): void {
         this.renderWatchBase();
@@ -55,26 +41,30 @@ export default class WatchBase extends Vue {
     }
 
     private renderBorderRings(): void {
-        const ids = new Array(this.borderRings).fill(0).map((_, i) => `border-rings-${i}`);
+        const { prefix, total } = this.ringSettings[0];
+        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
         const ringOption = new RingOption('rgb(243, 245, 108)', 5, 7, 0.067);
         const shadowOption = new ShadowOption('rgba(227, 94, 19, 0.95)', 14);
         this.renderRings(ids, ringOption, shadowOption);
     }
 
     private renderOuterRings(): void {
-        const ids = new Array(this.outerRings).fill(0).map((_, i) => `outer-rings-${i}`);
+        const { prefix, total } = this.ringSettings[1];
+        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
         const ringOption = new RingOption('rgb(253, 244, 30)', 25, 15, 0.095);
         const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
         this.renderRings(ids, ringOption, shadowOption);
     }
 
     private renderCenterRings(): void {
-        const ids = new Array(this.centerRings).fill(0).map((_, i) => `center-rings-${i}`);
+        const { prefix, total } = this.ringSettings[2];
+        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
         this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 60, 15, 0.095));
     }
 
     private renderInnerRings(): void {
-        const ids = new Array(this.innerRings).fill(0).map((_, i) => `inner-rings-${i}`);
+        const { prefix, total } = this.ringSettings[3];
+        const ids = new Array(total).fill(0).map((_, i) => prefix + i);
         this.renderRings(ids, new RingOption('rgba(119, 73, 31, 0.4)', 83, 2, 0.3));
     }
 
