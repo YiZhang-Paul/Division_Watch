@@ -18,27 +18,42 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-export default class TimeDisplay extends Vue {
-    public month = 0;
-    public hour = 0;
-    public minute = 0;
-    public second = 0;
-    public dayOfWeek = 0;
-    public dayInMonth = 0;
+import { TimeUtility } from '../core/utilities/time/time.utility';
 
-    public created(): void {
-        this.calculateTime();
+export default class TimeDisplay extends Vue {
+    private now = new Date();
+
+    get hour(): string {
+        return TimeUtility.prependZero(this.now.getHours());
     }
 
-    public calculateTime(): void {
-        const now = new Date();
-        this.month = now.getMonth() + 1;
-        this.hour = now.getHours();
-        this.minute = now.getMinutes();
-        this.second = now.getSeconds();
-        this.dayOfWeek = now.getDay();
-        this.dayInMonth = now.getDate();
-        setTimeout(() => this.calculateTime(), 1000);
+    get minute(): string {
+        return TimeUtility.prependZero(this.now.getMinutes());
+    }
+
+    get second(): string {
+        return TimeUtility.prependZero(this.now.getSeconds());
+    }
+
+    get dayInMonth(): string {
+        return TimeUtility.prependZero(this.now.getDate());
+    }
+
+    get dayOfWeek(): string {
+        return TimeUtility.getDayOfWeek(this.now.getDay());
+    }
+
+    get month(): string {
+        return TimeUtility.getMonthName(this.now.getMonth()).slice(0, 3).toUpperCase();
+    }
+
+    public created(): void {
+        this.updateTime();
+    }
+
+    private updateTime(): void {
+        this.now = new Date();
+        setTimeout(() => this.updateTime(), 1000);
     }
 }
 </script>
