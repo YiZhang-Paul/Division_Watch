@@ -137,25 +137,25 @@ export default class WatchBase extends Vue.with(WatchBaseProps) {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-}
 
-canvas {
-    $gap: 2%;
+    canvas {
+        $gap: 2%;
 
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: $gap;
-    width: calc(100% - #{$gap} * 2);
-    height: calc(100% - #{$gap} * 2);
-}
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: $gap;
+        width: calc(100% - #{$gap} * 2);
+        height: calc(100% - #{$gap} * 2);
+    }
 
-#background-canvas {
-    $gap: 5.5%;
+    #background-canvas {
+        $gap: 5.5%;
 
-    margin: $gap;
-    width: calc(100% - #{$gap} * 2);
-    height: calc(100% - #{$gap} * 2);
-    border-radius: 50%;
+        margin: $gap;
+        width: calc(100% - #{$gap} * 2);
+        height: calc(100% - #{$gap} * 2);
+        border-radius: 50%;
+    }
 }
 </style>
