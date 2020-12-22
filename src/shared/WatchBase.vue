@@ -1,22 +1,34 @@
 <template>
     <div class="base-layer">
-        <canvas :id="backgroundCanvasId"></canvas>
+        <canvas :id="backgroundCanvasId" :style="backgroundCanvasStyle"></canvas>
         <canvas :id="ringsCanvasId"></canvas>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 
 import { RingOption } from '../core/data-model/ring-option';
 import { ShadowOption } from '../core/data-model/shadow-option';
+import { WatchColorOption } from '../core/data-model/watch-color-option';
 import { CanvasService } from '../core/services/canvas/canvas.service';
 
 const canvasService = new CanvasService();
 
-export default class WatchBase extends Vue {
+class WatchBaseProps {
+    public colorOption = prop<WatchColorOption>({ default: new WatchColorOption() });
+}
+
+export default class WatchBase extends Vue.with(WatchBaseProps) {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
+
+    get backgroundCanvasStyle(): { [key: string]: string } {
+        return {
+            'background-color': this.colorOption.background,
+            'box-shadow': `0 0 10px 0px ${this.colorOption.borderRingShadow}`
+        };
+    }
 
     public mounted(): void {
         this.renderWatchBase();
@@ -31,20 +43,20 @@ export default class WatchBase extends Vue {
     }
 
     private renderBorderRings(context: CanvasRenderingContext2D): void {
-        const ringOption = new RingOption('rgb(243, 245, 108)', 0.04, 0.054, 0.067);
-        const shadowOption = new ShadowOption('rgba(227, 94, 19, 0.95)', 14);
+        const ringOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
+        const shadowOption = new ShadowOption(this.colorOption.borderRingShadow, 14);
         this.renderRings(context, 8, ringOption, shadowOption, 1.5);
     }
 
     private renderOuterRings(context: CanvasRenderingContext2D): void {
-        const ringOption = new RingOption('rgb(253, 244, 30)', 0.19, 0.095, 0.095);
-        const shadowOption = new ShadowOption('rgba(235, 249, 83, 0.9)', 8, 0, 1);
+        const ringOption = new RingOption(this.colorOption.outerRing, 0.19, 0.095, 0.095);
+        const shadowOption = new ShadowOption(this.colorOption.outerRingShadow, 8, 0, 1);
         this.renderRings(context, 3, ringOption, shadowOption);
     }
 
     private renderInnerRings(context: CanvasRenderingContext2D): void {
-        this.renderRings(context, 3, new RingOption('rgba(119, 73, 31, 0.4)', 0.476, 0.11, 0.095));
-        this.renderRings(context, 4, new RingOption('rgba(119, 73, 31, 0.4)', 0.63, 0.016, 0.3));
+        this.renderRings(context, 3, new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095));
+        this.renderRings(context, 4, new RingOption(this.colorOption.innerRingShadow, 0.63, 0.016, 0.3));
     }
 
     private renderRings(
@@ -74,7 +86,7 @@ export default class WatchBase extends Vue {
     private renderScales(): void {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
-        context.strokeStyle = 'rgb(148, 75, 8)';
+        context.strokeStyle = this.colorOption.scaleGuard;
         context.lineWidth = 1.5;
         context.beginPath();
         context.arc(radius, radius, radius * 0.9, 0, Math.PI * 2);
@@ -83,7 +95,7 @@ export default class WatchBase extends Vue {
         for (let i = 0; i < 3; ++i) {
             canvasService.rotate(context, radius, radius, 120 * i);
 
-            context.strokeStyle = 'rgb(250, 137, 31)';
+            context.strokeStyle = this.colorOption.scale;
             context.lineWidth = 2;
             context.beginPath();
             context.moveTo(radius * 0.082, radius);
@@ -107,7 +119,7 @@ export default class WatchBase extends Vue {
 
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 9 === 0;
-            context.strokeStyle = 'rgb(250, 137, 31)';
+            context.strokeStyle = this.colorOption.scale;
             context.lineWidth = isSeparator ? 3 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
@@ -145,7 +157,5 @@ canvas {
     width: calc(100% - #{$gap} * 2);
     height: calc(100% - #{$gap} * 2);
     border-radius: 50%;
-    background-color: rgb(45, 45, 45);
-    box-shadow: 0 0 10px 0px rgba(227, 94, 19, 0.95);
 }
 </style>
