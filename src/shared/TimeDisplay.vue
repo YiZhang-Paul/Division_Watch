@@ -5,7 +5,7 @@
         <div class="time">
             <span>{{ hour }}</span>
             <span>{{ minute }}</span>
-            <span>{{ second }}</span>
+            <span class="second">{{ second }}</span>
         </div>
 
         <div class="date">
@@ -60,14 +60,34 @@ export default class TimeDisplay extends Vue {
 
 <style lang="scss" scoped>
 .time-display-container {
-    width: 100%;
-    height: 100%;
-    background-color: red;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    font-family: 'Bruno Ace';
+    font-size: 3rem;
+    color: rgb(211, 112, 19);
 
     .time, .date {
         display: flex;
+    }
+
+    .time {
+        font-family: 'Digital Numbers';
+        font-size: 6.4rem;
+        align-items: flex-end;
+
+        .second {
+            margin-bottom: 0.4rem;
+            font-size: 2.75rem;
+        }
+    }
+
+    .date {
+        font-size: 2.5rem;
+        color: rgb(255, 255, 255);
     }
 }
 </style>

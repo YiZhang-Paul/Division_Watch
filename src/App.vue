@@ -16,6 +16,16 @@ export default class App extends Vue { }
 </script>
 
 <style lang="scss">
+@font-face {
+    font-family: 'Bruno Ace';
+    src: url('assets/fonts/Bruno Ace Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Digital Numbers';
+    src: url('assets/fonts/DigitalNumbers-Regular.ttf');
+}
+
 html, body, #app {
     width: 100%;
     height: 100%;
