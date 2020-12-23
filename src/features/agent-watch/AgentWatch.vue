@@ -2,6 +2,7 @@
     <div class="agent-watch-container">
         <watch-base></watch-base>
         <battery-display class="battery-display"></battery-display>
+        <weather-display class="weather-display"></weather-display>
         <time-display class="time-display"></time-display>
         <img class="logo" src="../../assets/images/shd_tech.jpg" draggable="false" />
     </div>
@@ -11,12 +12,14 @@
 import { Options, Vue } from 'vue-class-component';
 
 import BatteryDisplay from '../../shared/BatteryDisplay.vue';
+import WeatherDisplay from '../../shared/WeatherDisplay.vue';
 import TimeDisplay from '../../shared/TimeDisplay.vue';
 import WatchBase from '../../shared/WatchBase.vue';
 
 @Options({
     components: {
         BatteryDisplay,
+        WeatherDisplay,
         TimeDisplay,
         WatchBase
     }
@@ -30,15 +33,24 @@ export default class AgentWatch extends Vue { }
 
     border-radius: 50%;
 
-    .battery-display, .time-display {
+    .battery-display, .weather-display, .time-display {
         position: absolute;
+    }
+
+    .battery-display, .weather-display {
+        bottom: $time-display-top;
     }
 
     .battery-display {
         left: 21.5%;
-        bottom: $time-display-top;
         width: 13%;
         height: 6%;
+    }
+
+    .weather-display {
+        right: 21.5%;
+        width: 12%;
+        height: 12.5%;
     }
 
     .time-display {
