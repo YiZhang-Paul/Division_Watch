@@ -1,9 +1,5 @@
 <template>
-    <div id="time-display-area"
-        class="time-display-container"
-        :style="containerStyle"
-        @resize="onResize()">
-
+    <div id="time-display-area" class="time-display-container" :style="containerStyle">
         <span>{{ dayOfWeek }}</span>
 
         <div class="time">
@@ -36,6 +32,10 @@ export default class TimeDisplay extends Vue {
     private now = new Date();
     private fontSize = 24;
 
+    get containerStyle(): { [key: string]: string } {
+        return { 'font-size': `${this.fontSize}px` };
+    }
+
     get hour(): string {
         return TimeUtility.prependZero(this.now.getHours());
     }
@@ -60,30 +60,27 @@ export default class TimeDisplay extends Vue {
         return TimeUtility.getMonthName(this.now.getMonth()).slice(0, 3).toUpperCase();
     }
 
-    get containerStyle(): { [key: string]: string } {
-        return { 'font-size': `${this.fontSize}px` };
-    }
-
     public created(): void {
         this.updateTime();
     }
 
     public mounted(): void {
         this.updateFontSize();
+        window.addEventListener('resize', this.updateFontSize);
     }
 
-    public onResize(): void {
-        this.updateFontSize();
-    }
-
-    private updateTime(): void {
-        this.now = new Date();
-        setTimeout(() => this.updateTime(), 1000);
+    public beforeUnmount(): void {
+        window.removeEventListener('resize', this.updateFontSize);
     }
 
     private updateFontSize(): void {
         const element = document.getElementById('time-display-area');
         this.fontSize = element ? element.offsetHeight / 5 : this.fontSize;
+    }
+
+    private updateTime(): void {
+        this.now = new Date();
+        setTimeout(() => this.updateTime(), 1000);
     }
 }
 </script>
