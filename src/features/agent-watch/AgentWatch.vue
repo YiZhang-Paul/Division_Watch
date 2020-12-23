@@ -26,7 +26,7 @@ export default class AgentWatch extends Vue { }
     border-radius: 50%;
 
     .logo {
-        $width: 37%;
+        $width: 39.5%;
 
         position: absolute;
         top: 5%;
@@ -39,7 +39,7 @@ export default class AgentWatch extends Vue { }
         $height: 36%;
 
         position: absolute;
-        bottom: 24%;
+        bottom: 23%;
         right: calc(50% - #{$width} / 2);
         width: $width;
         height: $height;

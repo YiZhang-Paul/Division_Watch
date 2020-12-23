@@ -118,7 +118,7 @@ export default class WatchBase extends Vue.with(WatchBaseProps) {
         }
 
         for (let i = 0; i < 120; ++i) {
-            const isSeparator = i % 9 === 0;
+            const isSeparator = i % 10 === 0;
             context.strokeStyle = this.colorOption.scale;
             context.lineWidth = isSeparator ? 3 : 1.5;
             context.beginPath();
