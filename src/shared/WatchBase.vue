@@ -22,6 +22,7 @@ class WatchBaseProps {
 export default class WatchBase extends Vue.with(WatchBaseProps) {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
+    private lastRender = 0;
 
     get backgroundCanvasStyle(): { [key: string]: string } {
         return {
@@ -35,31 +36,31 @@ export default class WatchBase extends Vue.with(WatchBaseProps) {
     }
 
     private renderWatchBase(): void {
+        const now = Date.now();
+
+        if (now - this.lastRender > 1000 * 2) {
+            this.renderRings();
+            this.renderScales();
+            this.lastRender = now;
+        }
+
+        requestAnimationFrame(this.renderWatchBase.bind(this));
+    }
+
+    private renderRings(): void {
+        const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
+        const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, 14);
+        const outerRingOption = new RingOption(this.colorOption.outerRing, 0.19, 0.095, 0.095);
+        const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, 8, 0, 1);
         const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
-        this.renderBorderRings(context);
-        this.renderOuterRings(context);
-        this.renderInnerRings(context);
-        this.renderScales();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        this.renderRing(context, 8, borderRingOption, borderShadowOption, 1.5);
+        this.renderRing(context, 3, outerRingOption, outerShadowOption);
+        this.renderRing(context, 3, new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095));
+        this.renderRing(context, 4, new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3));
     }
 
-    private renderBorderRings(context: CanvasRenderingContext2D): void {
-        const ringOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
-        const shadowOption = new ShadowOption(this.colorOption.borderRingShadow, 14);
-        this.renderRings(context, 8, ringOption, shadowOption, 1.5);
-    }
-
-    private renderOuterRings(context: CanvasRenderingContext2D): void {
-        const ringOption = new RingOption(this.colorOption.outerRing, 0.19, 0.095, 0.095);
-        const shadowOption = new ShadowOption(this.colorOption.outerRingShadow, 8, 0, 1);
-        this.renderRings(context, 3, ringOption, shadowOption);
-    }
-
-    private renderInnerRings(context: CanvasRenderingContext2D): void {
-        this.renderRings(context, 3, new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095));
-        this.renderRings(context, 4, new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3));
-    }
-
-    private renderRings(
+    private renderRing(
         context: CanvasRenderingContext2D,
         total: number,
         ringOption: RingOption,
