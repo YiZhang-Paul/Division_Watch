@@ -1,5 +1,9 @@
 <template>
-    <div class="time-display-container">
+    <div id="time-display-area"
+        class="time-display-container"
+        :style="containerStyle"
+        @resize="onResize()">
+
         <span>{{ dayOfWeek }}</span>
 
         <div class="time">
@@ -30,6 +34,7 @@ import { TimeUtility } from '../core/utilities/time/time.utility';
 
 export default class TimeDisplay extends Vue {
     private now = new Date();
+    private fontSize = 24;
 
     get hour(): string {
         return TimeUtility.prependZero(this.now.getHours());
@@ -55,13 +60,30 @@ export default class TimeDisplay extends Vue {
         return TimeUtility.getMonthName(this.now.getMonth()).slice(0, 3).toUpperCase();
     }
 
+    get containerStyle(): { [key: string]: string } {
+        return { 'font-size': `${this.fontSize}px` };
+    }
+
     public created(): void {
         this.updateTime();
+    }
+
+    public mounted(): void {
+        this.updateFontSize();
+    }
+
+    public onResize(): void {
+        this.updateFontSize();
     }
 
     private updateTime(): void {
         this.now = new Date();
         setTimeout(() => this.updateTime(), 1000);
+    }
+
+    private updateFontSize(): void {
+        const element = document.getElementById('time-display-area');
+        this.fontSize = element ? element.offsetHeight / 5 : this.fontSize;
     }
 }
 </script>
@@ -75,7 +97,6 @@ export default class TimeDisplay extends Vue {
     width: 100%;
     height: 100%;
     font-family: 'Bruno Ace';
-    font-size: 3rem;
     color: rgb(211, 112, 19);
 
     .time, .date {
@@ -85,7 +106,7 @@ export default class TimeDisplay extends Vue {
     .time {
         position: relative;
         font-family: 'Digital Numbers';
-        font-size: 6.5rem;
+        font-size: 2em;
 
         div {
             display: flex;
@@ -98,17 +119,17 @@ export default class TimeDisplay extends Vue {
         }
 
         .second {
-            margin-bottom: 0.4rem;
-            font-size: 2.75rem;
+            margin-bottom: 0.15em;
+            font-size: 0.44em;
         }
     }
 
     .date {
-        font-size: 2.5rem;
+        font-size: 0.8em;
         color: rgb(255, 255, 255);
 
         span:last-of-type {
-            margin-left: 2rem;
+            margin-left: 0.65em;
         }
     }
 }
