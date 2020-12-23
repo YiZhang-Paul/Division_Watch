@@ -1,5 +1,5 @@
 <template>
-    <agent-watch class="watch-face"></agent-watch>
+    <agent-watch :id="watchFaceId" class="watch-face" :style="containerStyle"></agent-watch>
 </template>
 
 <script lang="ts">
@@ -12,7 +12,28 @@ import AgentWatch from './features/agent-watch/AgentWatch.vue';
         AgentWatch
     }
 })
-export default class App extends Vue { }
+export default class App extends Vue {
+    private readonly watchFaceId = 'watch-face-area';
+    private fontSize = 24;
+
+    get containerStyle(): { [key: string]: string } {
+        return { 'font-size': `${this.fontSize}px` };
+    }
+
+    public mounted(): void {
+        this.updateFontSize();
+        window.addEventListener('resize', this.updateFontSize);
+    }
+
+    public beforeUnmount(): void {
+        window.removeEventListener('resize', this.updateFontSize);
+    }
+
+    private updateFontSize(): void {
+        const element = document.getElementById(this.watchFaceId);
+        this.fontSize = element ? element.offsetHeight / 29.375 : this.fontSize;
+    }
+}
 </script>
 
 <style lang="scss">
@@ -44,7 +65,7 @@ html, body {
 }
 
 .watch-face {
-    $dimension: 25vh;
+    $dimension: 30vh;
 
     position: absolute;
     top: calc(#{$dimension} / 20);
