@@ -37,7 +37,7 @@ export default class AgentWatch extends Vue { }
     .battery-display {
         left: 21.5%;
         bottom: $time-display-top;
-        width: 12.5%;
+        width: 13%;
         height: 6%;
     }
 
