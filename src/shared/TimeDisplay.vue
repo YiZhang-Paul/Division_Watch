@@ -1,5 +1,5 @@
 <template>
-    <div id="time-display-area" class="time-display-container" :style="containerStyle">
+    <div id="time-display-area" class="time-display-container">
         <span>{{ dayOfWeek }}</span>
 
         <div class="time">
@@ -30,11 +30,6 @@ import { TimeUtility } from '../core/utilities/time/time.utility';
 
 export default class TimeDisplay extends Vue {
     private now = new Date();
-    private fontSize = 24;
-
-    get containerStyle(): { [key: string]: string } {
-        return { 'font-size': `${this.fontSize}px` };
-    }
 
     get hour(): string {
         return TimeUtility.prependZero(this.now.getHours());
@@ -64,20 +59,6 @@ export default class TimeDisplay extends Vue {
         this.updateTime();
     }
 
-    public mounted(): void {
-        this.updateFontSize();
-        window.addEventListener('resize', this.updateFontSize);
-    }
-
-    public beforeUnmount(): void {
-        window.removeEventListener('resize', this.updateFontSize);
-    }
-
-    private updateFontSize(): void {
-        const element = document.getElementById('time-display-area');
-        this.fontSize = element ? element.offsetHeight / 5 : this.fontSize;
-    }
-
     private updateTime(): void {
         this.now = new Date();
         setTimeout(() => this.updateTime(), 1000);
@@ -94,6 +75,7 @@ export default class TimeDisplay extends Vue {
     width: 100%;
     height: 100%;
     font-family: 'Bruno Ace';
+    font-size: 1.67em;
     color: rgb(211, 112, 19);
 
     .time, .date {
@@ -103,7 +85,7 @@ export default class TimeDisplay extends Vue {
     .time {
         position: relative;
         font-family: 'Digital Numbers';
-        font-size: 2em;
+        font-size: 2.59em;
 
         div {
             display: flex;
@@ -112,7 +94,7 @@ export default class TimeDisplay extends Vue {
 
         .placeholder {
             position: absolute;
-            color: rgba(85, 85, 85, 0.1);
+            color: rgba(85, 85, 85, 0.3);
         }
 
         .second {

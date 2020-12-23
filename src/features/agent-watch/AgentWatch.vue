@@ -26,7 +26,7 @@ export default class AgentWatch extends Vue { }
 
 <style lang="scss" scoped>
 .agent-watch-container {
-    $time-display-top: 59%;
+    $time-display-top: 58%;
 
     border-radius: 50%;
 
@@ -43,7 +43,7 @@ export default class AgentWatch extends Vue { }
 
     .time-display {
         $width: 65%;
-        $height: 36%;
+        $height: 34%;
 
         bottom: calc(#{$time-display-top} - #{$height});
         right: calc(50% - #{$width} / 2);

@@ -80,12 +80,11 @@ export default class BatteryDisplay extends Vue {
     .level {
         position: relative;
         font-family: 'Digital Numbers';
-        font-size: 24px;
         color: rgb(255, 255, 255);
 
         & > span:first-of-type {
             position: absolute;
-            color: rgba(85, 85, 85, 0.2);
+            color: rgba(85, 85, 85, 0.3);
         }
     }
 }
