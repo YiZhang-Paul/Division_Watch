@@ -18,15 +18,12 @@ const canvasService = new CanvasService();
 export default class WatchBase extends Vue {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
-    private colorOption = store.getters['watchBase/color'];
+    public backgroundCanvasStyle = { 'background-color': '', 'box-shadow': '' };
+    private colorOption = store.getters['watchBase/colorOption'];
+    private angleAnimation = store.getters['watchBase/angleAnimation'];
+    private blurAnimation = store.getters['watchBase/blurAnimation'];
+    private startTime = Date.now();
     private lastRender = 0;
-
-    get backgroundCanvasStyle(): { [key: string]: string } {
-        return {
-            'background-color': this.colorOption.background,
-            'box-shadow': `0 0 10px 0px ${this.colorOption.borderRingShadow}`
-        };
-    }
 
     public mounted(): void {
         this.renderWatchBase();
@@ -35,7 +32,10 @@ export default class WatchBase extends Vue {
     private renderWatchBase(): void {
         const now = Date.now();
 
-        if (now - this.lastRender > 1000 * 2) {
+        if (now - this.lastRender > 1000 / 45) {
+            const backgroundBlur = this.getCurrentBlur(this.blurAnimation.background);
+            this.backgroundCanvasStyle['background-color'] = this.colorOption.background;
+            this.backgroundCanvasStyle['box-shadow'] = `0 0 ${backgroundBlur}px 0px ${this.colorOption.borderRingShadow}`;
             this.renderRings();
             this.renderScales();
             this.lastRender = now;
@@ -46,15 +46,70 @@ export default class WatchBase extends Vue {
 
     private renderRings(): void {
         const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
-        const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, 14);
+        const borderRingBlur = this.getCurrentBlur(this.blurAnimation.borderRing);
+        const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, borderRingBlur);
         const outerRingOption = new RingOption(this.colorOption.outerRing, 0.19, 0.095, 0.095);
-        const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, 8, 0, 1);
+        const outerRingBlur = this.getCurrentBlur(this.blurAnimation.outerRing);
+        const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, outerRingBlur, 0, 1);
+        const innerThickRingOption = new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095);
+        const innerThinRingOption = new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3);
+        const borderRingAngle = this.getCurrentAngle(this.angleAnimation.borderRing) + 1.5;
+        const outerRingAngle = this.getCurrentAngle(this.angleAnimation.outerRing);
+        const innerRingAngle = this.getCurrentAngle(this.angleAnimation.innerRing);
         const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        this.renderRing(context, 8, borderRingOption, borderShadowOption, 1.5);
-        this.renderRing(context, 3, outerRingOption, outerShadowOption);
-        this.renderRing(context, 3, new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095));
-        this.renderRing(context, 4, new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3));
+        this.renderRing(context, 8, borderRingOption, borderShadowOption, borderRingAngle);
+        this.renderRing(context, 3, outerRingOption, outerShadowOption, outerRingAngle);
+        this.renderRing(context, 3, innerThickRingOption, null, innerRingAngle);
+        this.renderRing(context, 4, innerThinRingOption, null, innerRingAngle);
+    }
+
+    private getCurrentBlur(changes: { start: number; end: number; duration: number }[]): number {
+        const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
+
+        if (!cycleDuration) {
+            return 0;
+        }
+
+        const elapsed = Date.now() - this.startTime;
+        let currentCycle = elapsed % cycleDuration;
+
+        for (const { start, end, duration } of changes) {
+            if (currentCycle < duration) {
+                return (end - start) * currentCycle / duration + start;
+            }
+
+            currentCycle -= duration;
+        }
+
+        return 0;
+    }
+
+    private getCurrentAngle(changes: { change: number; duration: number }[]): number {
+        const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
+
+        if (!cycleDuration) {
+            return 0;
+        }
+
+        const elapsed = Date.now() - this.startTime;
+        const fullCycles = Math.floor(elapsed / cycleDuration);
+        const cycleChange = changes.reduce((total, _) => _.change + total, 0);
+        let currentCycle = elapsed % cycleDuration;
+        let totalChange = fullCycles * cycleChange % 360;
+
+        for (const { change, duration } of changes) {
+            if (currentCycle < duration) {
+                totalChange += change * currentCycle / duration;
+
+                break;
+            }
+
+            currentCycle -= duration;
+            totalChange += change;
+        }
+
+        return Math.floor(totalChange * 100) / 100;
     }
 
     private renderRing(
@@ -84,6 +139,8 @@ export default class WatchBase extends Vue {
     private renderScales(): void {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
+        const scaleRotate = this.getCurrentAngle(this.angleAnimation.scale);
+        const guardRotate = this.getCurrentAngle(this.angleAnimation.scaleGuard);
         context.strokeStyle = this.colorOption.scaleGuard;
         context.lineWidth = 1.5;
         context.beginPath();
@@ -91,7 +148,7 @@ export default class WatchBase extends Vue {
         context.stroke();
 
         for (let i = 0; i < 3; ++i) {
-            canvasService.rotate(context, radius, radius, 120 * i);
+            canvasService.rotate(context, radius, radius, 120 * i + guardRotate);
 
             context.strokeStyle = this.colorOption.scale;
             context.lineWidth = 2;
@@ -112,8 +169,10 @@ export default class WatchBase extends Vue {
             context.arc(radius, radius, radius * 0.9, Math.PI, Math.PI * 1.603);
             context.stroke();
 
-            canvasService.rotate(context, radius, radius, -120 * i);
+            canvasService.rotate(context, radius, radius, -120 * i - guardRotate);
         }
+
+        canvasService.rotate(context, radius, radius, scaleRotate);
 
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 10 === 0;
