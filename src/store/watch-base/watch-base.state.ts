@@ -1,3 +1,6 @@
+import { ValueChange } from '../../core/data-model/value-change';
+import { RangeChange } from '../../core/data-model/range-change';
+
 interface IWatchColorOption {
     background: string;
     borderRing: string;
@@ -11,17 +14,17 @@ interface IWatchColorOption {
 }
 
 interface IAngleAnimation {
-    borderRing: { change: number; duration: number }[];
-    outerRing: { change: number; duration: number }[];
-    innerRing: { change: number; duration: number }[];
-    scale: { change: number; duration: number }[];
-    scaleGuard: { change: number; duration: number }[];
+    borderRing: ValueChange[];
+    outerRing: ValueChange[];
+    innerRing: ValueChange[];
+    scale: ValueChange[];
+    scaleGuard: ValueChange[];
 }
 
 interface IBlurAnimation {
-    background: { start: number; end: number; duration: number }[];
-    borderRing: { start: number; end: number; duration: number }[];
-    outerRing: { start: number; end: number; duration: number }[];
+    background: RangeChange[];
+    borderRing: RangeChange[];
+    outerRing: RangeChange[];
 }
 
 export interface IWatchBaseState {
@@ -43,16 +46,16 @@ const state = () => ({
         scaleGuard: 'rgb(148, 75, 8)'
     },
     angleAnimation: {
-        borderRing: [{ change: 360, duration: 60000 }],
-        outerRing: [{ change: -120, duration: 8500 }, { change: 180, duration: 1500 }],
-        innerRing: [{ change: 360, duration: 12000 }],
-        scale: [{ change: 0, duration: 0 }],
-        scaleGuard: [{ change: 120, duration: 8500 }, { change: -180, duration: 1500 }]
+        borderRing: [new ValueChange(360, 60000)],
+        outerRing: [new ValueChange(-120, 8500), new ValueChange(180, 1500)],
+        innerRing: [new ValueChange(360, 12000)],
+        scale: [],
+        scaleGuard: [new ValueChange(120, 8500), new ValueChange(-180, 1500)]
     },
     blurAnimation: {
-        background: [{ start: 8, end: 20, duration: 3000 }, { start: 20, end: 8, duration: 3000 }],
-        borderRing: [{ start: 1, end: 3, duration: 3000 }, { start: 3, end: 1, duration: 3000 }],
-        outerRing: [{ start: 3, end: 12, duration: 3000 }, { start: 12, end: 3, duration: 3000 }]
+        background: [new RangeChange(8, 20, 3000), new RangeChange(20, 8, 3000)],
+        borderRing: [new RangeChange(1, 3, 3000), new RangeChange(3, 1, 3000)],
+        outerRing: [new RangeChange(3, 12, 3000), new RangeChange(12, 3, 3000)]
     }
 });
 

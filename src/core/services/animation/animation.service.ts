@@ -1,6 +1,9 @@
+import { ValueChange } from '../../data-model/value-change';
+import { RangeChange } from '../../data-model/range-change';
+
 export class AnimationService {
 
-    public getBlur(changes: { start: number; end: number; duration: number }[], elapsed: number): number {
+    public getBlur(changes: RangeChange[], elapsed: number): number {
         const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
 
         if (!cycleDuration) {
@@ -20,7 +23,7 @@ export class AnimationService {
         return 0;
     }
 
-    public getAngle(changes: { change: number; duration: number }[], elapsed: number): number {
+    public getAngle(changes: ValueChange[], elapsed: number): number {
         const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
 
         if (!cycleDuration) {
