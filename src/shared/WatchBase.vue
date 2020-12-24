@@ -48,7 +48,7 @@ export default class WatchBase extends Vue {
         const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
         const borderRingBlur = this.getCurrentBlur(this.blurAnimation.borderRing);
         const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, borderRingBlur);
-        const outerRingOption = new RingOption(this.colorOption.outerRing, 0.19, 0.095, 0.095);
+        const outerRingOption = new RingOption(this.colorOption.outerRing, 0.205, 0.093, 0.095);
         const outerRingBlur = this.getCurrentBlur(this.blurAnimation.outerRing);
         const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, outerRingBlur, 0, 1);
         const innerThickRingOption = new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095);
@@ -151,7 +151,7 @@ export default class WatchBase extends Vue {
             canvasService.rotate(context, radius, radius, 120 * i + guardRotate);
 
             context.strokeStyle = this.colorOption.scale;
-            context.lineWidth = 2;
+            context.lineWidth = 1.5;
             context.beginPath();
             context.moveTo(radius * 0.082, radius);
             context.lineTo(radius * 0.1, radius);
@@ -164,7 +164,7 @@ export default class WatchBase extends Vue {
             canvasService.rotate(context, radius, radius, -108.5);
             context.stroke();
 
-            context.lineWidth = 2.5;
+            context.lineWidth = 2;
             context.beginPath();
             context.arc(radius, radius, radius * 0.9, Math.PI, Math.PI * 1.603);
             context.stroke();
@@ -177,7 +177,7 @@ export default class WatchBase extends Vue {
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 10 === 0;
             context.strokeStyle = this.colorOption.scale;
-            context.lineWidth = isSeparator ? 3 : 1.5;
+            context.lineWidth = isSeparator ? 2 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
             context.lineTo(radius * (isSeparator ? 0.075 : 0.068), radius);
