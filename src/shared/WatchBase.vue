@@ -11,8 +11,10 @@ import { Vue } from 'vue-class-component';
 import store from '../store';
 import { RingOption } from '../core/data-model/ring-option';
 import { ShadowOption } from '../core/data-model/shadow-option';
+import { AnimationService } from '../core/services/animation/animation.service';
 import { CanvasService } from '../core/services/canvas/canvas.service';
 
+const animationService = new AnimationService();
 const canvasService = new CanvasService();
 
 export default class WatchBase extends Vue {
@@ -33,9 +35,11 @@ export default class WatchBase extends Vue {
         const now = Date.now();
 
         if (now - this.lastRender > 1000 / 45) {
-            const backgroundBlur = this.getCurrentBlur(this.blurAnimation.background);
-            this.backgroundCanvasStyle['background-color'] = this.colorOption.background;
-            this.backgroundCanvasStyle['box-shadow'] = `0 0 ${backgroundBlur}px 0px ${this.colorOption.borderRingShadow}`;
+            const elapsed = Date.now() - this.startTime;
+            const backgroundBlur = animationService.getBlur(this.blurAnimation.background, elapsed);
+            const { background, borderRingShadow } = this.colorOption;
+            this.backgroundCanvasStyle['background-color'] = background;
+            this.backgroundCanvasStyle['box-shadow'] = `0 0 ${backgroundBlur}px 0px ${borderRingShadow}`;
             this.renderRings();
             this.renderScales();
             this.lastRender = now;
@@ -45,71 +49,24 @@ export default class WatchBase extends Vue {
     }
 
     private renderRings(): void {
+        const elapsed = Date.now() - this.startTime;
         const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
-        const borderRingBlur = this.getCurrentBlur(this.blurAnimation.borderRing);
+        const borderRingBlur = animationService.getBlur(this.blurAnimation.borderRing, elapsed);
         const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, borderRingBlur);
         const outerRingOption = new RingOption(this.colorOption.outerRing, 0.205, 0.093, 0.095);
-        const outerRingBlur = this.getCurrentBlur(this.blurAnimation.outerRing);
+        const outerRingBlur = animationService.getBlur(this.blurAnimation.outerRing, elapsed);
         const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, outerRingBlur, 0, 1);
         const innerThickRingOption = new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095);
         const innerThinRingOption = new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3);
-        const borderRingAngle = this.getCurrentAngle(this.angleAnimation.borderRing) + 1.5;
-        const outerRingAngle = this.getCurrentAngle(this.angleAnimation.outerRing);
-        const innerRingAngle = this.getCurrentAngle(this.angleAnimation.innerRing);
+        const borderRingAngle = animationService.getAngle(this.angleAnimation.borderRing, elapsed) + 1.5;
+        const outerRingAngle = animationService.getAngle(this.angleAnimation.outerRing, elapsed);
+        const innerRingAngle = animationService.getAngle(this.angleAnimation.innerRing, elapsed);
         const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         this.renderRing(context, 8, borderRingOption, borderShadowOption, borderRingAngle);
         this.renderRing(context, 3, outerRingOption, outerShadowOption, outerRingAngle);
         this.renderRing(context, 3, innerThickRingOption, null, innerRingAngle);
         this.renderRing(context, 4, innerThinRingOption, null, innerRingAngle);
-    }
-
-    private getCurrentBlur(changes: { start: number; end: number; duration: number }[]): number {
-        const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
-
-        if (!cycleDuration) {
-            return 0;
-        }
-
-        const elapsed = Date.now() - this.startTime;
-        let currentCycle = elapsed % cycleDuration;
-
-        for (const { start, end, duration } of changes) {
-            if (currentCycle < duration) {
-                return (end - start) * currentCycle / duration + start;
-            }
-
-            currentCycle -= duration;
-        }
-
-        return 0;
-    }
-
-    private getCurrentAngle(changes: { change: number; duration: number }[]): number {
-        const cycleDuration = changes.reduce((total, _) => _.duration + total, 0);
-
-        if (!cycleDuration) {
-            return 0;
-        }
-
-        const elapsed = Date.now() - this.startTime;
-        const fullCycles = Math.floor(elapsed / cycleDuration);
-        const cycleChange = changes.reduce((total, _) => _.change + total, 0);
-        let currentCycle = elapsed % cycleDuration;
-        let totalChange = fullCycles * cycleChange % 360;
-
-        for (const { change, duration } of changes) {
-            if (currentCycle < duration) {
-                totalChange += change * currentCycle / duration;
-
-                break;
-            }
-
-            currentCycle -= duration;
-            totalChange += change;
-        }
-
-        return Math.floor(totalChange * 100) / 100;
     }
 
     private renderRing(
@@ -139,8 +96,9 @@ export default class WatchBase extends Vue {
     private renderScales(): void {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
-        const scaleRotate = this.getCurrentAngle(this.angleAnimation.scale);
-        const guardRotate = this.getCurrentAngle(this.angleAnimation.scaleGuard);
+        const elapsed = Date.now() - this.startTime;
+        const scaleRotate = animationService.getAngle(this.angleAnimation.scale, elapsed);
+        const guardRotate = animationService.getAngle(this.angleAnimation.scaleGuard, elapsed);
         context.strokeStyle = this.colorOption.scaleGuard;
         context.lineWidth = 1.5;
         context.beginPath();
