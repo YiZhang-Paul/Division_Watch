@@ -6,22 +6,19 @@
 </template>
 
 <script lang="ts">
-import { Vue, prop } from 'vue-class-component';
+import { Vue } from 'vue-class-component';
 
+import store from '../store';
 import { RingOption } from '../core/data-model/ring-option';
 import { ShadowOption } from '../core/data-model/shadow-option';
-import { WatchColorOption } from '../core/data-model/watch-color-option';
 import { CanvasService } from '../core/services/canvas/canvas.service';
 
 const canvasService = new CanvasService();
 
-class WatchBaseProps {
-    public colorOption = prop<WatchColorOption>({ default: new WatchColorOption() });
-}
-
-export default class WatchBase extends Vue.with(WatchBaseProps) {
+export default class WatchBase extends Vue {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
+    private colorOption = store.getters['watchBase/color'];
     private lastRender = 0;
 
     get backgroundCanvasStyle(): { [key: string]: string } {
