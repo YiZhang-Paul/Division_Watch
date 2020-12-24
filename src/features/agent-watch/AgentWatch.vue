@@ -48,9 +48,7 @@ export default class AgentWatch extends Vue { }
     }
 
     .weather-display {
-        right: 21.5%;
-        width: 12%;
-        height: 12.5%;
+        right: 25%;
     }
 
     .time-display {

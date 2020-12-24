@@ -21,7 +21,7 @@ export default class WeatherDisplay extends Vue {
     public weather = new WeatherDescription();
 
     get temperature(): string {
-        const temperature = this.weather.temperature;
+        const { temperature } = this.weather;
         const sign = temperature < 0 ? '-' : '';
 
         return Math.abs(temperature) < 10 ? `${sign}0${Math.abs(temperature)}` : String(temperature);
@@ -44,17 +44,21 @@ export default class WeatherDisplay extends Vue {
 
 <style lang="scss" scoped>
 .weather-display-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
 
     img {
-        width: 70%;
+        position: absolute;
+        bottom: 1.1em;
+        width: 150%;
+        filter: invert(75%) sepia(36%) saturate(1558%) hue-rotate(326deg) brightness(93%) contrast(88%);
     }
 
     div {
-        margin-bottom: 6.5%;
+        margin-bottom: 0.25em;
         font-family: 'Digital Numbers';
         color: rgb(255, 255, 255);
 
