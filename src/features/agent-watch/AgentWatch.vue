@@ -23,7 +23,13 @@
                     @mouseenter="activeOption = option.name"
                     @mouseleave="activeOption = ''">
 
-                    {{ option.name }}
+                    <power-standby v-if="option.name === 'On/Off'" />
+                    <play v-if="option.name === 'Pomodoro'" />
+                    <timer-sand v-if="option.name === 'Tasks'" />
+                    <palette-swatch v-if="option.name === 'Planner'" />
+                    <inbox-multiple v-if="option.name === 'Backlog'" />
+                    <chart-timeline-variant-shimmer v-if="option.name === 'Stats'" />
+                    <cog v-if="option.name === 'Settings'" />
                 </button>
             </div>
         </div>
@@ -32,6 +38,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { Cog, ChartTimelineVariantShimmer, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
 
 import BatteryDisplay from '../../shared/BatteryDisplay.vue';
 import WeatherDisplay from '../../shared/WeatherDisplay.vue';
@@ -40,6 +47,13 @@ import WatchBase from '../../shared/WatchBase.vue';
 
 @Options({
     components: {
+        Cog,
+        ChartTimelineVariantShimmer,
+        InboxMultiple,
+        PowerStandby,
+        Play,
+        PaletteSwatch,
+        TimerSand,
         BatteryDisplay,
         WeatherDisplay,
         TimeDisplay,
@@ -48,13 +62,13 @@ import WatchBase from '../../shared/WatchBase.vue';
 })
 export default class AgentWatch extends Vue {
     public options = [
-        { name: 'On/Off', icon: '', angle: 40 },
-        { name: 'Pomodoro', icon: '', angle: 120 },
-        { name: 'Tasks', icon: '', angle: 200 },
-        { name: 'Planner', icon: '', angle: 240 },
-        { name: 'Backlog', icon: '', angle: 280 },
-        { name: 'Stats', icon: '', angle: 320 },
-        { name: 'Settings', icon: '', angle: 360 }
+        { name: 'On/Off', angle: 40 },
+        { name: 'Pomodoro', angle: 120 },
+        { name: 'Tasks', angle: 200 },
+        { name: 'Planner', angle: 240 },
+        { name: 'Backlog', angle: 280 },
+        { name: 'Stats', angle: 320 },
+        { name: 'Settings', angle: 360 }
     ];
 
     public activeOption = '';
@@ -159,7 +173,7 @@ export default class AgentWatch extends Vue {
         button {
             position: absolute;
             bottom: calc((#{$overlay-dimension} - #{$option-name-dimension}) * -50);
-            left: 3.5%;
+            left: 4%;
             width: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 2);
             height: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 100);
             background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));

@@ -17,6 +17,7 @@
         "axios": "^0.21.1",
         "browser-battery": "^2.0.0",
         "core-js": "^3.6.5",
+        "mdue": "^0.1.4",
         "vue": "^3.0.0",
         "vue-class-component": "^8.0.0-0",
         "vuex": "^4.0.0-0"
