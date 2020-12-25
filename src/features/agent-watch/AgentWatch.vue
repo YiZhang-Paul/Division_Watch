@@ -1,18 +1,15 @@
 <template>
     <div class="agent-watch-container">
         <watch-base></watch-base>
-
-        <template v-if="!isMenuOn">
-            <battery-display class="battery-display"></battery-display>
-            <weather-display class="weather-display"></weather-display>
-            <time-display class="time-display"></time-display>
-            <img class="logo" @click="isMenuOn = true" src="../../assets/images/shd_tech.jpg" draggable="false" />
-        </template>
+        <battery-display v-show="!isMenuOn" class="battery-display"></battery-display>
+        <weather-display v-show="!isMenuOn" class="weather-display"></weather-display>
+        <time-display v-show="!isMenuOn" class="time-display"></time-display>
+        <img v-show="!isMenuOn" class="logo" @click="openMenu()" src="../../assets/images/shd_tech.jpg" draggable="false" />
 
         <div v-if="isMenuOn" class="menu-overlay glass-panel">
             <div v-for="option of options"
                 class="option-button"
-                :style="{ transform: 'rotate(' + option.angle + 'deg)', 'transform-origin': '100% 50%' }"
+                :style="{ transform: 'rotate(' + (isOptionsVisible ? option.angle : 0) + 'deg)' }"
                 :key="option.name">
 
                 <button class="glass-panel"
@@ -83,10 +80,18 @@ export default class AgentWatch extends Vue {
 
     public activeOption = '';
     public isMenuOn = false;
+    public isOptionsVisible = false;
     public isOptionsDisabled = false;
+
+    public openMenu(): void {
+        this.isMenuOn = true;
+        this.isOptionsDisabled = false;
+        setTimeout(() => this.isOptionsVisible = true, 50);
+    }
 
     public closeMenu(): void {
         this.isMenuOn = false;
+        this.isOptionsVisible = false;
         this.isOptionsDisabled = false;
     }
 }
@@ -190,6 +195,8 @@ export default class AgentWatch extends Vue {
             left: 0;
             width: 50%;
             height: 1%;
+            transform-origin: 100% 50%;
+            transition: transform 0.5s;
         }
 
         button {
@@ -202,7 +209,7 @@ export default class AgentWatch extends Vue {
             width: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 2);
             height: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 100);
             outline: none;
-            font-size: 2em;
+            font-size: 2.5em;
             transition: border 0.3s, box-shadow 0.3s, color 0.15s;
 
             &:hover {
