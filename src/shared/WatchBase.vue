@@ -138,7 +138,7 @@ export default class WatchBase extends Vue {
             context.lineWidth = isSeparator ? 2 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
-            context.lineTo(radius * (isSeparator ? 0.075 : 0.068), radius);
+            context.lineTo(radius * (isSeparator ? 0.075 : 0.062), radius);
             canvasService.rotate(context, radius, radius, 3);
             context.stroke();
         }
