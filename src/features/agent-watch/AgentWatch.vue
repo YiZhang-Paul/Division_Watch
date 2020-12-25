@@ -9,8 +9,8 @@
             <img class="logo" @click="openMenu()" src="../../assets/images/shd_tech.jpg" draggable="false" />
         </template>
 
-        <div v-if="isMenuOn" class="menu-overlay">
-            <div class="option-name">
+        <div v-if="isMenuOn" class="menu-overlay glass-panel">
+            <div class="option-name glass-panel">
                 <span>{{ activeOption }}</span>
             </div>
 
@@ -19,16 +19,18 @@
                 :style="{ transform: 'rotate(' + option.angle + 'deg)', 'transform-origin': '100% 50%' }"
                 :key="option.name">
 
-                <button :style="{ transform: 'rotate(' + -option.angle + 'deg)' }"
+                <button class="glass-panel"
+                    :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: option.color }"
                     @mouseenter="activeOption = option.name"
-                    @mouseleave="activeOption = ''">
+                    @mouseleave="activeOption = ''"
+                    @click="$emit('menu:select', option.name)">
 
                     <power-standby v-if="option.name === 'On/Off'" />
-                    <play v-if="option.name === 'Pomodoro'" />
+                    <play v-if="option.name === 'Start'" />
                     <timer-sand v-if="option.name === 'Tasks'" />
                     <palette-swatch v-if="option.name === 'Planner'" />
                     <inbox-multiple v-if="option.name === 'Backlog'" />
-                    <chart-timeline-variant-shimmer v-if="option.name === 'Stats'" />
+                    <finance v-if="option.name === 'Stats'" />
                     <cog v-if="option.name === 'Settings'" />
                 </button>
             </div>
@@ -38,7 +40,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { Cog, ChartTimelineVariantShimmer, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
+import { Cog, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
 
 import BatteryDisplay from '../../shared/BatteryDisplay.vue';
 import WeatherDisplay from '../../shared/WeatherDisplay.vue';
@@ -48,7 +50,7 @@ import WatchBase from '../../shared/WatchBase.vue';
 @Options({
     components: {
         Cog,
-        ChartTimelineVariantShimmer,
+        Finance,
         InboxMultiple,
         PowerStandby,
         Play,
@@ -58,17 +60,18 @@ import WatchBase from '../../shared/WatchBase.vue';
         WeatherDisplay,
         TimeDisplay,
         WatchBase
-    }
+    },
+    emits: ['menu:select']
 })
 export default class AgentWatch extends Vue {
     public options = [
-        { name: 'On/Off', angle: 40 },
-        { name: 'Pomodoro', angle: 120 },
-        { name: 'Tasks', angle: 200 },
-        { name: 'Planner', angle: 240 },
-        { name: 'Backlog', angle: 280 },
-        { name: 'Stats', angle: 320 },
-        { name: 'Settings', angle: 360 }
+        { name: 'On/Off', angle: 51, color: 'rgb(24, 238, 20)' },
+        { name: 'Start', angle: 131, color: 'rgb(24, 238, 20)' },
+        { name: 'Tasks', angle: 211, color: 'rgb(238, 255, 133)' },
+        { name: 'Planner', angle: 251, color: 'rgb(238, 123, 107)' },
+        { name: 'Backlog', angle: 291, color: 'rgb(255, 9, 9)' },
+        { name: 'Stats', angle: 331, color: 'rgb(33, 188, 254)' },
+        { name: 'Settings', angle: 371, color: 'rgb(255, 255, 255)' }
     ];
 
     public activeOption = '';
@@ -127,6 +130,15 @@ export default class AgentWatch extends Vue {
         }
     }
 
+    .glass-panel {
+        background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
+        background-color: rgba(18, 18, 19, 0.95);
+        box-shadow: 0 0 4px 1px rgba(227, 94, 19, 0.75);
+        border: 2px solid rgba(218, 220, 69, 0.9);
+        border-radius: 50%;
+        opacity: 0.95;
+    }
+
     .menu-overlay {
         $overlay-dimension: 76%;
         $option-name-dimension: 60%;
@@ -136,13 +148,8 @@ export default class AgentWatch extends Vue {
         left: calc(50% - #{$overlay-dimension} / 2);
         width: calc(#{$overlay-dimension} - 4px);
         height: calc(#{$overlay-dimension} - 4px);
-        background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
-        background-color: rgba(18, 18, 19, 0.95);
-        border: 2px solid rgba(218, 220, 69, 0.9);
-        border-radius: 50%;
         color: rgb(255, 255, 255);
         font-family: 'Bruno Ace';
-        opacity: 0.95;
 
         .option-name {
             display: flex;
@@ -153,13 +160,7 @@ export default class AgentWatch extends Vue {
             left: calc(50% - #{$option-name-dimension} / 2);
             width: calc(#{$option-name-dimension} - 4px);
             height: calc(#{$option-name-dimension} - 4px);
-            background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
-            background-color: rgba(18, 18, 19, 0.95);
-            border: 2px solid rgba(218, 220, 69, 0.9);
-            border-radius: 50%;
-            box-shadow: 0 0 4px 1px rgba(227, 94, 19, 0.75);
             font-size: 2em;
-            opacity: 0.95;
         }
 
         .option-button {
@@ -171,23 +172,25 @@ export default class AgentWatch extends Vue {
         }
 
         button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: absolute;
             bottom: calc((#{$overlay-dimension} - #{$option-name-dimension}) * -50);
             left: 4%;
             width: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 2);
             height: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 100);
-            background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
-            background-color: rgba(18, 18, 19, 0.95);
-            border: 1px solid rgba(218, 220, 69, 0.9);
-            border-radius: 50%;
-            box-shadow: 0 0 4px 1px rgba(227, 94, 19, 0.75);
-            color: rgb(255, 255, 255);
+            outline: none;
+            font-size: 2em;
             transition: border 0.3s, box-shadow 0.3s;
 
             &:hover {
                 cursor: pointer;
-                border: 2px solid rgba(218, 220, 69, 0.9);
-                box-shadow: 0 0 10px 1px rgba(227, 94, 19, 0.75);
+                box-shadow: 0 0 12px 2px rgba(227, 94, 19, 0.9);
+            }
+
+            &:active {
+                background-color: rgba(18, 18, 19, 0.25);
             }
         }
     }
