@@ -6,23 +6,19 @@
             <battery-display class="battery-display"></battery-display>
             <weather-display class="weather-display"></weather-display>
             <time-display class="time-display"></time-display>
-            <img class="logo" @click="openMenu()" src="../../assets/images/shd_tech.jpg" draggable="false" />
+            <img class="logo" @click="isMenuOn = true" src="../../assets/images/shd_tech.jpg" draggable="false" />
         </template>
 
         <div v-if="isMenuOn" class="menu-overlay glass-panel">
-            <div class="option-name glass-panel">
-                <span>{{ activeOption }}</span>
-            </div>
-
             <div v-for="option of options"
                 class="option-button"
                 :style="{ transform: 'rotate(' + option.angle + 'deg)', 'transform-origin': '100% 50%' }"
                 :key="option.name">
 
                 <button class="glass-panel"
-                    :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: option.color }"
-                    @mouseenter="activeOption = option.name"
-                    @mouseleave="activeOption = ''"
+                    :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: isOptionsDisabled ? 'grey' : option.color }"
+                    @mouseover="activeOption = option.name"
+                    @mouseout="activeOption = ''"
                     @click="$emit('menu:select', option.name)">
 
                     <power-standby v-if="option.name === 'On/Off'" />
@@ -34,13 +30,23 @@
                     <cog v-if="option.name === 'Settings'" />
                 </button>
             </div>
+
+            <div class="option-name glass-panel">
+                <span v-if="activeOption">{{ activeOption }}</span>
+
+                <close-circle v-if="!activeOption"
+                    class="close-menu"
+                    @mouseover="isOptionsDisabled = true"
+                    @mouseout="isOptionsDisabled = false"
+                    @click="closeMenu()" />
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { Cog, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
+import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
 
 import BatteryDisplay from '../../shared/BatteryDisplay.vue';
 import WeatherDisplay from '../../shared/WeatherDisplay.vue';
@@ -50,6 +56,7 @@ import WatchBase from '../../shared/WatchBase.vue';
 @Options({
     components: {
         Cog,
+        CloseCircle,
         Finance,
         InboxMultiple,
         PowerStandby,
@@ -76,9 +83,11 @@ export default class AgentWatch extends Vue {
 
     public activeOption = '';
     public isMenuOn = false;
+    public isOptionsDisabled = false;
 
-    public openMenu(): void {
-        this.isMenuOn = true;
+    public closeMenu(): void {
+        this.isMenuOn = false;
+        this.isOptionsDisabled = false;
     }
 }
 </script>
@@ -151,6 +160,18 @@ export default class AgentWatch extends Vue {
         color: rgb(255, 255, 255);
         font-family: 'Bruno Ace';
 
+        .close-menu {
+            font-size: 2.5em;
+            color: rgb(255, 0, 0);
+            transition: color 0.15s, font-size 0.15s;
+
+            &:hover {
+                cursor: pointer;
+                font-size: 3em;
+                color: rgb(240, 44, 44);
+            }
+        }
+
         .option-name {
             display: flex;
             justify-content: center;
@@ -182,7 +203,7 @@ export default class AgentWatch extends Vue {
             height: calc((#{$overlay-dimension} - #{$option-name-dimension}) * 100);
             outline: none;
             font-size: 2em;
-            transition: border 0.3s, box-shadow 0.3s;
+            transition: border 0.3s, box-shadow 0.3s, color 0.15s;
 
             &:hover {
                 cursor: pointer;
