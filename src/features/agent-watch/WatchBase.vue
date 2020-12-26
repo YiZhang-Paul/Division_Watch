@@ -39,7 +39,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     public backgroundCanvasStyle = { 'background-color': '', 'box-shadow': '' };
     private canAnimate = false;
     private lastRender = 0;
-    private startTime = Date.now();
+    private startTime = 0;
 
     get isBooting(): boolean {
         return this.state === WatchState.Booting;
@@ -66,8 +66,12 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     private renderWatchBase(): void {
         const now = Date.now();
 
-        if (now - this.lastRender > 1000 / 45) {
-            const elapsed = Date.now() - this.startTime;
+        if (this.canAnimate) {
+            this.startTime = this.startTime || now;
+        }
+
+        if (!this.canAnimate || now - this.lastRender > 1000 / 45) {
+            const elapsed = this.canAnimate ? now - this.startTime : 0;
             const backgroundBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.background, elapsed) : 0;
             const { background, borderRingShadow } = this.colorOption;
             this.backgroundCanvasStyle['background-color'] = background;
