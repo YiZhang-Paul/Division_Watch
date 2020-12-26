@@ -4,8 +4,15 @@
         <battery-display v-show="canDisplay" class="battery-display"></battery-display>
         <weather-display v-show="canDisplay" class="weather-display"></weather-display>
         <time-display v-show="canDisplay" class="time-display"></time-display>
-        <img v-show="canDisplay" class="logo" @click="isMenuOn = true" src="../../assets/images/shd_tech.jpg" draggable="false" />
-        <access-menu v-if="isMenuOn" class="access-menu" @menu:close="isMenuOn = false"></access-menu>
+
+        <img v-show="canDisplay"
+            class="logo"
+            :class="{ 'logo-no-blink': !allowLogoBlink }"
+            @click="isMenuOn = true"
+            src="../../assets/images/shd_tech.jpg"
+            draggable="false" />
+
+        <access-menu v-if="isMenuOn" class="access-menu" @menu:close="onMenuClose()"></access-menu>
     </div>
 </template>
 
@@ -32,10 +39,16 @@ import WatchBase from './WatchBase.vue';
 })
 export default class AgentWatch extends Vue {
     public state = WatchState.Booting;
+    public allowLogoBlink = true;
     public isMenuOn = false;
 
     get canDisplay(): boolean {
         return !this.isMenuOn && this.state === WatchState.Booted;
+    }
+
+    public onMenuClose(): void {
+        this.isMenuOn = false;
+        this.allowLogoBlink = false;
     }
 
     public onBooted(): void {
@@ -53,7 +66,7 @@ export default class AgentWatch extends Vue {
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
-        animation: loadWatchData 0.5s ease forwards;
+        animation: loadWatchData 0.4s ease forwards;
         opacity: 0;
     }
 
@@ -94,6 +107,10 @@ export default class AgentWatch extends Vue {
         &:hover {
             cursor: pointer;
         }
+    }
+
+    .logo-no-blink {
+        animation: loadWatchData 0.4s ease forwards;
     }
 
     .access-menu {

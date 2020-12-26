@@ -59,7 +59,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
 
     public mounted(): void {
         this.renderWatchBase();
-        setTimeout(() => this.canAnimate = true, 2200);
+        setTimeout(() => this.canAnimate = true, 2700);
         setTimeout(() => this.$emit('state:booted'), 3200);
     }
 
@@ -263,7 +263,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
             opacity: 0;
         }
         25% {
-            opacity: 1;
+            opacity: 0.2;
         }
         50% {
             opacity: 1;
