@@ -5,12 +5,18 @@
         <weather-display v-show="canDisplay" class="weather-display"></weather-display>
         <time-display v-show="canDisplay" class="time-display"></time-display>
 
-        <img v-show="canDisplay"
+        <img v-show="canDisplayAgentMode"
             class="logo"
             :class="{ 'logo-no-blink': !allowLogoBlink }"
             @click="isMenuOn = true"
             src="../../assets/images/shd_tech.jpg"
             draggable="false" />
+
+        <session-count-down v-show="canDisplayRogueMode"
+            class="session-count-down"
+            :class="{ 'logo-no-blink': !allowLogoBlink }"
+            @click="isMenuOn = true">
+        </session-count-down>
 
         <access-menu v-if="isMenuOn" class="access-menu" @menu:close="onMenuClose()"></access-menu>
     </div>
@@ -26,6 +32,7 @@ import AccessMenu from './AccessMenu.vue';
 import BatteryDisplay from './BatteryDisplay.vue';
 import WeatherDisplay from './WeatherDisplay.vue';
 import TimeDisplay from './TimeDisplay.vue';
+import SessionCountDown from './SessionCountDown.vue';
 import WatchBase from './WatchBase.vue';
 
 @Options({
@@ -34,6 +41,7 @@ import WatchBase from './WatchBase.vue';
         BatteryDisplay,
         WeatherDisplay,
         TimeDisplay,
+        SessionCountDown,
         WatchBase
     }
 })
@@ -43,11 +51,15 @@ export default class AgentWatch extends Vue {
     public isMenuOn = false;
 
     get canDisplay(): boolean {
-        if (this.isMenuOn) {
-            return false;
-        }
+        return this.canDisplayAgentMode || this.canDisplayRogueMode;
+    }
 
-        return this.state === WatchState.AgentBooted || this.state === WatchState.RogueBooted;
+    get canDisplayAgentMode(): boolean {
+        return !this.isMenuOn && this.state === WatchState.AgentBooted;
+    }
+
+    get canDisplayRogueMode(): boolean {
+        return !this.isMenuOn && this.state === WatchState.RogueBooted;
     }
 
     public onMenuClose(): void {
@@ -98,19 +110,31 @@ export default class AgentWatch extends Vue {
         height: $height;
     }
 
-    .logo {
-        $width: 39.5%;
-
+    .logo, .session-count-down {
         position: absolute;
-        top: 5%;
-        right: calc(50% - #{$width} / 2);
-        width: $width;
         animation: loadLogo 0.7s ease-in 0.2s forwards;
         opacity: 0;
 
         &:hover {
             cursor: pointer;
         }
+    }
+
+    .logo {
+        $width: 39.5%;
+
+        top: 5%;
+        right: calc(50% - #{$width} / 2);
+        width: $width;
+    }
+
+    .session-count-down {
+        $dimension: 34%;
+
+        top: 7.5%;
+        right: calc(50% - #{$dimension} / 2);
+        width: $dimension;
+        height: $dimension;
     }
 
     .logo-no-blink {
