@@ -12,6 +12,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from '../../store';
 import { WatchState } from '../../core/enums/watch-state.enum';
 
 import AccessMenu from './AccessMenu.vue';
@@ -39,6 +40,7 @@ export default class AgentWatch extends Vue {
 
     public onBooted(): void {
         this.state = WatchState.Booted;
+        store.dispatch('watchBase/setNormalColorScheme');
     }
 }
 </script>

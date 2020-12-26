@@ -1,7 +1,9 @@
+import { ActionContext } from 'vuex';
+
 import { ValueChange } from '../../core/data-model/value-change';
 import { RangeChange } from '../../core/data-model/range-change';
 
-interface IWatchColorOption {
+export interface IWatchColorOption {
     background: string;
     borderRing: string;
     borderRingShadow: string;
@@ -13,7 +15,7 @@ interface IWatchColorOption {
     scaleGuard: string;
 }
 
-interface IAngleAnimation {
+export interface IAngleAnimation {
     borderRing: ValueChange[];
     outerRing: ValueChange[];
     innerRing: ValueChange[];
@@ -21,7 +23,7 @@ interface IAngleAnimation {
     scaleGuard: ValueChange[];
 }
 
-interface IBlurAnimation {
+export interface IBlurAnimation {
     background: RangeChange[];
     borderRing: RangeChange[];
     outerRing: RangeChange[];
@@ -33,18 +35,20 @@ export interface IWatchBaseState {
     blurAnimation: IBlurAnimation;
 }
 
+const defaultColorOption: IWatchColorOption = {
+    background: 'rgb(30, 30, 30)',
+    borderRing: 'rgb(243, 245, 108)',
+    borderRingShadow: 'rgba(227, 94, 19, 0.95)',
+    outerRing: 'rgb(253, 244, 30)',
+    outerRingShadow: 'rgba(235, 249, 83, 0.85)',
+    innerRing: 'rgba(119, 73, 31, 0.3)',
+    innerRingShadow: 'rgba(0, 0, 0, 0)',
+    scale: 'rgb(250, 137, 31)',
+    scaleGuard: 'rgb(148, 75, 8)'
+};
+
 const state = () => ({
-    colorOption: {
-        background: 'rgb(30, 30, 30)',
-        borderRing: 'rgb(243, 245, 108)',
-        borderRingShadow: 'rgba(227, 94, 19, 0.95)',
-        outerRing: 'rgb(249, 162, 83)',
-        outerRingShadow: 'rgba(242, 144, 55, 0.85)',
-        innerRing: 'rgba(82, 51, 23, 0.3)',
-        innerRingShadow: 'rgba(0, 0, 0, 0)',
-        scale: 'rgb(250, 137, 31)',
-        scaleGuard: 'rgb(148, 75, 8)'
-    },
+    colorOption: { ...defaultColorOption },
     angleAnimation: {
         borderRing: [new ValueChange(360, 60000)],
         outerRing: [new ValueChange(-120, 8500), new ValueChange(180, 1500)],
@@ -65,8 +69,29 @@ const getters = {
     blurAnimation: (state: IWatchBaseState): IBlurAnimation => state.blurAnimation
 };
 
+const mutations = {
+    setColor(state: IWatchBaseState, color: IWatchColorOption): void {
+        state.colorOption = color;
+    }
+};
+
+const actions = {
+    setNormalColorScheme(context: ActionContext<IWatchBaseState, any>): void {
+        const option: IWatchColorOption = {
+            ...defaultColorOption,
+            outerRing: 'rgb(249, 162, 83)',
+            outerRingShadow: 'rgba(242, 144, 55, 0.85)',
+            innerRing: 'rgba(82, 51, 23, 0.3)'
+        };
+
+        context.commit('setColor', option);
+    }
+};
+
 export const watchBase = {
     namespaced: true,
     state,
-    getters
+    getters,
+    mutations,
+    actions
 };

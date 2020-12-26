@@ -15,6 +15,8 @@
 import { Vue, Options, prop } from 'vue-class-component';
 
 import store from '../../store';
+// eslint-disable-next-line no-unused-vars
+import { IWatchColorOption, IAngleAnimation, IBlurAnimation } from '../../store/watch-base/watch-base.state';
 import { WatchState } from '../../core/enums/watch-state.enum';
 import { RingOption } from '../../core/data-model/ring-option';
 import { ShadowOption } from '../../core/data-model/shadow-option';
@@ -35,15 +37,24 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
     public backgroundCanvasStyle = { 'background-color': '', 'box-shadow': '' };
-    private colorOption = store.getters['watchBase/colorOption'];
-    private angleAnimation = store.getters['watchBase/angleAnimation'];
-    private blurAnimation = store.getters['watchBase/blurAnimation'];
-    private startTime = Date.now();
-    private lastRender = 0;
     private canAnimate = false;
+    private lastRender = 0;
+    private startTime = Date.now();
 
     get isBooting(): boolean {
         return this.state === WatchState.Booting;
+    }
+
+    get colorOption(): IWatchColorOption {
+        return store.getters['watchBase/colorOption'];
+    }
+
+    get angleAnimation(): IAngleAnimation {
+        return store.getters['watchBase/angleAnimation'];
+    }
+
+    get blurAnimation(): IBlurAnimation {
+        return store.getters['watchBase/blurAnimation'];
     }
 
     public mounted(): void {
