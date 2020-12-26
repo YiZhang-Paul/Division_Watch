@@ -18,6 +18,8 @@ export interface IWatchColorOption {
     time: string;
     batteryOutline: string;
     batteryHigh: string;
+    menuBorder: string;
+    menuBorderShadow: string;
 }
 
 export interface IAngleAnimation {
@@ -54,7 +56,9 @@ const defaultColorOption: IWatchColorOption = {
     dayOfWeek: 'rgb(211, 112, 19)',
     time: 'rgb(211, 112, 19)',
     batteryOutline: 'rgba(255, 255, 255, 0.5)',
-    batteryHigh: 'rgb(0, 255, 0)'
+    batteryHigh: 'rgb(0, 255, 0)',
+    menuBorder: 'rgba(218, 220, 69, 0.9)',
+    menuBorderShadow: 'rgba(227, 94, 19, 0.85)'
 };
 
 const state = () => ({
@@ -109,7 +113,9 @@ const actions = {
             dayOfWeek: 'rgb(186, 26, 26)',
             time: 'rgb(250, 221, 71)',
             batteryOutline: 'rgb(250, 221, 71)',
-            batteryHigh: 'rgb(250, 221, 71)'
+            batteryHigh: 'rgb(250, 221, 71)',
+            menuBorder: 'rgba(209, 65, 65, 0.9)',
+            menuBorderShadow: 'rgba(241, 49, 49, 0.85)'
         };
 
         context.commit('setColor', option);

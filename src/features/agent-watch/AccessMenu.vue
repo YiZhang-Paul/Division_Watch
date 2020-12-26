@@ -1,5 +1,5 @@
 <template>
-    <div class="access-menu-container glass-panel">
+    <div class="access-menu-container glass-panel" :style="colorOption">
         <div v-for="option of options"
             class="option-button"
             :style="{ transform: 'rotate(' + (isOptionsVisible ? option.angle : 0) + 'deg)' }"
@@ -37,6 +37,8 @@
 import { Options, Vue } from 'vue-class-component';
 import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
 
+import store from '../../store';
+
 @Options({
     components: {
         Cog,
@@ -46,7 +48,7 @@ import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSw
         PowerStandby,
         Play,
         PaletteSwatch,
-        TimerSand,
+        TimerSand
     },
     emits: [
         'menu:select',
@@ -68,6 +70,15 @@ export default class AccessMenu extends Vue {
     public isOptionsVisible = false;
     public isOptionsDisabled = false;
 
+    get colorOption(): { [key: string]: string } {
+        const option = store.getters['watchBase/colorOption'];
+
+        return {
+            '--border-color': option.menuBorder,
+            '--border-shadow': option.menuBorderShadow
+        };
+    }
+
     public mounted(): void {
         setTimeout(() => this.isOptionsVisible = true, 50);
     }
@@ -78,8 +89,8 @@ export default class AccessMenu extends Vue {
 .glass-panel {
     background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
     background-color: rgba(18, 18, 19, 0.95);
-    box-shadow: 0 0 4px 1px rgba(227, 94, 19, 0.75);
-    border: 2px solid rgba(218, 220, 69, 0.9);
+    box-shadow: 0 0 4px 1px var(--border-shadow);
+    border: 2px solid var(--border-color);
     border-radius: 50%;
     opacity: 0.95;
 }
@@ -143,7 +154,7 @@ export default class AccessMenu extends Vue {
 
         &:hover {
             cursor: pointer;
-            box-shadow: 0 0 12px 2px rgba(227, 94, 19, 0.9);
+            box-shadow: 0 0 12px 2px var(--border-shadow);
         }
 
         &:active {
