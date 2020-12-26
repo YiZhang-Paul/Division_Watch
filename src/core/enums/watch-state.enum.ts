@@ -1,5 +1,5 @@
 export enum WatchState {
-    Booting,
-    Booted,
-    Tray
+    AgentBooting,
+    AgentBooted,
+    RogueBooted
 }

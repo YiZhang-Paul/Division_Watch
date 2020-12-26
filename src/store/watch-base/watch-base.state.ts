@@ -12,6 +12,7 @@ export interface IWatchColorOption {
     innerRing: string;
     innerRingShadow: string;
     scale: string;
+    scaleSeparator: string;
     scaleGuard: string;
 }
 
@@ -44,6 +45,7 @@ const defaultColorOption: IWatchColorOption = {
     innerRing: 'rgba(119, 73, 31, 0.3)',
     innerRingShadow: 'rgba(0, 0, 0, 0)',
     scale: 'rgb(250, 137, 31)',
+    scaleSeparator: 'rgb(250, 137, 31)',
     scaleGuard: 'rgb(148, 75, 8)'
 };
 
@@ -76,12 +78,26 @@ const mutations = {
 };
 
 const actions = {
-    setNormalColorScheme(context: ActionContext<IWatchBaseState, any>): void {
+    setAgentColorScheme(context: ActionContext<IWatchBaseState, any>): void {
         const option: IWatchColorOption = {
             ...defaultColorOption,
             outerRing: 'rgb(249, 162, 83)',
             outerRingShadow: 'rgba(242, 144, 55, 0.85)',
             innerRing: 'rgba(82, 51, 23, 0.3)'
+        };
+
+        context.commit('setColor', option);
+    },
+    setRogueColorScheme(context: ActionContext<IWatchBaseState, any>): void {
+        const option: IWatchColorOption = {
+            ...defaultColorOption,
+            borderRing: 'rgb(241, 49, 49)',
+            borderRingShadow: 'rgba(111, 26, 14, 0.9)',
+            outerRing: 'rgb(181, 53, 53)',
+            outerRingShadow: 'rgba(181, 53, 53, 0.85)',
+            innerRing: 'rgba(94, 51, 51, 0.4)',
+            scale: 'rgb(239, 205, 84)',
+            scaleSeparator: 'rgb(244, 39, 39)'
         };
 
         context.commit('setColor', option);

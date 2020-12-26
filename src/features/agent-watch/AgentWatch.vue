@@ -38,12 +38,16 @@ import WatchBase from './WatchBase.vue';
     }
 })
 export default class AgentWatch extends Vue {
-    public state = WatchState.Booting;
+    public state = WatchState.AgentBooting;
     public allowLogoBlink = true;
     public isMenuOn = false;
 
     get canDisplay(): boolean {
-        return !this.isMenuOn && this.state === WatchState.Booted;
+        if (this.isMenuOn) {
+            return false;
+        }
+
+        return this.state === WatchState.AgentBooted || this.state === WatchState.RogueBooted;
     }
 
     public onMenuClose(): void {

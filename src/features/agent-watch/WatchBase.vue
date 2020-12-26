@@ -27,7 +27,7 @@ const animationService = new AnimationService();
 const canvasService = new CanvasService();
 
 class WatchBaseProp {
-    public state = prop<WatchState>({ default: WatchState.Booting });
+    public state = prop<WatchState>({ default: WatchState.AgentBooting });
 }
 
 Options({
@@ -42,7 +42,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     private startTime = 0;
 
     get isBooting(): boolean {
-        return this.state === WatchState.Booting;
+        return this.state === WatchState.AgentBooting;
     }
 
     get colorOption(): IWatchColorOption {
@@ -173,7 +173,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
 
         for (let i = 0; i < 120; ++i) {
             const isSeparator = i % 10 === 0;
-            context.strokeStyle = this.colorOption.scale;
+            context.strokeStyle = isSeparator ? this.colorOption.scaleSeparator : this.colorOption.scale;
             context.lineWidth = isSeparator ? 2 : 1.5;
             context.beginPath();
             context.moveTo(radius * (isSeparator ? 0.033 : 0.038), radius);
