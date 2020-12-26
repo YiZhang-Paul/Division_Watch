@@ -1,16 +1,18 @@
 <template>
     <div class="agent-watch-container">
-        <watch-base></watch-base>
-        <battery-display v-show="!isMenuOn" class="battery-display"></battery-display>
-        <weather-display v-show="!isMenuOn" class="weather-display"></weather-display>
-        <time-display v-show="!isMenuOn" class="time-display"></time-display>
-        <img v-show="!isMenuOn" class="logo" @click="isMenuOn = true" src="../../assets/images/shd_tech.jpg" draggable="false" />
+        <watch-base :state="state" @state:booted="onBooted()"></watch-base>
+        <battery-display v-show="canDisplay" class="battery-display"></battery-display>
+        <weather-display v-show="canDisplay" class="weather-display"></weather-display>
+        <time-display v-show="canDisplay" class="time-display"></time-display>
+        <img v-show="canDisplay" class="logo" @click="isMenuOn = true" src="../../assets/images/shd_tech.jpg" draggable="false" />
         <access-menu v-if="isMenuOn" class="access-menu" @menu:close="isMenuOn = false"></access-menu>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+
+import { WatchState } from '../../core/enums/watch-state.enum';
 
 import AccessMenu from './AccessMenu.vue';
 import BatteryDisplay from './BatteryDisplay.vue';
@@ -28,7 +30,16 @@ import WatchBase from './WatchBase.vue';
     }
 })
 export default class AgentWatch extends Vue {
+    public state = WatchState.Booting;
     public isMenuOn = false;
+
+    get canDisplay(): boolean {
+        return !this.isMenuOn && this.state === WatchState.Booted;
+    }
+
+    public onBooted(): void {
+        this.state = WatchState.Booted;
+    }
 }
 </script>
 
@@ -40,6 +51,8 @@ export default class AgentWatch extends Vue {
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
+        animation: loadWatchData 0.5s ease forwards;
+        opacity: 0;
     }
 
     .battery-display, .weather-display {
@@ -73,6 +86,8 @@ export default class AgentWatch extends Vue {
         top: 5%;
         right: calc(50% - #{$width} / 2);
         width: $width;
+        animation: loadLogo 0.7s ease-in 0.2s forwards;
+        opacity: 0;
 
         &:hover {
             cursor: pointer;
@@ -87,6 +102,51 @@ export default class AgentWatch extends Vue {
         left: calc(50% - #{$overlay-dimension} / 2);
         width: calc(#{$overlay-dimension} - 4px);
         height: calc(#{$overlay-dimension} - 4px);
+    }
+
+    @keyframes loadWatchData {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes loadLogo {
+        0% {
+            opacity: 0;
+        }
+        10% {
+            opacity: 0.1;
+        }
+        11% {
+            opacity: 1;
+        }
+        30% {
+            opacity: 1;
+        }
+        31% {
+            opacity: 0.1;
+        }
+        50% {
+            opacity: 0.1;
+        }
+        51% {
+            opacity: 1;
+        }
+        70% {
+            opacity: 1;
+        }
+        71% {
+            opacity: 0.1;
+        }
+        75% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 }
 </style>

@@ -2,13 +2,20 @@
     <div class="base-layer">
         <canvas :id="backgroundCanvasId" :style="backgroundCanvasStyle"></canvas>
         <canvas :id="ringsCanvasId"></canvas>
+
+        <template v-if="isBooting">
+            <div class="booting-outer-core"></div>
+            <div class="booting-inner-core-1"></div>
+            <div class="booting-inner-core-2"></div>
+        </template>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, Options, prop } from 'vue-class-component';
 
 import store from '../../store';
+import { WatchState } from '../../core/enums/watch-state.enum';
 import { RingOption } from '../../core/data-model/ring-option';
 import { ShadowOption } from '../../core/data-model/shadow-option';
 import { AnimationService } from '../../core/services/animation/animation.service';
@@ -17,7 +24,14 @@ import { CanvasService } from '../../core/services/canvas/canvas.service';
 const animationService = new AnimationService();
 const canvasService = new CanvasService();
 
-export default class WatchBase extends Vue {
+class WatchBaseProp {
+    public state = prop<WatchState>({ default: WatchState.Booting });
+}
+
+Options({
+    emits: ['state:booted']
+})
+export default class WatchBase extends Vue.with(WatchBaseProp) {
     public readonly backgroundCanvasId = 'background-canvas';
     public readonly ringsCanvasId = 'rings-canvas';
     public backgroundCanvasStyle = { 'background-color': '', 'box-shadow': '' };
@@ -26,9 +40,16 @@ export default class WatchBase extends Vue {
     private blurAnimation = store.getters['watchBase/blurAnimation'];
     private startTime = Date.now();
     private lastRender = 0;
+    private canAnimate = false;
+
+    get isBooting(): boolean {
+        return this.state === WatchState.Booting;
+    }
 
     public mounted(): void {
         this.renderWatchBase();
+        setTimeout(() => this.canAnimate = true, 2200);
+        setTimeout(() => this.$emit('state:booted'), 3200);
     }
 
     private renderWatchBase(): void {
@@ -36,7 +57,7 @@ export default class WatchBase extends Vue {
 
         if (now - this.lastRender > 1000 / 45) {
             const elapsed = Date.now() - this.startTime;
-            const backgroundBlur = animationService.getBlur(this.blurAnimation.background, elapsed);
+            const backgroundBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.background, elapsed) : 0;
             const { background, borderRingShadow } = this.colorOption;
             this.backgroundCanvasStyle['background-color'] = background;
             this.backgroundCanvasStyle['box-shadow'] = `0 0 ${backgroundBlur}px 0px ${borderRingShadow}`;
@@ -51,22 +72,25 @@ export default class WatchBase extends Vue {
     private renderRings(): void {
         const elapsed = Date.now() - this.startTime;
         const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
-        const borderRingBlur = animationService.getBlur(this.blurAnimation.borderRing, elapsed);
+        const borderRingBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.borderRing, elapsed) : 0;
         const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, borderRingBlur);
         const outerRingOption = new RingOption(this.colorOption.outerRing, 0.205, 0.093, 0.095);
-        const outerRingBlur = animationService.getBlur(this.blurAnimation.outerRing, elapsed);
+        const outerRingBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.outerRing, elapsed) : 0;
         const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, outerRingBlur, 0, 1);
         const innerThickRingOption = new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095);
         const innerThinRingOption = new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3);
-        const borderRingAngle = animationService.getAngle(this.angleAnimation.borderRing, elapsed) + 1.5;
-        const outerRingAngle = animationService.getAngle(this.angleAnimation.outerRing, elapsed);
-        const innerRingAngle = animationService.getAngle(this.angleAnimation.innerRing, elapsed);
+        const borderRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.borderRing, elapsed) + 1.5 : 1.5;
+        const outerRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.outerRing, elapsed) : 0;
+        const innerRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.innerRing, elapsed) : 0;
         const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         this.renderRing(context, 8, borderRingOption, borderShadowOption, borderRingAngle);
         this.renderRing(context, 3, outerRingOption, outerShadowOption, outerRingAngle);
-        this.renderRing(context, 3, innerThickRingOption, null, innerRingAngle);
-        this.renderRing(context, 4, innerThinRingOption, null, innerRingAngle);
+
+        if (!this.isBooting) {
+            this.renderRing(context, 3, innerThickRingOption, null, innerRingAngle);
+            this.renderRing(context, 4, innerThinRingOption, null, innerRingAngle);
+        }
     }
 
     private renderRing(
@@ -97,8 +121,8 @@ export default class WatchBase extends Vue {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
         const elapsed = Date.now() - this.startTime;
-        const scaleRotate = animationService.getAngle(this.angleAnimation.scale, elapsed);
-        const guardRotate = animationService.getAngle(this.angleAnimation.scaleGuard, elapsed);
+        const scaleRotate = this.canAnimate ? animationService.getAngle(this.angleAnimation.scale, elapsed) : 0;
+        const guardRotate = this.canAnimate ? animationService.getAngle(this.angleAnimation.scaleGuard, elapsed) : 0;
         context.strokeStyle = this.colorOption.scaleGuard;
         context.lineWidth = 1.5;
         context.beginPath();
@@ -171,6 +195,137 @@ export default class WatchBase extends Vue {
         width: calc(100% - #{$gap} * 2);
         height: calc(100% - #{$gap} * 2);
         border-radius: 50%;
+    }
+
+    .booting-outer-core,
+    .booting-inner-core-1,
+    .booting-inner-core-2 {
+        position: absolute;
+        opacity: 0;
+        border-radius: 50%;
+        box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                    0 0 8px 12px rgba(243, 245, 108, 0.85);
+    }
+
+    .booting-outer-core {
+        $dimension: 50%;
+
+        top: calc(50% - #{$dimension} / 2);
+        left: calc(50% - #{$dimension} / 2);
+        width: $dimension;
+        height: $dimension;
+        animation: loadOuterCore 0.9s linear 2.5s forwards;
+        filter: blur(8px);
+        background-color: rgba(236, 232, 132, 0.8);
+    }
+
+    .booting-inner-core-1 {
+        $dimension: 40%;
+
+        top: calc(50% - #{$dimension} / 2);
+        left: calc(50% - #{$dimension} / 2);
+        width: $dimension;
+        height: $dimension;
+        animation: loadInnerCore2 1.8s ease 1.5s forwards;
+        filter: blur(4px);
+        background-color: rgba(235, 232, 142, 0.95);
+    }
+
+    .booting-inner-core-2 {
+        $dimension: 27%;
+
+        top: calc(50% - #{$dimension} / 2);
+        left: calc(50% - #{$dimension} / 2);
+        width: $dimension;
+        height: $dimension;
+        animation: loadInnerCore1 3s linear 0.25s forwards;
+        filter: blur(6px);
+        background-color: rgba(253, 255, 132, 0.95);
+    }
+
+    @keyframes loadInnerCore1 {
+        0% {
+            opacity: 0;
+        }
+        25% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 1;
+        }
+        51% {
+            opacity: 0.5;
+        }
+        53% {
+            opacity: 0.5;
+        }
+        54% {
+            opacity: 1;
+        }
+        56% {
+            opacity: 1;
+        }
+        57% {
+            opacity: 0.5;
+        }
+        59% {
+            opacity: 0.5;
+        }
+        60% {
+            opacity: 1;
+        }
+        62% {
+            opacity: 1;
+        }
+        63% {
+            opacity: 0.5;
+        }
+        70% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes loadInnerCore2 {
+        0% {
+            top: 42.5%;
+            left: 42.5%;
+            width: 15%;
+            height: 15%;
+            opacity: 0;
+        }
+        30% {
+            opacity: 0.75;
+        }
+        100% {
+            top: 30%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            opacity: 0.75;
+        }
+    }
+
+    @keyframes loadOuterCore {
+        0% {
+            top: 30%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            opacity: 0.2;
+        }
+        25% {
+            opacity: 0.8;
+        }
+        100% {
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 50%;
+            opacity: 1;
+        }
     }
 }
 </style>
