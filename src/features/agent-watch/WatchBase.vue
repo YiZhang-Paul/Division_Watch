@@ -8,11 +8,11 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import store from '../store';
-import { RingOption } from '../core/data-model/ring-option';
-import { ShadowOption } from '../core/data-model/shadow-option';
-import { AnimationService } from '../core/services/animation/animation.service';
-import { CanvasService } from '../core/services/canvas/canvas.service';
+import store from '../../store';
+import { RingOption } from '../../core/data-model/ring-option';
+import { ShadowOption } from '../../core/data-model/shadow-option';
+import { AnimationService } from '../../core/services/animation/animation.service';
+import { CanvasService } from '../../core/services/canvas/canvas.service';
 
 const animationService = new AnimationService();
 const canvasService = new CanvasService();

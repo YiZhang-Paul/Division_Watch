@@ -12,8 +12,8 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { WeatherDescription } from '../core/data-model/weather-description';
-import { WeatherService } from '../core/services/weather/weather.service';
+import { WeatherDescription } from '../../core/data-model/weather-description';
+import { WeatherService } from '../../core/services/weather/weather.service';
 
 const weatherService = new WeatherService();
 

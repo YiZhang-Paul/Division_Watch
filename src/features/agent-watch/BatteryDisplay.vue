@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { TimeUtility } from '../core/utilities/time/time.utility';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 const browserBattery = require('browser-battery');
 

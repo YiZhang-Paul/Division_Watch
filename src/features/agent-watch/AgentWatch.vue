@@ -12,12 +12,11 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import BatteryDisplay from '../../shared/BatteryDisplay.vue';
-import WeatherDisplay from '../../shared/WeatherDisplay.vue';
-import TimeDisplay from '../../shared/TimeDisplay.vue';
-import WatchBase from '../../shared/WatchBase.vue';
-
 import AccessMenu from './AccessMenu.vue';
+import BatteryDisplay from './BatteryDisplay.vue';
+import WeatherDisplay from './WeatherDisplay.vue';
+import TimeDisplay from './TimeDisplay.vue';
+import WatchBase from './WatchBase.vue';
 
 @Options({
     components: {

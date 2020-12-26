@@ -26,7 +26,7 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { TimeUtility } from '../core/utilities/time/time.utility';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 export default class TimeDisplay extends Vue {
     private now = new Date();
