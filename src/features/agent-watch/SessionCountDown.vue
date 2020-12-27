@@ -30,7 +30,7 @@ export default class SessionCountDown extends Vue {
     }
 
     private updateRemainingTime(): void {
-        --this.remaining;
+        this.remaining = Math.max(0, this.remaining - 1);
         setTimeout(() => this.updateRemainingTime(), 1000);
     }
 }
@@ -60,10 +60,10 @@ export default class SessionCountDown extends Vue {
     }
 
     .remaining-time {
-        top: 33%;
+        top: 30%;
         position: absolute;
-        font-family: 'Digital Numbers';
-        font-size: 1.3em;
+        font-family: 'Bruno Ace';
+        font-size: 1.5em;
         color: rgb(255, 0, 0);
     }
 }
