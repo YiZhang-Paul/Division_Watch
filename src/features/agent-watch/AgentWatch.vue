@@ -188,7 +188,7 @@ export default class AgentWatch extends Vue {
         71% {
             opacity: 0.1;
         }
-        75% {
+        72% {
             opacity: 1;
         }
         100% {
