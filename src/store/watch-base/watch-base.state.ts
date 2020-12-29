@@ -20,6 +20,7 @@ export interface IWatchColorOption {
     batteryHigh: string;
     menuBorder: string;
     menuBorderShadow: string;
+    countDown: string;
 }
 
 export interface IAngleAnimation {
@@ -58,7 +59,8 @@ const defaultColorOption: IWatchColorOption = {
     batteryOutline: 'rgba(255, 255, 255, 0.5)',
     batteryHigh: 'rgb(0, 255, 0)',
     menuBorder: 'rgba(218, 220, 69, 0.9)',
-    menuBorderShadow: 'rgba(227, 94, 19, 0.85)'
+    menuBorderShadow: 'rgba(227, 94, 19, 0.85)',
+    countDown: 'rgb(251, 255, 36)'
 };
 
 const state = () => ({
@@ -119,6 +121,16 @@ const actions = {
         };
 
         context.commit('setColor', option);
+    },
+    setRestSessionColorScheme(context: ActionContext<IWatchBaseState, any>): void {
+        const { state, commit } = context;
+
+        const option: IWatchColorOption = {
+            ...state.colorOption,
+            countDown: 'rgb(62, 255, 36)'
+        };
+
+        commit('setColor', option);
     }
 };
 

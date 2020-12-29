@@ -129,7 +129,7 @@ export default class AgentWatch extends Vue {
     }
 
     .session-count-down {
-        $dimension: 32%;
+        $dimension: 34%;
 
         top: 7.5%;
         right: calc(50% - #{$dimension} / 2);
