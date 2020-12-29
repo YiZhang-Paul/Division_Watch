@@ -68,8 +68,8 @@ export default class AgentWatch extends Vue {
     }
 
     public onBooted(): void {
-        this.state = WatchState.Booted;
-        store.dispatch('watchBase/setNormalColorScheme');
+        this.state = WatchState.AgentBooted;
+        store.dispatch('watchBase/setAgentColorScheme');
     }
 }
 </script>
