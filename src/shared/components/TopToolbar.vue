@@ -1,7 +1,7 @@
 <template>
     <glass-panel>
         <div class="content">
-            <div class="search">search</div>
+            <search-panel class="search" @search="$emit('search', $event)"></search-panel>
 
             <component v-for="action of actions"
                 :key="action.name"
@@ -18,6 +18,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 // eslint-disable-next-line no-unused-vars
 import { ActionButton } from '../../core/data-model/action-button';
 import GlassPanel from '../panels/GlassPanel.vue';
+import SearchPanel from '../panels/SearchPanel.vue';
 
 class TopToolbarProp {
     public hasSearch = prop<boolean>({ default: true });
@@ -26,8 +27,10 @@ class TopToolbarProp {
 
 @Options({
     components: {
-        GlassPanel
-    }
+        GlassPanel,
+        SearchPanel
+    },
+    emits: ['search']
 })
 export default class TopToolbar extends Vue.with(TopToolbarProp) { }
 </script>
@@ -51,7 +54,7 @@ export default class TopToolbar extends Vue.with(TopToolbarProp) { }
         right: 0;
         margin: auto;
         width: 60%;
-        height: 70%;
+        height: 65%;
     }
 }
 </style>
