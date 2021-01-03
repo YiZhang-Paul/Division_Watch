@@ -9,6 +9,8 @@
             <div class="line-top"></div>
             <div class="square-right"></div>
         </div>
+
+        <slot></slot>
     </div>
 </template>
 
