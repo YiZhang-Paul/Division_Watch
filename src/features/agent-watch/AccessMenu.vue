@@ -11,13 +11,7 @@
                 @mouseout="activeOption = ''"
                 @click="$emit('menu:select', option.name)">
 
-                <power-standby v-if="option.name === 'On/Off'" />
-                <play v-if="option.name === 'Start'" />
-                <timer-sand v-if="option.name === 'Tasks'" />
-                <palette-swatch v-if="option.name === 'Planner'" />
-                <inbox-multiple v-if="option.name === 'Backlog'" />
-                <finance v-if="option.name === 'Stats'" />
-                <cog v-if="option.name === 'Settings'" />
+                <component :is="option.icon"></component>
             </button>
         </div>
 
@@ -34,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
 
@@ -57,13 +52,13 @@ import store from '../../store';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        { name: 'On/Off', angle: 51, color: 'rgb(24, 238, 20)' },
-        { name: 'Start', angle: 131, color: 'rgb(24, 238, 20)' },
-        { name: 'Tasks', angle: 211, color: 'rgb(238, 255, 133)' },
-        { name: 'Planner', angle: 251, color: 'rgb(238, 123, 107)' },
-        { name: 'Backlog', angle: 291, color: 'rgb(255, 9, 9)' },
-        { name: 'Stats', angle: 331, color: 'rgb(33, 188, 254)' },
-        { name: 'Settings', angle: 371, color: 'rgb(255, 255, 255)' }
+        markRaw({ name: 'On/Off', icon: PowerStandby, angle: 51, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: 'Start', icon: Play, angle: 131, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: 'Tasks', icon: TimerSand, angle: 211, color: 'rgb(238, 255, 133)' }),
+        markRaw({ name: 'Planner', icon: PaletteSwatch, angle: 251, color: 'rgb(238, 123, 107)' }),
+        markRaw({ name: 'Backlog', icon: InboxMultiple, angle: 291, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: 'Stats', icon: Finance, angle: 331, color: 'rgb(33, 188, 254)' }),
+        markRaw({ name: 'Settings', icon: Cog, angle: 371, color: 'rgb(255, 255, 255)' })
     ];
 
     public activeOption = '';
