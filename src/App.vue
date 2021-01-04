@@ -47,6 +47,11 @@ export default class App extends Vue {
     src: url('assets/fonts/DigitalNumbers-Regular.ttf');
 }
 
+@font-face {
+    font-family: 'Segoe UI';
+    src: url('assets/fonts/segoeui.ttf');
+}
+
 html, body, #app {
     width: 100%;
     height: 100%;
