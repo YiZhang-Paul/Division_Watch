@@ -1,20 +1,24 @@
 <template>
     <div class="input-panel-container">
-        <div class="content">
+        <div class="content" :class="{ 'no-animation': !hasAnimation }">
             <slot></slot>
         </div>
 
-        <div class="square-top-left"></div>
-        <div class="square-top-right"></div>
-        <div class="square-bottom-left"></div>
-        <div class="square-bottom-right"></div>
+        <div class="square-top-left" :class="{ 'no-animation': !hasAnimation }"></div>
+        <div class="square-top-right" :class="{ 'no-animation': !hasAnimation }"></div>
+        <div class="square-bottom-left" :class="{ 'no-animation': !hasAnimation }"></div>
+        <div class="square-bottom-right" :class="{ 'no-animation': !hasAnimation }"></div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 
-export default class InputPanel extends Vue { }
+class InputPanelProp {
+    public hasAnimation = prop<boolean>({ default: false });
+}
+
+export default class InputPanel extends Vue.with(InputPanelProp) { }
 </script>
 
 <style lang="scss" scoped>
@@ -63,6 +67,31 @@ export default class InputPanel extends Vue { }
         animation: blinkSquare 0.4s linear 0.7s forwards,
                    moveSquareRight 0.25s ease 1.1s forwards,
                    moveSquareDown 0.25s ease 1.35s forwards;
+    }
+
+    .no-animation {
+        opacity: 1;
+        animation: none;
+    }
+
+    .square-top-left.no-animation {
+        top: 0;
+        left: 0;
+    }
+
+    .square-top-right.no-animation {
+        top: 0;
+        left: calc(100% - #{$square-dimension});
+    }
+
+    .square-bottom-left.no-animation {
+        top: calc(100% - #{$square-dimension});
+        left: 0;
+    }
+
+    .square-bottom-right.no-animation {
+        top: calc(100% - #{$square-dimension});
+        left: calc(100% - #{$square-dimension});
     }
 
     @keyframes revealContent {

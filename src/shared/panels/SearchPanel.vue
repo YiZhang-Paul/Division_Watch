@@ -1,5 +1,5 @@
 <template>
-    <input-panel class="search-panel-container">
+    <input-panel class="search-panel-container" :hasAnimation="true">
         <div class="content">
             <magnify class="icon" />
             <input type="search" placeholder="quick search" @input="$emit('search', $event.target.value)" />
