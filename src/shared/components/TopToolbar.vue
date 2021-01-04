@@ -3,9 +3,10 @@
         <div class="content">
             <search-panel class="search" @search="$emit('search', $event)"></search-panel>
 
-            <component v-for="action of actions"
+            <component v-for="(action, index) of actions"
+                class="action-button"
                 :key="action.name"
-                :style="{ color: action.color }"
+                :style="{ color: action.color, 'animation-delay': 1.6 + index * 0.05 + 's' }"
                 :is="action.icon"
                 @click="$emit('action:' + action.name)">
             </component>
@@ -55,6 +56,29 @@ export default class TopToolbar extends Vue.with(TopToolbarProp) { }
         margin: auto;
         width: 60%;
         height: 65%;
+    }
+
+    .action-button {
+        cursor: pointer;
+        margin-right: 0.5em;
+        font-size: 1.75em;
+        opacity: 0;
+        filter: brightness(0.7);
+        transition: filter 0.25s;
+        animation: revealButton 0.3s ease forwards;
+
+        &:hover {
+            filter: brightness(1);
+        }
+    }
+
+    @keyframes revealButton {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 }
 </style>
