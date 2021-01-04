@@ -22,7 +22,7 @@ export default class GlassPanel extends Vue { }
 
 <style lang="scss" scoped>
 .glass-panel-container {
-    $square-dimension: 0.4em;
+    $square-dimension: 0.3rem;
 
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0);
@@ -101,19 +101,19 @@ export default class GlassPanel extends Vue { }
 
     @keyframes moveSquareLeft {
         from {
-            left: calc(50% - 0.2em);
+            left: calc(50% - 0.15rem);
         }
         to {
-            left: -0.2em;
+            left: -0.15rem;
         }
     }
 
     @keyframes moveSquareRight {
         from {
-            left: calc(50% - 0.2em);
+            left: calc(50% - 0.15rem);
         }
         to {
-            left: calc(100% - 0.2em);
+            left: calc(100% - 0.15rem);
         }
     }
 
@@ -123,8 +123,8 @@ export default class GlassPanel extends Vue { }
             width: 0;
         }
         to {
-            left: 0.4em;
-            width: calc(100% - 0.8em);
+            left: 0.3rem;
+            width: calc(100% - 0.6rem);
         }
     }
 
