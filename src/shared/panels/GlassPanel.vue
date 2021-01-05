@@ -10,7 +10,9 @@
             <div class="square-right"></div>
         </div>
 
-        <slot></slot>
+        <div class="content">
+            <slot></slot>
+        </div>
     </div>
 </template>
 
@@ -82,6 +84,12 @@ export default class GlassPanel extends Vue { }
             animation: blinkSquare 0.4s linear forwards,
                        moveSquareRight 0.25s ease 0.4s forwards;
         }
+    }
+
+    .content {
+        position: relative;
+        width: 100%;
+        height: 100%;
     }
 
     @keyframes blinkSquare {
