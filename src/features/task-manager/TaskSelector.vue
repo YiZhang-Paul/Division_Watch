@@ -1,6 +1,6 @@
 <template>
-    <glass-panel class="task-list-container">
-        <div class="task-list-content">
+    <glass-panel class="task-selector-container">
+        <div class="task-selector-content">
             <div class="active-indicator" v-if="activeNode === 'task'">
                 <div></div>
             </div>
@@ -83,7 +83,7 @@ const taskItemHttpService = new TaskItemHttpService();
         GlassPanel
     }
 })
-export default class TaskList extends Vue {
+export default class TaskSelector extends Vue {
     public activeNode = 'task';
     public tasks: TaskItem[] = [];
     public interruptions: TaskItem[] = [];
@@ -97,7 +97,7 @@ export default class TaskList extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.task-list-container {
+.task-selector-container {
 
     .active-indicator {
         position: relative;
@@ -118,7 +118,7 @@ export default class TaskList extends Vue {
         }
     }
 
-    .task-list-content {
+    .task-selector-content {
         display: flex;
         flex-direction: column;
         padding-top: 5px;

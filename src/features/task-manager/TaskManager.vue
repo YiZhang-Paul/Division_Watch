@@ -3,7 +3,7 @@
         <top-toolbar class="top-toolbar" :actions="actions"></top-toolbar>
 
         <div class="contents">
-            <task-list class="task-list"></task-list>
+            <task-selector class="task-selector"></task-selector>
             <glass-panel class="task-view"></glass-panel>
         </div>
     </div>
@@ -17,7 +17,8 @@ import { Cog, CheckBold, Finance } from 'mdue';
 import { ActionButton } from '../../core/data-model/action-button';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
-import TaskList from '../../shared/components/TaskList.vue';
+
+import TaskSelector from './TaskSelector.vue';
 
 @Options({
     components: {
@@ -26,7 +27,7 @@ import TaskList from '../../shared/components/TaskList.vue';
         Finance,
         GlassPanel,
         TopToolbar,
-        TaskList
+        TaskSelector
     }
 })
 export default class TaskManager extends Vue {
@@ -41,7 +42,7 @@ export default class TaskManager extends Vue {
 <style lang="scss" scoped>
 .task-manager-container {
     $top-toolbar-height: 8%;
-    $task-list-width: 35%;
+    $task-selector-width: 35%;
 
     display: flex;
     flex-direction: column;
@@ -58,14 +59,14 @@ export default class TaskManager extends Vue {
         height: $top-toolbar-height;
     }
 
-    .task-list {
-        width: $task-list-width;
+    .task-selector {
+        width: $task-selector-width;
         height: 100%;
     }
 
     .task-view {
         margin-left: 1em;
-        width: calc(100% - #{$task-list-width});
+        width: calc(100% - #{$task-selector-width});
         height: 100%;
     }
 }
