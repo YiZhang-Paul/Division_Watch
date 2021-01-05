@@ -1,15 +1,18 @@
 <template>
     <agent-watch :id="watchFaceId" class="watch-face" :style="containerStyle"></agent-watch>
+    <task-manager class="task-manager"></task-manager>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
+import TaskManager from './features/task-manager/TaskManager.vue';
 
 @Options({
     components: {
-        AgentWatch
+        AgentWatch,
+        TaskManager
     }
 })
 export default class App extends Vue {
@@ -65,6 +68,9 @@ html, body {
 }
 
 #app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     background-color: rgb(23, 36, 151);
 }
@@ -77,5 +83,10 @@ html, body {
     right: calc(#{$dimension} / 20);
     width: $dimension;
     height: $dimension;
+}
+
+.task-manager {
+    width: 50%;
+    height: 80%;
 }
 </style>
