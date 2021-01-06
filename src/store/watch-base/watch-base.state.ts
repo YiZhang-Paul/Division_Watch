@@ -63,7 +63,7 @@ const defaultColorOption: IWatchColorOption = {
     countDown: 'rgb(251, 255, 36)'
 };
 
-const state = () => ({
+const state = (): IWatchBaseState => ({
     colorOption: { ...defaultColorOption },
     angleAnimation: {
         borderRing: [new ValueChange(360, 60000)],
