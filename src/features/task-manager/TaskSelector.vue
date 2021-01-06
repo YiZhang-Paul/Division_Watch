@@ -28,15 +28,14 @@
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue';
+
+import store from '../../store';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 import { ActionButton } from '../../core/data-model/action-button';
-import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TaskList from '../../shared/components/TaskList.vue';
-
-const taskItemHttpService = new TaskItemHttpService();
 
 @Options({
     components: {
@@ -53,13 +52,17 @@ export default class TaskSelector extends Vue {
     public interruptionButton = new ActionButton('Interruptions', markRaw(ExclamationThick), 'rgb(0, 117, 255)');
     public categoryButton = new ActionButton('Categories', markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
     public activeButton = this.taskButton;
-    public tasks: TaskItem[] = [];
-    public interruptions: TaskItem[] = [];
 
-    public async created(): Promise<void> {
-        const items = await taskItemHttpService.getTaskItems();
-        this.tasks = items.filter(_ => !_.isInterruption);
-        this.interruptions = items.filter(_ => _.isInterruption);
+    get tasks(): TaskItem[] {
+        return store.getters['taskItem/tasks'];
+    }
+
+    get interruptions(): TaskItem[] {
+        return store.getters['taskItem/interruptions'];
+    }
+
+    public created(): void {
+        store.dispatch('taskItem/loadTaskItems');
     }
 }
 </script>
