@@ -7,6 +7,7 @@
         <div class="list-button-content" :class="{ 'active-content': isActive }">
             <component :is="action.icon" class="icon" :style="{ color: action.color }"></component>
             <span>{{ action.name }}</span>
+            <span v-if="tasks.length">x{{ tasks.length }}</span>
             <plus class="add-button" />
         </div>
     </input-panel>
