@@ -4,7 +4,7 @@
 
         <div class="contents">
             <task-selector class="task-selector"></task-selector>
-            <glass-panel class="task-view"></glass-panel>
+            <task-editor class="task-editor"></task-editor>
         </div>
     </div>
 </template>
@@ -19,6 +19,7 @@ import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
 
 import TaskSelector from './TaskSelector.vue';
+import TaskEditor from './TaskEditor.vue';
 
 @Options({
     components: {
@@ -27,7 +28,8 @@ import TaskSelector from './TaskSelector.vue';
         Finance,
         GlassPanel,
         TopToolbar,
-        TaskSelector
+        TaskSelector,
+        TaskEditor
     }
 })
 export default class TaskManager extends Vue {
@@ -64,7 +66,7 @@ export default class TaskManager extends Vue {
         height: 100%;
     }
 
-    .task-view {
+    .task-editor {
         margin-left: 1em;
         width: calc(100% - #{$task-selector-width});
         height: 100%;
