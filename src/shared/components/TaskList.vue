@@ -16,7 +16,8 @@
         <task-summary-card v-for="task of tasks"
             class="summary-card"
             :key="task.name"
-            :task="task">
+            :task="task"
+            @click="$emit('summary:select', task)">
         </task-summary-card>
     </div>
 </template>
@@ -42,7 +43,10 @@ class TaskListProp {
         TaskSummaryCard,
         InputPanel
     },
-    emits: ['activate']
+    emits: [
+        'activate',
+        'summary:select'
+    ]
 })
 export default class TaskList extends Vue.with(TaskListProp) { }
 </script>

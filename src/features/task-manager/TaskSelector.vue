@@ -5,14 +5,16 @@
                 :isActive="activeButton === taskButton"
                 :action="taskButton"
                 :tasks="tasks"
-                @activate="activeButton = taskButton">
+                @activate="activeButton = taskButton"
+                @summary:select="onSummarySelect($event)">
             </task-list>
 
             <task-list class="task-list"
                 :isActive="activeButton === interruptionButton"
                 :action="interruptionButton"
                 :tasks="interruptions"
-                @activate="activeButton = interruptionButton">
+                @activate="activeButton = interruptionButton"
+                @summary:select="onSummarySelect($event)">
             </task-list>
 
             <task-list class="task-list"
@@ -63,6 +65,10 @@ export default class TaskSelector extends Vue {
 
     public created(): void {
         store.dispatch('taskItem/loadTaskItems');
+    }
+
+    public onSummarySelect(task: TaskItem): void {
+        store.commit('taskItem/setActiveTaskItem', task);
     }
 }
 </script>
