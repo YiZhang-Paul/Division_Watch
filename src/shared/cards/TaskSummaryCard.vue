@@ -26,10 +26,10 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     get baseColor(): string {
         if (!this.task.priority) {
-            return '238, 171, 70';
+            return '73, 207, 73';
         }
 
-        return this.task.priority === 1 ? '231, 72, 72' : '240, 113, 40';
+        return this.task.priority === 1 ? '238, 171, 70' : '231, 72, 72';
     }
 }
 </script>
