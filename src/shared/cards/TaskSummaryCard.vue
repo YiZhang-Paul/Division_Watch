@@ -39,7 +39,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     display: flex;
     align-items: center;
     color: rgba(255, 255, 255, 0.7);
-    font-family: 'Segoe UI';
     font-size: 0.9em;
     transition: opacity 0.15s, color 0.3s;
 

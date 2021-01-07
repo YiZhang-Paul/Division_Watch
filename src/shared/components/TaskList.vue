@@ -83,7 +83,6 @@ export default class TaskList extends Vue.with(TaskListProp) { }
         height: 100%;
         background-color: rgba(63, 62, 68, 0.6);
         color: rgba(255, 255, 255, 0.5);
-        font-family: 'Segoe UI';
         font-size: 1.25em;
         transition: color 0.3s, filter 0.3s, background-color 0.2s;
 
