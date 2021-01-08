@@ -1,7 +1,8 @@
 <template>
     <glass-panel class="task-selector-container">
         <div class="task-selector-content">
-            <task-list class="task-list"
+            <task-list v-if="isLoaded"
+                class="task-list"
                 :isActive="activeButton === taskButton"
                 :action="taskButton"
                 :tasks="tasks"
@@ -9,7 +10,8 @@
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
-            <task-list class="task-list"
+            <task-list v-if="isLoaded"
+                class="task-list"
                 :isActive="activeButton === interruptionButton"
                 :action="interruptionButton"
                 :tasks="interruptions"
@@ -17,7 +19,8 @@
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
-            <task-list class="task-list"
+            <task-list v-if="isLoaded"
+                class="task-list"
                 :isActive="activeButton === categoryButton"
                 :action="categoryButton"
                 @activate="activeButton = categoryButton">
@@ -54,6 +57,7 @@ export default class TaskSelector extends Vue {
     public interruptionButton = new ActionButton('Interruptions', markRaw(ExclamationThick), 'rgb(0, 117, 255)');
     public categoryButton = new ActionButton('Categories', markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
     public activeButton = this.taskButton;
+    public isLoaded = false;
 
     get tasks(): TaskItem[] {
         return store.getters['taskItem/tasks'];
@@ -65,6 +69,10 @@ export default class TaskSelector extends Vue {
 
     public created(): void {
         store.dispatch('taskItem/loadTaskItems');
+    }
+
+    public mounted(): void {
+        setTimeout(() => this.isLoaded = true, 1500);
     }
 
     public onSummarySelect(task: TaskItem): void {
