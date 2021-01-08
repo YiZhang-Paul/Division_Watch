@@ -1,0 +1,79 @@
+<template>
+    <div class="week-day-selector-container">
+        <div v-for="(selected, index) of selections"
+            :key="index"
+            :class="{ 'selected': selected }"
+            :style="{ 'animation-delay': 1.5 + Math.abs(3 - index) * 0.05 + 's' }"
+            @click="onSelect(index)">
+
+            {{ letters[index] }}
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { Options, Vue, prop } from 'vue-class-component';
+
+class WeekDaySelectorProp {
+    public days = prop<boolean[]>({ default: [] });
+}
+
+@Options({
+    emits: ['days:select']
+})
+export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
+    public letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    public selections = new Array(7).fill(false);
+
+    public created(): void {
+        this.selections = this.days?.length === 7 ? this.days : this.selections;
+    }
+
+    public onSelect(index: number): void {
+        this.selections[index] = !this.selections[index];
+        this.$emit('days:select', this.selections.slice());
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+.week-day-selector-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Bruno Ace';
+
+    & > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 2.25em;
+        height: 2.25em;
+        border: 1px solid rgb(255, 255, 255);
+        border-radius: 50%;
+        background-color: rgba(63, 62, 68, 0.6);
+        opacity: 0;
+        transition: background-color 0.3s;
+        animation: loadSelection 0.3s ease forwards;
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(105, 105, 105, 0.6);
+        }
+
+        &.selected {
+            background-color: rgb(228, 122, 47);
+        }
+    }
+
+    @keyframes loadSelection {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
+</style>
