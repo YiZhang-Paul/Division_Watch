@@ -3,7 +3,11 @@
         <div></div>
     </div>
 
-    <input-panel class="list-button" :class="$attrs.class" @click="$emit('activate')">
+    <input-panel class="list-button"
+        :class="$attrs.class"
+        :hasAnimation="false"
+        @click="$emit('activate')">
+
         <div class="list-button-content" :class="{ 'active-content': isActive }">
             <component :is="action.icon" class="icon" :style="{ color: action.color }"></component>
             <span>{{ action.name }}</span>

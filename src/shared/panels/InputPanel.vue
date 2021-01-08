@@ -15,7 +15,7 @@
 import { Vue, prop } from 'vue-class-component';
 
 class InputPanelProp {
-    public hasAnimation = prop<boolean>({ default: false });
+    public hasAnimation = prop<boolean>({ default: true });
 }
 
 export default class InputPanel extends Vue.with(InputPanelProp) { }
