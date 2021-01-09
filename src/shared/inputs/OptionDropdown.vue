@@ -5,7 +5,7 @@
 
             <select @change="$emit('options:select', option)">
                 <option v-for="option of options" :key="option" :value="option">
-                    {{ option }}
+                    {{ transform ? transform(option) : option }}
                 </option>
             </select>
         </div>
@@ -20,6 +20,7 @@ import InputPanel from '../panels/InputPanel.vue';
 class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
+    public transform = prop<(_: any) => string>({ default: null });
 }
 
 @Options({
