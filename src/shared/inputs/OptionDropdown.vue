@@ -4,8 +4,12 @@
             <span>{{ name }}</span>
 
             <select @change="$emit('options:select', options[$event.target.value])">
-                <option v-for="(option, index) of options" :key="index" :value="index">
-                    {{ transform ? transform(option) : option }}
+                <option v-for="(option, index) of options"
+                    :key="index"
+                    :value="index"
+                    :selected="isSelected(option)">
+
+                    {{ tryApplyTransform(option) }}
                 </option>
             </select>
         </div>
@@ -20,6 +24,7 @@ import InputPanel from '../panels/InputPanel.vue';
 class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
+    public selected = prop<any>({ default: null });
     public transform = prop<(_: any) => string>({ default: null });
 }
 
@@ -27,7 +32,20 @@ class OptionDropdownProp {
     components: { InputPanel },
     emits: ['options:select']
 })
-export default class OptionDropdown extends Vue.with(OptionDropdownProp) { }
+export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
+
+    public isSelected(option: any): boolean {
+        if (!this.selected) {
+            return false;
+        }
+
+        return this.tryApplyTransform(this.selected) === this.tryApplyTransform(option);
+    }
+
+    public tryApplyTransform(option: any): string {
+        return this.transform ? this.transform(option) : String(option);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
