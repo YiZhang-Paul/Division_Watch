@@ -60,7 +60,7 @@ export default class TaskSelector extends Vue {
     public isLoaded = false;
 
     get tasks(): TaskItem[] {
-        return store.getters['taskItem/tasks'];
+        return store.getters['taskItem/parentTasks'];
     }
 
     get interruptions(): TaskItem[] {
@@ -68,7 +68,7 @@ export default class TaskSelector extends Vue {
     }
 
     public created(): void {
-        store.dispatch('taskItem/loadTaskItems');
+        store.dispatch('taskItem/loadParentTaskItems');
     }
 
     public mounted(): void {
