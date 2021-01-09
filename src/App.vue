@@ -73,7 +73,7 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    background-color: rgb(23, 36, 151);
+    background-color: rgb(0, 0, 0);
 }
 
 .watch-face {

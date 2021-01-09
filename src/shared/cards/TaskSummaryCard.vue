@@ -25,7 +25,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     get baseColor(): string {
-        if (!this.task.priority) {
+        if (!this.task.priority.rank) {
             return '73, 207, 73';
         }
 
