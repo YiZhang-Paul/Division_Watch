@@ -23,15 +23,15 @@ class WeekDaySelectorProp {
 })
 export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
     public letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    public selections = new Array(7).fill(false);
 
-    public created(): void {
-        this.selections = this.days?.length === 7 ? this.days : this.selections;
+    get selections(): boolean[] {
+        return this.days?.length === 7 ? this.days : new Array(7).fill(false);
     }
 
     public onSelect(index: number): void {
-        this.selections[index] = !this.selections[index];
-        this.$emit('days:select', this.selections.slice());
+        const selections = this.selections;
+        const updated = [...selections.slice(0, index), !selections[index], ...selections.slice(index + 1)];
+        this.$emit('days:select', updated);
     }
 }
 </script>
