@@ -29,7 +29,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
             return '73, 207, 73';
         }
 
-        return this.task.priority === 1 ? '238, 171, 70' : '231, 72, 72';
+        return this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72';
     }
 }
 </script>
