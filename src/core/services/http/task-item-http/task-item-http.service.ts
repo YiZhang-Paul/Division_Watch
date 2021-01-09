@@ -6,7 +6,7 @@ export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
 
     public async getTaskItems(limit = 0): Promise<TaskItem[]> {
-        const endpoint = `${this._api}/all?limit=${limit}`;
+        const endpoint = `${this._api}?limit=${limit}`;
 
         return (await axios.get(endpoint)).data;
     }
