@@ -2,7 +2,7 @@ export class TaskItem {
     public name = '';
     public priority = 0;
     public estimate = 0;
-    public deadline!: Date;
+    public deadline!: string;
     public recur: number[] = [];
     public subtasks: TaskItem[] = [];
     public isInterruption = false;
