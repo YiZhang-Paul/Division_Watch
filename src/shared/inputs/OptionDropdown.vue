@@ -3,8 +3,8 @@
         <div class="edit-item-content">
             <span>{{ name }}</span>
 
-            <select @change="$emit('options:select', option)">
-                <option v-for="option of options" :key="option" :value="option">
+            <select @change="$emit('options:select', options[$event.target.value])">
+                <option v-for="(option, index) of options" :key="index" :value="index">
                     {{ transform ? transform(option) : option }}
                 </option>
             </select>
