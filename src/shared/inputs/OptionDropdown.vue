@@ -40,17 +40,15 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) { }
         background-color: rgba(63, 62, 68, 0.6);
 
         & > span {
-            flex-basis: 45%;
+            width: 45%;
             font-family: 'Bruno Ace';
         }
 
         select {
             display: block;
-            flex-basis: 55%;
             padding: 0.25em 0.75em;
             margin: 0;
-            width: 100%;
-            max-width: 100%;
+            width: 55%;
             background-color: rgba(51, 51, 54, 0.6);
             background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(228, 122, 47)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
             background-repeat: no-repeat;
