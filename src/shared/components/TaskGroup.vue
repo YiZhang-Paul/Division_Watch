@@ -9,13 +9,13 @@
         </div>
 
         <div class="group-area">
-            <div class="summary-cards">
+            <overlay-scrollbar-panel class="summary-cards">
                 <task-summary-card v-for="task of tasks"
                     :key="task.name"
                     :task="task"
                     class="summary-card">
                 </task-summary-card>
-            </div>
+            </overlay-scrollbar-panel>
 
             <input-panel class="placeholder">
                 <div class="placeholder-content"></div>
@@ -30,6 +30,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { TaskItem } from '../../core/data-model/task-item';
 import TaskSummaryCard from '../cards/TaskSummaryCard.vue';
 import InputPanel from '../panels/InputPanel.vue';
+import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
 
 class TaskGroupProp {
     public name = prop<string>({ default: '' });
@@ -39,7 +40,8 @@ class TaskGroupProp {
 @Options({
     components: {
         TaskSummaryCard,
-        InputPanel
+        InputPanel,
+        OverlayScrollbarPanel
     }
 })
 export default class TaskGroup extends Vue.with(TaskGroupProp) { }
