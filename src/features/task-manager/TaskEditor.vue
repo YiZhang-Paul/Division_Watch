@@ -65,7 +65,7 @@
                 @days:select="setRecur($event)">
             </week-day-selector>
 
-            <button @click="saveTask()">Save</button>
+            <task-group class="task-group" :name="'Subtasks'" :tasks="childTasks"></task-group>
         </div>
     </glass-panel>
 </template>
@@ -89,6 +89,7 @@ import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import Checkbox from '../../shared/inputs/Checkbox.vue';
 import OptionDropdown from '../../shared/inputs/OptionDropdown.vue';
 import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
+import TaskGroup from '../../shared/components/TaskGroup.vue';
 
 @Options({
     components: {
@@ -96,7 +97,8 @@ import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
         GlassPanel,
         Checkbox,
         OptionDropdown,
-        WeekDaySelector
+        WeekDaySelector,
+        TaskGroup
     }
 })
 export default class TaskEditor extends Vue {
@@ -104,6 +106,10 @@ export default class TaskEditor extends Vue {
 
     get task(): TaskItem | null {
         return store.getters['taskItem/activeTaskItem'];
+    }
+
+    get childTasks(): TaskItem[] {
+        return this.task ? store.getters['taskItem/incompleteChildTasks'](this.task.id) : [];
     }
 
     get taskOptions(): TaskItemOptions {
@@ -152,10 +158,6 @@ export default class TaskEditor extends Vue {
 
     public setRecur(recur: boolean[]): void {
         store.commit('taskItem/setActiveTaskItem', { ...this.task, recur });
-    }
-
-    public async saveTask(): Promise<void> {
-        console.log(this.task);
     }
 
     public toDisplayDate(raw: string): string {
@@ -251,6 +253,13 @@ export default class TaskEditor extends Vue {
         .day-selector {
             margin-top: 1.5em;
             height: 2em;
+        }
+
+        .task-group {
+            margin-top: 1.75em;
+            width: 65%;
+            height: 32%;
+            max-height: 32%;
         }
     }
 }
