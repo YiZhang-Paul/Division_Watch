@@ -7,8 +7,8 @@ import { TaskItemOptionsQuery } from '../../../data-model/task-item-options-quer
 export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
 
-    public async getParentTaskItems(limit = 0): Promise<TaskItem[]> {
-        const endpoint = `${this._api}/parents?limit=${limit}`;
+    public async getIncompleteTaskItems(limit = 0): Promise<TaskItem[]> {
+        const endpoint = `${this._api}/incomplete?limit=${limit}`;
 
         return (await axios.get(endpoint)).data;
     }

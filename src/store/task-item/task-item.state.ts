@@ -9,29 +9,36 @@ const taskItemHttpService = new TaskItemHttpService();
 
 export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
-    parentTaskItems: TaskItem[];
+    incompleteTaskItems: TaskItem[];
     activeTaskItem: TaskItem | null;
 }
 
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
-    parentTaskItems: [],
+    incompleteTaskItems: [],
     activeTaskItem: null
 });
 
 const getters = {
     taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
-    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem,
-    parentTasks: (state: ITaskItemState): TaskItem[] => state.parentTaskItems.filter(_ => !_.isInterruption),
-    interruptions: (state: ITaskItemState): TaskItem[] => state.parentTaskItems.filter(_ => _.isInterruption)
+    incompleteTasks: (state: ITaskItemState): TaskItem[] => {
+        return state.incompleteTaskItems.filter(_ => !_.isInterruption);
+    },
+    incompleteChildTasks: (state: ITaskItemState) => (id: string): TaskItem[] => {
+        return state.incompleteTaskItems.filter(_ => !_.isInterruption && _.parent === id);
+    },
+    incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
+        return state.incompleteTaskItems.filter(_ => _.isInterruption);
+    },
+    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem
 };
 
 const mutations = {
     setTaskItemOptions(state: ITaskItemState, taskItemOptions: TaskItemOptions): void {
         state.taskItemOptions = taskItemOptions;
     },
-    setParentTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
-        state.parentTaskItems = taskItems.slice();
+    setIncompleteTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
+        state.incompleteTaskItems = taskItems.slice();
     },
     setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
         state.activeTaskItem = taskItem;
@@ -42,8 +49,8 @@ const actions = {
     async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>, query: TaskItemOptionsQuery): Promise<void> {
         context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(query));
     },
-    async loadParentTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
-        context.commit('setParentTaskItems', await taskItemHttpService.getParentTaskItems());
+    async loadIncompleteTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
+        context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());
     }
 };
 

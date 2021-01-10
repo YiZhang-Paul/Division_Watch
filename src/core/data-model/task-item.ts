@@ -2,6 +2,7 @@ import { Category } from './category';
 import { RankItem } from './rank-item';
 
 export class TaskItem {
+    public id: string | null = null;
     public name = '';
     public category: Category | null = null;
     public priority!: RankItem;

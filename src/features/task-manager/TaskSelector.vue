@@ -5,7 +5,7 @@
                 class="task-list"
                 :isActive="activeButton === taskButton"
                 :action="taskButton"
-                :tasks="tasks"
+                :tasks="parentTasks"
                 @activate="activeButton = taskButton"
                 @summary:select="onSummarySelect($event)">
             </task-list>
@@ -59,16 +59,18 @@ export default class TaskSelector extends Vue {
     public activeButton = this.taskButton;
     public isLoaded = false;
 
-    get tasks(): TaskItem[] {
-        return store.getters['taskItem/parentTasks'];
+    get parentTasks(): TaskItem[] {
+        const tasks = store.getters['taskItem/incompleteTasks'] as TaskItem[];
+
+        return tasks.filter(_ => !_.parent);
     }
 
     get interruptions(): TaskItem[] {
-        return store.getters['taskItem/interruptions'];
+        return store.getters['taskItem/incompleteInterruptions'];
     }
 
     public created(): void {
-        store.dispatch('taskItem/loadParentTaskItems');
+        store.dispatch('taskItem/loadIncompleteTaskItems');
     }
 
     public mounted(): void {
