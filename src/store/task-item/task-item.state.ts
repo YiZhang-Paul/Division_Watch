@@ -37,6 +37,9 @@ const mutations = {
     setTaskItemOptions(state: ITaskItemState, taskItemOptions: TaskItemOptions): void {
         state.taskItemOptions = taskItemOptions;
     },
+    addIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
+        state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
+    },
     setIncompleteTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
         state.incompleteTaskItems = taskItems.slice();
     },
@@ -51,6 +54,13 @@ const actions = {
     },
     async loadIncompleteTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());
+    },
+    async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
+        const added = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
+
+        if (added) {
+            context.commit('addIncompleteTaskItem', added);
+        }
     }
 };
 

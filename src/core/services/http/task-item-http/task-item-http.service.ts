@@ -19,8 +19,10 @@ export class TaskItemHttpService {
         return (await axios.get(endpoint)).data;
     }
 
-    public async addTaskItem(item: TaskItem): Promise<string> {
-        return (await axios.post(this._api, item)).data;
+    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<TaskItem> {
+        const endpoint = `${this._api}/${parentId}/children`;
+
+        return (await axios.post(endpoint, item)).data;
     }
 
     public async updateTaskItem(item: TaskItem): Promise<boolean> {
