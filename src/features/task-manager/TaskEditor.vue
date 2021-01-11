@@ -65,7 +65,11 @@
                 @days:select="setRecur($event)">
             </week-day-selector>
 
-            <task-group class="task-group" :name="'Subtasks'" :tasks="childTasks"></task-group>
+            <task-group class="task-group"
+                :name="'Subtasks'"
+                :parent="task"
+                :tasks="childTasks">
+            </task-group>
         </div>
     </glass-panel>
 </template>
