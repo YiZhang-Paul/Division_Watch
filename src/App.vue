@@ -1,15 +1,18 @@
 <template>
     <agent-watch :id="watchFaceId" class="watch-face" :style="containerStyle"></agent-watch>
+    <task-manager class="task-manager"></task-manager>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
+import TaskManager from './features/task-manager/TaskManager.vue';
 
 @Options({
     components: {
-        AgentWatch
+        AgentWatch,
+        TaskManager
     }
 })
 export default class App extends Vue {
@@ -47,10 +50,16 @@ export default class App extends Vue {
     src: url('assets/fonts/DigitalNumbers-Regular.ttf');
 }
 
+@font-face {
+    font-family: 'Segoe UI';
+    src: url('assets/fonts/segoeui.ttf');
+}
+
 html, body, #app {
     width: 100%;
     height: 100%;
     background-color: transparent;
+    font-family: 'Segoe UI';
     user-select: none;
 }
 
@@ -60,8 +69,26 @@ html, body {
 }
 
 #app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    background-color: rgb(23, 36, 151);
+    background-color: rgb(0, 0, 0);
+}
+
+.os-theme-dark > .os-scrollbar-vertical {
+    width: 11px;
+}
+
+.os-theme-dark > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+    border-radius: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
+    background-repeat: no-repeat;
+    background-size: 2px 2px;
+    background-position: left top, left bottom, right bottom, right top;
 }
 
 .watch-face {
@@ -72,5 +99,10 @@ html, body {
     right: calc(#{$dimension} / 20);
     width: $dimension;
     height: $dimension;
+}
+
+.task-manager {
+    width: 50%;
+    height: 80%;
 }
 </style>

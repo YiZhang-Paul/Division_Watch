@@ -1,6 +1,6 @@
 <template>
     <div id="time-display-area" class="time-display-container">
-        <span>{{ dayOfWeek }}</span>
+        <span :style="{ color: colorOption.dayOfWeek }">{{ dayOfWeek }}</span>
 
         <div class="time">
             <div class="placeholder">
@@ -9,7 +9,7 @@
                 <span class="second">88</span>
             </div>
 
-            <div>
+            <div :style="{ color: colorOption.time }">
                 <span>{{ hour }}</span>
                 <span>{{ minute }}</span>
                 <span class="second">{{ second }}</span>
@@ -26,7 +26,10 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { TimeUtility } from '../core/utilities/time/time.utility';
+import store from '../../store';
+// eslint-disable-next-line no-unused-vars
+import { IWatchColorOption } from '../../store/watch-base/watch-base.state';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 export default class TimeDisplay extends Vue {
     private now = new Date();
@@ -55,6 +58,10 @@ export default class TimeDisplay extends Vue {
         return TimeUtility.getMonthName(this.now.getMonth()).slice(0, 3).toUpperCase();
     }
 
+    get colorOption(): IWatchColorOption {
+        return store.getters['watchBase/colorOption'];
+    }
+
     public created(): void {
         this.updateTime();
     }
@@ -76,7 +83,6 @@ export default class TimeDisplay extends Vue {
     height: 100%;
     font-family: 'Bruno Ace';
     font-size: 1.67em;
-    color: rgb(211, 112, 19);
 
     .time, .date {
         display: flex;

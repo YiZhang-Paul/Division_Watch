@@ -1,8 +1,8 @@
 <template>
     <div class="battery-display-container">
-        <div class="battery-indicator">
+        <div class="battery-indicator" :style="{ border: '1px solid ' + colorOption.batteryOutline }">
             <div :style="indicatorStyle"></div>
-            <div></div>
+            <div :style="{ 'background-color': colorOption.batteryOutline }"></div>
         </div>
 
         <div class="level">
@@ -15,19 +15,26 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { TimeUtility } from '../core/utilities/time/time.utility';
+import store from '../../store';
+// eslint-disable-next-line no-unused-vars
+import { IWatchColorOption } from '../../store/watch-base/watch-base.state';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 const browserBattery = require('browser-battery');
 
 export default class BatteryDisplay extends Vue {
     public level = '00';
 
+    get colorOption(): IWatchColorOption {
+        return store.getters['watchBase/colorOption'];
+    }
+
     get indicatorStyle(): { [key: string]: string } {
         const level = Number(this.level);
 
         return {
             width: `${level}%`,
-            'background-color': level > 20 ? 'lime': 'red'
+            'background-color': level > 20 ? this.colorOption.batteryHigh: 'red'
         };
     }
 
@@ -52,12 +59,9 @@ export default class BatteryDisplay extends Vue {
     height: 100%;
 
     .battery-indicator {
-        $border-color: rgba(255, 255, 255, 0.5);
-
         position: relative;
         width: 40%;
         height: 45%;
-        border: 1px solid $border-color;
         border-radius: 2px;
 
         & > div:first-of-type {
@@ -73,7 +77,6 @@ export default class BatteryDisplay extends Vue {
             right: calc(-#{$tip-width} - 1px);
             width: $tip-width;
             height: $indicator-height;
-            background-color: $border-color;
         }
     }
 
