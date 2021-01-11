@@ -78,8 +78,10 @@ export default class TaskSelector extends Vue {
     }
 
     public onSummarySelect(task: TaskItem): void {
-        store.commit('taskItem/setActiveTaskItem', null);
-        setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+        if (store.getters['taskItem/activeTaskItem']?.id !== task.id) {
+            store.commit('taskItem/setActiveTaskItem', null);
+            setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+        }
     }
 }
 </script>
