@@ -1,14 +1,17 @@
 <template>
-    <div class="task-group-container">
+    <div ref="containerArea"
+        class="task-group-container"
+        :style="{ '--container-height': containerHeight + 'px' }">
+
         <span>{{ name }}</span>
 
-        <div class="side-guard">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-
         <div class="group-area">
+            <div class="side-guard">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
             <overlay-scrollbar-panel v-if="tasks.length" class="summary-cards">
                 <task-summary-card v-for="task of tasks"
                     :key="task.name"
@@ -60,6 +63,11 @@ class TaskGroupProp {
 })
 export default class TaskGroup extends Vue.with(TaskGroupProp) {
     public childTaskName = '';
+    public containerHeight = 0;
+
+    public mounted(): void {
+        this.containerHeight = (this.$refs.containerArea as HTMLElement).offsetHeight;
+    }
 
     public async addChildTask(): Promise<void> {
         if (!this.childTaskName) {
@@ -76,8 +84,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 <style lang="scss" scoped>
 .task-group-container {
     $title-height: 2.5em;
+    $summary-card-height: 4.5vh;
 
-    position: relative;
     color: rgb(255, 255, 255);
 
     & > span:first-of-type {
@@ -92,31 +100,32 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         position: relative;
         margin-left: 10%;
         width: 90%;
-        height: calc(100% - #{$title-height});
+        max-height: calc(100% - #{$title-height});
     }
 
     .summary-cards {
+        $gap: 0.2em;
+
         width: 100%;
-        height: calc(100% - (100% - 0.6em) / 4 - 0.2em);
-        overflow-y: auto;
+        max-height: calc(var(--container-height) - #{$title-height} - #{$summary-card-height});
 
         .summary-card {
-            margin-bottom: 0.2em;
+            margin-bottom: $gap;
             width: 100%;
-            height: calc(100% / 3 - 0.2em);
+            height: calc(#{$summary-card-height} - #{$gap});
         }
     }
 
     .divider {
-        margin-bottom: 0.15em;
         width: 100%;
         height: 0.25em;
         background-color: rgb(246, 149, 78);
     }
 
     .placeholder {
+        margin-top: 0.15em;
         width: 100%;
-        height: calc((100% - 0.6em) / 4 - 0.4em);
+        height: calc(#{$summary-card-height} - 0.4em);
     }
 
     .placeholder-content {
@@ -124,9 +133,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 
         display: flex;
         align-items: center;
-        position: relative;
         padding: 0 $side-padding;
-        width: calc(100% - 2em);
+        width: calc(100% - #{$side-padding} * 2);
         height: 100%;
         background-color: rgba(63, 62, 68, 0.6);
 
@@ -158,10 +166,10 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         $gap: 0.1em;
 
         position: absolute;
-        top: 0;
-        left: 3%;
-        width: 8%;
-        height: 100%;
+        bottom: 0;
+        left: calc(-100% / 9 + 0.25em);
+        width: calc(100% / 9);
+        height: calc(100% + #{$title-height});
 
         div {
             position: absolute;
@@ -171,13 +179,13 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         div:first-of-type {
             top: 0.5em;
             left: $gap;
-            width: 100%;
-            height: 1%;
+            width: 90%;
+            height: 0.15em;
         }
 
         div:nth-of-type(2) {
             top: calc(1% + 0.5em + #{$gap});
-            width: 0.75%;
+            width: 0.05em;
             height: calc(99% - 1.2em - #{$gap} * 2);
             background-color: rgba(255, 255, 255, 0.45);
         }
@@ -186,7 +194,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             top: calc(100% - 0.7em);
             left: $gap;
             width: 35%;
-            height: 1%;
+            height: 0.15em;
         }
     }
 }
