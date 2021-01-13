@@ -76,19 +76,22 @@ html, body {
     background-color: rgb(0, 0, 0);
 }
 
-.os-theme-dark > .os-scrollbar-vertical {
-    width: 11px;
-}
+.os-theme-dark {
 
-.os-theme-dark > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
-    border-radius: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
-    background-repeat: no-repeat;
-    background-size: 2px 2px;
-    background-position: left top, left bottom, right bottom, right top;
+    & > .os-scrollbar-vertical {
+        width: 11px;
+    }
+
+    & > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+        border-radius: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
+        background-repeat: no-repeat;
+        background-size: 2px 2px;
+        background-position: left top, left bottom, right bottom, right top;
+    }
 }
 
 .watch-face {
@@ -104,5 +107,110 @@ html, body {
 .task-manager {
     width: 50%;
     height: 80%;
+}
+
+@keyframes revealContent {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkFast {
+    0% {
+        opacity: 0;
+    }
+    33% {
+        opacity: 0.5;
+    }
+    66% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkNormal {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.1;
+    }
+    11% {
+        opacity: 1;
+    }
+    30% {
+        opacity: 1;
+    }
+    31% {
+        opacity: 0.1;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    51% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    71% {
+        opacity: 0.1;
+    }
+    72% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkSlow {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    51% {
+        opacity: 0.5;
+    }
+    53% {
+        opacity: 0.5;
+    }
+    54% {
+        opacity: 1;
+    }
+    56% {
+        opacity: 1;
+    }
+    57% {
+        opacity: 0.5;
+    }
+    59% {
+        opacity: 0.5;
+    }
+    60% {
+        opacity: 1;
+    }
+    62% {
+        opacity: 1;
+    }
+    63% {
+        opacity: 0.5;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 </style>

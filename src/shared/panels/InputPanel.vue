@@ -48,23 +48,23 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
     }
 
     .square-top-left {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
+        animation: blinkFast 0.4s linear 0.7s forwards,
                    moveSquareLeft 0.25s ease 1.1s forwards;
     }
 
     .square-top-right {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
+        animation: blinkFast 0.4s linear 0.7s forwards,
                    moveSquareRight 0.25s ease 1.1s forwards;
     }
 
     .square-bottom-left {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
+        animation: blinkFast 0.4s linear 0.7s forwards,
                    moveSquareLeft 0.25s ease 1.1s forwards,
                    moveSquareDown 0.25s ease 1.35s forwards;
     }
 
     .square-bottom-right {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
+        animation: blinkFast 0.4s linear 0.7s forwards,
                    moveSquareRight 0.25s ease 1.1s forwards,
                    moveSquareDown 0.25s ease 1.35s forwards;
     }
@@ -92,30 +92,6 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
     .square-bottom-right.no-animation {
         top: calc(100% - #{$square-dimension});
         left: calc(100% - #{$square-dimension});
-    }
-
-    @keyframes revealContent {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes blinkSquare {
-        0% {
-            opacity: 0;
-        }
-        33% {
-            opacity: 0.5;
-        }
-        66% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
     }
 
     @keyframes moveSquareLeft {

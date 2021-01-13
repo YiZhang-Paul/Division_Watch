@@ -145,7 +145,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
     flex: 1;
 
     .summary-card {
-        animation: revealSummary 0.3s ease 0.4s forwards;
+        animation: revealContent 0.3s ease 0.4s forwards;
     }
 }
 
@@ -172,15 +172,6 @@ export default class TaskList extends Vue.with(TaskListProp) { }
     100% {
         left: 0;
         width: 100%;
-        opacity: 1;
-    }
-}
-
-@keyframes revealSummary {
-    from {
-        opacity: 0;
-    }
-    to {
         opacity: 1;
     }
 }

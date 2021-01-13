@@ -68,7 +68,7 @@ export default class GlassPanel extends Vue { }
         }
 
         .square-left {
-            animation: blinkSquare 0.4s linear forwards,
+            animation: blinkFast 0.4s linear forwards,
                        moveSquareLeft 0.25s ease 0.4s forwards;
         }
 
@@ -81,7 +81,7 @@ export default class GlassPanel extends Vue { }
         }
 
         .square-right {
-            animation: blinkSquare 0.4s linear forwards,
+            animation: blinkFast 0.4s linear forwards,
                        moveSquareRight 0.25s ease 0.4s forwards;
         }
     }
@@ -90,21 +90,6 @@ export default class GlassPanel extends Vue { }
         position: relative;
         width: 100%;
         height: 100%;
-    }
-
-    @keyframes blinkSquare {
-        0% {
-            opacity: 0;
-        }
-        33% {
-            opacity: 0.5;
-        }
-        66% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
     }
 
     @keyframes moveSquareLeft {

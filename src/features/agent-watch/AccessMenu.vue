@@ -161,14 +161,5 @@ export default class AccessMenu extends Vue {
             background-color: rgba(18, 18, 19, 0.25);
         }
     }
-
-    @keyframes revealContent {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
 }
 </style>

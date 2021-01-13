@@ -65,19 +65,10 @@ export default class TopToolbar extends Vue.with(TopToolbarProp) { }
         opacity: 0;
         filter: brightness(0.7);
         transition: filter 0.25s;
-        animation: revealButton 0.3s ease forwards;
+        animation: revealContent 0.3s ease forwards;
 
         &:hover {
             filter: brightness(1);
-        }
-    }
-
-    @keyframes revealButton {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
         }
     }
 }

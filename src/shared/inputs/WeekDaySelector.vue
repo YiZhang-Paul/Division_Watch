@@ -55,7 +55,7 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
         background-color: rgba(63, 62, 68, 0.6);
         opacity: 0;
         transition: background-color 0.3s;
-        animation: loadSelection 0.3s ease forwards;
+        animation: revealContent 0.3s ease forwards;
 
         &:hover {
             cursor: pointer;
@@ -64,15 +64,6 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
 
         &.selected {
             background-color: rgb(228, 122, 47);
-        }
-    }
-
-    @keyframes loadSelection {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
         }
     }
 }

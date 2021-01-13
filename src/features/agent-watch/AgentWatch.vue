@@ -82,7 +82,7 @@ export default class AgentWatch extends Vue {
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
-        animation: loadWatchData 0.4s ease forwards;
+        animation: revealContent 0.4s ease forwards;
         opacity: 0;
     }
 
@@ -112,7 +112,7 @@ export default class AgentWatch extends Vue {
 
     .logo, .session-count-down {
         position: absolute;
-        animation: loadLogo 0.7s ease-in 0.2s forwards;
+        animation: blinkNormal 0.7s ease-in 0.2s forwards;
         opacity: 0;
 
         &:hover {
@@ -138,7 +138,7 @@ export default class AgentWatch extends Vue {
     }
 
     .logo-no-blink {
-        animation: loadWatchData 0.4s ease forwards;
+        animation: revealContent 0.4s ease forwards;
     }
 
     .access-menu {
@@ -149,51 +149,6 @@ export default class AgentWatch extends Vue {
         left: calc(50% - #{$overlay-dimension} / 2);
         width: calc(#{$overlay-dimension} - 4px);
         height: calc(#{$overlay-dimension} - 4px);
-    }
-
-    @keyframes loadWatchData {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes loadLogo {
-        0% {
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.1;
-        }
-        11% {
-            opacity: 1;
-        }
-        30% {
-            opacity: 1;
-        }
-        31% {
-            opacity: 0.1;
-        }
-        50% {
-            opacity: 0.1;
-        }
-        51% {
-            opacity: 1;
-        }
-        70% {
-            opacity: 1;
-        }
-        71% {
-            opacity: 0.1;
-        }
-        72% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 1;
-        }
     }
 }
 </style>
