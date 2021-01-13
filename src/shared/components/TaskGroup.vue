@@ -1,7 +1,7 @@
 <template>
     <div ref="containerArea"
         class="task-group-container"
-        :style="{ '--container-height': containerHeight + 'px' }">
+        :style="{ '--container-height': containerHeight + 'px', '--group-base-delay': delay + 's' }">
 
         <span>{{ name }}</span>
 
@@ -14,13 +14,13 @@
 
             <overlay-scrollbar-panel v-if="tasks.length"
                 class="summary-cards"
-                :style="{ 'animation-delay': isLoaded ? '0' : '3.1s' }">
+                :style="{ 'animation-delay': isLoaded ? '0' : delay + 1.6 + 's' }">
 
                 <task-summary-card v-for="task of tasks"
                     :key="task.name"
                     class="summary-card"
                     :task="task"
-                    :style="{ 'animation-delay': isLoaded ? '0' : '3.1s' }">
+                    :style="{ 'animation-delay': isLoaded ? '0' : delay + 1.6 + 's' }">
                 </task-summary-card>
             </overlay-scrollbar-panel>
 
@@ -55,6 +55,7 @@ class TaskGroupProp {
     public name = prop<string>({ default: '' });
     public parent = prop<TaskItem>({ default: null });
     public tasks = prop<TaskItem[]>({ default: [] });
+    public delay = prop<number>({ default: 1.5 });
 }
 
 @Options({
@@ -101,7 +102,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         height: $title-height;
         font-family: 'Bruno Ace';
         opacity: 0;
-        animation: revealContent 1.5s ease 1.5s forwards;
+        animation: revealContent 1.5s ease var(--group-base-delay) forwards;
     }
 
     .group-area {
@@ -133,7 +134,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         height: 0.25em;
         background-color: rgb(246, 149, 78);
         opacity: 0;
-        animation: revealContent 0.3s ease 3.2s forwards;
+        animation: revealContent 0.3s ease calc(var(--group-base-delay) + 1.7s) forwards;
     }
 
     .placeholder {
@@ -141,7 +142,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         width: 100%;
         height: calc(#{$summary-card-height} - 0.4em);
         opacity: 0;
-        animation: revealContent 0.3s ease 3.2s forwards;
+        animation: revealContent 0.3s ease calc(var(--group-base-delay) + 1.7s) forwards;
     }
 
     .placeholder-content {
@@ -198,8 +199,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             left: calc(#{$gap} + (90% - 0.15em) / 2);
             width: 0.15em;
             height: 0.15em;
-            animation: blinkNormal 0.5s ease 2s forwards,
-                       extendTopGuard 0.3s ease 2.5s forwards;
+            animation: blinkNormal 0.5s ease calc(var(--group-base-delay) + 0.5s) forwards,
+                       extendTopGuard 0.3s ease calc(var(--group-base-delay) + 1s) forwards;
         }
 
         div:nth-of-type(2) {
@@ -207,7 +208,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             width: 0.05em;
             height: calc(99% - 1.2em - #{$gap} * 2);
             background-color: rgba(255, 255, 255, 0.45);
-            animation: revealContent 0.3s ease 2.8s forwards;
+            animation: revealContent 0.3s ease calc(var(--group-base-delay) + 1.3s) forwards;
         }
 
         div:last-of-type {
@@ -215,8 +216,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             left: $gap;
             width: 0;
             height: 0.15em;
-            animation: revealContent 0.02s ease 3.1s forwards,
-                       extendBottomGuard 0.4s ease 3.1s forwards;
+            animation: revealContent 0.02s ease calc(var(--group-base-delay) + 1.6s) forwards,
+                       extendBottomGuard 0.4s ease calc(var(--group-base-delay) + 1.6s) forwards;
         }
 
         @keyframes extendTopGuard {

@@ -3,7 +3,7 @@
         <div v-for="(selected, index) of selections"
             :key="index"
             :class="{ 'selected': selected }"
-            :style="{ 'animation-delay': 1.5 + Math.abs(3 - index) * 0.05 + 's' }"
+            :style="{ 'animation-delay': delay + Math.abs(3 - index) * 0.05 + 's' }"
             @click="onSelect(index)">
 
             {{ letters[index] }}
@@ -16,6 +16,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 class WeekDaySelectorProp {
     public days = prop<boolean[]>({ default: [] });
+    public delay = prop<number>({ default: 1.5 });
 }
 
 @Options({

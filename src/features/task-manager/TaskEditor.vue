@@ -7,7 +7,7 @@
         </div>
 
         <div v-if="task" class="task-view">
-            <input-panel class="input-item">
+            <input-panel class="input-item" :delay="0">
                 <div class="task-name">
                     <input type="text"
                         :value="task.name"
@@ -21,6 +21,7 @@
                 :selected="task.category"
                 :options="taskOptions.categories"
                 :transform="_ => _.name"
+                :delay="0"
                 @options:select="onCategoryChange($event)">
             </option-dropdown>
 
@@ -29,6 +30,7 @@
                 :selected="task.priority"
                 :options="taskOptions.priorities"
                 :transform="_ => _.name"
+                :delay="0"
                 @options:select="onPriorityChange($event)">
             </option-dropdown>
 
@@ -37,6 +39,7 @@
                 :selected="task.deadline"
                 :options="taskOptions.deadlines"
                 :transform="toDisplayDate"
+                :delay="0"
                 @options:select="onDeadlineChange($event)">
             </option-dropdown>
 
@@ -45,15 +48,16 @@
                 :selected="task.estimate"
                 :options="taskOptions.estimates"
                 :transform="toDisplayEstimation"
+                :delay="0"
                 @options:select="onEstimateChange($event)">
             </option-dropdown>
 
-            <input-panel class="edit-item">
+            <input-panel class="edit-item" :delay="0">
                 <div class="recur-content">
                     <span>Recur</span>
 
                     <checkbox class="checkbox"
-                        :name="'make it daily'"
+                        :name="'daily event'"
                         :checked="isDaily"
                         @change="onDailyToggle($event)">
                     </checkbox>
@@ -62,13 +66,15 @@
 
             <week-day-selector class="day-selector"
                 :days="task.recur.slice()"
+                :delay="0.7"
                 @days:select="setRecur($event)">
             </week-day-selector>
 
             <task-group class="task-group"
                 :name="'Subtasks'"
                 :parent="task"
-                :tasks="childTasks">
+                :tasks="childTasks"
+                :delay="0.5">
             </task-group>
         </div>
     </glass-panel>

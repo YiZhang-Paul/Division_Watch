@@ -1,5 +1,5 @@
 <template>
-    <input-panel class="option-dropdown-container">
+    <input-panel class="option-dropdown-container" :delay="delay">
         <div class="edit-item-content">
             <span>{{ name }}</span>
 
@@ -26,6 +26,7 @@ class OptionDropdownProp {
     public options = prop<string[]>({ default: [] });
     public selected = prop<any>({ default: null });
     public transform = prop<(_: any) => string>({ default: null });
+    public delay = prop<number>({ default: 0.7 });
 }
 
 @Options({
