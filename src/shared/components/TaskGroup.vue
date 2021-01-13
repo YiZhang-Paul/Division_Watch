@@ -12,11 +12,15 @@
                 <div></div>
             </div>
 
-            <overlay-scrollbar-panel v-if="tasks.length" class="summary-cards">
+            <overlay-scrollbar-panel v-if="tasks.length"
+                class="summary-cards"
+                :style="{ 'animation-delay': isLoaded ? '0' : '3.1s' }">
+
                 <task-summary-card v-for="task of tasks"
                     :key="task.name"
+                    class="summary-card"
                     :task="task"
-                    class="summary-card">
+                    :style="{ 'animation-delay': isLoaded ? '0' : '3.1s' }">
                 </task-summary-card>
             </overlay-scrollbar-panel>
 
@@ -62,11 +66,13 @@ class TaskGroupProp {
     }
 })
 export default class TaskGroup extends Vue.with(TaskGroupProp) {
+    public isLoaded = false;
     public childTaskName = '';
     public containerHeight = 0;
 
     public mounted(): void {
         this.containerHeight = (this.$refs.containerArea as HTMLElement).offsetHeight;
+        setTimeout(() => this.isLoaded = true, 3500);
     }
 
     public async addChildTask(): Promise<void> {
@@ -94,6 +100,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         width: 86%;
         height: $title-height;
         font-family: 'Bruno Ace';
+        opacity: 0;
+        animation: revealContent 1.5s ease 1.5s forwards;
     }
 
     .group-area {
@@ -108,11 +116,15 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 
         width: 100%;
         max-height: calc(var(--container-height) - #{$title-height} - #{$summary-card-height});
+        opacity: 0;
+        animation: revealContent 0.3s ease forwards;
 
         .summary-card {
             margin-bottom: $gap;
             width: 100%;
             height: calc(#{$summary-card-height} - #{$gap});
+            opacity: 0;
+            animation: revealContent 0.3s ease forwards;
         }
     }
 
@@ -120,12 +132,16 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         width: 100%;
         height: 0.25em;
         background-color: rgb(246, 149, 78);
+        opacity: 0;
+        animation: revealContent 0.3s ease 3.2s forwards;
     }
 
     .placeholder {
         margin-top: 0.15em;
         width: 100%;
         height: calc(#{$summary-card-height} - 0.4em);
+        opacity: 0;
+        animation: revealContent 0.3s ease 3.2s forwards;
     }
 
     .placeholder-content {
@@ -174,13 +190,16 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         div {
             position: absolute;
             background-color: rgb(255, 255, 255);
+            opacity: 0;
         }
 
         div:first-of-type {
             top: 0.5em;
-            left: $gap;
-            width: 90%;
+            left: calc(#{$gap} + (90% - 0.15em) / 2);
+            width: 0.15em;
             height: 0.15em;
+            animation: blinkNormal 0.5s ease 2s forwards,
+                       extendTopGuard 0.3s ease 2.5s forwards;
         }
 
         div:nth-of-type(2) {
@@ -188,13 +207,36 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             width: 0.05em;
             height: calc(99% - 1.2em - #{$gap} * 2);
             background-color: rgba(255, 255, 255, 0.45);
+            animation: revealContent 0.3s ease 2.8s forwards;
         }
 
         div:last-of-type {
             top: calc(100% - 0.7em);
             left: $gap;
-            width: 35%;
+            width: 0;
             height: 0.15em;
+            animation: revealContent 0.02s ease 3.1s forwards,
+                       extendBottomGuard 0.4s ease 3.1s forwards;
+        }
+
+        @keyframes extendTopGuard {
+            from {
+                left: calc(#{$gap} + (90% - 0.15em) / 2);
+                width: 0.15em;
+            }
+            to {
+                left: $gap;
+                width: 90%;
+            }
+        }
+
+        @keyframes extendBottomGuard {
+            from {
+                width: 0;
+            }
+            to {
+                width: 35%;
+            }
         }
     }
 }
