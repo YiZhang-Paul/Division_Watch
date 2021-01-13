@@ -2,6 +2,11 @@
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
         <div :style="indicatorStyle"></div>
         <span>{{ task.name }}</span>
+
+        <div class="skulls">
+            <img src="../../assets/images/rogue_skull.png" />
+            <span>{{ skulls }}</span>
+        </div>
     </div>
 </template>
 
@@ -31,6 +36,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         return this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72';
     }
+
+    get skulls(): string {
+        const total = Math.floor(this.task.estimate / 1500000);
+
+        return total < 1 ? '< 1' : `x ${total}`;
+    }
 }
 </script>
 
@@ -38,6 +49,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 .task-summary-card-container {
     display: flex;
     align-items: center;
+    position: relative;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9em;
     transition: opacity 0.15s, color 0.3s;
@@ -52,6 +64,20 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         cursor: pointer;
         color: rgba(255, 255, 255);
         filter: brightness(1.2);
+    }
+
+    .skulls {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 5%;
+        font-weight: 600;
+
+        img {
+            position: absolute;
+            right: 1em;
+            width: 2.75em;
+        }
     }
 }
 </style>
