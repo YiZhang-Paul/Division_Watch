@@ -16,7 +16,7 @@ import { Vue, prop } from 'vue-class-component';
 
 class InputPanelProp {
     public hasAnimation = prop<boolean>({ default: true });
-    public delay = prop<number>({ default: 0.7 });
+    public delay = prop<number>({ default: 1 });
 }
 
 export default class InputPanel extends Vue.with(InputPanelProp) { }
@@ -32,7 +32,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
         width: 100%;
         height: 100%;
         opacity: 0;
-        animation: revealContent 0.3s ease calc(var(--input-base-delay) + 1s) forwards;
+        animation: revealContent 0.3s ease calc(var(--input-base-delay) + 0.45s) forwards;
     }
 
     .square-top-left,
@@ -49,25 +49,25 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
     }
 
     .square-top-left {
-        animation: blinkFast 0.4s linear calc(var(--input-base-delay) + 0.3s) forwards,
-                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.7s) forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards;
     }
 
     .square-top-right {
-        animation: blinkFast 0.4s linear calc(var(--input-base-delay) + 0.3s) forwards,
-                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.7s) forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards;
     }
 
     .square-bottom-left {
-        animation: blinkFast 0.4s linear calc(var(--input-base-delay) + 0.3s) forwards,
-                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.7s) forwards,
-                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.95s) forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards,
+                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.4s) forwards;
     }
 
     .square-bottom-right {
-        animation: blinkFast 0.4s linear calc(var(--input-base-delay) + 0.3s) forwards,
-                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.7s) forwards,
-                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.95s) forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards,
+                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.4s) forwards;
     }
 
     .no-animation {

@@ -7,7 +7,7 @@
         </div>
 
         <div v-if="task" class="task-view">
-            <input-panel class="input-item" :delay="0">
+            <input-panel class="input-item" :delay="0.3">
                 <div class="task-name">
                     <input type="text"
                         :value="task.name"
@@ -21,7 +21,7 @@
                 :selected="task.category"
                 :options="taskOptions.categories"
                 :transform="_ => _.name"
-                :delay="0"
+                :delay="0.3"
                 @options:select="onCategoryChange($event)">
             </option-dropdown>
 
@@ -30,7 +30,7 @@
                 :selected="task.priority"
                 :options="taskOptions.priorities"
                 :transform="_ => _.name"
-                :delay="0"
+                :delay="0.3"
                 @options:select="onPriorityChange($event)">
             </option-dropdown>
 
@@ -39,7 +39,7 @@
                 :selected="task.deadline"
                 :options="taskOptions.deadlines"
                 :transform="toDisplayDate"
-                :delay="0"
+                :delay="0.3"
                 @options:select="onDeadlineChange($event)">
             </option-dropdown>
 
@@ -48,11 +48,11 @@
                 :selected="task.estimate"
                 :options="taskOptions.estimates"
                 :transform="toDisplayEstimation"
-                :delay="0"
+                :delay="0.3"
                 @options:select="onEstimateChange($event)">
             </option-dropdown>
 
-            <input-panel class="edit-item" :delay="0">
+            <input-panel class="edit-item" :delay="0.3">
                 <div class="recur-content">
                     <span>Recur</span>
 
@@ -74,7 +74,7 @@
                 :name="'Subtasks'"
                 :parent="task"
                 :tasks="childTasks"
-                :delay="0.5">
+                :delay="0.4">
             </task-group>
         </div>
     </glass-panel>
