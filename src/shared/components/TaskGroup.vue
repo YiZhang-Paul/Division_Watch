@@ -91,7 +91,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 <style lang="scss" scoped>
 .task-group-container {
     $title-height: 2.5em;
-    $summary-card-height: 4.5vh;
+    $summary-card-height: 5vh;
 
     color: rgb(255, 255, 255);
 

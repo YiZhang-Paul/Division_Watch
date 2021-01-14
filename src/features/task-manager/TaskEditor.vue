@@ -270,7 +270,6 @@ export default class TaskEditor extends Vue {
             width: 65%;
             height: 32.5%;
             max-height: 32.5%;
-            background-color: red;
         }
     }
 }

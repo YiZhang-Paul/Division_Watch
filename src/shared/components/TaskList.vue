@@ -134,8 +134,8 @@ export default class TaskList extends Vue.with(TaskListProp) { }
 
     .summary-card {
         width: 100%;
-        height: 8%;
-        max-height: 45px;
+        height: 10%;
+        max-height: 55px;
         margin-bottom: 1px;
         opacity: 0;
     }

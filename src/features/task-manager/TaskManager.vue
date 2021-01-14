@@ -44,7 +44,7 @@ export default class TaskManager extends Vue {
 <style lang="scss" scoped>
 .task-manager-container {
     $top-toolbar-height: 8%;
-    $task-selector-width: 35%;
+    $task-selector-width: 40%;
 
     display: flex;
     flex-direction: column;
