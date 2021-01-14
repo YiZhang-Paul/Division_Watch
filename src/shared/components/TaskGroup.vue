@@ -102,7 +102,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         height: $title-height;
         font-family: 'Bruno Ace';
         opacity: 0;
-        animation: revealContent 0.8s ease var(--group-base-delay) forwards;
+        animation: revealContent 0.8s ease calc(var(--group-base-delay) + 0.1s) forwards;
     }
 
     .group-area {
@@ -199,8 +199,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             left: calc(#{$gap} + (90% - 0.15em) / 2);
             width: 0.15em;
             height: 0.15em;
-            animation: blinkNormal 0.5s ease var(--group-base-delay) forwards,
-                       extendTopGuard 0.3s ease calc(var(--group-base-delay) + 0.2s) forwards;
+            animation: blinkNormal 0.5s ease calc(var(--group-base-delay) + 0.1s) forwards,
+                       extendTopGuard 0.3s ease calc(var(--group-base-delay) + 0.3s) forwards;
         }
 
         div:nth-of-type(2) {

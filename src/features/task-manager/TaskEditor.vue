@@ -74,7 +74,7 @@
                 :name="'Subtasks'"
                 :parent="task"
                 :tasks="childTasks"
-                :delay="0.4">
+                :delay="0.5">
             </task-group>
         </div>
     </glass-panel>
@@ -215,11 +215,11 @@ export default class TaskEditor extends Vue {
         }
 
         .input-item {
-            margin-top: 1.5em;
+            margin-top: 1.25em;
         }
 
         .edit-item {
-            margin-top: 1.25em;
+            margin-top: 0.9em;
         }
 
         .task-name, .recur-content {
@@ -238,7 +238,7 @@ export default class TaskEditor extends Vue {
                 text-align: center;
                 text-overflow: ellipsis;
                 font-family: 'Segoe UI';
-                font-size: 1.5em;
+                font-size: 1.25em;
                 outline: none;
             }
         }
@@ -261,15 +261,16 @@ export default class TaskEditor extends Vue {
         }
 
         .day-selector {
-            margin-top: 1.5em;
-            height: 2em;
+            margin-top: 1.25em;
+            height: 1.5em;
         }
 
         .task-group {
             margin-top: 1.75em;
             width: 65%;
-            height: 32%;
-            max-height: 32%;
+            height: 32.5%;
+            max-height: 32.5%;
+            background-color: red;
         }
     }
 }
