@@ -60,8 +60,8 @@ export default class TopToolbar extends Vue.with(TopToolbarProp) { }
 
     .action-button {
         cursor: pointer;
-        margin-right: 0.5em;
-        font-size: 1.75em;
+        margin-right: 1.5%;
+        font-size: 0.9rem;
         opacity: 0;
         filter: brightness(0.7);
         transition: filter 0.25s;

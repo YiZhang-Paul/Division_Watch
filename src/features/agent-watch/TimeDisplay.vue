@@ -82,7 +82,10 @@ export default class TimeDisplay extends Vue {
     width: 100%;
     height: 100%;
     font-family: 'Bruno Ace';
-    font-size: 1.67em;
+
+    & > span:first-of-type {
+        font-size: 0.65rem;
+    }
 
     .time, .date {
         display: flex;
@@ -91,7 +94,7 @@ export default class TimeDisplay extends Vue {
     .time {
         position: relative;
         font-family: 'Digital Numbers';
-        font-size: 2.59em;
+        font-size: 1.25rem;
 
         div {
             display: flex;
@@ -104,17 +107,17 @@ export default class TimeDisplay extends Vue {
         }
 
         .second {
-            margin-bottom: 0.15em;
-            font-size: 0.44em;
+            margin-bottom: 2%;
+            font-size: 0.55rem;
         }
     }
 
     .date {
-        font-size: 0.8em;
+        font-size: 0.5rem;
         color: rgb(255, 255, 255);
 
         span:last-of-type {
-            margin-left: 0.65em;
+            margin-left: 15%;
         }
     }
 }

@@ -197,9 +197,10 @@ export default class TaskEditor extends Vue {
         height: 100%;
 
         .placeholder-text {
+            padding: 0.2rem 0.6rem;
             color: rgb(255, 255, 255);
             background-color: rgba(63, 62, 68, 0.6);
-            padding: 0.5em 0.75em;
+            font-size: 0.55rem;
         }
     }
 
@@ -215,11 +216,11 @@ export default class TaskEditor extends Vue {
         }
 
         .input-item {
-            margin-top: 1.25em;
+            margin-top: 4%;
         }
 
         .edit-item {
-            margin-top: 0.9em;
+            margin-top: 2.5%;
         }
 
         .task-name, .recur-content {
@@ -228,7 +229,10 @@ export default class TaskEditor extends Vue {
         }
 
         .task-name {
-            padding: 0.5em 1em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5% 3%;
 
             input {
                 width: 100%;
@@ -238,7 +242,7 @@ export default class TaskEditor extends Vue {
                 text-align: center;
                 text-overflow: ellipsis;
                 font-family: 'Segoe UI';
-                font-size: 1.25em;
+                font-size: 0.75rem;
                 outline: none;
             }
         }
@@ -246,30 +250,31 @@ export default class TaskEditor extends Vue {
         .recur-content {
             display: flex;
             align-items: center;
-            padding: 0.5em 1.25em;
+            padding: 1.5% 4%;
 
             span:first-of-type {
                 width: 45%;
                 font-family: 'Bruno Ace';
+                font-size: 0.55rem;
             }
 
             .checkbox {
                 width: 55%;
                 padding: 0.25em 0;
-                font-size: 0.85em;
+                font-size: 0.4rem;
             }
         }
 
         .day-selector {
-            margin-top: 1.25em;
-            height: 1.5em;
+            margin-top: 2.5%;
+            height: 1.5rem;
         }
 
         .task-group {
-            margin-top: 1.75em;
+            margin-top: 4%;
             width: 65%;
-            height: 32.5%;
-            max-height: 32.5%;
+            height: 35%;
+            max-height: 35%;
         }
     }
 }

@@ -1,11 +1,7 @@
 <template>
     <div v-if="weather" class="weather-display-container">
         <img :src="weather.iconUrl" />
-
-        <div>
-            <span>{{ placeholder }}</span>
-            <span>{{ temperature }}</span>
-        </div>
+        <span>{{ temperature }}</span>
     </div>
 </template>
 
@@ -25,10 +21,6 @@ export default class WeatherDisplay extends Vue {
         const sign = temperature < 0 ? '-' : '';
 
         return Math.abs(temperature) < 10 ? `${sign}0${Math.abs(temperature)}` : String(temperature);
-    }
-
-    get placeholder(): number {
-        return this.weather.temperature < 0 ? -88 : 88;
     }
 
     public created(): void {
@@ -51,21 +43,16 @@ export default class WeatherDisplay extends Vue {
     align-items: center;
 
     img {
-        position: absolute;
-        bottom: 1.1em;
-        width: 150%;
+        width: 70%;
+        height: 70%;
         filter: invert(75%) sepia(36%) saturate(1558%) hue-rotate(326deg) brightness(93%) contrast(88%);
     }
 
-    div {
-        margin-bottom: 0.25em;
-        font-family: 'Digital Numbers';
+    span {
+        margin-top: -17.5%;
         color: rgb(255, 255, 255);
-
-        span:first-of-type {
-            position: absolute;
-            color: rgba(85, 85, 85, 0.3);
-        }
+        font-family: 'Bruno Ace';
+        font-size: 0.4rem;
     }
 }
 </style>

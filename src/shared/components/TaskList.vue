@@ -78,7 +78,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
 .list-button {
 
     .list-button-content {
-        $padding-side: 0.75em;
+        $padding-side: 5%;
 
         display: flex;
         align-items: center;
@@ -87,15 +87,15 @@ export default class TaskList extends Vue.with(TaskListProp) { }
         height: 100%;
         background-color: rgba(63, 62, 68, 0.6);
         color: rgba(255, 255, 255, 0.5);
-        font-size: 1.25em;
+        font-size: 0.65rem;
         transition: color 0.3s, filter 0.3s, background-color 0.2s;
 
         span {
-            margin-left: 0.5em;
+            margin-left: 2%;
         }
 
         .icon, .add-button {
-            font-size: 1.4em;
+            font-size: 0.9rem;
             filter: brightness(0.7);
         }
 
@@ -156,7 +156,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
     }
     to {
         margin-top: 2px;
-        height: 0.25em;
+        height: 0.75%;
     }
 }
 

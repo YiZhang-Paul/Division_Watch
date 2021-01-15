@@ -24,7 +24,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
 
 <style lang="scss" scoped>
 .input-panel-container {
-    $square-dimension: 0.2rem;
+    $square-dimension: 0.1rem;
 
     position: relative;
 
@@ -97,7 +97,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
 
     @keyframes moveSquareLeft {
         from {
-            left: calc(50% - 0.1rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
             left: 0;
@@ -106,10 +106,10 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
 
     @keyframes moveSquareRight {
         from {
-            left: calc(50% - 0.1rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
-            left: calc(100% - 0.2rem);
+            left: calc(100% - #{$square-dimension});
         }
     }
 
@@ -118,7 +118,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
             top: 0;
         }
         to {
-            top: calc(100% - 0.2rem);
+            top: calc(100% - #{$square-dimension});
         }
     }
 }

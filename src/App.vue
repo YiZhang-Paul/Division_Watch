@@ -1,5 +1,5 @@
 <template>
-    <agent-watch :id="watchFaceId" class="watch-face" :style="containerStyle"></agent-watch>
+    <agent-watch id="watch-face-area" class="watch-face"></agent-watch>
     <task-manager class="task-manager"></task-manager>
 </template>
 
@@ -16,12 +16,6 @@ import TaskManager from './features/task-manager/TaskManager.vue';
     }
 })
 export default class App extends Vue {
-    private readonly watchFaceId = 'watch-face-area';
-    private fontSize = 24;
-
-    get containerStyle(): { [key: string]: string } {
-        return { 'font-size': `${this.fontSize}px` };
-    }
 
     public mounted(): void {
         this.updateFontSize();
@@ -33,8 +27,11 @@ export default class App extends Vue {
     }
 
     private updateFontSize(): void {
-        const element = document.getElementById(this.watchFaceId);
-        this.fontSize = element ? element.offsetHeight / 29.375 : this.fontSize;
+        const element = document.querySelector('html');
+
+        if (element) {
+            element.style.fontSize = `${element.offsetHeight / 29.375}px`;
+        }
     }
 }
 </script>

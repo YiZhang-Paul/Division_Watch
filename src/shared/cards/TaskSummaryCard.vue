@@ -5,7 +5,7 @@
             <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
         </template>
 
-        <span :class="{ 'child-task-name': task.parent }">{{ task.name }}</span>
+        <span :class="{ 'child-task-name': task.parent }" :style="taskNameStyle">{{ task.name }}</span>
 
         <div v-if="skulls >= 1" class="skulls">
             <img v-for="(skull, index) in skulls"
@@ -37,6 +37,7 @@ class TaskSummaryCardProp {
     }
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
+    private readonly skullSpacing = 0.25;
 
     get containerStyle(): { [key: string]: string } {
         return { 'background-color': `rgba(${this.baseColor}, 0.5)` };
@@ -48,6 +49,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         }
 
         return this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72';
+    }
+
+    get taskNameStyle(): { [key: string]: string } {
+        const width = 2.2 + (this.skulls - 1) * this.skullSpacing;
+
+        return { 'max-width': `calc(100% - ${width}rem)` };
     }
 
     get skulls(): number {
@@ -62,7 +69,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         const step = Math.floor(0.9 / this.skulls * 10) / 10;
 
         return {
-            right: `${index * 0.75}em`,
+            right: `${index * this.skullSpacing}rem`,
             filter: `brightness(${1 - (this.skulls - 1 - index) * step})`
         };
     }
@@ -75,7 +82,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     align-items: center;
     position: relative;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9em;
+    font-size: 0.5rem;
     transition: opacity 0.15s, color 0.3s;
 
     &:hover {
@@ -84,22 +91,28 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         filter: brightness(1.2);
     }
 
+    & > span:first-of-type {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .default-category-indicator, .child-task-name {
-        margin-left: 0.75em;
+        margin-left: 3%;
     }
 
     .default-category-indicator {
-        margin-right: 0.25em;
-        width: 0.9em;
-        height: 0.9em;
+        margin-right: 1.5%;
+        width: 0.5rem;
+        height: 0.5rem;
         border-radius: 50%;
         background-color: rgb(33, 136, 233);
     }
 
     .icon-indicator {
-        margin-right: 0.25em;
-        width: 1.25em;
-        height: 1.25em;
+        margin-right: 1.5%;
+        width: 0.65rem;
+        height: 0.65rem;
         color: rgb(255, 255, 255);
     }
 
@@ -112,15 +125,18 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         img {
             position: absolute;
-            width: 3.75em;
+            width: 1.5rem;
         }
     }
 
     .half-skull {
-        width: 3.75em;
+        width: 1.5rem;
         overflow: hidden;
 
         & > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: absolute;
             left: 0;
             width: 100%;
@@ -137,6 +153,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
             img {
                 position: absolute;
+                left: 0;
             }
         }
     }

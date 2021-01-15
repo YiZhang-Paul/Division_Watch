@@ -86,25 +86,23 @@ export default class AgentWatch extends Vue {
         opacity: 0;
     }
 
-    .battery-display, .weather-display {
-        bottom: $time-display-top;
-    }
-
     .battery-display {
         left: 21.5%;
-        width: 13%;
-        height: 6%;
+        bottom: 57.25%;
+        width: 15%;
+        height: 7.5%;
     }
 
     .weather-display {
-        right: 25%;
+        right: 21.5%;
+        bottom: $time-display-top;
     }
 
     .time-display {
         $width: 65%;
         $height: 34%;
 
-        bottom: calc(#{$time-display-top} - #{$height});
+        bottom: calc(57% - #{$height});
         right: calc(50% - #{$width} / 2);
         width: $width;
         height: $height;
@@ -121,7 +119,7 @@ export default class AgentWatch extends Vue {
     }
 
     .logo {
-        $width: 39.5%;
+        $width: 38%;
 
         top: 5%;
         right: calc(50% - #{$width} / 2);

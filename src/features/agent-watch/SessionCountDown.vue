@@ -83,7 +83,7 @@ export default class SessionCountDown extends Vue {
     border-radius: 50%;
 
     .outer-circle {
-        $border-width: 0.22em;
+        $border-width: 0.115rem;
 
         position: absolute;
         top: -1%;
@@ -93,8 +93,8 @@ export default class SessionCountDown extends Vue {
         height: calc(102% - #{$border-width} * 2);
         border: $border-width solid rgb(226, 34, 34);
         border-radius: 50%;
-        box-shadow: inset 0.1em 0.1em 0.2em rgb(117, 0, 0),
-                    inset -0.1em -0.1em 0.2em rgb(159, 0, 0);
+        box-shadow: inset 0.05rem 0.05rem 0.1rem rgb(117, 0, 0),
+                    inset -0.05rem -0.05rem 0.1rem rgb(159, 0, 0);
     }
 
     .inner-circle {
@@ -104,10 +104,10 @@ export default class SessionCountDown extends Vue {
         z-index: 1;
         width: 70%;
         height: 70%;
-        border: 0.14em solid rgb(226, 34, 34);
+        border: 0.12rem solid rgb(226, 34, 34);
         border-radius: 50%;
-        box-shadow: 0.1em 0.1em 0.2em rgb(117, 0, 0),
-                    -0.1em -0.1em 0.2em rgb(159, 0, 0);
+        box-shadow: 0.05rem 0.05rem 0.1rem rgb(117, 0, 0),
+                    -0.05rem -0.05rem 0.1rem rgb(159, 0, 0);
     }
 
     img {
@@ -118,7 +118,7 @@ export default class SessionCountDown extends Vue {
         top: 25%;
         position: absolute;
         font-family: 'Bruno Ace';
-        font-size: 1.4em;
+        font-size: 0.5rem;
         color: rgb(255, 0, 0);
     }
 

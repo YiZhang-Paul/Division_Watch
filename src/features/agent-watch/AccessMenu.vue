@@ -112,7 +112,7 @@ export default class AccessMenu extends Vue {
         left: calc(50% - #{$option-name-dimension} / 2);
         width: calc(#{$option-name-dimension} - 4px);
         height: calc(#{$option-name-dimension} - 4px);
-        font-size: 2em;
+        font-size: 0.5rem;
     }
 
     .option-button {
@@ -127,13 +127,13 @@ export default class AccessMenu extends Vue {
 
     .close-menu {
         color: rgb(255, 0, 0);
-        font-size: 2.5em;
+        font-size: 2rem;
         transition: color 0.15s, font-size 0.15s;
 
         &:hover {
             cursor: pointer;
             color: rgb(240, 44, 44);
-            font-size: 3em;
+            font-size: 2.5rem;
         }
     }
 
@@ -149,7 +149,7 @@ export default class AccessMenu extends Vue {
         width: calc((50% - #{$option-name-dimension} / 2 - #{$gap}) * 2);
         height: calc((50% - #{$option-name-dimension} / 2 - #{$gap}) * 100);
         outline: none;
-        font-size: 2.5em;
+        font-size: 0.75rem;
         transition: border 0.3s, box-shadow 0.3s, color 0.15s;
 
         &:hover {

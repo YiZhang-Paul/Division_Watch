@@ -49,11 +49,12 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 2.25em;
-        height: 2.25em;
+        width: 1.25rem;
+        height: 1.25rem;
         border: 1px solid rgb(255, 255, 255);
         border-radius: 50%;
         background-color: rgba(63, 62, 68, 0.6);
+        font-size: 0.75rem;
         opacity: 0;
         transition: background-color 0.3s;
         animation: revealContent 0.3s ease forwards;

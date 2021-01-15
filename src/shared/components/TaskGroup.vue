@@ -90,7 +90,8 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 
 <style lang="scss" scoped>
 .task-group-container {
-    $title-height: 2.5em;
+    $title-height: 1.5rem;
+    $title-font-size: 0.6rem;
     $summary-card-height: 5vh;
 
     color: rgb(255, 255, 255);
@@ -101,6 +102,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         width: 86%;
         height: $title-height;
         font-family: 'Bruno Ace';
+        font-size: $title-font-size;
         opacity: 0;
         animation: revealContent 0.8s ease calc(var(--group-base-delay) + 0.1s) forwards;
     }
@@ -113,7 +115,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
     }
 
     .summary-cards {
-        $gap: 0.2em;
+        $gap: 0.1rem;
 
         width: 100%;
         max-height: calc(var(--container-height) - #{$title-height} - #{$summary-card-height});
@@ -131,22 +133,22 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
 
     .divider {
         width: 100%;
-        height: 0.25em;
+        height: 0.125rem;
         background-color: rgb(246, 149, 78);
         opacity: 0;
         animation: revealContent 0.3s ease calc(var(--group-base-delay) + 0.6s) forwards;
     }
 
     .placeholder {
-        margin-top: 0.15em;
+        margin-top: 0.075rem;
         width: 100%;
-        height: calc(#{$summary-card-height} - 0.4em);
+        height: calc(#{$summary-card-height} - 0.2rem);
         opacity: 0;
         animation: revealContent 0.3s ease calc(var(--group-base-delay) + 0.6s) forwards;
     }
 
     .placeholder-content {
-        $side-padding: 1em;
+        $side-padding: 5%;
 
         display: flex;
         align-items: center;
@@ -156,7 +158,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         background-color: rgba(63, 62, 68, 0.6);
 
         input {
-            width: calc(100% - 2em);
+            width: calc(100% - 1rem);
             border: none;
             color: rgb(255, 255, 255);
             background-color: transparent;
@@ -169,6 +171,7 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
             position: absolute;
             right: $side-padding;
             color: rgb(21, 200, 39);
+            font-size: 0.75rem;
             filter: brightness(0.7);
             transition: filter 0.3s;
 
@@ -180,11 +183,11 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
     }
 
     .side-guard {
-        $gap: 0.1em;
+        $gap: 0.075rem;
 
         position: absolute;
         bottom: 0;
-        left: calc(-100% / 9 + 0.25em);
+        left: calc(-100% / 9 + 0.15rem);
         width: calc(100% / 9);
         height: calc(100% + #{$title-height});
 
@@ -195,35 +198,35 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         }
 
         div:first-of-type {
-            top: 0.5em;
-            left: calc(#{$gap} + (90% - 0.15em) / 2);
-            width: 0.15em;
-            height: 0.15em;
+            top: calc(#{$title-font-size} / 2);
+            left: calc(#{$gap} + (90% - 0.15rem) / 2);
+            width: 0.1rem;
+            height: 0.09rem;
             animation: blinkNormal 0.5s ease calc(var(--group-base-delay) + 0.1s) forwards,
                        extendTopGuard 0.3s ease calc(var(--group-base-delay) + 0.3s) forwards;
         }
 
         div:nth-of-type(2) {
-            top: calc(1% + 0.5em + #{$gap});
-            width: 0.05em;
-            height: calc(99% - 1.2em - #{$gap} * 2);
+            top: calc(#{$title-font-size} / 2 + 0.1rem + #{$gap});
+            width: 0.04rem;
+            height: calc(100% - #{$title-font-size} / 2 - 0.45rem - #{$gap} * 2);
             background-color: rgba(255, 255, 255, 0.45);
             animation: revealContent 0.3s ease calc(var(--group-base-delay) + 0.35s) forwards;
         }
 
         div:last-of-type {
-            top: calc(100% - 0.7em);
+            top: calc(100% - 0.35rem);
             left: $gap;
             width: 0;
-            height: 0.15em;
+            height: 0.1rem;
             animation: revealContent 0.02s ease calc(var(--group-base-delay) + 0.6s) forwards,
                        extendBottomGuard 0.4s ease calc(var(--group-base-delay) + 0.6s) forwards;
         }
 
         @keyframes extendTopGuard {
             from {
-                left: calc(#{$gap} + (90% - 0.15em) / 2);
-                width: 0.15em;
+                left: calc(#{$gap} + (90% - 0.15rem) / 2);
+                width: 0.025rem;
             }
             to {
                 left: $gap;

@@ -51,7 +51,7 @@ export default class TaskManager extends Vue {
 
     .contents {
         display: flex;
-        margin-top: 1em;
+        margin-top: 1%;
         width: 100%;
         height: calc(100% - #{$top-toolbar-height});
     }
@@ -67,7 +67,7 @@ export default class TaskManager extends Vue {
     }
 
     .task-editor {
-        margin-left: 1em;
+        margin-left: 1%;
         width: calc(100% - #{$task-selector-width});
         height: 100%;
     }
