@@ -36,8 +36,8 @@ export default class SearchPanel extends Vue { }
 
         .icon {
             margin-left: 2%;
-            margin-right: 1%;
-            font-size: 1rem;
+            margin-right: 0.5%;
+            font-size: 0.8rem;
         }
 
         input {
@@ -46,7 +46,7 @@ export default class SearchPanel extends Vue { }
             background-color: transparent;
             color: rgba(238, 238, 238, 0.6);
             caret-color: rgba(238, 238, 238, 0.6);
-            font-size: 0.5rem;
+            font-size: 0.45rem;
             outline: none;
         }
 

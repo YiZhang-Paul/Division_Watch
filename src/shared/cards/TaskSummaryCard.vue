@@ -82,7 +82,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     align-items: center;
     position: relative;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.5rem;
+    font-size: 0.4rem;
     transition: opacity 0.15s, color 0.3s;
 
     &:hover {
@@ -103,16 +103,16 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     .default-category-indicator {
         margin-right: 1.5%;
-        width: 0.5rem;
-        height: 0.5rem;
+        width: 0.45rem;
+        height: 0.45rem;
         border-radius: 50%;
         background-color: rgb(33, 136, 233);
     }
 
     .icon-indicator {
         margin-right: 1.5%;
-        width: 0.65rem;
-        height: 0.65rem;
+        width: 0.6rem;
+        height: 0.6rem;
         color: rgb(255, 255, 255);
     }
 
@@ -125,12 +125,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         img {
             position: absolute;
-            width: 1.5rem;
+            width: 1.25rem;
         }
     }
 
     .half-skull {
-        width: 1.5rem;
+        width: 1.25rem;
         overflow: hidden;
 
         & > div {

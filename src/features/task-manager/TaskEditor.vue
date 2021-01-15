@@ -242,7 +242,7 @@ export default class TaskEditor extends Vue {
                 text-align: center;
                 text-overflow: ellipsis;
                 font-family: 'Segoe UI';
-                font-size: 0.75rem;
+                font-size: 0.65rem;
                 outline: none;
             }
         }
@@ -255,7 +255,7 @@ export default class TaskEditor extends Vue {
             span:first-of-type {
                 width: 45%;
                 font-family: 'Bruno Ace';
-                font-size: 0.55rem;
+                font-size: 0.475rem;
             }
 
             .checkbox {

@@ -62,7 +62,7 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
         & > span {
             width: 45%;
             font-family: 'Bruno Ace';
-            font-size: 0.55rem;
+            font-size: 0.475rem;
         }
 
         select {

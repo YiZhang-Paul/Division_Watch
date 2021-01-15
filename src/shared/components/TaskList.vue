@@ -87,7 +87,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
         height: 100%;
         background-color: rgba(63, 62, 68, 0.6);
         color: rgba(255, 255, 255, 0.5);
-        font-size: 0.65rem;
+        font-size: 0.5rem;
         transition: color 0.3s, filter 0.3s, background-color 0.2s;
 
         span {
@@ -95,7 +95,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
         }
 
         .icon, .add-button {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             filter: brightness(0.7);
         }
 
