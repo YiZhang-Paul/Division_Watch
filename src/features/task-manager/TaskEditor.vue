@@ -186,8 +186,13 @@ export default class TaskEditor extends Vue {
     public toDisplayEstimation(time: number): string {
         const skulls = Math.floor(time / this.estimationBase);
         const minutes = Math.ceil(time / 1000 / 60);
+        const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
 
-        return `${skulls} Skull${skulls > 1 ? 's' : ''} (${minutes} minute${minutes > 1 ? 's' : ''})`;
+        if (skulls < 1) {
+            return `~1 Skull ${minuteText}`;
+        }
+
+        return `${skulls} Skull${skulls > 1 ? 's' : ''} ${minuteText}`;
     }
 }
 </script>
