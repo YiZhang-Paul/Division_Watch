@@ -103,8 +103,8 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     .default-category-indicator {
         margin-right: 1.5%;
-        width: 0.45rem;
-        height: 0.45rem;
+        width: 0.4rem;
+        height: 0.4rem;
         border-radius: 50%;
         background-color: rgb(33, 136, 233);
     }

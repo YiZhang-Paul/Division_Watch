@@ -74,7 +74,8 @@
                 :name="'Subtasks'"
                 :parent="task"
                 :tasks="childTasks"
-                :delay="0.5">
+                :delay="0.5"
+                @task:select="openChildTask($event)">
             </task-group>
         </div>
     </glass-panel>
@@ -170,6 +171,11 @@ export default class TaskEditor extends Vue {
         store.commit('taskItem/setActiveTaskItem', { ...this.task, recur });
     }
 
+    public openChildTask(task: TaskItem): void {
+        store.commit('taskItem/setActiveTaskItem', null);
+        setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+    }
+
     public toDisplayDate(raw: string): string {
         const [year, month, date] = raw.split('-').map(Number);
         const result = new Date(year, month - 1, date).toDateString();
@@ -260,7 +266,7 @@ export default class TaskEditor extends Vue {
 
             .checkbox {
                 width: 55%;
-                padding: 0.25em 0;
+                padding: 0.25em 0 0.25em 0.25em;
                 font-size: 0.4rem;
             }
         }

@@ -20,7 +20,8 @@
                     :key="task.name"
                     class="summary-card"
                     :task="task"
-                    :style="{ 'animation-delay': isLoaded ? '0' : delay + 0.5 + 's' }">
+                    :style="{ 'animation-delay': isLoaded ? '0' : delay + 0.5 + 's' }"
+                    @click="$emit('task:select', task)">
                 </task-summary-card>
             </overlay-scrollbar-panel>
 
@@ -64,7 +65,8 @@ class TaskGroupProp {
         TaskSummaryCard,
         InputPanel,
         OverlayScrollbarPanel
-    }
+    },
+    emits: ['task:select']
 })
 export default class TaskGroup extends Vue.with(TaskGroupProp) {
     public isLoaded = false;
