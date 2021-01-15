@@ -44,8 +44,6 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { CheckBold } from 'mdue';
-
-import store from '../../store';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 import TaskSummaryCard from '../cards/TaskSummaryCard.vue';
@@ -66,7 +64,10 @@ class TaskGroupProp {
         InputPanel,
         OverlayScrollbarPanel
     },
-    emits: ['task:select']
+    emits: [
+        'task:add',
+        'task:select'
+    ]
 })
 export default class TaskGroup extends Vue.with(TaskGroupProp) {
     public isLoaded = false;
@@ -78,14 +79,11 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
         setTimeout(() => this.isLoaded = true, 2400);
     }
 
-    public async addChildTask(): Promise<void> {
-        if (!this.childTaskName) {
-            return;
+    public addChildTask(): void {
+        if (this.childTaskName) {
+            this.$emit('task:add', this.childTaskName);
+            this.childTaskName = '';
         }
-
-        const task: TaskItem = { ...new TaskItem(), name: this.childTaskName };
-        await store.dispatch('taskItem/addChildTaskItem', { parentId: this.parent.id, task });
-        this.childTaskName = '';
     }
 }
 </script>

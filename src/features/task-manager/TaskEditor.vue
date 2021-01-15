@@ -75,6 +75,7 @@
                 :parent="task"
                 :tasks="childTasks"
                 :delay="0.5"
+                @task:add="addChildTask($event)"
                 @task:select="openChildTask($event)">
             </task-group>
         </div>
@@ -169,6 +170,15 @@ export default class TaskEditor extends Vue {
 
     public setRecur(recur: boolean[]): void {
         store.commit('taskItem/setActiveTaskItem', { ...this.task, recur });
+    }
+
+    public async addChildTask(name: string): Promise<void> {
+        if (!this.task) {
+            return;
+        }
+
+        const child: TaskItem = { ...new TaskItem(), name, estimate: this.estimationBase };
+        await store.dispatch('taskItem/addChildTaskItem', { parentId: this.task.id, task: child });
     }
 
     public openChildTask(task: TaskItem): void {
