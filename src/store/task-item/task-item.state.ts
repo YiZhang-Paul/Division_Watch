@@ -69,6 +69,15 @@ const actions = {
     async getEmptyTaskItem(): Promise<TaskItem> {
         return await taskItemHttpService.getEmptyTaskItem();
     },
+    async addParentTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<TaskItem | null> {
+        const added = await taskItemHttpService.addTaskItem(taskItem);
+
+        if (added) {
+            context.commit('addIncompleteTaskItem', added);
+        }
+
+        return added;
+    },
     async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
         const { commit, getters } = context;
         const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);

@@ -13,6 +13,10 @@
                         class="back-button"
                         @click="openParentTask()" />
 
+                    <cloud-upload v-if="!task.id"
+                        class="save-button"
+                        @click="addParentTask()" />
+
                     <input type="text"
                         :value="task.name"
                         @input="onNameChange($event.target.value)"
@@ -94,7 +98,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { ArrowLeftCircle } from 'mdue';
+import { ArrowLeftCircle, CloudUpload } from 'mdue';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
@@ -115,6 +119,7 @@ import TaskGroup from '../../shared/components/TaskGroup.vue';
 @Options({
     components: {
         ArrowLeftCircle,
+        CloudUpload,
         InputPanel,
         GlassPanel,
         Checkbox,
@@ -182,6 +187,14 @@ export default class TaskEditor extends Vue {
 
     public setRecur(recur: boolean[]): void {
         store.commit('taskItem/setActiveTaskItem', { ...this.task, recur });
+    }
+
+    public async addParentTask(): Promise<void> {
+        const added = await store.dispatch('taskItem/addParentTaskItem', this.task);
+
+        if (added) {
+            store.commit('taskItem/setActiveTaskItem', added);
+        }
     }
 
     public async addChildTask(name: string): Promise<void> {
@@ -281,19 +294,23 @@ export default class TaskEditor extends Vue {
             justify-content: center;
             align-items: center;
             position: relative;
-            padding: 1.5% 5% 1.5% 10%;
+            padding: 1.5% 14%;
 
-            .back-button {
+            .back-button, .save-button {
                 position: absolute;
-                left: calc(5% - 0.375rem);
-                font-size: 0.75rem;
+                left: calc(7% - 0.35rem);
+                font-size: 0.7rem;
                 filter: brightness(0.7);
-                transition: filter 0.3s;
+                transition: filter 0.3s, color 0.3s;
 
                 &:hover {
                     cursor: pointer;
                     filter: brightness(1);
                 }
+            }
+
+            .save-button:hover {
+                color: rgb(43, 219, 43);
             }
 
             input {
