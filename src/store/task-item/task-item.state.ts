@@ -92,6 +92,10 @@ const actions = {
         if (getters['activeTaskItem']?.id === result.parent.id) {
             commit('setActiveTaskItem', result.parent);
         }
+    },
+    swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
+        context.commit('setActiveTaskItem', null);
+        setTimeout(() => context.commit('setActiveTaskItem', taskItem));
     }
 };
 

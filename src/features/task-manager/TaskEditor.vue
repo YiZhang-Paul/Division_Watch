@@ -19,7 +19,7 @@
 
                     <input type="text"
                         :value="task.name"
-                        @input="onNameChange($event.target.value)"
+                        @input="setActiveTaskItemField('name', $event.target.value)"
                         placeholder="enter task name here..." />
                 </div>
             </input-panel>
@@ -30,7 +30,7 @@
                 :options="taskOptions.categories"
                 :transform="_ => _.name"
                 :delay="0.3"
-                @options:select="onCategoryChange($event)">
+                @options:select="setActiveTaskItemField('category', $event)">
             </option-dropdown>
 
             <option-dropdown class="edit-item"
@@ -39,7 +39,7 @@
                 :options="taskOptions.priorities"
                 :transform="_ => _.name"
                 :delay="0.3"
-                @options:select="onPriorityChange($event)">
+                @options:select="setActiveTaskItemField('priority', $event)">
             </option-dropdown>
 
             <option-dropdown class="edit-item"
@@ -48,7 +48,7 @@
                 :options="taskOptions.deadlines"
                 :transform="toDisplayDate"
                 :delay="0.3"
-                @options:select="onDeadlineChange($event)">
+                @options:select="setActiveTaskItemField('deadline', $event)">
             </option-dropdown>
 
             <option-dropdown class="edit-item"
@@ -59,7 +59,7 @@
                 :options="taskOptions.estimates"
                 :transform="toDisplayEstimation"
                 :delay="0.3"
-                @options:select="onEstimateChange($event)">
+                @options:select="setActiveTaskItemField('estimate', $event)">
             </option-dropdown>
 
             <input-panel class="edit-item" :delay="0.3">
@@ -79,7 +79,7 @@
                 :days="task.recur.slice()"
                 :delay="0.7"
                 :disabled="task.parent"
-                @days:select="setRecur($event)">
+                @days:select="setActiveTaskItemField('recur', $event)">
             </week-day-selector>
 
             <task-group v-if="!task.parent"
@@ -90,7 +90,7 @@
                 :delay="0.5"
                 :disabled="!task.id"
                 @task:add="addChildTask($event)"
-                @task:select="openChildTask($event)">
+                @task:select="openTask($event)">
             </task-group>
         </div>
     </glass-panel>
@@ -115,6 +115,7 @@ import Checkbox from '../../shared/inputs/Checkbox.vue';
 import OptionDropdown from '../../shared/inputs/OptionDropdown.vue';
 import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
 import TaskGroup from '../../shared/components/TaskGroup.vue';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
     components: {
@@ -147,11 +148,7 @@ export default class TaskEditor extends Vue {
     }
 
     get isDaily(): boolean {
-        if (!this.task) {
-            return false;
-        }
-
-        return this.task.recur.length === 7 && this.task.recur.every(_ => _);
+        return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
     }
 
     public async created(): Promise<void> {
@@ -159,34 +156,12 @@ export default class TaskEditor extends Vue {
         await store.dispatch('taskItem/loadTaskItemOptions', date);
     }
 
-    public onNameChange(name: string): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, name });
-    }
-
-    public onCategoryChange(category: Category): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, category });
-    }
-
-    public onPriorityChange(priority: RankItem): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, priority });
-    }
-
-    public onDeadlineChange(deadline: string): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, deadline });
-    }
-
-    public onEstimateChange(estimate: number): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, estimate });
-    }
-
     public onDailyToggle(isDaily: boolean): void {
-        if (this.task) {
-            this.setRecur(new Array(7).fill(isDaily));
-        }
+        this.setActiveTaskItemField('recur', new Array(7).fill(isDaily));
     }
 
-    public setRecur(recur: boolean[]): void {
-        store.commit('taskItem/setActiveTaskItem', { ...this.task, recur });
+    public setActiveTaskItemField(key: string, value: any): void {
+        store.commit('taskItem/setActiveTaskItem', { ...this.task, [key]: value });
     }
 
     public async addParentTask(): Promise<void> {
@@ -198,12 +173,11 @@ export default class TaskEditor extends Vue {
     }
 
     public async addChildTask(name: string): Promise<void> {
-        if (!this.task) {
-            return;
+        if (this.task) {
+            const child: TaskItem = { ...new TaskItem(), name };
+            const payload = { parentId: this.task.id, task: child };
+            await store.dispatch('taskItem/addChildTaskItem', payload);
         }
-
-        const child: TaskItem = { ...new TaskItem(), name };
-        await store.dispatch('taskItem/addChildTaskItem', { parentId: this.task.id, task: child });
     }
 
     public openParentTask(): void {
@@ -213,36 +187,19 @@ export default class TaskEditor extends Vue {
             throw new Error('Parent task not found.');
         }
 
-        store.commit('taskItem/setActiveTaskItem', null);
-        setTimeout(() => store.commit('taskItem/setActiveTaskItem', parent));
+        this.openTask(parent);
     }
 
-    public openChildTask(task: TaskItem): void {
-        store.commit('taskItem/setActiveTaskItem', null);
-        setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+    public openTask(task: TaskItem): void {
+        store.dispatch('taskItem/swapActiveTaskItem', task);
     }
 
     public toDisplayDate(raw: string): string {
-        if (!raw) {
-            return 'N/A';
-        }
-
-        const [year, month, date] = raw.split('-').map(Number);
-        const result = new Date(year, month - 1, date).toDateString();
-
-        return result.replace(/^\S*\s/, '').replace(/(\d)\s(\d)/, '$1, $2');
+        return raw ? TimeUtility.toShortDateString(raw) : 'N/A';
     }
 
     public toDisplayEstimation(time: number): string {
-        const skulls = Math.floor(time / this.taskOptions.skullDuration);
-        const minutes = Math.ceil(time / 1000 / 60);
-        const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
-
-        if (skulls < 1) {
-            return `~1 Skull ${minuteText}`;
-        }
-
-        return `${skulls} Skull${skulls > 1 ? 's' : ''} ${minuteText}`;
+        return TimeUtility.toEstimationString(time, this.taskOptions.skullDuration);
     }
 }
 </script>
