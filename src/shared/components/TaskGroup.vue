@@ -1,6 +1,7 @@
 <template>
     <div ref="containerArea"
         class="task-group-container"
+        :class="{ 'disabled': disabled }"
         :style="{ '--container-height': containerHeight + 'px', '--group-base-delay': delay + 's' }">
 
         <span>{{ name }}</span>
@@ -31,7 +32,8 @@
                 <div class="placeholder-content">
                     <input type="text"
                         v-model="childTaskName"
-                        placeholder="add child task here..."
+                        :placeholder="disabled ? 'parent task not created yet.' : 'add child task here...'"
+                        :disabled="disabled"
                         @keyup.enter="addChildTask()" />
 
                     <check-bold v-if="childTaskName" class="add-child-task" @click="addChildTask()" />
@@ -55,6 +57,7 @@ class TaskGroupProp {
     public parent = prop<TaskItem>({ default: null });
     public tasks = prop<TaskItem[]>({ default: [] });
     public delay = prop<number>({ default: 1.5 });
+    public disabled = prop<boolean>({ default: false });
 }
 
 @Options({
@@ -242,6 +245,18 @@ export default class TaskGroup extends Vue.with(TaskGroupProp) {
                 width: 35%;
             }
         }
+    }
+}
+
+.disabled {
+
+    .divider {
+        background-color: rgb(145, 145, 145);
+    }
+
+    .placeholder-content input {
+        cursor: not-allowed;
+        width: 100%;
     }
 }
 </style>

@@ -84,6 +84,7 @@
                 :parent="task"
                 :tasks="childTasks"
                 :delay="0.5"
+                :disabled="!task.id"
                 @task:add="addChildTask($event)"
                 @task:select="openChildTask($event)">
             </task-group>
