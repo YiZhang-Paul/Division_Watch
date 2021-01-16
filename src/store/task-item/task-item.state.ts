@@ -28,7 +28,7 @@ const getters = {
         return state.incompleteTaskItems.find(_ => !_.isInterruption && _.id === id) ?? null;
     },
     incompleteChildTasks: (state: ITaskItemState) => (id: string): TaskItem[] => {
-        return state.incompleteTaskItems.filter(_ => !_.isInterruption && _.parent === id);
+        return state.incompleteTaskItems.filter(_ => !_.isInterruption && _.parent && _.parent === id);
     },
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return state.incompleteTaskItems.filter(_ => _.isInterruption);
