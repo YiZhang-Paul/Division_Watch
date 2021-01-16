@@ -2,7 +2,7 @@
     <div class="check-box-container">
         <input-panel class="input-panel"
             :hasAnimation="false"
-            :class="{ 'checked': checked }"
+            :class="{ 'checked': checked, 'disabled': disabled }"
             @click="onChange()">
         </input-panel>
 
@@ -18,6 +18,7 @@ import InputPanel from '../panels/InputPanel.vue';
 class CheckboxProp {
     public name = prop<string>({ default: '' });
     public checked = prop<boolean>({ default: false });
+    public disabled = prop<boolean>({ default: false });
 }
 
 @Options({
@@ -27,7 +28,9 @@ class CheckboxProp {
 export default class Checkbox extends Vue.with(CheckboxProp) {
 
     public onChange(): void {
-        this.$emit('change', !this.checked);
+        if (!this.disabled) {
+            this.$emit('change', !this.checked);
+        }
     }
 }
 </script>
@@ -44,13 +47,17 @@ export default class Checkbox extends Vue.with(CheckboxProp) {
         background-color: rgb(110, 110, 110);
         transition: background-color 0.3s;
 
-        &:hover {
+        &:hover:not(.disabled) {
             cursor: pointer;
             background-color: rgb(135, 135, 135);
         }
 
         &.checked {
             background-color: rgb(228, 122, 47);
+        }
+
+        &.disabled {
+            cursor: not-allowed;
         }
     }
 }

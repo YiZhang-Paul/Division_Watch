@@ -63,6 +63,7 @@
                     <checkbox class="checkbox"
                         :name="'daily event'"
                         :checked="isDaily"
+                        :disabled="task.parent"
                         @change="onDailyToggle($event)">
                     </checkbox>
                 </div>
@@ -71,10 +72,12 @@
             <week-day-selector class="day-selector"
                 :days="task.recur.slice()"
                 :delay="0.7"
+                :disabled="task.parent"
                 @days:select="setRecur($event)">
             </week-day-selector>
 
-            <task-group class="task-group"
+            <task-group v-if="!task.parent"
+                class="task-group"
                 :name="'Subtasks'"
                 :parent="task"
                 :tasks="childTasks"
