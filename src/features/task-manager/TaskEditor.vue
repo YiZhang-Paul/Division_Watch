@@ -213,6 +213,10 @@ export default class TaskEditor extends Vue {
     }
 
     public toDisplayDate(raw: string): string {
+        if (!raw) {
+            return 'N/A';
+        }
+
         const [year, month, date] = raw.split('-').map(Number);
         const result = new Date(year, month - 1, date).toDateString();
 
