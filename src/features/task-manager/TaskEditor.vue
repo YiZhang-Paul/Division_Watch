@@ -9,6 +9,10 @@
         <div v-if="task" class="task-view">
             <input-panel class="input-item" :delay="0.3">
                 <div class="task-name">
+                    <arrow-left-circle v-if="task.parent"
+                        class="back-button"
+                        @click="openParentTask()" />
+
                     <input type="text"
                         :value="task.name"
                         @input="onNameChange($event.target.value)"
@@ -84,6 +88,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { ArrowLeftCircle } from 'mdue';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
@@ -105,6 +110,7 @@ import TaskGroup from '../../shared/components/TaskGroup.vue';
 
 @Options({
     components: {
+        ArrowLeftCircle,
         InputPanel,
         GlassPanel,
         Checkbox,
@@ -181,6 +187,17 @@ export default class TaskEditor extends Vue {
         await store.dispatch('taskItem/addChildTaskItem', { parentId: this.task.id, task: child });
     }
 
+    public openParentTask(): void {
+        const parent = store.getters['taskItem/incompleteTask'](this.task?.parent ?? '');
+
+        if (!parent) {
+            throw new Error('Parent task not found.');
+        }
+
+        store.commit('taskItem/setActiveTaskItem', null);
+        setTimeout(() => store.commit('taskItem/setActiveTaskItem', parent));
+    }
+
     public openChildTask(task: TaskItem): void {
         store.commit('taskItem/setActiveTaskItem', null);
         setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
@@ -221,7 +238,7 @@ export default class TaskEditor extends Vue {
             padding: 0.2rem 0.6rem;
             color: rgb(255, 255, 255);
             background-color: rgba(63, 62, 68, 0.6);
-            font-size: 0.55rem;
+            font-size: 0.5rem;
         }
     }
 
@@ -253,7 +270,21 @@ export default class TaskEditor extends Vue {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1.5% 3%;
+            position: relative;
+            padding: 1.5% 5% 1.5% 10%;
+
+            .back-button {
+                position: absolute;
+                left: calc(5% - 0.375rem);
+                font-size: 0.75rem;
+                filter: brightness(0.7);
+                transition: filter 0.3s;
+
+                &:hover {
+                    cursor: pointer;
+                    filter: brightness(1);
+                }
+            }
 
             input {
                 width: 100%;
