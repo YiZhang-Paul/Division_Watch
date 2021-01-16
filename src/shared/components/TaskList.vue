@@ -12,7 +12,7 @@
             <component :is="action.icon" class="icon" :style="{ color: action.color }"></component>
             <span>{{ action.name }}</span>
             <span v-if="tasks.length">x{{ tasks.length }}</span>
-            <plus class="add-button" />
+            <plus class="add-button" @click="$emit('task:add')" />
         </div>
     </input-panel>
 
@@ -49,6 +49,7 @@ class TaskListProp {
     },
     emits: [
         'activate',
+        'task:add',
         'summary:select'
     ]
 })

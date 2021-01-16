@@ -19,6 +19,12 @@ export class TaskItemHttpService {
         return (await axios.get(endpoint)).data;
     }
 
+    public async getEmptyTaskItem(): Promise<TaskItem> {
+        const endpoint = `${this._api}/empty`;
+
+        return (await axios.get(endpoint)).data;
+    }
+
     public async addChildTaskItem(parentId: string, item: TaskItem): Promise<AddChildResult> {
         const endpoint = `${this._api}/${parentId}/children`;
 

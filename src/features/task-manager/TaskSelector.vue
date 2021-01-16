@@ -7,6 +7,7 @@
                 :action="taskButton"
                 :tasks="parentTasks"
                 @activate="activeButton = taskButton"
+                @task:add="openEmptyTask()"
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
@@ -37,6 +38,8 @@ import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue'
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
+// eslint-disable-next-line no-unused-vars
+import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { ActionButton } from '../../core/data-model/action-button';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
@@ -75,6 +78,12 @@ export default class TaskSelector extends Vue {
 
     public mounted(): void {
         setTimeout(() => this.isLoaded = true, 1500);
+    }
+
+    public async openEmptyTask(): Promise<void> {
+        const task = await store.dispatch('taskItem/getEmptyTaskItem');
+        store.commit('taskItem/setActiveTaskItem', null);
+        setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
     }
 
     public onSummarySelect(task: TaskItem): void {

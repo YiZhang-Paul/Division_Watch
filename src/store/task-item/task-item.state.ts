@@ -66,6 +66,9 @@ const actions = {
     async loadIncompleteTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());
     },
+    async getEmptyTaskItem(): Promise<TaskItem> {
+        return await taskItemHttpService.getEmptyTaskItem();
+    },
     async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
         const { commit, getters } = context;
         const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
