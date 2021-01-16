@@ -305,6 +305,10 @@ export default class TaskEditor extends Vue {
                 font-family: 'Segoe UI';
                 font-size: 0.65rem;
                 outline: none;
+
+                &:focus::placeholder {
+                    color: transparent;
+                }
             }
         }
 
