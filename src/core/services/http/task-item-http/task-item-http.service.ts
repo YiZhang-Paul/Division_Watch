@@ -3,6 +3,7 @@ import axios from 'axios';
 import { TaskItem } from '../../../data-model/task-item';
 import { TaskItemOptions } from '../../../data-model/task-item-options';
 import { TaskItemOptionsQuery } from '../../../data-model/task-item-options-query';
+import { AddChildResult } from '../../../data-model/add-child-result';
 
 export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
@@ -19,7 +20,7 @@ export class TaskItemHttpService {
         return (await axios.get(endpoint)).data;
     }
 
-    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<TaskItem> {
+    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<AddChildResult> {
         const endpoint = `${this._api}/${parentId}/children`;
 
         return (await axios.post(endpoint, item)).data;

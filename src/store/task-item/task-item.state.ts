@@ -43,6 +43,13 @@ const mutations = {
     addIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
     },
+    setIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
+        const index = state.incompleteTaskItems.findIndex(_ => _.id === taskItem.id);
+
+        if (index !== -1) {
+            state.incompleteTaskItems = [...state.incompleteTaskItems.slice(0, index), taskItem, ...state.incompleteTaskItems.slice(index + 1)];
+        }
+    },
     setIncompleteTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
         state.incompleteTaskItems = taskItems.slice();
     },
@@ -59,10 +66,18 @@ const actions = {
         context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());
     },
     async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
-        const added = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
+        const { commit, getters } = context;
+        const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
 
-        if (added) {
-            context.commit('addIncompleteTaskItem', added);
+        if (!result) {
+            return;
+        }
+
+        commit('addIncompleteTaskItem', result.child);
+        commit('setIncompleteTaskItem', result.parent);
+
+        if (getters['activeTaskItem']?.id === result.parent.id) {
+            commit('setActiveTaskItem', result.parent);
         }
     }
 };
