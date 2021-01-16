@@ -14,6 +14,8 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
+
 class WeekDaySelectorProp {
     public days = prop<boolean[]>({ default: [] });
     public delay = prop<number>({ default: 1.5 });
@@ -36,7 +38,7 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
         }
 
         const selections = this.selections;
-        const updated = [...selections.slice(0, index), !selections[index], ...selections.slice(index + 1)];
+        const updated = GenericUtility.replaceAt(selections, !selections[index], index);
         this.$emit('days:select', updated);
     }
 }

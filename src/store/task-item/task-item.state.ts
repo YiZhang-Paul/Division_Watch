@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { TaskItem } from '../../core/data-model/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { TaskItemOptionsQuery } from '../../core/data-model/task-item-options-query';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 
 const taskItemHttpService = new TaskItemHttpService();
@@ -44,10 +45,11 @@ const mutations = {
         state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
     },
     setIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
-        const index = state.incompleteTaskItems.findIndex(_ => _.id === taskItem.id);
+        const tasks = state.incompleteTaskItems;
+        const index = tasks.findIndex(_ => _.id === taskItem.id);
 
         if (index !== -1) {
-            state.incompleteTaskItems = [...state.incompleteTaskItems.slice(0, index), taskItem, ...state.incompleteTaskItems.slice(index + 1)];
+            state.incompleteTaskItems = GenericUtility.replaceAt(tasks, taskItem, index);
         }
     },
     setIncompleteTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
