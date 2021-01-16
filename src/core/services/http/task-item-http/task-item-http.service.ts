@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import { TaskItem } from '../../../data-model/task-item';
 import { TaskItemOptions } from '../../../data-model/task-item-options';
-import { TaskItemOptionsQuery } from '../../../data-model/task-item-options-query';
 import { AddChildResult } from '../../../data-model/add-child-result';
 
 export class TaskItemHttpService {
@@ -36,9 +35,10 @@ export class TaskItemHttpService {
         return (await axios.delete(endpoint)).data;
     }
 
-    public async getTaskItemOptions(query: TaskItemOptionsQuery): Promise<TaskItemOptions> {
+    public async getTaskItemOptions(date: string): Promise<TaskItemOptions> {
         const endpoint = `${this._api}/options`;
+        const headers = { 'content-type': 'application/json' };
 
-        return (await axios.post(endpoint, query)).data;
+        return (await axios.post(endpoint, JSON.stringify(date), { headers })).data;
     }
 }

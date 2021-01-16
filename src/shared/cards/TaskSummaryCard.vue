@@ -24,8 +24,12 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { Rotate_3dVariant } from 'mdue';
+
+import store from '../../store';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
+// eslint-disable-next-line no-unused-vars
+import { TaskItemOptions } from '../../core/data-model/task-item-options';
 
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
@@ -58,7 +62,9 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     get skulls(): number {
-        return Math.floor(this.task.estimate / 1500000);
+        const options = store.getters['taskItem/taskItemOptions'] as TaskItemOptions;
+
+        return Math.floor(this.task.estimate / options.skullDuration);
     }
 
     get isRecur(): boolean {

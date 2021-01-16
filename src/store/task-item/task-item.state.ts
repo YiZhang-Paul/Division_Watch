@@ -2,7 +2,6 @@ import { ActionContext } from 'vuex';
 
 import { TaskItem } from '../../core/data-model/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
-import { TaskItemOptionsQuery } from '../../core/data-model/task-item-options-query';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 
@@ -61,8 +60,8 @@ const mutations = {
 };
 
 const actions = {
-    async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>, query: TaskItemOptionsQuery): Promise<void> {
-        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(query));
+    async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>, date: string): Promise<void> {
+        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(date));
     },
     async loadIncompleteTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());

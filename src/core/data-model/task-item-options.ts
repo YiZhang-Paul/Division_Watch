@@ -6,4 +6,5 @@ export class TaskItemOptions {
     public priorities: RankItem[] = [];
     public deadlines: string[] = [];
     public estimates: number[] = [];
+    public skullDuration = 0;
 }

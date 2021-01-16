@@ -104,8 +104,6 @@ import { RankItem } from '../../core/data-model/rank-item';
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
-// eslint-disable-next-line no-unused-vars
-import { TaskItemOptionsQuery } from '../../core/data-model/task-item-options-query';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import Checkbox from '../../shared/inputs/Checkbox.vue';
@@ -125,7 +123,6 @@ import TaskGroup from '../../shared/components/TaskGroup.vue';
     }
 })
 export default class TaskEditor extends Vue {
-    private readonly estimationBase = 1500000;
 
     get task(): TaskItem | null {
         return store.getters['taskItem/activeTaskItem'];
@@ -152,9 +149,8 @@ export default class TaskEditor extends Vue {
     }
 
     public async created(): Promise<void> {
-        const currentDate = new Date().toISOString().replace(/T.*/g, '');
-        const query: TaskItemOptionsQuery = { estimationBase: this.estimationBase, currentDate };
-        await store.dispatch('taskItem/loadTaskItemOptions', query);
+        const date = new Date().toISOString().replace(/T.*/g, '');
+        await store.dispatch('taskItem/loadTaskItemOptions', date);
     }
 
     public onNameChange(name: string): void {
@@ -192,7 +188,7 @@ export default class TaskEditor extends Vue {
             return;
         }
 
-        const child: TaskItem = { ...new TaskItem(), name, estimate: this.estimationBase };
+        const child: TaskItem = { ...new TaskItem(), name };
         await store.dispatch('taskItem/addChildTaskItem', { parentId: this.task.id, task: child });
     }
 
@@ -224,7 +220,7 @@ export default class TaskEditor extends Vue {
     }
 
     public toDisplayEstimation(time: number): string {
-        const skulls = Math.floor(time / this.estimationBase);
+        const skulls = Math.floor(time / this.taskOptions.skullDuration);
         const minutes = Math.ceil(time / 1000 / 60);
         const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
 
