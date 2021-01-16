@@ -50,6 +50,8 @@
             <option-dropdown class="edit-item"
                 :name="'Estimate'"
                 :selected="task.estimate"
+                :disabled="childTasks.length"
+                :disabledText="toDisplayEstimation(totalChildEstimation)"
                 :options="taskOptions.estimates"
                 :transform="toDisplayEstimation"
                 :delay="0.3"
@@ -131,6 +133,10 @@ export default class TaskEditor extends Vue {
 
     get childTasks(): TaskItem[] {
         return this.task ? store.getters['taskItem/incompleteChildTasks'](this.task.id) : [];
+    }
+
+    get totalChildEstimation(): number {
+        return this.childTasks.reduce((total, _) => total + _.estimate, 0);
     }
 
     get taskOptions(): TaskItemOptions {

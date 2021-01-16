@@ -3,14 +3,21 @@
         <div class="edit-item-content">
             <span>{{ name }}</span>
 
-            <select @change="$emit('options:select', options[$event.target.value])">
-                <option v-for="(option, index) of options"
-                    :key="index"
-                    :value="index"
-                    :selected="isSelected(option)">
+            <select :disabled="disabled"
+                :class="{ 'disabled': disabled }"
+                @change="$emit('options:select', options[$event.target.value])">
 
-                    {{ tryApplyTransform(option) }}
-                </option>
+                <option v-if="disabled">{{ disabledText }}</option>
+
+                <template v-if="!disabled">
+                    <option v-for="(option, index) of options"
+                        :key="index"
+                        :value="index"
+                        :selected="isSelected(option)">
+
+                        {{ tryApplyTransform(option) }}
+                    </option>
+                </template>
             </select>
         </div>
     </input-panel>
@@ -25,6 +32,8 @@ class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
     public selected = prop<any>({ default: null });
+    public disabled = prop<boolean>({ default: false });
+    public disabledText = prop<string>({ default: '' });
     public transform = prop<(_: any) => string>({ default: null });
     public delay = prop<number>({ default: 0.7 });
 }
@@ -89,6 +98,11 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
             option {
                 background-color: rgba(51, 51, 54, 0.6);
             }
+        }
+
+        .disabled {
+            cursor: not-allowed;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(145, 145, 145)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
         }
     }
 }
