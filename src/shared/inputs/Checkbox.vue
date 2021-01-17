@@ -52,7 +52,7 @@ export default class Checkbox extends Vue.with(CheckboxProp) {
             background-color: rgb(135, 135, 135);
         }
 
-        &.checked {
+        &.checked, &.checked:hover {
             background-color: rgb(228, 122, 47);
         }
 

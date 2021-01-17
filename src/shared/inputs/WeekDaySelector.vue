@@ -71,7 +71,7 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
             background-color: rgba(105, 105, 105, 0.6);
         }
 
-        &.selected {
+        &.selected, &.selected:hover {
             background-color: rgb(228, 122, 47);
         }
 
