@@ -37,7 +37,9 @@ const getters = {
         return state.incompleteTaskItems.filter(_ => !_.isInterruption && _.parent && _.parent === id);
     },
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
-        return state.incompleteTaskItems.filter(_ => _.isInterruption);
+        const interruptions = state.incompleteTaskItems.filter(_ => _.isInterruption);
+
+        return interruptions.sort((a, b) => b.priority.rank - a.priority.rank);
     },
     activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem,
     activeTaskItemList: (state: ITaskItemState): string => state.activeTaskItemList

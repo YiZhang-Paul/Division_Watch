@@ -45,9 +45,13 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 .confirm-panel-container {
     transition: background-color 0.3s;
 
-    &:hover:not(.confirming) {
+    &:not(.confirming) .content {
         cursor: pointer;
-        background-color: rgb(250, 138, 46);
+        background-color: rgb(226, 118, 30);
+    }
+
+    &:hover:not(.confirming) .content {
+        background-color: rgb(238, 147, 74);
     }
 
     .content {
