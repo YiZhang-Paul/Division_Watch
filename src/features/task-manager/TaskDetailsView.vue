@@ -90,7 +90,7 @@
             @task:select="$emit('child:open', $event)">
         </task-group>
 
-        <confirm-panel v-if="task.isInterruption"
+        <confirm-panel v-if="task.id && task.isInterruption"
             class="interruption-conversion"
             :displayText="'Convert to Task'"
             :confirmText="'Convert'"
