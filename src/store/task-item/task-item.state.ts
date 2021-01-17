@@ -96,8 +96,16 @@ const actions = {
         }
     },
     async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<void> {
-        if (await taskItemHttpService.updateTaskItem(taskItem)) {
-            context.commit('setIncompleteTaskItem', taskItem);
+        const result = await taskItemHttpService.updateTaskItem(taskItem);
+
+        if (!result) {
+            return;
+        }
+
+        context.commit('setIncompleteTaskItem', result.target);
+
+        if (result.parent) {
+            context.commit('setIncompleteTaskItem', result.parent);
         }
     },
     swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {

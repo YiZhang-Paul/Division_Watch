@@ -3,6 +3,7 @@ import axios from 'axios';
 import { TaskItem } from '../../../data-model/task-item';
 import { TaskItemOptions } from '../../../data-model/task-item-options';
 import { AddChildResult } from '../../../data-model/add-child-result';
+import { UpdateTaskResult } from '../../../data-model/update-task-result';
 
 export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
@@ -35,7 +36,7 @@ export class TaskItemHttpService {
         return (await axios.post(endpoint, item)).data;
     }
 
-    public async updateTaskItem(item: TaskItem): Promise<boolean> {
+    public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult> {
         return (await axios.put(this._api, item)).data;
     }
 
