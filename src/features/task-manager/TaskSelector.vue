@@ -3,28 +3,28 @@
         <div class="task-selector-content">
             <task-list v-if="isLoaded"
                 class="task-list"
-                :isActive="activeButton === taskButton"
+                :isActive="activeButton === taskButton.name"
                 :action="taskButton"
                 :tasks="parentTasks"
-                @activate="activeButton = taskButton"
+                @activate="activeButton = taskButton.name"
                 @task:add="openEmptyTask()"
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
             <task-list v-if="isLoaded"
                 class="task-list"
-                :isActive="activeButton === interruptionButton"
+                :isActive="activeButton === interruptionButton.name"
                 :action="interruptionButton"
                 :tasks="interruptions"
-                @activate="activeButton = interruptionButton"
+                @activate="activeButton = interruptionButton.name"
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
             <task-list v-if="isLoaded"
                 class="task-list"
-                :isActive="activeButton === categoryButton"
+                :isActive="activeButton === categoryButton.name"
                 :action="categoryButton"
-                @activate="activeButton = categoryButton">
+                @activate="activeButton = categoryButton.name">
             </task-list>
         </div>
     </glass-panel>
@@ -36,11 +36,12 @@ import { Options, Vue } from 'vue-class-component';
 import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue';
 
 import store from '../../store';
+import { ActionButton } from '../../core/data-model/action-button';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
-import { ActionButton } from '../../core/data-model/action-button';
+import { TaskItemList } from '../../core/enums/task-item-list.enum';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TaskList from '../../shared/components/TaskList.vue';
@@ -56,10 +57,9 @@ import TaskList from '../../shared/components/TaskList.vue';
     }
 })
 export default class TaskSelector extends Vue {
-    public taskButton = new ActionButton('Tasks', markRaw(TimerSand), 'rgb(255, 28, 82)');
-    public interruptionButton = new ActionButton('Interruptions', markRaw(ExclamationThick), 'rgb(0, 117, 255)');
-    public categoryButton = new ActionButton('Categories', markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
-    public activeButton = this.taskButton;
+    public taskButton = new ActionButton(TaskItemList.Tasks, markRaw(TimerSand), 'rgb(255, 28, 82)');
+    public interruptionButton = new ActionButton(TaskItemList.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
+    public categoryButton = new ActionButton(TaskItemList.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
     public isLoaded = false;
 
     get parentTasks(): TaskItem[] {
@@ -68,6 +68,14 @@ export default class TaskSelector extends Vue {
 
     get interruptions(): TaskItem[] {
         return store.getters['taskItem/incompleteInterruptions'];
+    }
+
+    get activeButton(): string {
+        return store.getters['taskItem/activeTaskItemList'];
+    }
+
+    set activeButton(name: string) {
+        store.commit('taskItem/setActiveTaskItemList', name);
     }
 
     public created(): void {

@@ -5,6 +5,7 @@ import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { UpdateTaskResult } from '../../core/data-model/update-task-result';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
+import { TaskItemList } from '../../core/enums/task-item-list.enum';
 
 const taskItemHttpService = new TaskItemHttpService();
 
@@ -12,12 +13,14 @@ export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
     incompleteTaskItems: TaskItem[];
     activeTaskItem: TaskItem | null;
+    activeTaskItemList: TaskItemList;
 }
 
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
     incompleteTaskItems: [],
-    activeTaskItem: null
+    activeTaskItem: null,
+    activeTaskItemList: TaskItemList.Tasks
 });
 
 const getters = {
@@ -36,7 +39,8 @@ const getters = {
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return state.incompleteTaskItems.filter(_ => _.isInterruption);
     },
-    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem
+    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem,
+    activeTaskItemList: (state: ITaskItemState): string => state.activeTaskItemList
 };
 
 const mutations = {
@@ -59,6 +63,9 @@ const mutations = {
     },
     setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
         state.activeTaskItem = taskItem;
+    },
+    setActiveTaskItemList(state: ITaskItemState, name: TaskItemList): void {
+        state.activeTaskItemList = name;
     }
 };
 
