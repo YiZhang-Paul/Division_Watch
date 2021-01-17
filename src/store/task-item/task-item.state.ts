@@ -21,11 +21,13 @@ const state = (): ITaskItemState => ({
 
 const getters = {
     taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
-    incompleteTasks: (state: ITaskItemState): TaskItem[] => {
-        return state.incompleteTaskItems.filter(_ => !_.isInterruption);
-    },
     incompleteTask: (state: ITaskItemState) => (id: string): TaskItem | null => {
         return state.incompleteTaskItems.find(_ => !_.isInterruption && _.id === id) ?? null;
+    },
+    incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
+        const parents = state.incompleteTaskItems.filter(_ => !_.isInterruption && !_.parent);
+
+        return parents.sort((a, b) => b.priority.rank - a.priority.rank);
     },
     incompleteChildTasks: (state: ITaskItemState) => (id: string): TaskItem[] => {
         return state.incompleteTaskItems.filter(_ => !_.isInterruption && _.parent && _.parent === id);

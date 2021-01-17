@@ -63,9 +63,7 @@ export default class TaskSelector extends Vue {
     public isLoaded = false;
 
     get parentTasks(): TaskItem[] {
-        const tasks = store.getters['taskItem/incompleteTasks'] as TaskItem[];
-
-        return tasks.filter(_ => !_.parent);
+        return store.getters['taskItem/incompleteParentTasks'];
     }
 
     get interruptions(): TaskItem[] {
