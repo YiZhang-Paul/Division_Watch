@@ -17,12 +17,16 @@
     </input-panel>
 
     <div class="summary-cards" :class="{ 'active-cards': isActive }">
-        <task-summary-card v-for="task of tasks"
-            class="summary-card"
-            :key="task.name"
-            :task="task"
-            @click="$emit('summary:select', task)">
-        </task-summary-card>
+        <overlay-scrollbar-panel v-if="tasks.length" class="scrollbar-wrapper">
+            <div>
+                <task-summary-card v-for="task of tasks"
+                    class="summary-card"
+                    :key="task.name"
+                    :task="task"
+                    @click="$emit('summary:select', task)">
+                </task-summary-card>
+            </div>
+        </overlay-scrollbar-panel>
     </div>
 </template>
 
@@ -34,6 +38,7 @@ import { TaskItem } from '../../core/data-model/task-item';
 import { ActionButton } from '../../core/data-model/action-button';
 import TaskSummaryCard from '../cards/TaskSummaryCard.vue';
 import InputPanel from '../panels/InputPanel.vue';
+import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
 
 class TaskListProp {
     public isActive = prop<boolean>({ default: false });
@@ -45,7 +50,8 @@ class TaskListProp {
     components: {
         Plus,
         TaskSummaryCard,
-        InputPanel
+        InputPanel,
+        OverlayScrollbarPanel
     },
     emits: [
         'activate',
@@ -130,15 +136,24 @@ export default class TaskList extends Vue.with(TaskListProp) { }
 .summary-cards {
     flex: 0;
     width: 100%;
-    overflow-y: auto;
     transition: flex 0.4s;
 
-    .summary-card {
+    .scrollbar-wrapper {
         width: 100%;
-        height: 10%;
-        max-height: 55px;
-        margin-bottom: 1px;
-        opacity: 0;
+        height: 100%;
+
+        & > div {
+            display: flex;
+            flex-direction: column;
+
+            .summary-card {
+                width: 100%;
+                height: 5vh;
+                max-height: 55px;
+                margin-bottom: 1px;
+                opacity: 0;
+            }
+        }
     }
 }
 
