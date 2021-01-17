@@ -17,6 +17,7 @@
                 :action="interruptionButton"
                 :tasks="interruptions"
                 @activate="activeButton = interruptionButton.name"
+                @task:add="openEmptyTask(true)"
                 @summary:select="onSummarySelect($event)">
             </task-list>
 
@@ -86,8 +87,9 @@ export default class TaskSelector extends Vue {
         setTimeout(() => this.isLoaded = true, 1500);
     }
 
-    public async openEmptyTask(): Promise<void> {
-        const task = await store.dispatch('taskItem/getEmptyTaskItem');
+    public async openEmptyTask(isInterruption = false): Promise<void> {
+        const task: TaskItem = await store.dispatch('taskItem/getEmptyTaskItem');
+        task.isInterruption = isInterruption;
         store.commit('taskItem/setActiveTaskItem', null);
         setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
     }
