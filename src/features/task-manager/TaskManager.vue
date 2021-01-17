@@ -14,6 +14,7 @@ import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { Cog, CheckBold, Finance } from 'mdue';
 
+import store from '../../store';
 import { ActionButton } from '../../core/data-model/action-button';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
@@ -38,6 +39,11 @@ export default class TaskManager extends Vue {
         markRaw(new ActionButton('settings', Cog, 'rgb(255, 255, 255)')),
         markRaw(new ActionButton('close', CheckBold, 'rgb(21, 200, 39)'))
     ];
+
+    public async created(): Promise<void> {
+        const date = new Date().toISOString().replace(/T.*/g, '');
+        await store.dispatch('taskItem/loadTaskItemOptions', date);
+    }
 }
 </script>
 

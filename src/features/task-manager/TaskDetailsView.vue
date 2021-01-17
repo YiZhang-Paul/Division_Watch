@@ -141,11 +141,6 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
     }
 
-    public async created(): Promise<void> {
-        const date = new Date().toISOString().replace(/T.*/g, '');
-        await store.dispatch('taskItem/loadTaskItemOptions', date);
-    }
-
     public onDailyToggle(isDaily: boolean): void {
         this.onTaskItemChange('recur', new Array(7).fill(isDaily));
     }
