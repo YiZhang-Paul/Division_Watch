@@ -2,6 +2,7 @@ import { ActionContext } from 'vuex';
 
 import { TaskItem } from '../../core/data-model/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
+import { UpdateTaskResult } from '../../core/data-model/update-task-result';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 
@@ -95,11 +96,11 @@ const actions = {
             commit('setActiveTaskItem', result.parent);
         }
     },
-    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<void> {
+    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<UpdateTaskResult | null> {
         const result = await taskItemHttpService.updateTaskItem(taskItem);
 
         if (!result) {
-            return;
+            return null;
         }
 
         context.commit('setIncompleteTaskItem', result.target);
@@ -107,6 +108,14 @@ const actions = {
         if (result.parent) {
             context.commit('setIncompleteTaskItem', result.parent);
         }
+
+        return result;
+    },
+    async convertInterruption(context: ActionContext<ITaskItemState, any>, interruption: TaskItem): Promise<TaskItem | null> {
+        const taskItem: TaskItem = { ...interruption, isInterruption: false };
+        const result: UpdateTaskResult = await context.dispatch('updateTaskItem', taskItem);
+
+        return result?.target ?? null;
     },
     swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
         context.commit('setActiveTaskItem', null);

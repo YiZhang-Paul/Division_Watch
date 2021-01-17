@@ -79,15 +79,23 @@
 
         <task-group v-if="!task.parent"
             class="task-group"
+            :class="{ 'disabled-group': !allowChildTask }"
             :name="'Subtasks'"
             :parent="task"
             :tasks="childTasks"
             :delay="0.5"
-            :disabled="!task.id || task.isInterruption"
+            :disabled="!allowChildTask"
             :disabledText="task.isInterruption ? 'unavailable until conversion.' : 'parent task not created yet.'"
             @task:add="$emit('child:add', $event)"
             @task:select="$emit('child:open', $event)">
         </task-group>
+
+        <confirm-panel v-if="task.isInterruption"
+            class="interruption-conversion"
+            :displayText="'Convert to Task'"
+            :confirmText="'Convert'"
+            @confirm="$emit('interruption:convert', task)">
+        </confirm-panel>
     </div>
 </template>
 
@@ -101,6 +109,7 @@ import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import InputPanel from '../../shared/panels/InputPanel.vue';
+import ConfirmPanel from '../../shared/panels/ConfirmPanel.vue';
 import Checkbox from '../../shared/inputs/Checkbox.vue';
 import OptionDropdown from '../../shared/inputs/OptionDropdown.vue';
 import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
@@ -117,6 +126,7 @@ class TaskDetailsViewProp {
         ArrowLeftCircle,
         CloudUpload,
         InputPanel,
+        ConfirmPanel,
         Checkbox,
         OptionDropdown,
         WeekDaySelector,
@@ -125,6 +135,7 @@ class TaskDetailsViewProp {
     emits: [
         'task:change',
         'task:update',
+        'interruption:convert',
         'parent:add',
         'parent:open',
         'child:add',
@@ -144,6 +155,10 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
 
     get isDaily(): boolean {
         return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
+    }
+
+    get allowChildTask(): boolean {
+        return Boolean(this.task.id) && !this.task.isInterruption;
     }
 
     public beforeUnmount(): void {
@@ -273,6 +288,16 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         width: 65%;
         height: 35%;
         max-height: 35%;
+    }
+
+    .disabled-group {
+        margin-top: 8%;
+        height: 20%;
+        max-height: 20%;
+    }
+
+    .interruption-conversion {
+        margin-top: 4%;
     }
 }
 </style>

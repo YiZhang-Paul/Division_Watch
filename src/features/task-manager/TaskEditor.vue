@@ -12,6 +12,7 @@
             :childTasks="childTasks"
             @task:change="onTaskChange($event)"
             @task:update="onTaskUpdate($event)"
+            @interruption:convert="convertInterruption($event)"
             @parent:add="addParentTask($event)"
             @parent:open="openParentTask($event)"
             @child:add="addChildTask($event)"
@@ -84,6 +85,14 @@ export default class TaskEditor extends Vue {
 
     public openTask(task: TaskItem): void {
         store.dispatch('taskItem/swapActiveTaskItem', task);
+    }
+
+    public async convertInterruption(task: TaskItem): Promise<void> {
+        const updated = await store.dispatch('taskItem/convertInterruption', task);
+
+        if (updated) {
+            store.commit('taskItem/setActiveTaskItem', updated);
+        }
     }
 }
 </script>
