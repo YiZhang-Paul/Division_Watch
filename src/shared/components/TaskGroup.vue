@@ -32,7 +32,7 @@
                 <div class="placeholder-content">
                     <input type="text"
                         v-model="childTaskName"
-                        :placeholder="disabled ? 'parent task not created yet.' : 'add child task here...'"
+                        :placeholder="disabled ? disabledText : 'add child task here...'"
                         :disabled="disabled"
                         @keyup.enter="addChildTask()" />
 
@@ -58,6 +58,7 @@ class TaskGroupProp {
     public tasks = prop<TaskItem[]>({ default: [] });
     public delay = prop<number>({ default: 1.5 });
     public disabled = prop<boolean>({ default: false });
+    public disabledText = prop<string>({ default: 'not available yet.' });
 }
 
 @Options({

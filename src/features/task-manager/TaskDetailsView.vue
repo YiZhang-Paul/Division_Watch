@@ -55,25 +55,27 @@
             @options:select="onTaskItemChange('estimate', $event)">
         </option-dropdown>
 
-        <input-panel class="edit-item" :delay="0.3">
-            <div class="recur-content">
-                <span>Recur</span>
+        <template v-if="!task.isInterruption">
+            <input-panel class="edit-item" :delay="0.3">
+                <div class="recur-content">
+                    <span>Recur</span>
 
-                <checkbox class="checkbox"
-                    :name="'daily event'"
-                    :checked="isDaily"
-                    :disabled="task.parent"
-                    @change="onDailyToggle($event)">
-                </checkbox>
-            </div>
-        </input-panel>
+                    <checkbox class="checkbox"
+                        :name="'daily event'"
+                        :checked="isDaily"
+                        :disabled="task.parent"
+                        @change="onDailyToggle($event)">
+                    </checkbox>
+                </div>
+            </input-panel>
 
-        <week-day-selector class="day-selector"
-            :days="task.recur.slice()"
-            :delay="0.7"
-            :disabled="task.parent"
-            @days:select="onTaskItemChange('recur', $event)">
-        </week-day-selector>
+            <week-day-selector class="day-selector"
+                :days="task.recur.slice()"
+                :delay="0.7"
+                :disabled="task.parent"
+                @days:select="onTaskItemChange('recur', $event)">
+            </week-day-selector>
+        </template>
 
         <task-group v-if="!task.parent"
             class="task-group"
@@ -81,7 +83,8 @@
             :parent="task"
             :tasks="childTasks"
             :delay="0.5"
-            :disabled="!task.id"
+            :disabled="!task.id || task.isInterruption"
+            :disabledText="task.isInterruption ? 'unavailable until conversion.' : 'parent task not created yet.'"
             @task:add="$emit('child:add', $event)"
             @task:select="$emit('child:open', $event)">
         </task-group>
