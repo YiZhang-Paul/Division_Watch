@@ -11,6 +11,7 @@
             :task="task"
             :childTasks="childTasks"
             @task:change="onTaskChange($event)"
+            @task:update="onTaskUpdate($event)"
             @parent:add="addParentTask($event)"
             @parent:open="openParentTask($event)"
             @child:add="addChildTask($event)"
@@ -57,6 +58,10 @@ export default class TaskEditor extends Vue {
 
     public onTaskChange(task: TaskItem): void {
         store.commit('taskItem/setActiveTaskItem', task);
+    }
+
+    public onTaskUpdate(task: TaskItem): void {
+        store.dispatch('taskItem/updateTaskItem', task);
     }
 
     public async addChildTask(name: string): Promise<void> {

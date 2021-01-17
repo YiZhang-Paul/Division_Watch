@@ -121,6 +121,7 @@ class TaskDetailsViewProp {
     },
     emits: [
         'task:change',
+        'task:update',
         'parent:add',
         'parent:open',
         'child:add',
@@ -128,6 +129,7 @@ class TaskDetailsViewProp {
     ]
 })
 export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
+    private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get totalChildEstimation(): number {
         return this.childTasks.reduce((total, _) => total + _.estimate, 0);
@@ -141,12 +143,27 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
     }
 
+    public beforeUnmount(): void {
+        if (this.updateDebounceTimer) {
+            this.$emit('task:update', this.task);
+        }
+    }
+
     public onDailyToggle(isDaily: boolean): void {
         this.onTaskItemChange('recur', new Array(7).fill(isDaily));
     }
 
     public onTaskItemChange(key: string, value: any): void {
         this.$emit('task:change', { ...this.task, [key]: value });
+
+        if (this.updateDebounceTimer) {
+            clearTimeout(this.updateDebounceTimer);
+        }
+
+        this.updateDebounceTimer = setTimeout(() => {
+            this.$emit('task:update', this.task);
+            this.updateDebounceTimer = null;
+        }, 1000);
     }
 
     public toDisplayDate(raw: string): string {

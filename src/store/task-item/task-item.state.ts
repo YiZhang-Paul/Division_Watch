@@ -93,6 +93,11 @@ const actions = {
             commit('setActiveTaskItem', result.parent);
         }
     },
+    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<void> {
+        if (await taskItemHttpService.updateTaskItem(taskItem)) {
+            context.commit('setIncompleteTaskItem', taskItem);
+        }
+    },
     swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
         context.commit('setActiveTaskItem', null);
         setTimeout(() => context.commit('setActiveTaskItem', taskItem));
