@@ -1,5 +1,5 @@
 <template>
-    <input-panel class="confirm-panel-container" :class="{ 'confirming': isConfirming }">
+    <input-panel class="confirm-panel-container" :class="{ 'confirming': isConfirming, 'warning': isWarning }">
         <div class="content" @click="isConfirming = true">
             <span v-if="!isConfirming">{{ displayText }}</span>
 
@@ -26,6 +26,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 
 class ConfirmPanelProp {
+    public isWarning = prop<boolean>({ default: false });
     public displayText = prop<string>({ default: 'confirm' });
     public alertText = prop<string>({ default: 'Are you sure?' });
     public confirmText = prop<string>({ default: 'Confirm' });
@@ -43,15 +44,22 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 
 <style lang="scss" scoped>
 .confirm-panel-container {
-    transition: background-color 0.3s;
 
     &:not(.confirming) .content {
         cursor: pointer;
-        background-color: rgb(226, 118, 30);
+        background-color: rgb(84, 83, 92);
     }
 
     &:hover:not(.confirming) .content {
-        background-color: rgb(238, 147, 74);
+        background-color: rgb(110, 109, 121);
+    }
+
+    &.warning:not(.confirming) .content {
+        background-color: rgb(109, 13, 13);
+    }
+
+    &.warning:hover:not(.confirming) .content {
+        background-color: rgb(134, 24, 24);
     }
 
     .content {
@@ -63,8 +71,9 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
         color: rgb(255, 255, 255);
         background-color: rgba(63, 62, 68, 0.6);
         font-family: 'Bruno Ace';
-        font-size: 0.5rem;
+        font-size: 0.4rem;
         white-space: nowrap;
+        transition: background-color 0.3s;
 
         .actions {
             display: flex;
@@ -98,6 +107,14 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
                     }
                 }
             }
+        }
+    }
+
+    &.warning .content .confirm-button .action-content {
+        background-color: rgb(175, 13, 13);
+
+        &:hover {
+            background-color: rgb(206, 32, 32);
         }
     }
 }
