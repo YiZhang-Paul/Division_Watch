@@ -90,12 +90,12 @@
             @task:select="$emit('child:open', $event)">
         </task-group>
 
-        <confirm-panel v-if="task.id && task.isInterruption"
-            class="interruption-conversion"
-            :displayText="'Convert to Task'"
-            :confirmText="'Convert'"
-            @confirm="$emit('interruption:convert', task)">
-        </confirm-panel>
+        <task-danger-zone v-if="task.id"
+            class="edit-item danger-zone"
+            :isInterruption="task.isInterruption"
+            @interruption:convert="$emit('interruption:convert', task)"
+            @task:delete="$emit('task:delete', task)">
+        </task-danger-zone>
     </div>
 </template>
 
@@ -116,6 +116,8 @@ import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
 import TaskGroup from '../../shared/components/TaskGroup.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
+import TaskDangerZone from './TaskDangerZone.vue';
+
 class TaskDetailsViewProp {
     public task = prop<TaskItem>({ default: null });
     public childTasks = prop<TaskItem[]>({ default: [] });
@@ -130,11 +132,13 @@ class TaskDetailsViewProp {
         Checkbox,
         OptionDropdown,
         WeekDaySelector,
-        TaskGroup
+        TaskGroup,
+        TaskDangerZone
     },
     emits: [
         'task:change',
         'task:update',
+        'task:delete',
         'interruption:convert',
         'parent:add',
         'parent:open',
@@ -207,11 +211,11 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     }
 
     .input-item {
-        margin-top: 4%;
+        margin-top: 3%;
     }
 
     .edit-item {
-        margin-top: 2.5%;
+        margin-top: 2%;
     }
 
     .task-name, .recur-content {
@@ -273,7 +277,7 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
 
         .checkbox {
             width: 55%;
-            padding: 0.25em 0 0.25em 0.25em;
+            padding: 0.25em 0 0.25em 1.75em;
             font-size: 0.4rem;
         }
     }
@@ -284,7 +288,8 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     }
 
     .task-group {
-        margin-top: 4%;
+        margin-top: 3%;
+        margin-bottom: 3%;
         width: 65%;
         height: 35%;
         max-height: 35%;
@@ -296,8 +301,9 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         max-height: 20%;
     }
 
-    .interruption-conversion {
-        margin-top: 4%;
+    .danger-zone {
+        margin-top: auto;
+        margin-bottom: 6%;
     }
 }
 </style>
