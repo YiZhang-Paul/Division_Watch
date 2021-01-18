@@ -56,6 +56,7 @@ export default class GlassPanel extends Vue { }
 
         .square-left, .line-top, .square-right {
             position: absolute;
+            z-index: 999;
             background-color: rgb(196, 196, 196);
         }
 

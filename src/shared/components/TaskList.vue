@@ -17,7 +17,7 @@
     </input-panel>
 
     <div class="summary-cards" :class="{ 'active-cards': isActive }">
-        <overlay-scrollbar-panel v-if="tasks.length" class="scrollbar-wrapper">
+        <overlay-scrollbar-panel v-show="isActive" v-if="tasks.length" class="scrollbar-wrapper">
             <div>
                 <task-summary-card v-for="task of tasks"
                     class="summary-card"

@@ -6,18 +6,19 @@
             </input-panel>
         </div>
 
-        <task-details-view v-if="task"
-            class="task-view"
-            :task="task"
-            :childTasks="childTasks"
-            @task:change="onTaskChange($event)"
-            @task:update="onTaskUpdate($event)"
-            @interruption:convert="convertInterruption($event)"
-            @parent:add="addParentTask($event)"
-            @parent:open="openParentTask($event)"
-            @child:add="addChildTask($event)"
-            @child:open="openTask($event)">
-        </task-details-view>
+        <overlay-scrollbar-panel v-if="task" class="task-view">
+            <task-details-view class="task-view-content"
+                :task="task"
+                :childTasks="childTasks"
+                @task:change="onTaskChange($event)"
+                @task:update="onTaskUpdate($event)"
+                @interruption:convert="convertInterruption($event)"
+                @parent:add="addParentTask($event)"
+                @parent:open="openParentTask($event)"
+                @child:add="addChildTask($event)"
+                @child:open="openTask($event)">
+            </task-details-view>
+        </overlay-scrollbar-panel>
     </glass-panel>
 </template>
 
@@ -30,6 +31,7 @@ import { TaskItem } from '../../core/data-model/task-item';
 import { TaskItemList } from '../../core/enums/task-item-list.enum';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
+import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
 
 import TaskDetailsView from './TaskDetailsView.vue';
 
@@ -37,6 +39,7 @@ import TaskDetailsView from './TaskDetailsView.vue';
     components: {
         InputPanel,
         GlassPanel,
+        OverlayScrollbarPanel,
         TaskDetailsView
     }
 })
@@ -117,7 +120,7 @@ export default class TaskEditor extends Vue {
         }
     }
 
-    .task-view {
+    .task-view, .task-view-content {
         width: 100%;
         height: 100%;
     }
