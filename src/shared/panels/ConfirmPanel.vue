@@ -35,7 +35,17 @@ class ConfirmPanelProp {
 
 @Options({
     components: { InputPanel },
-    emits: ['confirm']
+    watch: {
+        isConfirming(current: boolean, previous: boolean): void {
+            if (!previous && current) {
+                this.$emit('confirm:start');
+            }
+        }
+    },
+    emits: [
+        'confirm:start',
+        'confirm:confirmed'
+    ]
 })
 export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
     public isConfirming = false;

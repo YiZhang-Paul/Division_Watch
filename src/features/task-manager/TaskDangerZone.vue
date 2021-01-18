@@ -6,16 +6,20 @@
             <div class="confirmations">
                 <confirm-panel v-if="isInterruption"
                     class="confirmation"
+                    ref="conversionConfirm"
                     :displayText="'Convert to Task'"
                     :confirmText="'Convert'"
-                    @confirm="$emit('interruption:convert')">
+                    @confirm:start="$refs.deletionConfirm.isConfirming = false"
+                    @confirm:confirmed="$emit('interruption:convert')">
                 </confirm-panel>
 
                 <confirm-panel class="confirmation"
+                    ref="deletionConfirm"
                     :isWarning="true"
                     :displayText="'Delete ' + (isInterruption ? 'Interruption' : 'Task')"
                     :confirmText="'Delete'"
-                    @confirm="$emit('task:delete')">
+                    @confirm:start="$refs.conversionConfirm.isConfirming = false"
+                    @confirm:confirmed="$emit('task:delete')">
                 </confirm-panel>
             </div>
         </div>
