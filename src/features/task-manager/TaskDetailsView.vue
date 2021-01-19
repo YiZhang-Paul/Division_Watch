@@ -291,8 +291,8 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         margin-top: 3%;
         margin-bottom: 3%;
         width: 65%;
-        height: 35%;
-        max-height: 35%;
+        height: 32.5%;
+        max-height: 32.5%;
     }
 
     .disabled-group {

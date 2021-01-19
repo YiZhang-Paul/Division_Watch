@@ -9,7 +9,7 @@
                     ref="conversionConfirm"
                     :displayText="'Convert to Task'"
                     :confirmText="'Convert'"
-                    @confirm:start="$refs.deletionConfirm.isConfirming = false"
+                    @confirm:start="closeConfirmPanels($refs.conversionConfirm)"
                     @confirm:confirmed="$emit('interruption:convert')">
                 </confirm-panel>
 
@@ -18,7 +18,7 @@
                     :isWarning="true"
                     :displayText="'Delete ' + (isInterruption ? 'Interruption' : 'Task')"
                     :confirmText="'Delete'"
-                    @confirm:start="$refs.conversionConfirm.isConfirming = false"
+                    @confirm:start="closeConfirmPanels($refs.deletionConfirm)"
                     @confirm:confirmed="$emit('task:delete')">
                 </confirm-panel>
             </div>
@@ -46,7 +46,18 @@ class TaskDangerZoneProp {
         'task:delete'
     ]
 })
-export default class TaskDangerZone extends Vue.with(TaskDangerZoneProp) { }
+export default class TaskDangerZone extends Vue.with(TaskDangerZoneProp) {
+
+    public closeConfirmPanels(current: any): void {
+        const components = [this.$refs.conversionConfirm, this.$refs.deletionConfirm] as any[];
+
+        for (const component of components) {
+            if (component && current !== component) {
+                component.isConfirming = false;
+            }
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
             <span v-if="!isConfirming">{{ displayText }}</span>
 
             <template v-if="isConfirming">
-                <span>{{ alertText }}</span>
+                <span>{{ displayText }}</span>
 
                 <div class="actions">
                     <input-panel class="confirm-button" :delay="0" @click="$emit('confirm')">
@@ -28,7 +28,6 @@ import InputPanel from '../../shared/panels/InputPanel.vue';
 class ConfirmPanelProp {
     public isWarning = prop<boolean>({ default: false });
     public displayText = prop<string>({ default: 'confirm' });
-    public alertText = prop<string>({ default: 'Are you sure?' });
     public confirmText = prop<string>({ default: 'Confirm' });
     public cancelText = prop<string>({ default: 'Cancel' });
 }

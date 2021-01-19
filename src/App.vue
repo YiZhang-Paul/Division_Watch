@@ -103,7 +103,7 @@ html, body {
 
 .task-manager {
     width: 50%;
-    height: 80%;
+    height: 90%;
 }
 
 @keyframes revealContent {
