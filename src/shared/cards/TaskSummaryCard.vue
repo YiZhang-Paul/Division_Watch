@@ -1,29 +1,35 @@
 <template>
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
-        <template v-if="!task.parent">
-            <div class="default-category-indicator"></div>
-            <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
-        </template>
+        <div class="card-content">
+            <template v-if="!task.parent">
+                <div class="default-category-indicator"></div>
+                <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
+            </template>
 
-        <span :class="{ 'child-task-name': task.parent }" :style="taskNameStyle">{{ task.name }}</span>
+            <span :class="{ 'child-task-name': task.parent }" :style="taskNameStyle">{{ task.name }}</span>
 
-        <div v-if="skulls >= 1" class="skulls">
-            <img v-for="(skull, index) in skulls"
-                :key="skull"
-                :style="getSkullStyle(index)"
-                src="../../assets/images/rogue_skull.png" />
+            <div v-if="skulls >= 1" class="skulls">
+                <img v-for="(skull, index) in skulls"
+                    :key="skull"
+                    :style="getSkullStyle(index)"
+                    src="../../assets/images/rogue_skull.png" />
+            </div>
+
+            <div v-if="skulls < 1" class="skulls half-skull">
+                <div><img src="../../assets/images/rogue_skull.png" /></div>
+                <div><img src="../../assets/images/rogue_skull.png" /></div>
+            </div>
         </div>
 
-        <div v-if="skulls < 1" class="skulls half-skull">
-            <div><img src="../../assets/images/rogue_skull.png" /></div>
-            <div><img src="../../assets/images/rogue_skull.png" /></div>
+        <div v-if="task.parent" class="card-actions" @click.stop="$emit('delete')">
+            <close class="close-icon" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Rotate_3dVariant } from 'mdue';
+import { Close, Rotate_3dVariant } from 'mdue';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
@@ -37,8 +43,10 @@ class TaskSummaryCardProp {
 
 @Options({
     components: {
+        Close,
         Rotate3dVariant: Rotate_3dVariant
-    }
+    },
+    emits: ['delete']
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     private readonly skullSpacing = 0.25;
@@ -86,10 +94,8 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 .task-summary-card-container {
     display: flex;
     align-items: center;
-    position: relative;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.4rem;
-    transition: opacity 0.15s, color 0.3s;
 
     &:hover {
         cursor: pointer;
@@ -101,6 +107,46 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .card-content {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        position: relative;
+        transition: opacity 0.15s, color 0.3s;
+    }
+
+    .card-actions {
+        display: flex;
+        flex-grow: 0;
+        justify-content: center;
+        align-items: center;
+        margin-right: 0.3rem;
+        max-width: 0.75rem;
+        height: 50%;
+        border-radius: 4px;
+        background-color: rgb(175, 27, 22);
+
+        &:hover {
+            background-color: rgb(206, 37, 31);
+        }
+
+        .close-icon {
+            display: none;
+            font-size: 0.5rem;
+            opacity: 0;
+        }
+    }
+
+    &:hover .card-actions {
+        flex-grow: 1;
+        transition: flex 1s, background-color 0.3s;
+
+        .close-icon {
+            display: inline-block;
+            animation: revealContent 0.2s ease-in forwards;
+        }
     }
 
     .default-category-indicator, .child-task-name {

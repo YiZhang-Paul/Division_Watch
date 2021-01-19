@@ -87,7 +87,8 @@
             :disabled="!allowChildTask"
             :disabledText="task.isInterruption ? 'unavailable until conversion.' : 'parent task not created yet.'"
             @task:add="$emit('child:add', $event)"
-            @task:select="$emit('child:open', $event)">
+            @task:select="$emit('child:open', $event)"
+            @task:delete="$emit('task:delete', $event)">
         </task-group>
 
         <task-danger-zone v-if="task.id"

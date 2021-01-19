@@ -77,11 +77,11 @@ export default class TaskEditor extends Vue {
             return;
         }
 
-        if (task.parent) {
-            this.openParentTask(task);
-        }
-        else {
+        if (!task.parent) {
             store.commit('taskItem/setActiveTaskItem', null);
+        }
+        else if (task.parent !== this.task?.id) {
+            this.openParentTask(task);
         }
     }
 
