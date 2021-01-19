@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { TaskItem } from '../../core/data-model/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { UpdateTaskResult } from '../../core/data-model/update-task-result';
+import { DeleteTaskResult } from '../../core/data-model/delete-task-result';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import { TaskItemList } from '../../core/enums/task-item-list.enum';
@@ -63,6 +64,9 @@ const mutations = {
     setIncompleteTaskItems(state: ITaskItemState, taskItems: TaskItem[]): void {
         state.incompleteTaskItems = taskItems.slice();
     },
+    deleteIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
+        state.incompleteTaskItems = state.incompleteTaskItems.filter(_ => _.id !== taskItem.id);
+    },
     setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
         state.activeTaskItem = taskItem;
     },
@@ -116,6 +120,30 @@ const actions = {
 
         if (result.parent) {
             context.commit('setIncompleteTaskItem', result.parent);
+        }
+
+        return result;
+    },
+    async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { taskItem: TaskItem, keepChildren: boolean }): Promise<DeleteTaskResult | null> {
+        const { taskItem, keepChildren } = payload;
+        const result = await taskItemHttpService.deleteTaskItem(taskItem.id!, keepChildren);
+
+        if (!result) {
+            return null;
+        }
+
+        context.commit('deleteIncompleteTaskItem', taskItem);
+
+        if (result.parent) {
+            context.commit('setIncompleteTaskItem', result.parent);
+        }
+
+        for (const child of result.updatedChildren) {
+            context.commit('setIncompleteTaskItem', child);
+        }
+
+        for (const child of result.deletedChildren) {
+            context.commit('deleteIncompleteTaskItem', child);
         }
 
         return result;

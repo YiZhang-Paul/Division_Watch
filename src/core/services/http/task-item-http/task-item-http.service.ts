@@ -4,6 +4,7 @@ import { TaskItem } from '../../../data-model/task-item';
 import { TaskItemOptions } from '../../../data-model/task-item-options';
 import { AddChildResult } from '../../../data-model/add-child-result';
 import { UpdateTaskResult } from '../../../data-model/update-task-result';
+import { DeleteTaskResult } from '../../../data-model/delete-task-result';
 
 export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
@@ -40,8 +41,8 @@ export class TaskItemHttpService {
         return (await axios.put(this._api, item)).data;
     }
 
-    public async deleteTaskItem(id: string): Promise<boolean> {
-        const endpoint = `${this._api}/${id}`;
+    public async deleteTaskItem(id: string, keepChildren = true): Promise<DeleteTaskResult> {
+        const endpoint = `${this._api}/${id}?keepChildren=${keepChildren}`;
 
         return (await axios.delete(endpoint)).data;
     }
