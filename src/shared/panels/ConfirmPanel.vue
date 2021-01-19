@@ -7,7 +7,7 @@
                 <span>{{ displayText }}</span>
 
                 <div class="actions">
-                    <input-panel class="confirm-button" :delay="0" @click="$emit('confirm')">
+                    <input-panel class="confirm-button" :delay="0" @click="$emit('confirm:confirmed')">
                         <div class="action-content">{{ confirmText }}</div>
                     </input-panel>
 
