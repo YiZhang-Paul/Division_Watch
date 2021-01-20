@@ -124,9 +124,9 @@ const actions = {
 
         return result;
     },
-    async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { taskItem: TaskItem, keepChildren: boolean }): Promise<DeleteTaskResult | null> {
+    async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { taskItem: TaskItem, keepChildren: boolean | null }): Promise<DeleteTaskResult | null> {
         const { taskItem, keepChildren } = payload;
-        const result = await taskItemHttpService.deleteTaskItem(taskItem.id!, keepChildren);
+        const result = await taskItemHttpService.deleteTaskItem(taskItem.id!, Boolean(keepChildren));
 
         if (!result) {
             return null;
