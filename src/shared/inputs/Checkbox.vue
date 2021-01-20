@@ -41,9 +41,13 @@ export default class Checkbox extends Vue.with(CheckboxProp) {
     align-items: center;
 
     .input-panel {
+        $dimension: 0.45rem;
+
         margin-right: 5%;
-        width: 0.45rem;
-        height: 0.45rem;
+        min-width: $dimension;
+        min-height: $dimension;
+        width: $dimension;
+        height: $dimension;
         background-color: rgb(110, 110, 110);
         transition: background-color 0.3s;
 
