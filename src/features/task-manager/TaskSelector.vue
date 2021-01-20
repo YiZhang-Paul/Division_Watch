@@ -1,32 +1,46 @@
 <template>
-    <glass-panel class="task-selector-container">
+    <glass-panel>
         <div class="task-selector-content">
-            <task-list v-if="isLoaded"
-                class="task-list"
+            <item-list v-if="isLoaded"
+                class="item-list"
                 :isActive="activeButton === taskButton.name"
                 :action="taskButton"
-                :tasks="parentTasks"
+                :itemCount="parentTasks.length"
                 @activate="activeButton = taskButton.name"
-                @task:add="openEmptyTask()"
-                @summary:select="onSummarySelect($event)">
-            </task-list>
+                @item:add="openEmptyTask()">
 
-            <task-list v-if="isLoaded"
-                class="task-list"
+                <task-summary-card v-for="task of parentTasks"
+                    class="summary-card"
+                    :class="{ 'active-card': activeButton === taskButton.name }"
+                    :key="task.name"
+                    :task="task"
+                    @click="onSummarySelect(task)">
+                </task-summary-card>
+            </item-list>
+
+            <item-list v-if="isLoaded"
+                class="item-list"
                 :isActive="activeButton === interruptionButton.name"
                 :action="interruptionButton"
-                :tasks="interruptions"
+                :itemCount="interruptions.length"
                 @activate="activeButton = interruptionButton.name"
-                @task:add="openEmptyTask(true)"
-                @summary:select="onSummarySelect($event)">
-            </task-list>
+                @item:add="openEmptyTask(true)">
 
-            <task-list v-if="isLoaded"
-                class="task-list"
+                <task-summary-card v-for="interruption of interruptions"
+                    class="summary-card"
+                    :class="{ 'active-card': activeButton === interruptionButton.name }"
+                    :key="interruption.name"
+                    :task="interruption"
+                    @click="onSummarySelect(interruption)">
+                </task-summary-card>
+            </item-list>
+
+            <item-list v-if="isLoaded"
+                class="item-list"
                 :isActive="activeButton === categoryButton.name"
                 :action="categoryButton"
                 @activate="activeButton = categoryButton.name">
-            </task-list>
+            </item-list>
         </div>
     </glass-panel>
 </template>
@@ -43,18 +57,20 @@ import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { TaskItemList } from '../../core/enums/task-item-list.enum';
+import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
-import TaskList from '../../shared/components/TaskList.vue';
+import ItemList from '../../shared/components/ItemList.vue';
 
 @Options({
     components: {
         ExclamationThick,
         Plus,
         TimerSand,
+        TaskSummaryCard,
         InputPanel,
         GlassPanel,
-        TaskList
+        ItemList
     }
 })
 export default class TaskSelector extends Vue {
@@ -104,21 +120,30 @@ export default class TaskSelector extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.task-selector-container {
+.task-selector-content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 5px;
+    width: 100%;
+    height: calc(100% - 5px);
 
-    .task-selector-content {
-        display: flex;
-        flex-direction: column;
-        padding-top: 5px;
-        width: 100%;
-        height: calc(100% - 5px);
-    }
-
-    ::v-deep .task-list {
+    ::v-deep .item-list {
         margin-top: 2px;
         width: 100%;
         height: 7%;
         max-height: 50px;
+    }
+
+    .summary-card {
+        margin-bottom: 1px;
+        width: 100%;
+        height: 5vh;
+        max-height: 55px;
+        opacity: 0;
+
+        &.active-card {
+            animation: revealContent 0.3s ease 0.4s forwards;
+        }
     }
 }
 </style>
