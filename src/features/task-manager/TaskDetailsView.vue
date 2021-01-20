@@ -64,7 +64,7 @@
                         :name="'daily event'"
                         :checked="isDaily"
                         :disabled="task.parent"
-                        @change="onDailyToggle($event)">
+                        @update:checked="onDailyToggle($event)">
                     </checkbox>
                 </div>
             </input-panel>

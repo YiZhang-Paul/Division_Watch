@@ -23,13 +23,13 @@ class CheckboxProp {
 
 @Options({
     components: { InputPanel },
-    emits: ['change']
+    emits: ['update:checked']
 })
 export default class Checkbox extends Vue.with(CheckboxProp) {
 
     public onChange(): void {
         if (!this.disabled) {
-            this.$emit('change', !this.checked);
+            this.$emit('update:checked', !this.checked);
         }
     }
 }

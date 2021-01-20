@@ -9,8 +9,7 @@
                 <checkbox v-if="modifierText"
                     class="checkbox"
                     :name="modifierText"
-                    :checked="modifierValue"
-                    @change="modifierValue = $event">
+                    v-model:checked="modifierValue">
                 </checkbox>
 
                 <div class="actions">
