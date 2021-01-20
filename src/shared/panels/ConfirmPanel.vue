@@ -4,10 +4,20 @@
             <span v-if="!isConfirming">{{ displayText }}</span>
 
             <template v-if="isConfirming">
-                <span>{{ displayText }}</span>
+                <span :class="{ 'no-checkbox': !modifierText }">{{ displayText }}</span>
+
+                <checkbox v-if="modifierText"
+                    class="checkbox"
+                    :name="modifierText"
+                    :checked="modifierValue"
+                    @change="modifierValue = $event">
+                </checkbox>
 
                 <div class="actions">
-                    <input-panel class="confirm-button" :delay="0" @click="$emit('confirm:confirmed')">
+                    <input-panel class="confirm-button"
+                        :delay="0"
+                        @click="$emit('confirm:confirmed', modifierText ? modifierValue : null)">
+
                         <div class="action-content">{{ confirmText }}</div>
                     </input-panel>
 
@@ -23,17 +33,22 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import Checkbox from '../../shared/inputs/Checkbox.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 
 class ConfirmPanelProp {
     public isWarning = prop<boolean>({ default: false });
+    public modifierText = prop<string>({ default: '' });
     public displayText = prop<string>({ default: 'confirm' });
     public confirmText = prop<string>({ default: 'Confirm' });
     public cancelText = prop<string>({ default: 'Cancel' });
 }
 
 @Options({
-    components: { InputPanel },
+    components: {
+        Checkbox,
+        InputPanel
+    },
     watch: {
         isConfirming(current: boolean, previous: boolean): void {
             if (!previous && current) {
@@ -48,6 +63,7 @@ class ConfirmPanelProp {
 })
 export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
     public isConfirming = false;
+    public modifierValue = false;
 }
 </script>
 
@@ -76,7 +92,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 0.3rem 0.65rem;
+        padding: 0.3rem 0.35rem;
         color: rgb(255, 255, 255);
         background-color: rgba(63, 62, 68, 0.6);
         font-family: 'Bruno Ace';
@@ -84,11 +100,22 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
         white-space: nowrap;
         transition: background-color 0.3s;
 
+        .no-checkbox {
+            margin-bottom: 0.35rem;
+        }
+
+        .checkbox {
+            margin-top: 0.25rem;
+            margin-bottom: 0.35rem;
+            font-family: 'Segoe UI';
+            opacity: 0;
+            animation: revealContent 0.3s ease-in forwards;
+        }
+
         .actions {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 0.5rem;
             width: 100%;
 
             .action-content {
