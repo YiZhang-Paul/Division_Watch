@@ -16,10 +16,11 @@
                 <confirm-panel class="confirmation"
                     ref="deletionConfirm"
                     :isWarning="true"
+                    :modifierText="isParent ? 'keep child tasks' : ''"
                     :displayText="'Delete ' + (isInterruption ? 'Interruption' : 'Task')"
                     :confirmText="'Delete'"
                     @confirm:start="closeConfirmPanels($refs.deletionConfirm)"
-                    @confirm:confirmed="$emit('task:delete')">
+                    @confirm:confirmed="$emit('task:delete', $event)">
                 </confirm-panel>
             </div>
         </div>
@@ -33,6 +34,7 @@ import InputPanel from '../../shared/panels/InputPanel.vue';
 import ConfirmPanel from '../../shared/panels/ConfirmPanel.vue';
 
 class TaskDangerZoneProp {
+    public isParent = prop<boolean>({ default: false });
     public isInterruption = prop<boolean>({ default: false });
 }
 

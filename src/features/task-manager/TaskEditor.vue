@@ -70,18 +70,16 @@ export default class TaskEditor extends Vue {
         store.dispatch('taskItem/updateTaskItem', task);
     }
 
-    public async onTaskDelete(task: TaskItem): Promise<void> {
-        const payload = { taskItem: task, keepChildren: false };
-
+    public async onTaskDelete(payload: { taskItem: TaskItem, keepChildren: boolean }): Promise<void> {
         if (!await store.dispatch('taskItem/deleteTaskItem', payload)) {
             return;
         }
 
-        if (!task.parent) {
+        if (!payload.taskItem.parent) {
             store.commit('taskItem/setActiveTaskItem', null);
         }
-        else if (task.parent !== this.task?.id) {
-            this.openParentTask(task);
+        else if (payload.taskItem.parent !== this.task?.id) {
+            this.openParentTask(payload.taskItem);
         }
     }
 

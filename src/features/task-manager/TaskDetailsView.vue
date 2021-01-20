@@ -88,14 +88,15 @@
             :disabledText="task.isInterruption ? 'unavailable until conversion.' : 'parent task not created yet.'"
             @task:add="$emit('child:add', $event)"
             @task:select="$emit('child:open', $event)"
-            @task:delete="$emit('task:delete', $event)">
+            @task:delete="$emit('task:delete', { taskItem: $event, keepChildren: null })">
         </task-group>
 
         <task-danger-zone v-if="task.id"
             class="edit-item danger-zone"
+            :isParent="childTasks.length"
             :isInterruption="task.isInterruption"
             @interruption:convert="$emit('interruption:convert', task)"
-            @task:delete="$emit('task:delete', task)">
+            @task:delete="$emit('task:delete', { taskItem: task, keepChildren: $event })">
         </task-danger-zone>
     </div>
 </template>
