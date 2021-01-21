@@ -2,7 +2,11 @@
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
         <div class="card-content">
             <template v-if="!task.parent">
-                <div class="default-category-indicator"></div>
+                <div v-if="!task.category.icon"
+                    class="default-category-icon"
+                    :style="{ 'background-color': task.category.color }">
+                </div>
+
                 <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
             </template>
 
@@ -149,16 +153,15 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         }
     }
 
-    .default-category-indicator, .child-task-name {
-        margin-left: 3%;
+    .default-category-icon, .child-task-name {
+        margin-left: 0.25rem;
     }
 
-    .default-category-indicator {
-        margin-right: 1.5%;
+    .default-category-icon {
+        margin-right: 0.25rem;
         width: 0.4rem;
         height: 0.4rem;
         border-radius: 50%;
-        background-color: rgb(33, 136, 233);
     }
 
     .icon-indicator {
