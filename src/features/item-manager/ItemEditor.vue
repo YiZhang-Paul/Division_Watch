@@ -2,7 +2,7 @@
     <glass-panel class="item-editor-container">
         <div v-if="!task" class="placeholder-panel">
             <input-panel class="input-item">
-                <div class="placeholder-text">No Task Selected.</div>
+                <div class="placeholder-text">{{ placeholderText }}</div>
             </input-panel>
         </div>
 
@@ -45,6 +45,18 @@ import TaskDetailsView from './TaskDetailsView.vue';
     }
 })
 export default class ItemEditor extends Vue {
+
+    get placeholderText(): string {
+        let type = 'Item';
+
+        switch (store.getters['taskItem/activeItemListName']) {
+            case ItemListName.Tasks: type = 'Task'; break;
+            case ItemListName.Interruptions: type = 'Interruption'; break;
+            case ItemListName.Categories: type = 'Category'; break;
+        }
+
+        return `No ${type} Selected.`;
+    }
 
     get task(): TaskItem | null {
         return store.getters['taskItem/activeTaskItem'];
