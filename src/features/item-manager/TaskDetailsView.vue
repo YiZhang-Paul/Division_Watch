@@ -23,7 +23,7 @@
             :options="taskOptions.categories"
             :transform="_ => _.name"
             :delay="0.3"
-            @options:select="onTaskItemChange('category', $event)">
+            @options:select="onTaskItemChange('categoryId', $event.id)">
         </option-dropdown>
 
         <option-dropdown class="edit-item"
