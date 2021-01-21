@@ -2,9 +2,9 @@
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
         <div class="card-content">
             <template v-if="!task.parent">
-                <div v-if="!task.category.icon"
+                <div v-if="!category.icon"
                     class="default-category-icon"
-                    :style="{ 'background-color': task.category.color }">
+                    :style="{ 'background-color': category.color }">
                 </div>
 
                 <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
@@ -37,6 +37,8 @@ import { Close, Rotate_3dVariant } from 'mdue';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/category';
+// eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
@@ -54,6 +56,10 @@ class TaskSummaryCardProp {
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     private readonly skullSpacing = 0.25;
+
+    get category(): Category {
+        return store.getters['category/category'](this.task.categoryId);
+    }
 
     get containerStyle(): { [key: string]: string } {
         return { 'background-color': `rgba(${this.baseColor}, 0.5)` };
