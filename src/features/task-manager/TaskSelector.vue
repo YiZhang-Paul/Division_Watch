@@ -14,7 +14,7 @@
                     :class="{ 'active-card': activeButton === taskButton.name }"
                     :key="task.name"
                     :task="task"
-                    @click="onSummarySelect(task)">
+                    @click="onTaskItemSelect(task)">
                 </task-summary-card>
             </item-list>
 
@@ -31,7 +31,7 @@
                     :class="{ 'active-card': activeButton === interruptionButton.name }"
                     :key="interruption.name"
                     :task="interruption"
-                    @click="onSummarySelect(interruption)">
+                    @click="onTaskItemSelect(interruption)">
                 </task-summary-card>
             </item-list>
 
@@ -39,7 +39,17 @@
                 class="item-list"
                 :isActive="activeButton === categoryButton.name"
                 :action="categoryButton"
-                @activate="activeButton = categoryButton.name">
+                :itemCount="categories.length"
+                @activate="activeButton = categoryButton.name"
+                @item:add="openEmptyCategory()">
+
+                <category-summary-card v-for="category of categories"
+                    class="summary-card"
+                    :class="{ 'active-card': activeButton === categoryButton.name }"
+                    :key="category.name"
+                    :category="category"
+                    @click="onCategorySelect(category)">
+                </category-summary-card>
             </item-list>
         </div>
     </glass-panel>
@@ -53,10 +63,13 @@ import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue'
 import store from '../../store';
 import { ActionButton } from '../../core/data-model/action-button';
 // eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/category';
+// eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { TaskItemList } from '../../core/enums/task-item-list.enum';
+import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
@@ -67,6 +80,7 @@ import ItemList from '../../shared/components/ItemList.vue';
         ExclamationThick,
         Plus,
         TimerSand,
+        CategorySummaryCard,
         TaskSummaryCard,
         InputPanel,
         GlassPanel,
@@ -78,6 +92,10 @@ export default class TaskSelector extends Vue {
     public interruptionButton = new ActionButton(TaskItemList.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
     public categoryButton = new ActionButton(TaskItemList.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
     public isLoaded = false;
+
+    get categories(): Category[] {
+        return store.getters['category/categories'];
+    }
 
     get parentTasks(): TaskItem[] {
         return store.getters['taskItem/incompleteParentTasks'];
@@ -106,14 +124,18 @@ export default class TaskSelector extends Vue {
     public async openEmptyTask(isInterruption = false): Promise<void> {
         const task: TaskItem = await store.dispatch('taskItem/getEmptyTaskItem');
         task.isInterruption = isInterruption;
-        store.commit('taskItem/setActiveTaskItem', null);
-        setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+        store.dispatch('taskItem/swapActiveTaskItem', task);
     }
 
-    public onSummarySelect(task: TaskItem): void {
+    public onTaskItemSelect(task: TaskItem): void {
         if (store.getters['taskItem/activeTaskItem']?.id !== task.id) {
-            store.commit('taskItem/setActiveTaskItem', null);
-            setTimeout(() => store.commit('taskItem/setActiveTaskItem', task));
+            store.dispatch('taskItem/swapActiveTaskItem', task);
+        }
+    }
+
+    public onCategorySelect(category: Category): void {
+        if (store.getters['category/activeCategory']?.id !== category.id) {
+            store.dispatch('category/swapActiveCategory', category);
         }
     }
 }
