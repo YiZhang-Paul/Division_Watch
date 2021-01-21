@@ -1,5 +1,5 @@
 <template>
-    <glass-panel class="task-editor-container">
+    <glass-panel class="item-editor-container">
         <div v-if="!task" class="placeholder-panel">
             <input-panel class="input-item">
                 <div class="placeholder-text">No Task Selected.</div>
@@ -44,7 +44,7 @@ import TaskDetailsView from './TaskDetailsView.vue';
         TaskDetailsView
     }
 })
-export default class TaskEditor extends Vue {
+export default class ItemEditor extends Vue {
 
     get task(): TaskItem | null {
         return store.getters['taskItem/activeTaskItem'];
@@ -117,7 +117,7 @@ export default class TaskEditor extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.task-editor-container {
+.item-editor-container {
 
     .placeholder-panel {
         display: flex;

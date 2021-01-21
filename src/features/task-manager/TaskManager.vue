@@ -4,7 +4,7 @@
 
         <div class="contents">
             <item-selector class="item-selector"></item-selector>
-            <task-editor class="task-editor"></task-editor>
+            <item-editor class="item-editor"></item-editor>
         </div>
     </div>
 </template>
@@ -20,7 +20,7 @@ import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
 
 import ItemSelector from './ItemSelector.vue';
-import TaskEditor from './TaskEditor.vue';
+import ItemEditor from './ItemEditor.vue';
 
 @Options({
     components: {
@@ -30,7 +30,7 @@ import TaskEditor from './TaskEditor.vue';
         GlassPanel,
         TopToolbar,
         ItemSelector,
-        TaskEditor
+        ItemEditor
     }
 })
 export default class TaskManager extends Vue {
@@ -73,7 +73,7 @@ export default class TaskManager extends Vue {
         height: 100%;
     }
 
-    .task-editor {
+    .item-editor {
         margin-left: 1%;
         width: calc(100% - #{$item-selector-width});
         height: 100%;
