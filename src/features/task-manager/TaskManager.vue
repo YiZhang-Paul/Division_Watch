@@ -43,6 +43,7 @@ export default class TaskManager extends Vue {
     public async created(): Promise<void> {
         const date = new Date().toISOString().replace(/T.*/g, '');
         await store.dispatch('taskItem/loadTaskItemOptions', date);
+        await store.dispatch('category/loadCategories');
     }
 }
 </script>
