@@ -1,5 +1,16 @@
 <template>
     <div class="category-summary-card-container">
+        <component v-if="category.icon"
+            class="icon"
+            :style="{ color: category.color }"
+            :is="category.icon">
+        </component>
+
+        <div v-if="!category.icon"
+            class="default-icon"
+            :style="{ 'background-color': category.color }">
+        </div>
+
         <span>{{ category.name }}</span>
     </div>
 </template>
@@ -31,8 +42,15 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
         filter: brightness(1.2);
     }
 
+    .default-icon {
+        margin-left: 0.25rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+    }
+
     & > span:first-of-type {
-        margin-left: 0.5rem;
+        margin-left: 0.25rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
