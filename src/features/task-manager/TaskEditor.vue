@@ -29,7 +29,7 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
-import { TaskItemList } from '../../core/enums/task-item-list.enum';
+import { ItemListName } from '../../core/enums/item-list-name.enum';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
@@ -110,7 +110,7 @@ export default class TaskEditor extends Vue {
 
         if (updated) {
             store.commit('taskItem/setActiveTaskItem', updated);
-            store.commit('taskItem/setActiveTaskItemList', TaskItemList.Tasks);
+            store.commit('taskItem/setActiveItemListName', ItemListName.Tasks);
         }
     }
 }

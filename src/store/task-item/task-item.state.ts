@@ -6,7 +6,7 @@ import { UpdateTaskResult } from '../../core/data-model/update-task-result';
 import { DeleteTaskResult } from '../../core/data-model/delete-task-result';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
-import { TaskItemList } from '../../core/enums/task-item-list.enum';
+import { ItemListName } from '../../core/enums/item-list-name.enum';
 
 const taskItemHttpService = new TaskItemHttpService();
 
@@ -14,14 +14,14 @@ export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
     incompleteTaskItems: TaskItem[];
     activeTaskItem: TaskItem | null;
-    activeTaskItemList: TaskItemList;
+    activeItemListName: ItemListName;
 }
 
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
     incompleteTaskItems: [],
     activeTaskItem: null,
-    activeTaskItemList: TaskItemList.Tasks
+    activeItemListName: ItemListName.Tasks
 });
 
 const getters = {
@@ -43,7 +43,7 @@ const getters = {
         return interruptions.sort((a, b) => b.priority.rank - a.priority.rank);
     },
     activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem,
-    activeTaskItemList: (state: ITaskItemState): string => state.activeTaskItemList
+    activeItemListName: (state: ITaskItemState): string => state.activeItemListName
 };
 
 const mutations = {
@@ -70,8 +70,8 @@ const mutations = {
     setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
         state.activeTaskItem = taskItem;
     },
-    setActiveTaskItemList(state: ITaskItemState, name: TaskItemList): void {
-        state.activeTaskItemList = name;
+    setActiveItemListName(state: ITaskItemState, name: ItemListName): void {
+        state.activeItemListName = name;
     }
 };
 

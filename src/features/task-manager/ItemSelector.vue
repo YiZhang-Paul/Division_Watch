@@ -68,7 +68,7 @@ import { Category } from '../../core/data-model/category';
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
-import { TaskItemList } from '../../core/enums/task-item-list.enum';
+import { ItemListName } from '../../core/enums/item-list-name.enum';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
@@ -88,9 +88,9 @@ import ItemList from '../../shared/components/ItemList.vue';
     }
 })
 export default class ItemSelector extends Vue {
-    public taskButton = new ActionButton(TaskItemList.Tasks, markRaw(TimerSand), 'rgb(255, 28, 82)');
-    public interruptionButton = new ActionButton(TaskItemList.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
-    public categoryButton = new ActionButton(TaskItemList.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
+    public taskButton = new ActionButton(ItemListName.Tasks, markRaw(TimerSand), 'rgb(255, 28, 82)');
+    public interruptionButton = new ActionButton(ItemListName.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
+    public categoryButton = new ActionButton(ItemListName.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
     public isLoaded = false;
 
     get categories(): Category[] {
@@ -106,11 +106,11 @@ export default class ItemSelector extends Vue {
     }
 
     get activeButton(): string {
-        return store.getters['taskItem/activeTaskItemList'];
+        return store.getters['taskItem/activeItemListName'];
     }
 
     set activeButton(name: string) {
-        store.commit('taskItem/setActiveTaskItemList', name);
+        store.commit('taskItem/setActiveItemListName', name);
     }
 
     public created(): void {
