@@ -1,13 +1,13 @@
 <template>
     <glass-panel class="item-editor-container">
-        <div v-if="!task" class="placeholder-panel">
+        <div v-if="!showCategoryView && !showTaskView" class="placeholder-panel">
             <input-panel class="input-item">
                 <div class="placeholder-text">{{ placeholderText }}</div>
             </input-panel>
         </div>
 
-        <overlay-scrollbar-panel v-if="task" class="task-view">
-            <task-details-view class="task-view-content"
+        <overlay-scrollbar-panel v-if="showTaskView" class="item-view">
+            <task-details-view class="item-view-content"
                 :task="task"
                 :childTasks="childTasks"
                 @task:change="onTaskChange($event)"
@@ -20,6 +20,12 @@
                 @child:open="openTask($event)">
             </task-details-view>
         </overlay-scrollbar-panel>
+
+        <overlay-scrollbar-panel v-if="showCategoryView" class="item-view">
+            <category-details-view class="item-view-content"
+                :category="category">
+            </category-details-view>
+        </overlay-scrollbar-panel>
     </glass-panel>
 </template>
 
@@ -28,12 +34,15 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/category';
+// eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 import { ItemListName } from '../../core/enums/item-list-name.enum';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
 
+import CategoryDetailsView from './CategoryDetailsView.vue';
 import TaskDetailsView from './TaskDetailsView.vue';
 
 @Options({
@@ -41,6 +50,7 @@ import TaskDetailsView from './TaskDetailsView.vue';
         InputPanel,
         GlassPanel,
         OverlayScrollbarPanel,
+        CategoryDetailsView,
         TaskDetailsView
     }
 })
@@ -49,13 +59,31 @@ export default class ItemEditor extends Vue {
     get placeholderText(): string {
         let type = 'Item';
 
-        switch (store.getters['taskItem/activeItemListName']) {
+        switch (this.activeItemList) {
             case ItemListName.Tasks: type = 'Task'; break;
             case ItemListName.Interruptions: type = 'Interruption'; break;
             case ItemListName.Categories: type = 'Category'; break;
         }
 
         return `No ${type} Selected.`;
+    }
+
+    get showCategoryView(): boolean {
+        return Boolean(this.category) && this.activeItemList === ItemListName.Categories;
+    }
+
+    get showTaskView(): boolean {
+        const name = this.activeItemList;
+
+        return Boolean(this.task) && (name === ItemListName.Tasks || name === ItemListName.Interruptions);
+    }
+
+    get activeItemList(): ItemListName {
+        return store.getters['taskItem/activeItemListName'];
+    }
+
+    get category(): Category | null {
+        return store.getters['category/activeCategory'];
     }
 
     get task(): TaskItem | null {
@@ -146,7 +174,7 @@ export default class ItemEditor extends Vue {
         }
     }
 
-    .task-view, .task-view-content {
+    .item-view, .item-view-content {
         width: 100%;
         height: 100%;
     }
