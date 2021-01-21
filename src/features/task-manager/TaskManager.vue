@@ -3,7 +3,7 @@
         <top-toolbar class="top-toolbar" :actions="actions"></top-toolbar>
 
         <div class="contents">
-            <task-selector class="task-selector"></task-selector>
+            <item-selector class="item-selector"></item-selector>
             <task-editor class="task-editor"></task-editor>
         </div>
     </div>
@@ -19,7 +19,7 @@ import { ActionButton } from '../../core/data-model/action-button';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
 
-import TaskSelector from './TaskSelector.vue';
+import ItemSelector from './ItemSelector.vue';
 import TaskEditor from './TaskEditor.vue';
 
 @Options({
@@ -29,7 +29,7 @@ import TaskEditor from './TaskEditor.vue';
         Finance,
         GlassPanel,
         TopToolbar,
-        TaskSelector,
+        ItemSelector,
         TaskEditor
     }
 })
@@ -51,7 +51,7 @@ export default class TaskManager extends Vue {
 <style lang="scss" scoped>
 .task-manager-container {
     $top-toolbar-height: 8%;
-    $task-selector-width: 40%;
+    $item-selector-width: 40%;
 
     display: flex;
     flex-direction: column;
@@ -68,14 +68,14 @@ export default class TaskManager extends Vue {
         height: $top-toolbar-height;
     }
 
-    .task-selector {
-        width: $task-selector-width;
+    .item-selector {
+        width: $item-selector-width;
         height: 100%;
     }
 
     .task-editor {
         margin-left: 1%;
-        width: calc(100% - #{$task-selector-width});
+        width: calc(100% - #{$item-selector-width});
         height: 100%;
     }
 }

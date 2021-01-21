@@ -1,6 +1,6 @@
 <template>
     <glass-panel>
-        <div class="task-selector-content">
+        <div class="item-selector-content">
             <item-list v-if="isLoaded"
                 class="item-list"
                 :isActive="activeButton === taskButton.name"
@@ -87,7 +87,7 @@ import ItemList from '../../shared/components/ItemList.vue';
         ItemList
     }
 })
-export default class TaskSelector extends Vue {
+export default class ItemSelector extends Vue {
     public taskButton = new ActionButton(TaskItemList.Tasks, markRaw(TimerSand), 'rgb(255, 28, 82)');
     public interruptionButton = new ActionButton(TaskItemList.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
     public categoryButton = new ActionButton(TaskItemList.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
@@ -142,7 +142,7 @@ export default class TaskSelector extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.task-selector-content {
+.item-selector-content {
     display: flex;
     flex-direction: column;
     padding-top: 5px;
