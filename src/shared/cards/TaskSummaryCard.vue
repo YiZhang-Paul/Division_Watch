@@ -103,18 +103,18 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         filter: brightness(1.2);
     }
 
-    & > span:first-of-type {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
     .card-content {
         display: flex;
         flex-grow: 1;
         align-items: center;
         position: relative;
         transition: opacity 0.15s, color 0.3s;
+
+        & > span:first-of-type {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     .card-actions {
