@@ -13,7 +13,7 @@
                 <input type="text"
                     :value="task.name"
                     @input="onTaskItemChange('name', $event.target.value)"
-                    placeholder="enter task name here..." />
+                    placeholder="enter name here..." />
             </div>
         </input-panel>
 
