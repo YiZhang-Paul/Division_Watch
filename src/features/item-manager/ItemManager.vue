@@ -1,5 +1,5 @@
 <template>
-    <div class="task-manager-container">
+    <div class="item-manager-container">
         <top-toolbar class="top-toolbar" :actions="actions"></top-toolbar>
 
         <div class="contents">
@@ -33,7 +33,7 @@ import ItemEditor from './ItemEditor.vue';
         ItemEditor
     }
 })
-export default class TaskManager extends Vue {
+export default class ItemManager extends Vue {
     public actions: ActionButton[] = [
         markRaw(new ActionButton('stats', Finance, 'rgb(33, 188, 254)')),
         markRaw(new ActionButton('settings', Cog, 'rgb(255, 255, 255)')),
@@ -49,7 +49,7 @@ export default class TaskManager extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.task-manager-container {
+.item-manager-container {
     $top-toolbar-height: 8%;
     $item-selector-width: 40%;
 

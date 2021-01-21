@@ -1,18 +1,18 @@
 <template>
     <agent-watch id="watch-face-area" class="watch-face"></agent-watch>
-    <task-manager class="task-manager"></task-manager>
+    <item-manager class="item-manager"></item-manager>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
-import TaskManager from './features/task-manager/TaskManager.vue';
+import ItemManager from './features/item-manager/ItemManager.vue';
 
 @Options({
     components: {
         AgentWatch,
-        TaskManager
+        ItemManager
     }
 })
 export default class App extends Vue {
@@ -101,7 +101,7 @@ html, body {
     height: $dimension;
 }
 
-.task-manager {
+.item-manager {
     width: 50%;
     height: 90%;
 }
