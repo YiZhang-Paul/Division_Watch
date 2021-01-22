@@ -24,6 +24,7 @@
         <overlay-scrollbar-panel v-if="showCategoryView" class="item-view">
             <category-details-view class="item-view-content"
                 :category="category"
+                @category:add="onCategoryAdd($event)"
                 @category:change="onCategoryChange($event)"
                 @category:update="onCategoryUpdate($event)">
             </category-details-view>
@@ -100,6 +101,10 @@ export default class ItemEditor extends Vue {
 
     get childTasks(): TaskItem[] {
         return this.task ? store.getters['taskItem/incompleteChildTasks'](this.task.id) : [];
+    }
+
+    public onCategoryAdd(category: Category): void {
+        store.commit('category/addCategory', category);
     }
 
     public onCategoryChange(category: Category): void {

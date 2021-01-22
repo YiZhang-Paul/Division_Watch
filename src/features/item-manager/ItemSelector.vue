@@ -62,12 +62,9 @@ import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue'
 
 import store from '../../store';
 import { ActionButton } from '../../core/data-model/action-button';
-// eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
-// eslint-disable-next-line no-unused-vars
-import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { ItemListName } from '../../core/enums/item-list-name.enum';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
@@ -131,6 +128,10 @@ export default class ItemSelector extends Vue {
         if (store.getters['taskItem/activeTaskItem']?.id !== task.id) {
             store.dispatch('taskItem/swapActiveTaskItem', task);
         }
+    }
+
+    public openEmptyCategory(): void {
+        store.dispatch('category/swapActiveCategory', new Category());
     }
 
     public onCategorySelect(category: Category): void {
