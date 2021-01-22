@@ -190,6 +190,10 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     public onTaskItemChange(key: string, value: any): void {
         this.$emit('task:change', { ...this.task, [key]: value });
 
+        if (!this.task.id) {
+            return;
+        }
+
         if (this.updateDebounceTimer) {
             clearTimeout(this.updateDebounceTimer);
         }

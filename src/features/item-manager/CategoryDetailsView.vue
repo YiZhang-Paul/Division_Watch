@@ -109,6 +109,10 @@ export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewPro
     public onCategoryChange(key: string, value: any): void {
         this.$emit('category:change', { ...this.category, [key]: value });
 
+        if (!this.category.id) {
+            return;
+        }
+
         if (this.updateDebounceTimer) {
             clearTimeout(this.updateDebounceTimer);
         }
