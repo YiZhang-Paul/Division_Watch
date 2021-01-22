@@ -20,7 +20,7 @@
         <option-dropdown class="edit-item"
             :name="'Category'"
             :selected="selectedCategory"
-            :options="taskOptions.categories"
+            :options="categories"
             :transform="_ => _.name"
             :delay="0.3"
             @options:select="onTaskItemChange('categoryId', $event.id)">
@@ -159,6 +159,10 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
 
     get taskOptions(): TaskItemOptions {
         return store.getters['taskItem/taskItemOptions'];
+    }
+
+    get categories(): Category[] {
+        return store.getters['category/categories'];
     }
 
     get selectedCategory(): Category {
