@@ -26,12 +26,17 @@
             </div>
         </input-panel>
 
-        <color-selector class="edit-item"
+        <color-selector class="selector"
             :active="activeColor"
             :colors="colors"
             :delay="0.7"
             @color:select="onColorSelect($event)">
         </color-selector>
+
+        <icon-selector class="selector"
+            :active="category.icon"
+            @icon:select="onCategoryChange('icon', $event)">
+        </icon-selector>
     </div>
 </template>
 
@@ -43,6 +48,7 @@ import { Color } from '../../core/data-model/color';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/category';
 import ColorSelector from '../../shared/inputs/ColorSelector.vue';
+import IconSelector from '../../shared/inputs/IconSelector.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 
 class CategoryDetailsViewProp {
@@ -53,6 +59,7 @@ class CategoryDetailsViewProp {
     components: {
         CloudUpload,
         ColorSelector,
+        IconSelector,
         InputPanel
     },
     emits: [
@@ -121,11 +128,11 @@ export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewPro
     width: 100%;
     height: 100%;
 
-    .input-item, .edit-item {
+    .input-item, .edit-item, .selector {
         width: 85%;
     }
 
-    .input-item {
+    .input-item, .selector {
         margin-top: 3%;
     }
 
