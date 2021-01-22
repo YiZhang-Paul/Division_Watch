@@ -19,7 +19,7 @@
 
         <option-dropdown class="edit-item"
             :name="'Category'"
-            :selected="task.category"
+            :selected="selectedCategory"
             :options="taskOptions.categories"
             :transform="_ => _.name"
             :delay="0.3"
@@ -107,6 +107,8 @@ import { ArrowLeftCircle, CloudUpload } from 'mdue';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/category';
+// eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
@@ -157,6 +159,10 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
 
     get taskOptions(): TaskItemOptions {
         return store.getters['taskItem/taskItemOptions'];
+    }
+
+    get selectedCategory(): Category {
+        return store.getters['category/category'](this.task.categoryId);
     }
 
     get isDaily(): boolean {
