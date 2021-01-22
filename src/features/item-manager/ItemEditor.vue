@@ -23,7 +23,9 @@
 
         <overlay-scrollbar-panel v-if="showCategoryView" class="item-view">
             <category-details-view class="item-view-content"
-                :category="category">
+                :category="category"
+                @category:change="onCategoryChange($event)"
+                @category:update="onCategoryUpdate($event)">
             </category-details-view>
         </overlay-scrollbar-panel>
     </glass-panel>
@@ -92,6 +94,14 @@ export default class ItemEditor extends Vue {
 
     get childTasks(): TaskItem[] {
         return this.task ? store.getters['taskItem/incompleteChildTasks'](this.task.id) : [];
+    }
+
+    public onCategoryChange(category: Category): void {
+        store.commit('category/setActiveCategory', category);
+    }
+
+    public onCategoryUpdate(category: Category): void {
+        store.dispatch('category/updateCategory', category);
     }
 
     public async addParentTask(task: TaskItem): Promise<void> {

@@ -25,6 +25,13 @@
                 </textarea>
             </div>
         </input-panel>
+
+        <color-selector class="edit-item"
+            :active="activeColor"
+            :colors="colors"
+            :delay="0.7"
+            @color:select="onColorSelect($event)">
+        </color-selector>
     </div>
 </template>
 
@@ -32,7 +39,10 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { CloudUpload } from 'mdue';
 // eslint-disable-next-line no-unused-vars
+import { Color } from '../../core/data-model/color';
+// eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/category';
+import ColorSelector from '../../shared/inputs/ColorSelector.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 
 class CategoryDetailsViewProp {
@@ -42,6 +52,7 @@ class CategoryDetailsViewProp {
 @Options({
     components: {
         CloudUpload,
+        ColorSelector,
         InputPanel
     },
     emits: [
@@ -53,10 +64,38 @@ class CategoryDetailsViewProp {
 export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewProp) {
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
+    get activeColor(): Color | null {
+        try {
+            return Color.toColor(this.category.color);
+        }
+        catch {
+            return null;
+        }
+    }
+
+    get colors(): Color[] {
+        return [
+            new Color(216, 25, 25),
+            new Color(33, 109, 224),
+            new Color(30, 224, 62),
+            new Color(218, 214, 22),
+            new Color(228, 97, 22),
+            new Color(28, 223, 213),
+            new Color(113, 28, 223),
+            new Color(223, 28, 142),
+            new Color(255, 255, 255),
+            new Color(80, 80, 80)
+        ];
+    }
+
     public beforeUnmount(): void {
         if (this.updateDebounceTimer) {
             this.$emit('category:update', this.category);
         }
+    }
+
+    public onColorSelect(color: Color): void {
+        this.onCategoryChange('color', Color.toString(color));
     }
 
     public onCategoryChange(key: string, value: any): void {
