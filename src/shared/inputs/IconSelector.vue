@@ -4,7 +4,7 @@
             class="icon"
             :key="icon"
             :is="getIcon(icon)"
-            :style="{ active: active === icon }"
+            :class="{ active: active === icon }"
             @click="$emit('icon:select', icon)">
         </component>
     </div>
@@ -45,6 +45,11 @@ export default class IconSelector extends Vue.with(IconSelectorProp) {
 
         &:hover {
             cursor: pointer;
+            filter: brightness(1);
+        }
+
+        &.active {
+            color: rgb(42, 133, 236);
             filter: brightness(1);
         }
     }
