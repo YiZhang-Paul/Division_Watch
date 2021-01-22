@@ -2,9 +2,9 @@
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
         <div class="card-content">
             <template v-if="!task.parent">
-                <div v-if="!category.icon"
+                <div v-if="!category?.icon"
                     class="default-category-icon"
-                    :style="{ 'background-color': category.color }">
+                    :style="{ 'background-color': category?.color }">
                 </div>
 
                 <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
