@@ -5,6 +5,7 @@
             :key="icon"
             :is="getIcon(icon)"
             :class="{ active: active === icon }"
+            :style="{ 'animation-delay': delay + 's' }"
             @click="$emit('icon:select', icon)">
         </component>
     </div>
@@ -17,6 +18,7 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class IconSelectorProp {
     public active = prop<string>({ default: '' });
+    public delay = prop<number>({ default: 1 });
 }
 
 @Options({
@@ -41,6 +43,8 @@ export default class IconSelector extends Vue.with(IconSelectorProp) {
         margin-right: 2%;
         color: rgb(255, 255, 255);
         filter: brightness(0.6);
+        opacity: 0;
+        animation: revealContent 0.3s ease-in forwards;
         transition: filter 0.3s;
 
         &:hover {

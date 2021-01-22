@@ -35,6 +35,7 @@
 
         <icon-selector class="selector"
             :active="category.icon"
+            :delay="0.85"
             @icon:select="onCategoryChange('icon', $event)">
         </icon-selector>
     </div>
@@ -88,7 +89,7 @@ export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewPro
             new Color(218, 214, 22),
             new Color(228, 97, 22),
             new Color(28, 223, 213),
-            new Color(113, 28, 223),
+            new Color(166, 58, 228),
             new Color(223, 28, 142),
             new Color(255, 255, 255),
             new Color(80, 80, 80)
