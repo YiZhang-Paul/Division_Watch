@@ -2,6 +2,12 @@
     <div v-if="task" class="task-summary-card-container" :style="containerStyle">
         <div class="card-content">
             <template v-if="!task.parent">
+                <component v-if="icon"
+                    class="icon"
+                    :style="{ color: category?.color }"
+                    :is="icon">
+                </component>
+
                 <div v-if="!category?.icon"
                     class="default-category-icon"
                     :style="{ 'background-color': category?.color }">
@@ -10,7 +16,7 @@
                 <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
             </template>
 
-            <span :class="{ 'child-task-name': task.parent }" :style="taskNameStyle">{{ task.name }}</span>
+            <span :style="taskNameStyle">{{ task.name }}</span>
 
             <div v-if="skulls >= 1" class="skulls">
                 <img v-for="(skull, index) in skulls"
@@ -42,6 +48,7 @@ import { Category } from '../../core/data-model/category';
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item-options';
+import { GenericUtility } from '@/core/utilities/generic/generic.utility';
 
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
@@ -56,6 +63,10 @@ class TaskSummaryCardProp {
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     private readonly skullSpacing = 0.25;
+
+    get icon(): any {
+        return this.category?.icon ? GenericUtility.getIcon(this.category.icon) : null;
+    }
 
     get category(): Category {
         return store.getters['category/category'](this.task.categoryId);
@@ -121,6 +132,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         transition: opacity 0.15s, color 0.3s;
 
         & > span:first-of-type {
+            margin-left: 0.25rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -159,19 +171,22 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         }
     }
 
-    .default-category-icon, .child-task-name {
-        margin-left: 0.25rem;
+    .icon {
+        margin-left: 0.225rem;
+        width: 0.65rem;
+        height: 0.65rem;
     }
 
     .default-category-icon {
-        margin-right: 0.25rem;
-        width: 0.4rem;
-        height: 0.4rem;
+        margin-left: 0.35rem;
+        margin-right: 0.075rem;
+        width: 0.425rem;
+        height: 0.425rem;
         border-radius: 50%;
     }
 
     .icon-indicator {
-        margin-right: 1.5%;
+        margin-left: 0.075rem;
         width: 0.6rem;
         height: 0.6rem;
         color: rgb(255, 255, 255);

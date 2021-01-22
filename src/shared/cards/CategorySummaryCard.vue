@@ -51,8 +51,8 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     .default-icon {
         margin-left: 0.35rem;
         margin-right: 0.075rem;
-        width: 0.45rem;
-        height: 0.45rem;
+        width: 0.425rem;
+        height: 0.425rem;
         border-radius: 50%;
     }
 
