@@ -8,4 +8,8 @@ export class CategoryHttpService {
     public async getCategories(): Promise<Category[]> {
         return (await axios.get(this._api)).data;
     }
+
+    public async updateCategory(category: Category): Promise<true> {
+        return (await axios.put(this._api, category)).data;
+    }
 }
