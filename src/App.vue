@@ -1,27 +1,21 @@
 <template>
-    <agent-watch :id="watchFaceId" class="watch-face" :style="containerStyle"></agent-watch>
-    <task-manager class="task-manager"></task-manager>
+    <agent-watch id="watch-face-area" class="watch-face"></agent-watch>
+    <item-manager class="item-manager"></item-manager>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
-import TaskManager from './features/task-manager/TaskManager.vue';
+import ItemManager from './features/item-manager/ItemManager.vue';
 
 @Options({
     components: {
         AgentWatch,
-        TaskManager
+        ItemManager
     }
 })
 export default class App extends Vue {
-    private readonly watchFaceId = 'watch-face-area';
-    private fontSize = 24;
-
-    get containerStyle(): { [key: string]: string } {
-        return { 'font-size': `${this.fontSize}px` };
-    }
 
     public mounted(): void {
         this.updateFontSize();
@@ -33,8 +27,11 @@ export default class App extends Vue {
     }
 
     private updateFontSize(): void {
-        const element = document.getElementById(this.watchFaceId);
-        this.fontSize = element ? element.offsetHeight / 29.375 : this.fontSize;
+        const element = document.querySelector('html');
+
+        if (element) {
+            element.style.fontSize = `${element.offsetHeight / 29.375}px`;
+        }
     }
 }
 </script>
@@ -76,19 +73,22 @@ html, body {
     background-color: rgb(0, 0, 0);
 }
 
-.os-theme-dark > .os-scrollbar-vertical {
-    width: 11px;
-}
+.os-theme-dark {
 
-.os-theme-dark > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
-    border-radius: 0;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                      url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
-    background-repeat: no-repeat;
-    background-size: 2px 2px;
-    background-position: left top, left bottom, right bottom, right top;
+    & > .os-scrollbar-vertical {
+        width: 11px;
+    }
+
+    & > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
+        border-radius: 0;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
+                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
+        background-repeat: no-repeat;
+        background-size: 2px 2px;
+        background-position: left top, left bottom, right bottom, right top;
+    }
 }
 
 .watch-face {
@@ -101,8 +101,113 @@ html, body {
     height: $dimension;
 }
 
-.task-manager {
+.item-manager {
     width: 50%;
-    height: 80%;
+    height: 90%;
+}
+
+@keyframes revealContent {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkFast {
+    0% {
+        opacity: 0;
+    }
+    33% {
+        opacity: 0.5;
+    }
+    66% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkNormal {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.1;
+    }
+    11% {
+        opacity: 1;
+    }
+    30% {
+        opacity: 1;
+    }
+    31% {
+        opacity: 0.1;
+    }
+    50% {
+        opacity: 0.1;
+    }
+    51% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    71% {
+        opacity: 0.1;
+    }
+    72% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blinkSlow {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    51% {
+        opacity: 0.5;
+    }
+    53% {
+        opacity: 0.5;
+    }
+    54% {
+        opacity: 1;
+    }
+    56% {
+        opacity: 1;
+    }
+    57% {
+        opacity: 0.5;
+    }
+    59% {
+        opacity: 0.5;
+    }
+    60% {
+        opacity: 1;
+    }
+    62% {
+        opacity: 1;
+    }
+    63% {
+        opacity: 0.5;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 </style>

@@ -60,7 +60,8 @@ export default class BatteryDisplay extends Vue {
 
     .battery-indicator {
         position: relative;
-        width: 40%;
+        margin-right: 8%;
+        width: 55%;
         height: 45%;
         border-radius: 2px;
 
@@ -82,8 +83,9 @@ export default class BatteryDisplay extends Vue {
 
     .level {
         position: relative;
-        font-family: 'Digital Numbers';
         color: rgb(255, 255, 255);
+        font-family: 'Bruno Ace';
+        font-size: 0.4rem;
 
         & > span:first-of-type {
             position: absolute;

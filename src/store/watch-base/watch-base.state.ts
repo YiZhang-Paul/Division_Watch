@@ -112,7 +112,7 @@ const actions = {
             innerRing: 'rgba(94, 51, 51, 0.4)',
             scale: 'rgb(239, 205, 84)',
             scaleSeparator: 'rgb(244, 39, 39)',
-            dayOfWeek: 'rgb(186, 26, 26)',
+            dayOfWeek: 'rgb(250, 221, 71)',
             time: 'rgb(250, 221, 71)',
             batteryOutline: 'rgb(250, 221, 71)',
             batteryHigh: 'rgb(250, 221, 71)',

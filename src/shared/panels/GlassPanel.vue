@@ -24,7 +24,7 @@ export default class GlassPanel extends Vue { }
 
 <style lang="scss" scoped>
 .glass-panel-container {
-    $square-dimension: 0.3rem;
+    $square-dimension: 0.15rem;
 
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0);
@@ -56,6 +56,7 @@ export default class GlassPanel extends Vue { }
 
         .square-left, .line-top, .square-right {
             position: absolute;
+            z-index: 999;
             background-color: rgb(196, 196, 196);
         }
 
@@ -68,7 +69,7 @@ export default class GlassPanel extends Vue { }
         }
 
         .square-left {
-            animation: blinkSquare 0.4s linear forwards,
+            animation: blinkFast 0.4s linear forwards,
                        moveSquareLeft 0.25s ease 0.4s forwards;
         }
 
@@ -81,7 +82,7 @@ export default class GlassPanel extends Vue { }
         }
 
         .square-right {
-            animation: blinkSquare 0.4s linear forwards,
+            animation: blinkFast 0.4s linear forwards,
                        moveSquareRight 0.25s ease 0.4s forwards;
         }
     }
@@ -92,36 +93,21 @@ export default class GlassPanel extends Vue { }
         height: 100%;
     }
 
-    @keyframes blinkSquare {
-        0% {
-            opacity: 0;
-        }
-        33% {
-            opacity: 0.5;
-        }
-        66% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-
     @keyframes moveSquareLeft {
         from {
-            left: calc(50% - 0.15rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
-            left: -0.15rem;
+            left: calc(#{$square-dimension} * -0.5);
         }
     }
 
     @keyframes moveSquareRight {
         from {
-            left: calc(50% - 0.15rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
-            left: calc(100% - 0.15rem);
+            left: calc(100% - #{$square-dimension} / 2);
         }
     }
 
@@ -131,8 +117,8 @@ export default class GlassPanel extends Vue { }
             width: 0;
         }
         to {
-            left: 0.3rem;
-            width: calc(100% - 0.6rem);
+            left: $square-dimension;
+            width: calc(100% - #{$square-dimension} * 2);
         }
     }
 

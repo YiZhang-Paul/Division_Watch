@@ -1,16 +1,23 @@
 <template>
-    <input-panel class="option-dropdown-container">
+    <input-panel class="option-dropdown-container" :delay="delay">
         <div class="edit-item-content">
             <span>{{ name }}</span>
 
-            <select @change="$emit('options:select', options[$event.target.value])">
-                <option v-for="(option, index) of options"
-                    :key="index"
-                    :value="index"
-                    :selected="isSelected(option)">
+            <select :disabled="disabled"
+                :class="{ 'disabled': disabled }"
+                @change="$emit('options:select', options[$event.target.value])">
 
-                    {{ tryApplyTransform(option) }}
-                </option>
+                <option v-if="disabled">{{ disabledText }}</option>
+
+                <template v-if="!disabled">
+                    <option v-for="(option, index) of options"
+                        :key="index"
+                        :value="index"
+                        :selected="isSelected(option)">
+
+                        {{ tryApplyTransform(option) }}
+                    </option>
+                </template>
             </select>
         </div>
     </input-panel>
@@ -25,7 +32,10 @@ class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
     public selected = prop<any>({ default: null });
+    public disabled = prop<boolean>({ default: false });
+    public disabledText = prop<string>({ default: '' });
     public transform = prop<(_: any) => string>({ default: null });
+    public delay = prop<number>({ default: 0.7 });
 }
 
 @Options({
@@ -54,18 +64,19 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
     .edit-item-content {
         display: flex;
         align-items: center;
-        padding: 0.5em 1.25em;
+        padding: 1.5% 4%;
         color: rgb(255, 255, 255);
         background-color: rgba(63, 62, 68, 0.6);
 
         & > span {
             width: 45%;
             font-family: 'Bruno Ace';
+            font-size: 0.475rem;
         }
 
         select {
             display: block;
-            padding: 0.25em 0.75em;
+            padding: 1% 3%;
             margin: 0;
             width: 55%;
             background-color: rgba(51, 51, 54, 0.6);
@@ -75,7 +86,7 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
             color: rgb(255, 255, 255);
             border: none;
             border-radius: 3px;
-            font-size: 0.85em;
+            font-size: 0.4rem;
             font-family: 'Segoe UI';
             appearance: none;
 
@@ -87,6 +98,11 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
             option {
                 background-color: rgba(51, 51, 54, 0.6);
             }
+        }
+
+        .disabled {
+            cursor: not-allowed;
+            background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(145, 145, 145)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
         }
     }
 }

@@ -2,8 +2,8 @@
     <div class="week-day-selector-container">
         <div v-for="(selected, index) of selections"
             :key="index"
-            :class="{ 'selected': selected }"
-            :style="{ 'animation-delay': 1.5 + Math.abs(3 - index) * 0.05 + 's' }"
+            :class="{ 'selected': selected, 'disabled': disabled }"
+            :style="{ 'animation-delay': delay + Math.abs(3 - index) * 0.05 + 's' }"
             @click="onSelect(index)">
 
             {{ letters[index] }}
@@ -14,8 +14,12 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
+
 class WeekDaySelectorProp {
     public days = prop<boolean[]>({ default: [] });
+    public delay = prop<number>({ default: 1.5 });
+    public disabled = prop<boolean>({ default: false });
 }
 
 @Options({
@@ -29,8 +33,12 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
     }
 
     public onSelect(index: number): void {
+        if (this.disabled) {
+            return;
+        }
+
         const selections = this.selections;
-        const updated = [...selections.slice(0, index), !selections[index], ...selections.slice(index + 1)];
+        const updated = GenericUtility.replaceAt(selections, !selections[index], index);
         this.$emit('days:select', updated);
     }
 }
@@ -48,31 +56,27 @@ export default class WeekDaySelector extends Vue.with(WeekDaySelectorProp) {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 2.25em;
-        height: 2.25em;
+        width: 1.1rem;
+        height: 1.1rem;
         border: 1px solid rgb(255, 255, 255);
         border-radius: 50%;
         background-color: rgba(63, 62, 68, 0.6);
+        font-size: 0.5rem;
         opacity: 0;
         transition: background-color 0.3s;
-        animation: loadSelection 0.3s ease forwards;
+        animation: revealContent 0.3s ease forwards;
 
-        &:hover {
+        &:hover:not(.disabled) {
             cursor: pointer;
             background-color: rgba(105, 105, 105, 0.6);
         }
 
-        &.selected {
+        &.selected, &.selected:hover {
             background-color: rgb(228, 122, 47);
         }
-    }
 
-    @keyframes loadSelection {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
+        &.disabled {
+            cursor: not-allowed;
         }
     }
 }

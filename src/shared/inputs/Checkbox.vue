@@ -2,7 +2,7 @@
     <div class="check-box-container">
         <input-panel class="input-panel"
             :hasAnimation="false"
-            :class="{ 'checked': checked }"
+            :class="{ 'checked': checked, 'disabled': disabled }"
             @click="onChange()">
         </input-panel>
 
@@ -18,16 +18,19 @@ import InputPanel from '../panels/InputPanel.vue';
 class CheckboxProp {
     public name = prop<string>({ default: '' });
     public checked = prop<boolean>({ default: false });
+    public disabled = prop<boolean>({ default: false });
 }
 
 @Options({
     components: { InputPanel },
-    emits: ['change']
+    emits: ['update:checked']
 })
 export default class Checkbox extends Vue.with(CheckboxProp) {
 
     public onChange(): void {
-        this.$emit('change', !this.checked);
+        if (!this.disabled) {
+            this.$emit('update:checked', !this.checked);
+        }
     }
 }
 </script>
@@ -38,19 +41,27 @@ export default class Checkbox extends Vue.with(CheckboxProp) {
     align-items: center;
 
     .input-panel {
-        margin-right: 0.75em;
-        width: 1.25em;
-        height: 1.25em;
+        $dimension: 0.45rem;
+
+        margin-right: 5%;
+        min-width: $dimension;
+        min-height: $dimension;
+        width: $dimension;
+        height: $dimension;
         background-color: rgb(110, 110, 110);
         transition: background-color 0.3s;
 
-        &:hover {
+        &:hover:not(.disabled) {
             cursor: pointer;
             background-color: rgb(135, 135, 135);
         }
 
-        &.checked {
+        &.checked, &.checked:hover {
             background-color: rgb(228, 122, 47);
+        }
+
+        &.disabled {
+            cursor: not-allowed;
         }
     }
 }

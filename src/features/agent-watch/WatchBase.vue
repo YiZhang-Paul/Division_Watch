@@ -253,54 +253,9 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         left: calc(50% - #{$dimension} / 2);
         width: $dimension;
         height: $dimension;
-        animation: loadInnerCore1 3s linear 0.25s forwards;
+        animation: blinkSlow 3s linear 0.25s forwards;
         filter: blur(6px);
         background-color: rgba(253, 255, 132, 0.95);
-    }
-
-    @keyframes loadInnerCore1 {
-        0% {
-            opacity: 0;
-        }
-        25% {
-            opacity: 0.2;
-        }
-        50% {
-            opacity: 1;
-        }
-        51% {
-            opacity: 0.5;
-        }
-        53% {
-            opacity: 0.5;
-        }
-        54% {
-            opacity: 1;
-        }
-        56% {
-            opacity: 1;
-        }
-        57% {
-            opacity: 0.5;
-        }
-        59% {
-            opacity: 0.5;
-        }
-        60% {
-            opacity: 1;
-        }
-        62% {
-            opacity: 1;
-        }
-        63% {
-            opacity: 0.5;
-        }
-        70% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 1;
-        }
     }
 
     @keyframes loadInnerCore2 {

@@ -11,48 +11,44 @@
         <div class="list-button-content" :class="{ 'active-content': isActive }">
             <component :is="action.icon" class="icon" :style="{ color: action.color }"></component>
             <span>{{ action.name }}</span>
-            <span v-if="tasks.length">x{{ tasks.length }}</span>
-            <plus class="add-button" />
+            <span v-if="itemCount">x{{ itemCount }}</span>
+            <plus class="add-button" @click="$emit('item:add')" />
         </div>
     </input-panel>
 
-    <div class="summary-cards" :class="{ 'active-cards': isActive }">
-        <task-summary-card v-for="task of tasks"
-            class="summary-card"
-            :key="task.name"
-            :task="task"
-            @click="$emit('summary:select', task)">
-        </task-summary-card>
+    <div class="items" :class="{ 'active-items': isActive }">
+        <overlay-scrollbar-panel v-show="isActive" v-if="itemCount" class="scrollbar-wrapper">
+            <div><slot></slot></div>
+        </overlay-scrollbar-panel>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { Plus } from 'mdue';
-// eslint-disable-next-line no-unused-vars
-import { TaskItem } from '../../core/data-model/task-item';
-import { ActionButton } from '../../core/data-model/action-button';
-import TaskSummaryCard from '../cards/TaskSummaryCard.vue';
-import InputPanel from '../panels/InputPanel.vue';
 
-class TaskListProp {
+import { ActionButton } from '../../core/data-model/action-button';
+import InputPanel from '../panels/InputPanel.vue';
+import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
+
+class ItemListProp {
     public isActive = prop<boolean>({ default: false });
     public action = prop<ActionButton>({ default: new ActionButton() });
-    public tasks = prop<TaskItem[]>({ default: [] });
+    public itemCount = prop<number>({ default: 0 });
 }
 
 @Options({
     components: {
         Plus,
-        TaskSummaryCard,
-        InputPanel
+        InputPanel,
+        OverlayScrollbarPanel
     },
     emits: [
         'activate',
-        'summary:select'
+        'item:add'
     ]
 })
-export default class TaskList extends Vue.with(TaskListProp) { }
+export default class ItemList extends Vue.with(ItemListProp) { }
 </script>
 
 <style lang="scss" scoped>
@@ -78,7 +74,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
 .list-button {
 
     .list-button-content {
-        $padding-side: 0.75em;
+        $padding-side: 5%;
 
         display: flex;
         align-items: center;
@@ -87,15 +83,25 @@ export default class TaskList extends Vue.with(TaskListProp) { }
         height: 100%;
         background-color: rgba(63, 62, 68, 0.6);
         color: rgba(255, 255, 255, 0.5);
-        font-size: 1.25em;
+        font-size: 0.5rem;
         transition: color 0.3s, filter 0.3s, background-color 0.2s;
 
+        &:hover, .active-content {
+            cursor: pointer;
+            background-color: rgb(63, 62, 68);
+            color: rgb(255, 255, 255);
+
+            .icon {
+                filter: brightness(1);
+            }
+        }
+
         span {
-            margin-left: 0.5em;
+            margin-left: 2%;
         }
 
         .icon, .add-button {
-            font-size: 1.4em;
+            font-size: 0.8rem;
             filter: brightness(0.7);
         }
 
@@ -109,43 +115,30 @@ export default class TaskList extends Vue.with(TaskListProp) { }
                 filter: brightness(1);
             }
         }
+
+        &:hover .add-button {
+            opacity: 1;
+        }
     }
+}
 
-    .list-button-content:hover, .active-content {
-        cursor: pointer;
-        background-color: rgb(63, 62, 68);
-        color: rgb(255, 255, 255);
+.items {
+    flex: 0;
+    width: 100%;
+    transition: flex 0.4s;
 
-        .icon {
-            filter: brightness(1);
+    .scrollbar-wrapper {
+        width: 100%;
+        height: 100%;
+
+        & > div {
+            display: flex;
+            flex-direction: column;
         }
     }
 
-    .list-button-content:hover .add-button {
-        opacity: 1;
-    }
-}
-
-.summary-cards {
-    flex: 0;
-    width: 100%;
-    overflow-y: auto;
-    transition: flex 0.4s;
-
-    .summary-card {
-        width: 100%;
-        height: 8%;
-        max-height: 45px;
-        margin-bottom: 1px;
-        opacity: 0;
-    }
-}
-
-.active-cards {
-    flex: 1;
-
-    .summary-card {
-        animation: revealSummary 0.3s ease 0.4s forwards;
+    &.active-items {
+        flex: 1;
     }
 }
 
@@ -156,7 +149,7 @@ export default class TaskList extends Vue.with(TaskListProp) { }
     }
     to {
         margin-top: 2px;
-        height: 0.25em;
+        height: 0.75%;
     }
 }
 
@@ -172,15 +165,6 @@ export default class TaskList extends Vue.with(TaskListProp) { }
     100% {
         left: 0;
         width: 100%;
-        opacity: 1;
-    }
-}
-
-@keyframes revealSummary {
-    from {
-        opacity: 0;
-    }
-    to {
         opacity: 1;
     }
 }

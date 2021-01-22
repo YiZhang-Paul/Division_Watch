@@ -1,5 +1,5 @@
 <template>
-    <div class="input-panel-container">
+    <div class="input-panel-container" :style="{ '--input-base-delay': delay + 's' }">
         <div class="content" :class="{ 'no-animation': !hasAnimation }">
             <slot></slot>
         </div>
@@ -16,6 +16,7 @@ import { Vue, prop } from 'vue-class-component';
 
 class InputPanelProp {
     public hasAnimation = prop<boolean>({ default: true });
+    public delay = prop<number>({ default: 1 });
 }
 
 export default class InputPanel extends Vue.with(InputPanelProp) { }
@@ -23,7 +24,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
 
 <style lang="scss" scoped>
 .input-panel-container {
-    $square-dimension: 0.2rem;
+    $square-dimension: 0.1rem;
 
     position: relative;
 
@@ -31,7 +32,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
         width: 100%;
         height: 100%;
         opacity: 0;
-        animation: revealContent 0.3s ease 1.4s forwards;
+        animation: revealContent 0.3s ease calc(var(--input-base-delay) + 0.45s) forwards;
     }
 
     .square-top-left,
@@ -48,25 +49,25 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
     }
 
     .square-top-left {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
-                   moveSquareLeft 0.25s ease 1.1s forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards;
     }
 
     .square-top-right {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
-                   moveSquareRight 0.25s ease 1.1s forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards;
     }
 
     .square-bottom-left {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
-                   moveSquareLeft 0.25s ease 1.1s forwards,
-                   moveSquareDown 0.25s ease 1.35s forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareLeft 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards,
+                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.4s) forwards;
     }
 
     .square-bottom-right {
-        animation: blinkSquare 0.4s linear 0.7s forwards,
-                   moveSquareRight 0.25s ease 1.1s forwards,
-                   moveSquareDown 0.25s ease 1.35s forwards;
+        animation: revealContent 0.15s ease var(--input-base-delay) forwards,
+                   moveSquareRight 0.25s ease calc(var(--input-base-delay) + 0.15s) forwards,
+                   moveSquareDown 0.25s ease calc(var(--input-base-delay) + 0.4s) forwards;
     }
 
     .no-animation {
@@ -94,33 +95,9 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
         left: calc(100% - #{$square-dimension});
     }
 
-    @keyframes revealContent {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes blinkSquare {
-        0% {
-            opacity: 0;
-        }
-        33% {
-            opacity: 0.5;
-        }
-        66% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-
     @keyframes moveSquareLeft {
         from {
-            left: calc(50% - 0.1rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
             left: 0;
@@ -129,10 +106,10 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
 
     @keyframes moveSquareRight {
         from {
-            left: calc(50% - 0.1rem);
+            left: calc(50% - #{$square-dimension} / 2);
         }
         to {
-            left: calc(100% - 0.2rem);
+            left: calc(100% - #{$square-dimension});
         }
     }
 
@@ -141,7 +118,7 @@ export default class InputPanel extends Vue.with(InputPanelProp) { }
             top: 0;
         }
         to {
-            top: calc(100% - 0.2rem);
+            top: calc(100% - #{$square-dimension});
         }
     }
 }

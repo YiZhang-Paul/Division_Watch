@@ -1,10 +1,10 @@
 <template>
-    <div class="task-manager-container">
+    <div class="item-manager-container">
         <top-toolbar class="top-toolbar" :actions="actions"></top-toolbar>
 
         <div class="contents">
-            <task-selector class="task-selector"></task-selector>
-            <task-editor class="task-editor"></task-editor>
+            <item-selector class="item-selector"></item-selector>
+            <item-editor class="item-editor"></item-editor>
         </div>
     </div>
 </template>
@@ -14,12 +14,13 @@ import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { Cog, CheckBold, Finance } from 'mdue';
 
+import store from '../../store';
 import { ActionButton } from '../../core/data-model/action-button';
 import GlassPanel from '../../shared/panels/GlassPanel.vue';
 import TopToolbar from '../../shared/components/TopToolbar.vue';
 
-import TaskSelector from './TaskSelector.vue';
-import TaskEditor from './TaskEditor.vue';
+import ItemSelector from './ItemSelector.vue';
+import ItemEditor from './ItemEditor.vue';
 
 @Options({
     components: {
@@ -28,30 +29,36 @@ import TaskEditor from './TaskEditor.vue';
         Finance,
         GlassPanel,
         TopToolbar,
-        TaskSelector,
-        TaskEditor
+        ItemSelector,
+        ItemEditor
     }
 })
-export default class TaskManager extends Vue {
+export default class ItemManager extends Vue {
     public actions: ActionButton[] = [
         markRaw(new ActionButton('stats', Finance, 'rgb(33, 188, 254)')),
         markRaw(new ActionButton('settings', Cog, 'rgb(255, 255, 255)')),
         markRaw(new ActionButton('close', CheckBold, 'rgb(21, 200, 39)'))
     ];
+
+    public async created(): Promise<void> {
+        const date = new Date().toISOString().replace(/T.*/g, '');
+        await store.dispatch('taskItem/loadTaskItemOptions', date);
+        await store.dispatch('category/loadCategories');
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-.task-manager-container {
+.item-manager-container {
     $top-toolbar-height: 8%;
-    $task-selector-width: 35%;
+    $item-selector-width: 40%;
 
     display: flex;
     flex-direction: column;
 
     .contents {
         display: flex;
-        margin-top: 1em;
+        margin-top: 1%;
         width: 100%;
         height: calc(100% - #{$top-toolbar-height});
     }
@@ -61,14 +68,14 @@ export default class TaskManager extends Vue {
         height: $top-toolbar-height;
     }
 
-    .task-selector {
-        width: $task-selector-width;
+    .item-selector {
+        width: $item-selector-width;
         height: 100%;
     }
 
-    .task-editor {
-        margin-left: 1em;
-        width: calc(100% - #{$task-selector-width});
+    .item-editor {
+        margin-left: 1%;
+        width: calc(100% - #{$item-selector-width});
         height: 100%;
     }
 }

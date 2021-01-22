@@ -82,29 +82,27 @@ export default class AgentWatch extends Vue {
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
-        animation: loadWatchData 0.4s ease forwards;
+        animation: revealContent 0.4s ease forwards;
         opacity: 0;
-    }
-
-    .battery-display, .weather-display {
-        bottom: $time-display-top;
     }
 
     .battery-display {
         left: 21.5%;
-        width: 13%;
-        height: 6%;
+        bottom: 57.25%;
+        width: 15%;
+        height: 7.5%;
     }
 
     .weather-display {
-        right: 25%;
+        right: 21.5%;
+        bottom: $time-display-top;
     }
 
     .time-display {
         $width: 65%;
         $height: 34%;
 
-        bottom: calc(#{$time-display-top} - #{$height});
+        bottom: calc(57% - #{$height});
         right: calc(50% - #{$width} / 2);
         width: $width;
         height: $height;
@@ -112,7 +110,7 @@ export default class AgentWatch extends Vue {
 
     .logo, .session-count-down {
         position: absolute;
-        animation: loadLogo 0.7s ease-in 0.2s forwards;
+        animation: blinkNormal 0.7s ease-in 0.2s forwards;
         opacity: 0;
 
         &:hover {
@@ -121,7 +119,7 @@ export default class AgentWatch extends Vue {
     }
 
     .logo {
-        $width: 39.5%;
+        $width: 38%;
 
         top: 5%;
         right: calc(50% - #{$width} / 2);
@@ -138,7 +136,7 @@ export default class AgentWatch extends Vue {
     }
 
     .logo-no-blink {
-        animation: loadWatchData 0.4s ease forwards;
+        animation: revealContent 0.4s ease forwards;
     }
 
     .access-menu {
@@ -149,51 +147,6 @@ export default class AgentWatch extends Vue {
         left: calc(50% - #{$overlay-dimension} / 2);
         width: calc(#{$overlay-dimension} - 4px);
         height: calc(#{$overlay-dimension} - 4px);
-    }
-
-    @keyframes loadWatchData {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes loadLogo {
-        0% {
-            opacity: 0;
-        }
-        10% {
-            opacity: 0.1;
-        }
-        11% {
-            opacity: 1;
-        }
-        30% {
-            opacity: 1;
-        }
-        31% {
-            opacity: 0.1;
-        }
-        50% {
-            opacity: 0.1;
-        }
-        51% {
-            opacity: 1;
-        }
-        70% {
-            opacity: 1;
-        }
-        71% {
-            opacity: 0.1;
-        }
-        72% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 1;
-        }
     }
 }
 </style>
