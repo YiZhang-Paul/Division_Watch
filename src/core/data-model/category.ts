@@ -3,5 +3,5 @@ export class Category {
     public name = '';
     public description = '';
     public icon = '';
-    public color = 'rgb(33, 136, 233)';
+    public color = 'rgb(33, 109, 224)';
 }
