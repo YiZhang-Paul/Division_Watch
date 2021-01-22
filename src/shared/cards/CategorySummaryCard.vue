@@ -1,9 +1,9 @@
 <template>
     <div class="category-summary-card-container">
-        <component v-if="category.icon"
+        <component v-if="icon"
             class="icon"
             :style="{ color: category.color }"
-            :is="category.icon">
+            :is="icon">
         </component>
 
         <div v-if="!category.icon"
@@ -19,12 +19,18 @@
 import { Vue, prop } from 'vue-class-component';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/category';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class CategorySummaryCardProp {
     public category = prop<Category>({ default: null });
 }
 
-export default class CategorySummaryCard extends Vue.with(CategorySummaryCardProp) { }
+export default class CategorySummaryCard extends Vue.with(CategorySummaryCardProp) {
+
+    get icon(): any {
+        return GenericUtility.getIcon(this.category.icon);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -43,10 +49,17 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     }
 
     .default-icon {
-        margin-left: 0.25rem;
-        width: 0.4rem;
-        height: 0.4rem;
+        margin-left: 0.35rem;
+        margin-right: 0.075rem;
+        width: 0.45rem;
+        height: 0.45rem;
         border-radius: 50%;
+    }
+
+    .icon {
+        margin-left: 0.225rem;
+        width: 0.65rem;
+        height: 0.65rem;
     }
 
     & > span:first-of-type {
