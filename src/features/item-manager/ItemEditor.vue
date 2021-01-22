@@ -75,9 +75,15 @@ export default class ItemEditor extends Vue {
     }
 
     get showTaskView(): boolean {
-        const name = this.activeItemList;
+        if (!this.task) {
+            return false;
+        }
 
-        return Boolean(this.task) && (name === ItemListName.Tasks || name === ItemListName.Interruptions);
+        const name = this.activeItemList;
+        const showTask = !this.task.isInterruption && name === ItemListName.Tasks;
+        const showInterruption = this.task.isInterruption && name === ItemListName.Interruptions;
+
+        return showTask || showInterruption;
     }
 
     get activeItemList(): ItemListName {
