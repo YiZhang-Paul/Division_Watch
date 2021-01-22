@@ -2,7 +2,7 @@
     <div class="color-selector-container">
         <div v-for="(color, index) of colors"
             :key="index"
-            :class="{ 'active': isActive(color) }"
+            :class="{ 'active': isActive(color), 'light-color': isLightColor(color) }"
             :style="getOptionStyle(color, index)"
             @click="$emit('color:select', color)">
         </div>
@@ -27,6 +27,10 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
 
     public isActive(color: Color): boolean {
         return Boolean(this.active) && Color.toString(this.active) === Color.toString(color);
+    }
+
+    public isLightColor(color: Color): boolean {
+        return Color.isLightColor(color);
     }
 
     public getOptionStyle(color: Color, index: number): { [key: string]: string } {
@@ -65,6 +69,10 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
             width: calc(1rem - 4px);
             height: calc(1rem - 4px);
             border: 2px solid rgb(255, 255, 255);
+        }
+
+        &.active.light-color {
+            border-color: rgb(69, 151, 245);
         }
     }
 }
