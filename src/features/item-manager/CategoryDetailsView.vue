@@ -74,7 +74,8 @@ class CategoryDetailsViewProp {
     emits: [
         'category:add',
         'category:change',
-        'category:update'
+        'category:update',
+        'category:delete'
     ]
 })
 export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewProp) {
