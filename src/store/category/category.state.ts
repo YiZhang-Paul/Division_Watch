@@ -47,12 +47,14 @@ const actions = {
     async loadCategories(context: ActionContext<ICategoryState, any>): Promise<void> {
         context.commit('setCategories', await categoryHttpService.getCategories());
     },
-    async addCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<void> {
+    async addCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<Category> {
         const added = await categoryHttpService.addCategory(category);
 
         if (added) {
             context.commit('addCategory', added);
         }
+
+        return added;
     },
     async updateCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<void> {
         if (await categoryHttpService.updateCategory(category)) {

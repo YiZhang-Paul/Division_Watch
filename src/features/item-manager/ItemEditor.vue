@@ -103,8 +103,12 @@ export default class ItemEditor extends Vue {
         return this.task ? store.getters['taskItem/incompleteChildTasks'](this.task.id) : [];
     }
 
-    public onCategoryAdd(category: Category): void {
-        store.commit('category/addCategory', category);
+    public async onCategoryAdd(category: Category): Promise<void> {
+        const added = await store.dispatch('category/addCategory', category);
+
+        if (added) {
+            this.onCategoryChange(added);
+        }
     }
 
     public onCategoryChange(category: Category): void {
