@@ -106,7 +106,6 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { ArrowLeftCircle, CloudUpload } from 'mdue';
 
 import store from '../../store';
-// eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
@@ -162,7 +161,9 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     }
 
     get categories(): Category[] {
-        return store.getters['category/categories'];
+        const categories: Category[] = store.getters['category/categories'];
+
+        return [new Category('N/A'), ...categories];
     }
 
     get selectedCategory(): Category {
