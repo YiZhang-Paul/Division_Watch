@@ -40,6 +40,7 @@ export default class IconSelector extends Vue.with(IconSelectorProp) {
     flex-wrap: wrap;
 
     .icon {
+        margin-top: 1.5%;
         margin-right: 2%;
         color: rgb(255, 255, 255);
         filter: brightness(0.6);
