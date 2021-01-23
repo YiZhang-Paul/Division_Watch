@@ -26,7 +26,8 @@
                 :category="category"
                 @category:add="onCategoryAdd($event)"
                 @category:change="onCategoryChange($event)"
-                @category:update="onCategoryUpdate($event)">
+                @category:update="onCategoryUpdate($event)"
+                @category:delete="onCategoryDelete($event)">
             </category-details-view>
         </overlay-scrollbar-panel>
     </glass-panel>
@@ -117,6 +118,12 @@ export default class ItemEditor extends Vue {
 
     public onCategoryUpdate(category: Category): void {
         store.dispatch('category/updateCategory', category);
+    }
+
+    public async onCategoryDelete(category: Category): Promise<void> {
+        if (await store.dispatch('category/deleteCategory', category)) {
+            store.commit('category/setActiveCategory', null);
+        }
     }
 
     public async addParentTask(task: TaskItem): Promise<void> {

@@ -35,6 +35,9 @@ const mutations = {
             state.categories = GenericUtility.replaceAt(state.categories, category, index);
         }
     },
+    deleteCategory(state: ICategoryState, category: Category): void {
+        state.categories = state.categories.filter(_ => _.id !== category.id);
+    },
     setCategories(state: ICategoryState, categories: Category[]): void {
         state.categories = categories;
     },
@@ -60,6 +63,15 @@ const actions = {
         if (await categoryHttpService.updateCategory(category)) {
             context.commit('setCategory', category);
         }
+    },
+    async deleteCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<boolean> {
+        if (!await categoryHttpService.deleteCategory(category)) {
+            return false;
+        }
+
+        context.commit('deleteCategory', category);
+
+        return true;
     },
     swapActiveCategory(context: ActionContext<ICategoryState, any>, category: Category): void {
         context.commit('setActiveCategory', null);
