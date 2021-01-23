@@ -38,6 +38,11 @@
             :delay="0.85"
             @icon:select="onCategoryChange('icon', $event)">
         </icon-selector>
+
+        <category-danger-zone v-if="category.id"
+            class="edit-item danger-zone"
+            @category:delete="$emit('category:delete', category)">
+        </category-danger-zone>
     </div>
 </template>
 
@@ -52,6 +57,8 @@ import ColorSelector from '../../shared/inputs/ColorSelector.vue';
 import IconSelector from '../../shared/inputs/IconSelector.vue';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 
+import CategoryDangerZone from './CategoryDangerZone.vue';
+
 class CategoryDetailsViewProp {
     public category = prop<Category>({ default: null });
 }
@@ -61,7 +68,8 @@ class CategoryDetailsViewProp {
         CloudUpload,
         ColorSelector,
         IconSelector,
-        InputPanel
+        InputPanel,
+        CategoryDangerZone
     },
     emits: [
         'category:add',
@@ -211,6 +219,11 @@ export default class CategoryDetailsView extends Vue.with(CategoryDetailsViewPro
             resize: none;
             outline: none;
         }
+    }
+
+    .danger-zone {
+        margin-top: auto;
+        margin-bottom: 6%;
     }
 }
 </style>
