@@ -54,9 +54,9 @@ export default class AccessMenu extends Vue {
     public options = [
         markRaw({ name: 'On/Off', icon: PowerStandby, angle: 51, color: 'rgb(24, 238, 20)' }),
         markRaw({ name: 'Start', icon: Play, angle: 131, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Tasks', icon: TimerSand, angle: 211, color: 'rgb(238, 255, 133)' }),
-        markRaw({ name: 'Planner', icon: PaletteSwatch, angle: 251, color: 'rgb(238, 123, 107)' }),
-        markRaw({ name: 'Backlog', icon: InboxMultiple, angle: 291, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: 'Ongoing', icon: PaletteSwatch, angle: 211, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: 'Planner', icon: TimerSand, angle: 251, color: 'rgb(238, 255, 133)' }),
+        markRaw({ name: 'Backlog', icon: InboxMultiple, angle: 291, color: 'rgb(238, 123, 107)' }),
         markRaw({ name: 'Stats', icon: Finance, angle: 331, color: 'rgb(33, 188, 254)' }),
         markRaw({ name: 'Settings', icon: Cog, angle: 371, color: 'rgb(255, 255, 255)' })
     ];

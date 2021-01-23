@@ -58,7 +58,7 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { ExclamationThick, FormatListBulletedType, Plus, TimerSand } from 'mdue';
+import { ExclamationThick, FormatListBulletedType, Plus, Target } from 'mdue';
 
 import store from '../../store';
 import { ActionButton } from '../../core/data-model/action-button';
@@ -76,7 +76,7 @@ import ItemList from '../../shared/components/ItemList.vue';
     components: {
         ExclamationThick,
         Plus,
-        TimerSand,
+        Target,
         CategorySummaryCard,
         TaskSummaryCard,
         InputPanel,
@@ -85,9 +85,9 @@ import ItemList from '../../shared/components/ItemList.vue';
     }
 })
 export default class ItemSelector extends Vue {
-    public taskButton = new ActionButton(ItemListName.Tasks, markRaw(TimerSand), 'rgb(255, 28, 82)');
-    public interruptionButton = new ActionButton(ItemListName.Interruptions, markRaw(ExclamationThick), 'rgb(0, 117, 255)');
-    public categoryButton = new ActionButton(ItemListName.Categories, markRaw(FormatListBulletedType), 'rgb(245, 238, 58)');
+    public taskButton = new ActionButton(ItemListName.Tasks, markRaw(Target), 'rgb(221, 236, 236)');
+    public interruptionButton = new ActionButton(ItemListName.Interruptions, markRaw(ExclamationThick), 'rgb(116, 211, 240)');
+    public categoryButton = new ActionButton(ItemListName.Categories, markRaw(FormatListBulletedType), 'rgb(227, 230, 95)');
     public isLoaded = false;
 
     get categories(): Category[] {

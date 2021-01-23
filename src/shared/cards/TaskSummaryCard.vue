@@ -1,5 +1,7 @@
 <template>
-    <div v-if="task" class="task-summary-card-container" :style="containerStyle">
+    <div v-if="task" class="task-summary-card-container">
+        <div class="priority-indicator" :style="priorityIndicatorStyle"></div>
+
         <div class="card-content">
             <template v-if="!task.parent">
                 <component v-if="icon"
@@ -72,8 +74,8 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         return store.getters['category/category'](this.task.categoryId);
     }
 
-    get containerStyle(): { [key: string]: string } {
-        return { 'background-color': `rgba(${this.baseColor}, 0.5)` };
+    get priorityIndicatorStyle(): { [key: string]: string } {
+        return { 'background-color': `rgba(${this.baseColor}, 0.9)` };
     }
 
     get baseColor(): string {
@@ -116,6 +118,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     display: flex;
     align-items: center;
     color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(85, 85, 85, 0.4);
     font-size: 0.4rem;
 
     &:hover {
@@ -169,6 +172,13 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
             display: inline-block;
             animation: revealContent 0.2s ease-in forwards;
         }
+    }
+
+    .priority-indicator {
+        margin-left: 0.175rem;
+        width: 0.2rem;
+        height: 75%;
+        border-radius: 2px;
     }
 
     .icon {

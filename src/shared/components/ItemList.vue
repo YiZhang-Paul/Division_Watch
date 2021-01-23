@@ -86,9 +86,9 @@ export default class ItemList extends Vue.with(ItemListProp) { }
         font-size: 0.5rem;
         transition: color 0.3s, filter 0.3s, background-color 0.2s;
 
-        &:hover, .active-content {
+        &:hover, &.active-content {
             cursor: pointer;
-            background-color: rgb(63, 62, 68);
+            background-color: rgba(246, 149, 78, 0.65);
             color: rgb(255, 255, 255);
 
             .icon {
@@ -102,7 +102,7 @@ export default class ItemList extends Vue.with(ItemListProp) { }
 
         .icon, .add-button {
             font-size: 0.8rem;
-            filter: brightness(0.7);
+            filter: brightness(0.85);
         }
 
         .add-button {

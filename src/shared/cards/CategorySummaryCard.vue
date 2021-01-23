@@ -49,7 +49,7 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     }
 
     .default-icon {
-        margin-left: 0.35rem;
+        margin-left: 0.725rem;
         margin-right: 0.075rem;
         width: 0.425rem;
         height: 0.425rem;
@@ -57,7 +57,7 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     }
 
     .icon {
-        margin-left: 0.225rem;
+        margin-left: 0.6rem;
         width: 0.65rem;
         height: 0.65rem;
     }
