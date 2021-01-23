@@ -10,7 +10,7 @@
 
                 <div v-if="!category?.icon"
                     class="default-category-icon"
-                    :style="{ 'background-color': category?.color }">
+                    :style="{ 'background-color': category?.color || 'rgb(33, 109, 224)' }">
                 </div>
 
                 <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
