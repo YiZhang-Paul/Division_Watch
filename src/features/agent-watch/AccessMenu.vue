@@ -33,6 +33,7 @@ import { Options, Vue } from 'vue-class-component';
 import { Apps, CloseCircle, Cog, ExclamationThick, PowerStandby, Timer } from 'mdue';
 
 import store from '../../store';
+import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
 
 @Options({
     components: {
@@ -50,11 +51,11 @@ import store from '../../store';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        markRaw({ name: 'On/Off', icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Settings', icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
-        markRaw({ name: 'Main Menu', icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
-        markRaw({ name: 'Ongoing', icon: Timer, angle: 271, color: 'rgb(255, 9, 9)' }),
-        markRaw({ name: 'Interruption', icon: ExclamationThick, angle: 306, color: 'rgb(33, 188, 254)' })
+        markRaw({ name: WatchMenuOption.Power, icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: WatchMenuOption.Setting, icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
+        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
+        markRaw({ name: WatchMenuOption.Ongoing, icon: Timer, angle: 271, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: WatchMenuOption.Interruption, icon: ExclamationThick, angle: 306, color: 'rgb(33, 188, 254)' })
     ];
 
     public activeOption = '';
