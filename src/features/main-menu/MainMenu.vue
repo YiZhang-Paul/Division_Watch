@@ -1,6 +1,6 @@
 <template>
     <div class="main-menu-container">
-        <div v-if="stage === 1" class="stage-1">
+        <div v-show="stage === 1" class="stage-1">
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1, false)"></div>
             </div>
@@ -8,11 +8,19 @@
             <div class="wave-circle" v-for="n in 3" :key="n" :class="{ 'last-wave': n === 3 }"></div>
         </div>
 
-        <div v-if="stage === 2" class="stage-2">
+        <div v-show="stage >= 2 && stage < 3" class="stage-2">
             <div class="blur-layer"></div>
 
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1)"></div>
+            </div>
+
+            <div class="box-wrapper">
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="box"></div>
             </div>
         </div>
     </div>
@@ -26,7 +34,9 @@ export default class MainMenu extends Vue {
 
     public mounted(): void {
         const lastWave = document.querySelector('.last-wave');
+        const box = document.querySelector('.box');
         lastWave?.addEventListener('animationend', () => this.stage++);
+        box?.addEventListener('animationend', () => setTimeout(() => this.stage += 0.5, 150));
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
@@ -72,7 +82,14 @@ export default class MainMenu extends Vue {
         background-color: rgba(205, 205, 205, 0.55);
     }
 
-    .stage-1, .stage-2 {
+    .blur-layer {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(227, 227, 227, 0.05);
+        filter: blur(5px);
+    }
+
+    .stage-1, .stage-2, .stage-3 {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -156,8 +173,6 @@ export default class MainMenu extends Vue {
         .blur-layer {
             width: 0;
             height: 0;
-            background-color: rgba(227, 227, 227, 0.05);
-            filter: blur(5px);
             animation: expandPanel $expand-time ease-in forwards;
         }
 
@@ -181,6 +196,87 @@ export default class MainMenu extends Vue {
                 to {
                     width: 90%;
                     height: 85%;
+                }
+            }
+        }
+
+        .box-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 1vw;
+            height: 0.5vh;
+            opacity: 0;
+            animation: revealContent 0.1s ease $expand-time forwards,
+                       blinkNormal 1s ease calc(#{$expand-time} + 0.1s) forwards,
+                       expandBoxWrapper 0.8s linear calc(#{$expand-time} + 0.5s) forwards;
+
+            .corner-box {
+                position: absolute;
+                width: 1vw;
+                height: 0.5vh;
+                background-color: rgba(205, 205, 205, 0.4);
+
+                &:nth-child(1) {
+                    left: 0;
+                    top: 0;
+                }
+
+                &:nth-child(2) {
+                    left: 0;
+                    bottom: 0;
+                }
+
+                &:nth-child(3) {
+                    right: 0;
+                    top: 0;
+                }
+
+                &:nth-child(4) {
+                    right: 0;
+                    bottom: 0;
+                }
+            }
+
+            .box {
+                position: absolute;
+                width: 70%;
+                height: 20%;
+                min-height: 0.4vh;
+                border: 1px solid rgba(205, 205, 205, 0.3);
+                opacity: 0;
+                animation: revealContent 0.1s ease calc(#{$expand-time} + 0.75s) forwards,
+                           expandBox 0.4s linear calc(#{$expand-time} + 1s) forwards;
+            }
+
+            @keyframes expandBoxWrapper {
+                0% {
+                    width: 1vw;
+                    height: 0.5vh;
+                }
+                40% {
+                    width: 70%;
+                    height: 2vh;
+                }
+                70% {
+                    width: 70%;
+                    height: 2vh;
+                }
+                100% {
+                    width: 95%;
+                    height: 95%;
+                }
+            }
+
+            @keyframes expandBox {
+                from {
+                    width: 70%;
+                    height: 20%;
+                }
+                to {
+                    width: 95%;
+                    height: 95%;
                 }
             }
         }
