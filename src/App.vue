@@ -1,18 +1,29 @@
 <template>
     <agent-watch class="agent-watch"></agent-watch>
+    <main-menu v-if="activeView === viewOption.MainMenu"></main-menu>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from './store';
+import { mainViewKey } from './store/main-view/main-view.state';
+import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
+import MainMenu from './features/main-menu/MainMenu.vue';
 
 @Options({
     components: {
-        AgentWatch
+        AgentWatch,
+        MainMenu
     }
 })
 export default class App extends Vue {
+    public viewOption = ViewOption;
+
+    get activeView(): ViewOption {
+        return store.getters[`${mainViewKey}/activeView`];
+    }
 
     public mounted(): void {
         this.updateFontSize();
