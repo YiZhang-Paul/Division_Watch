@@ -30,20 +30,18 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
+import { Apps, CloseCircle, Cog, ExclamationThick, PowerStandby, Timer } from 'mdue';
 
 import store from '../../store';
 
 @Options({
     components: {
-        Cog,
+        Apps,
         CloseCircle,
-        Finance,
-        InboxMultiple,
+        Cog,
+        ExclamationThick,
         PowerStandby,
-        Play,
-        PaletteSwatch,
-        TimerSand
+        Timer
     },
     emits: [
         'menu:select',
@@ -52,13 +50,11 @@ import store from '../../store';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        markRaw({ name: 'On/Off', icon: PowerStandby, angle: 51, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Start', icon: Play, angle: 131, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Ongoing', icon: PaletteSwatch, angle: 211, color: 'rgb(255, 9, 9)' }),
-        markRaw({ name: 'Planner', icon: TimerSand, angle: 251, color: 'rgb(238, 255, 133)' }),
-        markRaw({ name: 'Backlog', icon: InboxMultiple, angle: 291, color: 'rgb(238, 123, 107)' }),
-        markRaw({ name: 'Stats', icon: Finance, angle: 331, color: 'rgb(33, 188, 254)' }),
-        markRaw({ name: 'Settings', icon: Cog, angle: 371, color: 'rgb(255, 255, 255)' })
+        markRaw({ name: 'On/Off', icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: 'Settings', icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
+        markRaw({ name: 'Main Menu', icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
+        markRaw({ name: 'Ongoing', icon: Timer, angle: 271, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: 'Interruption', icon: ExclamationThick, angle: 306, color: 'rgb(33, 188, 254)' })
     ];
 
     public activeOption = '';
@@ -103,7 +99,7 @@ export default class AccessMenu extends Vue {
         left: calc(50% - #{$option-name-dimension} / 2);
         width: calc(#{$option-name-dimension} - 4px);
         height: calc(#{$option-name-dimension} - 4px);
-        font-size: 0.5rem;
+        font-size: 0.6rem;
     }
 
     .option-button {
