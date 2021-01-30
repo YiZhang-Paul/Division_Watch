@@ -81,22 +81,13 @@ export default class AccessMenu extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.glass-panel {
-    background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
-    background-color: rgba(18, 18, 19, 0.95);
-    box-shadow: 0 0 4px 1px var(--border-shadow);
-    border: 2px solid var(--border-color);
-    border-radius: 50%;
-    opacity: 0.95;
-}
-
 .access-menu-container {
     $option-name-dimension: 60%;
 
     width: 100%;
     height: 100%;
     color: rgb(255, 255, 255);
-    font-family: 'Bruno Ace';
+    font-family: 'Jost';
 
     .option-name span, .close-menu {
         opacity: 0;

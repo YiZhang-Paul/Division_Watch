@@ -7,47 +7,52 @@
 
         <img v-show="canDisplayAgentMode"
             class="logo"
-            :class="{ 'logo-no-blink': !allowLogoBlink }"
+            :class="{ 'no-blink': !canBlinkLogo }"
             @click="isMenuOn = true"
             src="../../assets/images/shd_tech.jpg"
             draggable="false" />
 
-        <session-count-down v-show="canDisplayRogueMode"
-            class="session-count-down"
-            :class="{ 'logo-no-blink': !allowLogoBlink }"
+        <session-display v-show="canDisplayRogueMode"
+            class="session-display"
+            :class="{ 'no-blink': !canBlinkLogo }"
             @click="isMenuOn = true">
-        </session-count-down>
+        </session-display>
 
         <access-menu v-if="isMenuOn" class="access-menu" @menu:close="onMenuClose()"></access-menu>
     </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../store';
+import { watchBaseKey } from '../../store/watch-base/watch-base.state';
 import { WatchState } from '../../core/enums/watch-state.enum';
 
-import AccessMenu from './AccessMenu.vue';
-import BatteryDisplay from './BatteryDisplay.vue';
-import WeatherDisplay from './WeatherDisplay.vue';
-import TimeDisplay from './TimeDisplay.vue';
-import SessionCountDown from './SessionCountDown.vue';
 import WatchBase from './WatchBase.vue';
+import AccessMenu from './AccessMenu.vue';
+import SessionDisplay from './displays/SessionDisplay.vue';
+import BatteryDisplay from './displays/BatteryDisplay.vue';
+import WeatherDisplay from './displays/WeatherDisplay.vue';
+import TimeDisplay from './displays/TimeDisplay.vue';
+
+class AgentWatchProp {
+    public isRogue = prop<boolean>({ default: false });
+}
 
 @Options({
     components: {
+        WatchBase,
         AccessMenu,
+        SessionDisplay,
         BatteryDisplay,
         WeatherDisplay,
-        TimeDisplay,
-        SessionCountDown,
-        WatchBase
+        TimeDisplay
     }
 })
-export default class AgentWatch extends Vue {
+export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public state = WatchState.AgentBooting;
-    public allowLogoBlink = true;
+    public canBlinkLogo = true;
     public isMenuOn = false;
 
     get canDisplay(): boolean {
@@ -62,28 +67,27 @@ export default class AgentWatch extends Vue {
         return !this.isMenuOn && this.state === WatchState.RogueBooted;
     }
 
-    public onMenuClose(): void {
-        this.isMenuOn = false;
-        this.allowLogoBlink = false;
+    public onBooted(): void {
+        this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
+        store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
     }
 
-    public onBooted(): void {
-        this.state = WatchState.AgentBooted;
-        store.dispatch('watchBase/setAgentColorScheme');
+    public onMenuClose(): void {
+        this.isMenuOn = false;
+        this.canBlinkLogo = false;
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .agent-watch-container {
-    $time-display-top: 58%;
 
     border-radius: 50%;
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
-        animation: revealContent 0.4s ease forwards;
         opacity: 0;
+        animation: revealContent 0.4s ease forwards;
     }
 
     .battery-display {
@@ -95,23 +99,23 @@ export default class AgentWatch extends Vue {
 
     .weather-display {
         right: 21.5%;
-        bottom: $time-display-top;
+        bottom: 57.5%;
     }
 
     .time-display {
         $width: 65%;
-        $height: 34%;
+        $height: 30%;
 
-        bottom: calc(57% - #{$height});
+        bottom: calc(55% - #{$height});
         right: calc(50% - #{$width} / 2);
         width: $width;
         height: $height;
     }
 
-    .logo, .session-count-down {
+    .logo, .session-display {
         position: absolute;
-        animation: blinkNormal 0.7s ease-in 0.2s forwards;
         opacity: 0;
+        animation: blinkNormal 0.7s ease-in 0.2s forwards;
 
         &:hover {
             cursor: pointer;
@@ -126,7 +130,7 @@ export default class AgentWatch extends Vue {
         width: $width;
     }
 
-    .session-count-down {
+    .session-display {
         $dimension: 34%;
 
         top: 7.5%;
@@ -135,7 +139,7 @@ export default class AgentWatch extends Vue {
         height: $dimension;
     }
 
-    .logo-no-blink {
+    .no-blink {
         animation: revealContent 0.4s ease forwards;
     }
 

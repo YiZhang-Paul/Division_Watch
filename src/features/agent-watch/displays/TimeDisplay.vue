@@ -1,5 +1,5 @@
 <template>
-    <div id="time-display-area" class="time-display-container">
+    <div class="time-display-container">
         <span :style="{ color: colorOption.dayOfWeek }">{{ dayOfWeek }}</span>
 
         <div class="time">
@@ -26,13 +26,17 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import store from '../../store';
+import store from '../../../store';
 // eslint-disable-next-line no-unused-vars
-import { IWatchColorOption } from '../../store/watch-base/watch-base.state';
-import { TimeUtility } from '../../core/utilities/time/time.utility';
+import { IWatchColorOption, watchBaseKey } from '../../../store/watch-base/watch-base.state';
+import { TimeUtility } from '../../../core/utilities/time/time.utility';
 
 export default class TimeDisplay extends Vue {
     private now = new Date();
+
+    get colorOption(): IWatchColorOption {
+        return store.getters[`${watchBaseKey}/colorOption`];
+    }
 
     get hour(): string {
         return TimeUtility.prependZero(this.now.getHours());
@@ -58,10 +62,6 @@ export default class TimeDisplay extends Vue {
         return TimeUtility.getMonthName(this.now.getMonth()).slice(0, 3).toUpperCase();
     }
 
-    get colorOption(): IWatchColorOption {
-        return store.getters['watchBase/colorOption'];
-    }
-
     public created(): void {
         this.updateTime();
     }
@@ -81,10 +81,10 @@ export default class TimeDisplay extends Vue {
     justify-content: space-around;
     width: 100%;
     height: 100%;
-    font-family: 'Bruno Ace';
+    font-family: 'Jost';
 
     & > span:first-of-type {
-        font-size: 0.65rem;
+        font-size: 0.75rem;
     }
 
     .time, .date {
@@ -92,6 +92,7 @@ export default class TimeDisplay extends Vue {
     }
 
     .time {
+        margin-top: -1.5%;
         position: relative;
         font-family: 'Digital Numbers';
         font-size: 1.25rem;
@@ -113,7 +114,7 @@ export default class TimeDisplay extends Vue {
     }
 
     .date {
-        font-size: 0.5rem;
+        font-size: 0.6rem;
         color: rgb(255, 255, 255);
 
         span:last-of-type {

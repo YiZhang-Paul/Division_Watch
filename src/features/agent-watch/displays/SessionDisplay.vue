@@ -1,5 +1,5 @@
 <template>
-    <div class="session-count-down-container" :style="{ 'background-color': gaugeColor }">
+    <div class="session-display-container" :style="{ 'background-color': gaugeColor }">
         <div class="outer-circle"></div>
 
         <template v-if="percentage <= 50">
@@ -9,14 +9,14 @@
 
         <template v-if="percentage > 50">
             <div class="left-panel-50-plus"
-                :style="{ transform: 'rotate(' + 360 / 100 * (percentage - 50) + 'deg)', 'background-color': colorOption.countDown }">
+                :style="{ transform: 'rotate(' + 360 / 100 * (percentage - 50) + 'deg)', 'background-color': colorOption.session }">
             </div>
 
-            <div class="right-panel-50-plus" :style="{ 'background-color': colorOption.countDown }"></div>
+            <div class="right-panel-50-plus" :style="{ 'background-color': colorOption.session }"></div>
         </template>
 
         <div class="inner-circle" :style="{ 'background-color': colorOption.background }">
-            <img src="../../assets/images/rogue_skull.png" draggable="false" />
+            <img src="../../../assets/images/rogue_skull.png" draggable="false" />
             <span class="remaining-time">{{ minutesLeft }}</span>
         </div>
     </div>
@@ -25,23 +25,23 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
-import store from '../../store';
+import store from '../../../store';
 // eslint-disable-next-line no-unused-vars
-import { IWatchColorOption } from '../../store/watch-base/watch-base.state';
+import { IWatchColorOption, watchBaseKey } from '../../../store/watch-base/watch-base.state';
 
 @Options({
     emits: ['time:depleted']
 })
-export default class SessionCountDown extends Vue {
+export default class SessionDisplay extends Vue {
     private readonly total = 60 * 25;
     private remaining = this.total;
 
     get colorOption(): IWatchColorOption {
-        return store.getters['watchBase/colorOption'];
+        return store.getters[`${watchBaseKey}/colorOption`];
     }
 
     get gaugeColor(): string {
-        return this.percentage <= 50 ? this.colorOption.countDown : 'rgb(138, 11, 11)';
+        return this.percentage <= 50 ? this.colorOption.session : 'rgb(138, 11, 11)';
     }
 
     get minutesLeft(): number {
@@ -72,7 +72,7 @@ export default class SessionCountDown extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.session-count-down-container {
+.session-display-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -118,7 +118,7 @@ export default class SessionCountDown extends Vue {
         top: 25%;
         position: absolute;
         font-family: 'Bruno Ace';
-        font-size: 0.5rem;
+        font-size: 0.6rem;
         color: rgb(255, 0, 0);
     }
 

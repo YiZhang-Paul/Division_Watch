@@ -1,5 +1,5 @@
 <template>
-    <div v-if="weather" class="weather-display-container">
+    <div class="weather-display-container">
         <img :src="weather.iconUrl" />
         <span>{{ temperature }}</span>
     </div>
@@ -8,8 +8,8 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import { WeatherDescription } from '../../core/data-model/weather-description';
-import { WeatherService } from '../../core/services/weather/weather.service';
+import { WeatherDescription } from '../../../core/data-model/generic/weather-description';
+import { WeatherService } from '../../../core/services/weather/weather.service';
 
 const weatherService = new WeatherService();
 
@@ -51,7 +51,7 @@ export default class WeatherDisplay extends Vue {
     span {
         margin-top: -17.5%;
         color: rgb(255, 255, 255);
-        font-family: 'Bruno Ace';
+        font-family: 'Jost';
         font-size: 0.4rem;
     }
 }

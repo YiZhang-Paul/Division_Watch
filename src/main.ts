@@ -2,6 +2,6 @@ import { createApp } from 'vue';
 import 'overlayscrollbars/css/OverlayScrollbars.css';
 
 import App from './App.vue';
-import store from './store';
+// import store from './store'; .use(store)
 
-createApp(App).use(store).mount('#app');
+createApp(App).mount('#app');

@@ -15,10 +15,10 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 
-import store from '../../store';
+import store from '../../../store';
 // eslint-disable-next-line no-unused-vars
-import { IWatchColorOption } from '../../store/watch-base/watch-base.state';
-import { TimeUtility } from '../../core/utilities/time/time.utility';
+import { IWatchColorOption, watchBaseKey } from '../../../store/watch-base/watch-base.state';
+import { TimeUtility } from '../../../core/utilities/time/time.utility';
 
 const browserBattery = require('browser-battery');
 
@@ -26,7 +26,7 @@ export default class BatteryDisplay extends Vue {
     public level = '00';
 
     get colorOption(): IWatchColorOption {
-        return store.getters['watchBase/colorOption'];
+        return store.getters[`${watchBaseKey}/colorOption`];
     }
 
     get indicatorStyle(): { [key: string]: string } {
@@ -34,7 +34,7 @@ export default class BatteryDisplay extends Vue {
 
         return {
             width: `${level}%`,
-            'background-color': level > 20 ? this.colorOption.batteryHigh: 'red'
+            'background-color': level > 20 ? this.colorOption.batteryHigh: 'rgb(255, 0, 0)'
         };
     }
 
@@ -84,7 +84,7 @@ export default class BatteryDisplay extends Vue {
     .level {
         position: relative;
         color: rgb(255, 255, 255);
-        font-family: 'Bruno Ace';
+        font-family: 'Jost';
         font-size: 0.4rem;
 
         & > span:first-of-type {

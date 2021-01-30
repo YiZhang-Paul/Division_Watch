@@ -1,7 +1,7 @@
 import { ActionContext } from 'vuex';
 
-import { ValueChange } from '../../core/data-model/generic/value-change';
-import { RangeChange } from '../../core/data-model/generic/range-change';
+import { ValueChange } from '../../core/data-model/value-change';
+import { RangeChange } from '../../core/data-model/range-change';
 
 export interface IWatchColorOption {
     background: string;
@@ -133,8 +133,6 @@ const actions = {
         commit('setColor', option);
     }
 };
-
-export const watchBaseKey = 'watchBase';
 
 export const watchBase = {
     namespaced: true,
