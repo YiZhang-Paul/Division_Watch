@@ -1,4 +1,5 @@
 export enum ViewOption {
     Inactive,
-    MainMenu
+    MainMenu,
+    Settings
 }
