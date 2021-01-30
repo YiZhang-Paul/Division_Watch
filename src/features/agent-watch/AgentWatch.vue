@@ -18,7 +18,11 @@
             @click="isMenuOn = true">
         </session-display>
 
-        <access-menu v-if="isMenuOn" class="access-menu" @menu:close="onMenuClose()"></access-menu>
+        <access-menu v-if="isMenuOn"
+            class="access-menu"
+            @menu:select="onMenuSelect($event)"
+            @menu:close="onMenuClose()">
+        </access-menu>
     </div>
 </template>
 
@@ -26,8 +30,11 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../store';
+import { mainViewKey } from '../../store/main-view/main-view.state';
 import { watchBaseKey } from '../../store/watch-base/watch-base.state';
 import { WatchState } from '../../core/enums/watch-state.enum';
+import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
+import { ViewOption } from '../../core/enums/view-option.enum';
 
 import WatchBase from './WatchBase.vue';
 import AccessMenu from './AccessMenu.vue';
@@ -70,6 +77,12 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public onBooted(): void {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
+    }
+
+    public onMenuSelect(option: WatchMenuOption): void {
+        if (option === WatchMenuOption.MainMenu) {
+            store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenu);
+        }
     }
 
     public onMenuClose(): void {
