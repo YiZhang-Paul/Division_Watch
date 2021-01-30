@@ -23,6 +23,11 @@
                 <div class="box"></div>
             </div>
         </div>
+
+        <div v-show="stage === 3" class="stage-3">
+            <div class="blur-layer"></div>
+            <div class="menu-cards"></div>
+        </div>
     </div>
 </template>
 
@@ -34,9 +39,10 @@ export default class MainMenu extends Vue {
 
     public mounted(): void {
         const lastWave = document.querySelector('.last-wave');
-        const box = document.querySelector('.box');
+        const stage2Wrapper = document.querySelector('.stage-2');
         lastWave?.addEventListener('animationend', () => this.stage++);
-        box?.addEventListener('animationend', () => setTimeout(() => this.stage += 0.5, 150));
+        // 8 animations in total
+        stage2Wrapper?.addEventListener('animationend', () => this.stage += 1 / 8);
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
@@ -97,7 +103,7 @@ export default class MainMenu extends Vue {
     }
 
     .stage-1 {
-        $reveal-time: 0.3s;
+        $reveal-time: 0.1s;
         $square-expand-time: 0.2s;
 
         width: 20vh;
@@ -130,20 +136,20 @@ export default class MainMenu extends Vue {
         }
 
         .wave-circle {
-            $base-delay: calc(#{$reveal-time} + #{$square-expand-time});
+            $base-delay: calc((#{$square-expand-time} + #{$reveal-time}) / 3 * 2);
 
             position: absolute;
             border: 1px solid rgba(205, 205, 205, 0.6);
             border-radius: 50%;
             opacity: 0;
-            animation: emitWave 0.65s ease-in-out $base-delay 2;
+            animation: emitWave 0.5s ease-in-out $base-delay forwards;
 
             &:nth-child(2) {
-                animation-delay: calc(#{$base-delay} + 0.25s);
+                animation-delay: calc(#{$base-delay} + 0.2s);
             }
 
             &:nth-child(3) {
-                animation-delay: calc(#{$base-delay} + 0.35s);
+                animation-delay: calc(#{$base-delay} + 0.3s);
             }
 
             @keyframes emitWave {
@@ -165,10 +171,11 @@ export default class MainMenu extends Vue {
     }
 
     .stage-2 {
-        $expand-time: 0.4s;
+        $expand-time: 0.3s;
 
         width: 100%;
         height: 100%;
+        animation: revealContent 0.2s ease-out 1.4s reverse forwards;
 
         .blur-layer {
             width: 0;
@@ -209,8 +216,8 @@ export default class MainMenu extends Vue {
             height: 0.5vh;
             opacity: 0;
             animation: revealContent 0.1s ease $expand-time forwards,
-                       blinkNormal 1s ease calc(#{$expand-time} + 0.1s) forwards,
-                       expandBoxWrapper 0.8s linear calc(#{$expand-time} + 0.5s) forwards;
+                       blinkNormal 0.9s ease calc(#{$expand-time} + 0.09s) forwards,
+                       expandBoxWrapper 0.6s linear calc(#{$expand-time} + 0.3s) forwards;
 
             .corner-box {
                 position: absolute;
@@ -246,8 +253,8 @@ export default class MainMenu extends Vue {
                 min-height: 0.4vh;
                 border: 1px solid rgba(205, 205, 205, 0.3);
                 opacity: 0;
-                animation: revealContent 0.1s ease calc(#{$expand-time} + 0.75s) forwards,
-                           expandBox 0.4s linear calc(#{$expand-time} + 1s) forwards;
+                animation: revealContent 0.1s ease calc(#{$expand-time} + 0.5s) forwards,
+                           expandBox 0.3s linear calc(#{$expand-time} + 0.7s) forwards;
             }
 
             @keyframes expandBoxWrapper {
@@ -279,6 +286,17 @@ export default class MainMenu extends Vue {
                     height: 95%;
                 }
             }
+        }
+    }
+
+    .stage-3 {
+        width: 100%;
+        height: 100%;
+
+        .menu-cards {
+            position: absolute;
+            width: 60%;
+            height: 75%;
         }
     }
 }
