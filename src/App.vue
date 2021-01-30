@@ -1,6 +1,6 @@
 <template>
-    <agent-watch class="agent-watch"></agent-watch>
     <main-menu v-if="activeView === viewOption.MainMenu"></main-menu>
+    <agent-watch class="agent-watch"></agent-watch>
 </template>
 
 <script lang="ts">
@@ -87,9 +87,5 @@ html, body {
     right: calc(#{$dimension} / 20);
     width: $dimension;
     height: $dimension;
-
-    &:nth-child(2) {
-        top: calc(#{$dimension} / 20 + #{$dimension});
-    }
 }
 </style>
