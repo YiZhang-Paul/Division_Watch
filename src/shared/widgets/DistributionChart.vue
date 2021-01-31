@@ -8,6 +8,7 @@
             v-for="(group, index) of groups"
             :key="index"
             :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
+            :useSimpleView="!group.highlight"
             :color="group.color"
             :percentage="getPercentage(index)"
             :delay="3200">
