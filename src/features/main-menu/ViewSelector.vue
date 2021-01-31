@@ -17,9 +17,9 @@ export default class ViewSelector extends Vue { }
 
 <style lang="scss" scoped>
 .view-selector-container {
-    $vertical-gap: 2.5%;
+    $vertical-gap: 1.25%;
     $horizontal-gap: 1%;
-    $planner-card-height: 57.5%;
+    $planner-card-height: 60%;
     $activities-card-height: 75%;
 
     display: flex;
@@ -30,9 +30,18 @@ export default class ViewSelector extends Vue { }
     height: 100%;
 
     .view-card {
-        border: 2px solid rgba(240, 240, 240, 0.7);
+        box-sizing: border-box;
+        border: 2px solid rgba(195, 195, 195, 0.6);
         background-color: rgba(0, 0, 0, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
+        filter: brightness(0.9);
+        transition: filter 0.3s, border-color 0.3s;
+
+        &:hover {
+            cursor: pointer;
+            border-color: rgba(240, 240, 240, 0.7);
+            filter: brightness(1);
+        }
     }
 
     .planner-view-card,
@@ -40,7 +49,7 @@ export default class ViewSelector extends Vue { }
     .activities-view-card,
     .login-view-card,
     .settings-view-card {
-        width: calc((100% - #{$horizontal-gap} * 2) * 0.3);
+        width: calc((100% - #{$horizontal-gap} * 2) * 0.32);
     }
 
     .planner-view-card, .ongoing-view-card {
@@ -66,16 +75,16 @@ export default class ViewSelector extends Vue { }
     }
 
     .login-view-card {
-        height: calc((100% - #{$activities-card-height}) / 5 * 3);
+        height: calc((100% - #{$activities-card-height}) * 0.6);
     }
 
     .settings-view-card {
-        height: calc((100% - #{$activities-card-height}) / 5 * 2);
+        height: calc((100% - #{$activities-card-height}) * 0.4);
     }
 
     .dashboard-view-card {
         margin-left: $horizontal-gap;
-        width: calc((100% - #{$horizontal-gap} * 2) * 0.4);
+        width: calc((100% - #{$horizontal-gap} * 2) * 0.36);
         height: 100%;
     }
 }

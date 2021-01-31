@@ -302,8 +302,8 @@ export default class MainMenu extends Vue {
 
         .view-selector {
             position: absolute;
-            width: 60%;
-            height: 75%;
+            width: 57.5%;
+            height: 65%;
         }
     }
 }
