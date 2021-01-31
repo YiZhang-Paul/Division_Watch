@@ -1,6 +1,6 @@
 <template>
     <div class="distribution-chart-container">
-        <div>
+        <div class="embed-content">
             <slot></slot>
         </div>
 
@@ -49,9 +49,18 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
 
 <style lang="scss" scoped>
 .distribution-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
     width: 100%;
     height: 100%;
+
+    .embed-content {
+        position: absolute;
+        width: 75%;
+        height: 75%;
+    }
 
     .percentage-chart {
         position: absolute;

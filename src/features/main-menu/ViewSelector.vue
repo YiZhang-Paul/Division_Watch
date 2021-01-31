@@ -60,7 +60,7 @@ export default class ViewSelector extends Vue { }
         background-color: rgba(0, 0, 0, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
         color: rgb(255, 255, 255);
-        filter: brightness(0.9);
+        filter: brightness(0.8);
         transition: filter 0.3s, border-color 0.3s;
         animation: blinkFast 0.15s ease-in forwards 2;
 

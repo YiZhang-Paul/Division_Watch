@@ -19,6 +19,11 @@ const getters = {
 
         return parents.sort((a, b) => b.priority.rank - a.priority.rank);
     },
+    incompleteChildTasks: (state: ITaskItemState): TaskItem[] => {
+        const children = state.incompleteItems.filter(_ => !_.isInterruption && _.parent);
+
+        return children.sort((a, b) => b.priority.rank - a.priority.rank);
+    },
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         const interruptions = state.incompleteItems.filter(_ => _.isInterruption);
 
