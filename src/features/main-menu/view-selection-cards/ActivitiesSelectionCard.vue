@@ -5,19 +5,23 @@
             <span class="message">tasks & interruptions</span>
         </div>
 
-        <distribution-chart class="distribution-chart" :groups="itemsDistribution">
-            <div class="item-counts">
-                <span class="task-count">
-                    <span>{{ tasks }}&nbsp;</span>
-                    <span>task{{ tasks > 1 ? 's' : '' }}</span>
-                </span>
+        <div class="distribution-charts">
+            <distribution-chart class="chart" :groups="itemsDistribution">
+                <div class="item-counts">
+                    <span class="task-count">
+                        <span>{{ tasks }}&nbsp;</span>
+                        <span>task{{ tasks > 1 ? 's' : '' }}</span>
+                    </span>
 
-                <span class="interruption-count">
-                    <span>{{ interruptions }}&nbsp;</span>
-                    <span>interruption{{ interruptions > 1 ? 's' : '' }}</span>
-                </span>
-            </div>
-        </distribution-chart>
+                    <span class="interruption-count">
+                        <span>{{ interruptions }}&nbsp;</span>
+                        <span>interruption{{ interruptions > 1 ? 's' : '' }}</span>
+                    </span>
+                </div>
+            </distribution-chart>
+
+            <distribution-chart class="chart" :groups="priorityDistribution"></distribution-chart>
+        </div>
     </div>
 </template>
 
@@ -53,6 +57,15 @@ export default class ActivitiesSelectionCard extends Vue {
             new DistributionGroup('Interruption', this.interruptions, 'rgb(83, 191, 252)')
         ];
     }
+
+    get priorityDistribution(): DistributionGroup[] {
+        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
+        const priorities = new Array(3).fill(0).map((_, i) => i);
+        const groups = priorities.map(rank => items.filter(_ => _.priority.rank === rank));
+        const colors = ['rgb(73, 207, 73)', 'rgb(238, 171, 70)', 'rgb(231, 72, 72)'];
+
+        return groups.map((_, i) => new DistributionGroup(_[0]?.priority?.name ?? '', _.length, colors[i], i === groups.length - 1));
+    }
 }
 </script>
 
@@ -70,7 +83,7 @@ export default class ActivitiesSelectionCard extends Vue {
         align-items: center;
 
         .title {
-            line-height: 1.75rem;
+            line-height: 1.5rem;
             font-size: 2rem;
         }
 
@@ -79,31 +92,49 @@ export default class ActivitiesSelectionCard extends Vue {
         }
     }
 
-    .distribution-chart, .item-counts {
-        transform: rotate(180deg);
-        transform-origin: 50% 50%;
-    }
-
-    .distribution-chart:nth-child(1) {
-        width: 30vh;
-        height: 30vh;
-    }
-
-    .item-counts {
+    .distribution-charts {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 100%;
-        height: 100%;
-    }
+        position: relative;
+        width: 29.5vh;
+        height: 29.5vh;
+        opacity: 0;
+        animation: revealContent 0.3s ease-in 0.35s forwards;
 
-    .task-count span:last-of-type {
-        color: rgb(246, 39, 226);
-    }
+        .chart, .item-counts {
+            transform: rotate(180deg);
+            transform-origin: 50% 50%;
+        }
 
-    .interruption-count span:last-of-type {
-        color: rgb(83, 191, 252);
+        .chart {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart:nth-child(2) {
+            width: 87.5%;
+            height: 87.5%;
+            transform: rotateX(180deg);
+        }
+
+        .item-counts {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .task-count span:last-of-type {
+            color: rgb(246, 39, 226);
+        }
+
+        .interruption-count span:last-of-type {
+            color: rgb(83, 191, 252);
+        }
     }
 }
 </style>

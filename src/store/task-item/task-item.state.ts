@@ -14,6 +14,7 @@ const state = (): ITaskItemState => ({
 });
 
 const getters = {
+    incompleteItems: (state: ITaskItemState): TaskItem[] => state.incompleteItems,
     incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
         const parents = state.incompleteItems.filter(_ => !_.isInterruption && !_.parent);
 
