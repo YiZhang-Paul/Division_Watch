@@ -7,8 +7,9 @@
         <percentage-chart class="percentage-chart"
             v-for="(group, index) of groups"
             :key="index"
+            :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
             :color="group.color"
-            :percentage="getPercentage(group)"
+            :percentage="getPercentage(index)"
             :delay="3200">
         </percentage-chart>
     </div>
@@ -30,10 +31,17 @@ class DistributionChartProp {
 })
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
 
-    public getPercentage(group: DistributionGroup): number {
+    public getRotation(index: number): number {
+        const indexes = new Array(index).fill(0);
+        const percentages = indexes.map((_, i) => this.getPercentage(i));
+
+        return 3.6 * percentages.reduce((total, _) => total + _, 0);
+    }
+
+    public getPercentage(index: number): number {
         const grandTotal = this.groups.reduce((total, _) => total + _.total, 0);
 
-        return Math.floor(group.total / grandTotal * 100 * 10) / 10;
+        return Math.floor(this.groups[index].total / grandTotal * 100 * 10) / 10;
     }
 }
 </script>
