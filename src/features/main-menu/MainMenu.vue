@@ -34,6 +34,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import VanillaTilt from "vanilla-tilt";
 
 import store from '../../store';
 import { taskItemKey } from '../../store/task-item/task-item.state';
@@ -58,6 +59,7 @@ export default class MainMenu extends Vue {
         lastWave?.addEventListener('animationend', () => this.stage++);
         // 8 animations in total
         stage2Wrapper?.addEventListener('animationend', () => this.stage += 1 / 8);
+        VanillaTilt.init(document.querySelector('.view-selector') as HTMLElement);
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
