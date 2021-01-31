@@ -3,15 +3,30 @@
         <div class="planner-view-card view-card"></div>
         <div class="ongoing-view-card view-card"></div>
         <div class="activities-view-card view-card"></div>
-        <div class="login-view-card view-card"></div>
-        <div class="settings-view-card view-card"></div>
+
+        <div class="login-view-card view-card">
+            <user-avatar class="user-avatar"></user-avatar>
+            <span>Log in</span>
+        </div>
+
+        <div class="settings-view-card view-card">
+            <span>Settings</span>
+        </div>
+
         <div class="dashboard-view-card view-card"></div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 
+import UserAvatar from '../../shared/widgets/UserAvatar.vue';
+
+@Options({
+    components: {
+        UserAvatar
+    }
+})
 export default class ViewSelector extends Vue { }
 </script>
 
@@ -30,10 +45,14 @@ export default class ViewSelector extends Vue { }
     height: 100%;
 
     .view-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         box-sizing: border-box;
         border: 2px solid rgba(195, 195, 195, 0.6);
         background-color: rgba(0, 0, 0, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
+        color: rgb(255, 255, 255);
         filter: brightness(0.9);
         transition: filter 0.3s, border-color 0.3s;
         animation: blinkFast 0.15s ease-in forwards;
@@ -77,7 +96,15 @@ export default class ViewSelector extends Vue { }
     }
 
     .login-view-card {
+        position: relative;
         height: calc((100% - #{$activities-card-height}) * 0.6);
+
+        .user-avatar {
+            position: absolute;
+            left: 7.5%;
+            width: 2rem;
+            height: 2rem;
+        }
     }
 
     .settings-view-card {
