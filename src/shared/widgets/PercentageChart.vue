@@ -7,14 +7,17 @@
 </template>
 
 <script lang="ts">
-import { Vue, prop } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 class PercentageChartProp {
+    public color = prop<string>({ default: 'rgb(255, 255, 255)' });
     public percentage = prop<number>({ default: 100 });
     public delay = prop<number>({ default: 3500 });
-    public color = prop<string>({ default: 'rgb(255, 255, 255)' });
 }
 
+@Options({
+    emits: ['chart:rendered']
+})
 export default class PercentageChart extends Vue.with(PercentageChartProp) {
     public canAnimate = false;
 
@@ -32,6 +35,8 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
 
     public mounted(): void {
         setTimeout(() => this.canAnimate = true, this.delay);
+        const element = document.querySelector('.bar-end');
+        element?.addEventListener('transitionend', () => this.$emit('chart:rendered'));
     }
 }
 </script>
