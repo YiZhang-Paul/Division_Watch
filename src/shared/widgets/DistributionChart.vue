@@ -11,7 +11,7 @@
             :useSimpleView="!group.highlight"
             :color="group.color"
             :percentage="getPercentage(index)"
-            :delay="3200"
+            :glowDelay="index * 2000"
             @chart:rendered="rendered++">
         </percentage-chart>
     </div>

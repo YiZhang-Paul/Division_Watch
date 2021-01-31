@@ -91,7 +91,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
             fill: rgb(255, 255, 255);
         }
         10% {
-            fill: rgb(141, 136, 156);
+            fill: rgb(255, 50, 50);
         }
         20% {
             fill: rgb(255, 255, 255);
