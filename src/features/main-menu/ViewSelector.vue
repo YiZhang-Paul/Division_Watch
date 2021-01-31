@@ -1,23 +1,23 @@
 <template>
     <div class="view-selector-container">
-        <div class="planner-view-card view-card">
+        <div class="planner-selection-card selection-card">
             <span>Planner</span>
             <div class="planner-icon"></div>
         </div>
 
-        <div class="ongoing-view-card view-card"></div>
-        <div class="activities-view-card view-card"></div>
+        <div class="ongoing-selection-card selection-card"></div>
+        <activities-selection-card class="activities-selection-card selection-card"></activities-selection-card>
 
-        <div class="login-view-card view-card">
+        <div class="login-selection-card selection-card">
             <user-avatar class="user-avatar"></user-avatar>
             <span>Log in</span>
         </div>
 
-        <div class="settings-view-card view-card">
+        <div class="settings-selection-card selection-card">
             <span>Settings</span>
         </div>
 
-        <div class="dashboard-view-card view-card"></div>
+        <div class="dashboard-selection-card selection-card"></div>
     </div>
 </template>
 
@@ -26,9 +26,12 @@ import { Options, Vue } from 'vue-class-component';
 
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
+import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionCard.vue';
+
 @Options({
     components: {
-        UserAvatar
+        UserAvatar,
+        ActivitiesSelectionCard
     }
 })
 export default class ViewSelector extends Vue { }
@@ -48,7 +51,7 @@ export default class ViewSelector extends Vue { }
     width: 100%;
     height: 100%;
 
-    .view-card {
+    .selection-card {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -68,24 +71,24 @@ export default class ViewSelector extends Vue { }
         }
     }
 
-    .planner-view-card,
-    .ongoing-view-card,
-    .activities-view-card,
-    .login-view-card,
-    .settings-view-card {
+    .planner-selection-card,
+    .ongoing-selection-card,
+    .activities-selection-card,
+    .login-selection-card,
+    .settings-selection-card {
         width: calc((100% - #{$horizontal-gap} * 2) * 0.32);
     }
 
-    .planner-view-card, .ongoing-view-card {
+    .planner-selection-card, .ongoing-selection-card {
         margin-right: $horizontal-gap;
         animation-delay: 0.15s;
     }
 
-    .login-view-card, .settings-view-card {
+    .login-selection-card, .settings-selection-card {
         background-color: rgba(0, 0, 0, 0.8);
     }
 
-    .planner-view-card {
+    .planner-selection-card {
         flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
         background-color: rgb(249, 154, 66);
@@ -109,16 +112,16 @@ export default class ViewSelector extends Vue { }
         }
     }
 
-    .ongoing-view-card {
+    .ongoing-selection-card {
         height: calc(100% - #{$planner-card-height});
         background-color: rgb(99, 80, 154);
     }
 
-    .activities-view-card {
+    .activities-selection-card {
         height: calc(#{$activities-card-height} - #{$vertical-gap} * 2);
     }
 
-    .login-view-card {
+    .login-selection-card {
         position: relative;
         height: calc((100% - #{$activities-card-height}) * 0.6);
 
@@ -130,12 +133,12 @@ export default class ViewSelector extends Vue { }
         }
     }
 
-    .settings-view-card {
+    .settings-selection-card {
         height: calc((100% - #{$activities-card-height}) * 0.4);
         animation-delay: 0.1s;
     }
 
-    .dashboard-view-card {
+    .dashboard-selection-card {
         margin-left: $horizontal-gap;
         width: calc((100% - #{$horizontal-gap} * 2) * 0.36);
         height: 100%;
