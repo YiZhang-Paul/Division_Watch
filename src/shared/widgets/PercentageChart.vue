@@ -22,13 +22,13 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
     public canAnimate = false;
 
     get chartStyle(): { [key: string]: number } {
-        const percentage = 2.83 * (100 - this.percentage);
+        const percentage = 2.83 * (100 - this.percentage + 7 / 3.6);
 
         return { 'stroke-dashoffset': this.canAnimate ? percentage : 283 };
     }
 
     get barEndStyle(): { [key: string]: string | null } {
-        const degrees = 360 / 100 * this.percentage + 7;
+        const degrees = 360 / 100 * this.percentage;
 
         return { transform: this.canAnimate ? `rotate(${degrees}deg)` : null };
     }
