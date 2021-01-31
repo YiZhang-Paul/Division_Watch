@@ -128,8 +128,8 @@ export default class ViewSelector extends Vue { }
         .user-avatar {
             position: absolute;
             left: 7.5%;
-            width: 2rem;
-            height: 2rem;
+            width: 1.8rem;
+            height: 1.8rem;
         }
     }
 
