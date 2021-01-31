@@ -278,16 +278,16 @@ export default class MainMenu extends Vue {
                     height: 0.5vh;
                 }
                 45% {
-                    width: 70%;
+                    width: 60%;
                     height: 2vh;
                 }
                 70% {
-                    width: 70%;
+                    width: 60%;
                     height: 2vh;
                 }
                 100% {
-                    width: 95%;
-                    height: 95%;
+                    width: 67.5%;
+                    height: 72.5%;
                 }
             }
 
@@ -298,8 +298,8 @@ export default class MainMenu extends Vue {
                     background-color: transparent;
                 }
                 to {
-                    width: 95%;
-                    height: 95%;
+                    width: 90%;
+                    height: 90%;
                     background-color: rgba(205, 205, 205, 0.1);
                 }
             }

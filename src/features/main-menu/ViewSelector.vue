@@ -62,7 +62,7 @@ export default class ViewSelector extends Vue { }
         color: rgb(255, 255, 255);
         filter: brightness(0.9);
         transition: filter 0.3s, border-color 0.3s;
-        animation: blinkFast 0.15s ease-in forwards;
+        animation: blinkFast 0.15s ease-in forwards 2;
 
         &:hover {
             cursor: pointer;
