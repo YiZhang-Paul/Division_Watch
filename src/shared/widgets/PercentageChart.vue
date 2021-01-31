@@ -2,10 +2,17 @@
     <svg class="percentage-chart-container" width="100" height="100" viewBox="0 0 100 100" :style="chartStyle">
         <circle class="bar" cx="50" cy="50" :r="useSimpleView ? 45.5 : 45" fill="none" :stroke="color" />
 
-        <template v-if="!useSimpleView">
-            <circle cx="95" cy="50" r="2" fill="rgb(255, 255, 255)" />
-            <circle class="bar-end" cx="95" cy="50" r="2" fill="rgb(255, 255, 255)" :style="barEndStyle" />
-        </template>
+        <circle :cx="useSimpleView ? 95.375 : 95"
+            cy="50"
+            :r="useSimpleView ? 1.25 : 2"
+            fill="rgb(255, 255, 255)" />
+
+        <circle class="bar-end"
+            :cx="useSimpleView ? 95.375 : 95"
+            cy="50"
+            :r="useSimpleView ? 1.5 : 2"
+            :style="barEndStyle"
+            fill="rgb(255, 255, 255)" />
     </svg>
 </template>
 
@@ -27,7 +34,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
 
     get chartStyle(): { [key: string]: number } {
         const dasharray = this.useSimpleView ? 286 : 283;
-        const percentage = dasharray / 100 * (100 - this.percentage + 7 / 3.6);
+        const percentage = dasharray / 100 * (100 - this.percentage + 7.5 / 3.6);
 
         return {
             'stroke-width': this.useSimpleView ? 1.75 : 3.25,
@@ -62,7 +69,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
 
     .bar {
         opacity: 0.75;
-        transform: rotate(3.5deg);
+        transform: rotate(3.75deg);
         transition: opacity 0.3s;
 
         &:hover {
