@@ -54,12 +54,13 @@ export default class MainMenu extends Vue {
     }
 
     public mounted(): void {
-        const lastWave = document.querySelector('.last-wave');
+        const lastWaveWrapper = document.querySelector('.last-wave');
         const stage2Wrapper = document.querySelector('.stage-2');
-        lastWave?.addEventListener('animationend', () => this.stage++);
+        const viewSelector = document.querySelector('.view-selector') as HTMLElement;
+        lastWaveWrapper?.addEventListener('animationend', () => this.stage++);
         // 8 animations in total
         stage2Wrapper?.addEventListener('animationend', () => this.stage += 1 / 8);
-        VanillaTilt.init(document.querySelector('.view-selector') as HTMLElement);
+        VanillaTilt.init(viewSelector, { max: 1, glare: true });
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
