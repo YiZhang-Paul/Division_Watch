@@ -76,7 +76,7 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    background-color: rgb(0, 0, 0);
+    background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
 }
 
 .agent-watch {
