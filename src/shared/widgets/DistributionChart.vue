@@ -1,6 +1,6 @@
 <template>
     <div class="distribution-chart-container">
-        <div class="embed-content">
+        <div class="embed-content" :style="{ opacity: rendered === groups.length ? 1 : 0 }">
             <slot></slot>
         </div>
 
@@ -11,7 +11,8 @@
             :useSimpleView="!group.highlight"
             :color="group.color"
             :percentage="getPercentage(index)"
-            :delay="3200">
+            :delay="3200"
+            @chart:rendered="rendered++">
         </percentage-chart>
     </div>
 </template>
@@ -31,6 +32,7 @@ class DistributionChartProp {
     components: { PercentageChart }
 })
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
+    public rendered = 0;
 
     public getRotation(index: number): number {
         const indexes = new Array(index).fill(0);
@@ -60,14 +62,14 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
         position: absolute;
         width: 75%;
         height: 75%;
+        opacity: 0;
+        transition: opacity 0.3s;
     }
 
     .percentage-chart {
         position: absolute;
         width: 100%;
         height: 100%;
-        opacity: 0;
-        animation: revealContent 0.3s ease-in 0.25s forwards;
     }
 }
 </style>
