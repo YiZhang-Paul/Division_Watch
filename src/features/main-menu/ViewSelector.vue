@@ -42,7 +42,7 @@ export default class ViewSelector extends Vue { }
     $vertical-gap: 1.25%;
     $horizontal-gap: 1%;
     $planner-card-height: 60%;
-    $activities-card-height: 75%;
+    $activities-card-height: 70%;
 
     display: flex;
     flex-direction: column;
@@ -53,7 +53,8 @@ export default class ViewSelector extends Vue { }
 
     .selection-card {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: space-around;
         align-items: center;
         box-sizing: border-box;
         border: 2px solid rgba(195, 195, 195, 0.6);
@@ -123,7 +124,7 @@ export default class ViewSelector extends Vue { }
 
     .login-selection-card {
         position: relative;
-        height: calc((100% - #{$activities-card-height}) * 0.6);
+        height: calc((100% - #{$activities-card-height}) * 0.575);
 
         .user-avatar {
             position: absolute;
@@ -134,7 +135,7 @@ export default class ViewSelector extends Vue { }
     }
 
     .settings-selection-card {
-        height: calc((100% - #{$activities-card-height}) * 0.4);
+        height: calc((100% - #{$activities-card-height}) * 0.425);
         animation-delay: 0.1s;
     }
 

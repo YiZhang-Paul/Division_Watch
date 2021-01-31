@@ -1,7 +1,9 @@
 <template>
     <div class="activities-selection-card-container">
-        <span class="title">Activities</span>
-        <span class="message">tasks & interruptions</span>
+        <div class="titles">
+            <span class="title">Activities</span>
+            <span class="message">tasks & interruptions</span>
+        </div>
 
         <distribution-chart class="distribution-chart" :groups="itemsDistribution">
             <div class="item-counts">
@@ -56,18 +58,25 @@ export default class ActivitiesSelectionCard extends Vue {
 
 <style lang="scss" scoped>
 .activities-selection-card-container {
-    display: flex;
-    flex-direction: column;
+    padding: 0.75rem 0;
     width: 100%;
     height: 100%;
     font-size: 0.8rem;
 
-    .title {
-        font-size: 2rem;
-    }
+    .titles {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
-    .message {
-        color: rgb(215, 215, 215);
+        .title {
+            line-height: 1.75rem;
+            font-size: 2rem;
+        }
+
+        .message {
+            color: rgb(215, 215, 215);
+        }
     }
 
     .distribution-chart, .item-counts {
@@ -75,9 +84,9 @@ export default class ActivitiesSelectionCard extends Vue {
         transform-origin: 50% 50%;
     }
 
-    .distribution-chart {
-        width: 25.5vh;
-        height: 25.5vh;
+    .distribution-chart:nth-child(1) {
+        width: 30vh;
+        height: 30vh;
     }
 
     .item-counts {
