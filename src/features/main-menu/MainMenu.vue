@@ -35,6 +35,9 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from '../../store';
+import { taskItemKey } from '../../store/task-item/task-item.state';
+
 import ViewSelector from './ViewSelector.vue';
 
 @Options({
@@ -44,6 +47,10 @@ import ViewSelector from './ViewSelector.vue';
 })
 export default class MainMenu extends Vue {
     public stage = 1;
+
+    public created(): void {
+        store.dispatch(`${taskItemKey}/loadIncompleteItems`);
+    }
 
     public mounted(): void {
         const lastWave = document.querySelector('.last-wave');
