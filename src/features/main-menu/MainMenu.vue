@@ -27,14 +27,21 @@
 
         <div v-show="stage >= 3" class="stage-3">
             <div class="blur-layer"></div>
-            <div class="menu-cards"></div>
+            <view-selector class="view-selector"></view-selector>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 
+import ViewSelector from './ViewSelector.vue';
+
+@Options({
+    components: {
+        ViewSelector
+    }
+})
 export default class MainMenu extends Vue {
     public stage = 1;
 
@@ -293,7 +300,7 @@ export default class MainMenu extends Vue {
         width: 100%;
         height: 100%;
 
-        .menu-cards {
+        .view-selector {
             position: absolute;
             width: 60%;
             height: 75%;
