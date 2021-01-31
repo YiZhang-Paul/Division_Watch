@@ -27,7 +27,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
         const percentage = this.dasharray / 100 * (100 - this.percentage + 8.2 / 3.6);
 
         return {
-            'stroke-width': this.useSimpleView ? 1.75 : 3.25,
+            'stroke-width': this.useSimpleView ? 1.25 : 2.25,
             'stroke-dasharray': this.dasharray,
             'stroke-dashoffset': this.canAnimate ? percentage : this.dasharray
         };
@@ -54,6 +54,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
 .percentage-chart-container {
     $transition-time: 0.8s;
 
+    pointer-events: none;
     transition: stroke-dashoffset $transition-time;
 
     .bar, .handle {
@@ -61,6 +62,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
     }
 
     .bar {
+        pointer-events: auto;
         opacity: 0.75;
         transform: rotate(4deg);
         transition: opacity 0.3s;

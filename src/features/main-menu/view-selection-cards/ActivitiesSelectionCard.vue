@@ -114,8 +114,8 @@ export default class ActivitiesSelectionCard extends Vue {
         }
 
         .chart:nth-child(2) {
-            width: 87.5%;
-            height: 87.5%;
+            width: 90%;
+            height: 90%;
             transform: rotateX(180deg);
         }
 

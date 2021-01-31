@@ -57,6 +57,7 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     position: relative;
     width: 100%;
     height: 100%;
+    pointer-events: none;
 
     .embed-content {
         position: absolute;
