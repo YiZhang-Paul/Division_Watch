@@ -1,6 +1,10 @@
 <template>
     <div class="view-selector-container">
-        <div class="planner-view-card view-card"></div>
+        <div class="planner-view-card view-card">
+            <span>Planner</span>
+            <div class="planner-icon"></div>
+        </div>
+
         <div class="ongoing-view-card view-card"></div>
         <div class="activities-view-card view-card"></div>
 
@@ -82,8 +86,22 @@ export default class ViewSelector extends Vue { }
     }
 
     .planner-view-card {
+        flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
         background-color: rgb(249, 154, 66);
+        color: rgb(0, 0, 0);
+        font-size: 2rem;
+
+        span {
+            z-index: 1;
+        }
+
+        .planner-icon {
+            margin-top: -12.5%;
+            width: 90%;
+            height: 90%;
+            background: rgb(0, 0, 0) url('../../assets/icons/sharpshooter_skull.svg') no-repeat center center/cover;
+        }
     }
 
     .ongoing-view-card {
