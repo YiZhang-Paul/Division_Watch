@@ -36,6 +36,7 @@ export default class ViewSelector extends Vue { }
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
         filter: brightness(0.9);
         transition: filter 0.3s, border-color 0.3s;
+        animation: blinkFast 0.15s ease-in forwards;
 
         &:hover {
             cursor: pointer;
@@ -54,6 +55,7 @@ export default class ViewSelector extends Vue { }
 
     .planner-view-card, .ongoing-view-card {
         margin-right: $horizontal-gap;
+        animation-delay: 0.15s;
     }
 
     .login-view-card, .settings-view-card {
@@ -80,12 +82,14 @@ export default class ViewSelector extends Vue { }
 
     .settings-view-card {
         height: calc((100% - #{$activities-card-height}) * 0.4);
+        animation-delay: 0.1s;
     }
 
     .dashboard-view-card {
         margin-left: $horizontal-gap;
         width: calc((100% - #{$horizontal-gap} * 2) * 0.36);
         height: 100%;
+        animation-delay: 0.2s;
     }
 }
 </style>
