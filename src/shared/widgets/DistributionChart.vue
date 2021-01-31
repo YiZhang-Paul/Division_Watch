@@ -1,6 +1,6 @@
 <template>
-    <div class="distribution-chart-container">
-        <div class="embed-content" :style="{ opacity: rendered === groups.length ? 1 : 0 }">
+    <div class="distribution-chart-container" :title="tooltip">
+        <div class="embed-content" :style="{ opacity: totalRendered === groups.length ? 1 : 0 }">
             <slot></slot>
         </div>
 
@@ -12,7 +12,9 @@
             :color="group.color"
             :percentage="getPercentage(index)"
             :glowDelay="index * 2000"
-            @chart:rendered="rendered++">
+            @chart:rendered="totalRendered++"
+            @chart:mouseover="tooltip = group.total + ' ' + group.name"
+            @chart:mouseout="tooltip = ''">
         </percentage-chart>
     </div>
 </template>
@@ -32,7 +34,8 @@ class DistributionChartProp {
     components: { PercentageChart }
 })
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
-    public rendered = 0;
+    public tooltip = '';
+    public totalRendered = 0;
 
     public getRotation(index: number): number {
         const indexes = new Array(index).fill(0);

@@ -1,6 +1,14 @@
 <template>
     <svg class="percentage-chart-container" width="100" height="100" viewBox="0 0 100 100" :style="chartStyle">
-        <circle class="bar" cx="50" cy="50" r="45" fill="none" :stroke="color" />
+        <circle class="bar"
+            cx="50"
+            cy="50"
+            r="45"
+            fill="none"
+            :stroke="color"
+            @mouseover="$emit('chart:mouseover')"
+            @mouseout="$emit('chart:mouseout')" />
+
         <circle class="handle" cx="95" cy="50" :r="useSimpleView ? 1.5 : 2" :style="handleStyle" fill="rgb(255, 255, 255)" />
     </svg>
 </template>
@@ -17,7 +25,11 @@ class PercentageChartProp {
 }
 
 @Options({
-    emits: ['chart:rendered']
+    emits: [
+        'chart:rendered',
+        'chart:mouseover',
+        'chart:mouseout'
+    ]
 })
 export default class PercentageChart extends Vue.with(PercentageChartProp) {
     public canAnimate = false;

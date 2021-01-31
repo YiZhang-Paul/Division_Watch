@@ -50,11 +50,14 @@ export default class ActivitiesSelectionCard extends Vue {
 
     get itemsDistribution(): DistributionGroup[] {
         const childTasks = store.getters[`${taskItemKey}/incompleteChildTasks`].length;
+        const parentTaskName = `parent task${this.tasks > 1 ? 's' : ''}`;
+        const childTaskName = `child task${childTasks > 1 ? 's' : ''}`;
+        const interruptionName = `interruption${this.interruptions > 1 ? 's' : ''}`;
 
         return [
-            new DistributionGroup('Parent Task', this.tasks, 'rgb(246, 39, 226)'),
-            new DistributionGroup('Child Task', childTasks, 'rgb(255, 255, 255)', false),
-            new DistributionGroup('Interruption', this.interruptions, 'rgb(83, 191, 252)')
+            new DistributionGroup(parentTaskName, this.tasks, 'rgb(246, 39, 226)'),
+            new DistributionGroup(childTaskName, childTasks, 'rgb(255, 255, 255)', false),
+            new DistributionGroup(interruptionName, this.interruptions, 'rgb(83, 191, 252)')
         ];
     }
 
@@ -64,7 +67,12 @@ export default class ActivitiesSelectionCard extends Vue {
         const groups = priorities.map(rank => items.filter(_ => _.priority.rank === rank));
         const colors = ['rgb(73, 207, 73)', 'rgb(238, 171, 70)', 'rgb(231, 72, 72)'];
 
-        return groups.map((_, i) => new DistributionGroup(_[0]?.priority?.name ?? '', _.length, colors[i], i === groups.length - 1));
+        return groups.map((_, i) => {
+            const name = `${(_[0]?.priority?.name ?? '').toLowerCase()} priority`;
+            const highlight = i === groups.length - 1;
+
+            return new DistributionGroup(name, _.length, colors[i], highlight);
+        });
     }
 }
 </script>
