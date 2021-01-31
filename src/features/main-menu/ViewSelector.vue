@@ -97,10 +97,15 @@ export default class ViewSelector extends Vue { }
         }
 
         .planner-icon {
-            margin-top: -12.5%;
+            margin-top: -18.5%;
             width: 90%;
             height: 90%;
             background: rgb(0, 0, 0) url('../../assets/icons/sharpshooter_skull.svg') no-repeat center center/cover;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: rgb(92, 24, 202);
+            }
         }
     }
 
