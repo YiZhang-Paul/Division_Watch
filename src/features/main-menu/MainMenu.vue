@@ -1,11 +1,12 @@
 <template>
     <div class="main-menu-container">
-        <div v-show="stage === 1" class="stage-1">
+        <div v-show="stage < 2" class="stage-1">
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1, false)"></div>
             </div>
 
-            <div class="wave-circle" v-for="n in 3" :key="n" :class="{ 'last-wave': n === 3 }"></div>
+            <div class="wave-circle"></div>
+            <div class="wave-circle last-wave"></div>
         </div>
 
         <div v-show="stage >= 2 && stage < 3" class="stage-2">
@@ -24,7 +25,7 @@
             </div>
         </div>
 
-        <div v-show="stage === 3" class="stage-3">
+        <div v-show="stage >= 3" class="stage-3">
             <div class="blur-layer"></div>
             <div class="menu-cards"></div>
         </div>
@@ -92,7 +93,7 @@ export default class MainMenu extends Vue {
         width: 100%;
         height: 100%;
         background-color: rgba(227, 227, 227, 0.05);
-        filter: blur(5px);
+        backdrop-filter: blur(5px);
     }
 
     .stage-1, .stage-2, .stage-3 {
@@ -144,12 +145,8 @@ export default class MainMenu extends Vue {
             opacity: 0;
             animation: emitWave 0.5s ease-in-out $base-delay forwards;
 
-            &:nth-child(2) {
-                animation-delay: calc(#{$base-delay} + 0.2s);
-            }
-
-            &:nth-child(3) {
-                animation-delay: calc(#{$base-delay} + 0.3s);
+            &.last-wave {
+                animation-delay: calc(#{$base-delay} + 0.15s);
             }
 
             @keyframes emitWave {
@@ -175,7 +172,6 @@ export default class MainMenu extends Vue {
 
         width: 100%;
         height: 100%;
-        animation: revealContent 0.2s ease-out 1.4s reverse forwards;
 
         .blur-layer {
             width: 0;
@@ -189,7 +185,8 @@ export default class MainMenu extends Vue {
             position: absolute;
             width: $initial-dimension;
             height: $initial-dimension;
-            animation: expandStage2Squares $expand-time ease-in forwards;
+            animation: expandStage2Squares $expand-time ease-in forwards,
+                       revealContent 0.2s ease-out 1.5s reverse forwards;
 
             .square {
                 position: absolute;
@@ -217,7 +214,8 @@ export default class MainMenu extends Vue {
             opacity: 0;
             animation: revealContent 0.1s ease $expand-time forwards,
                        blinkNormal 0.9s ease calc(#{$expand-time} + 0.09s) forwards,
-                       expandBoxWrapper 0.6s linear calc(#{$expand-time} + 0.3s) forwards;
+                       expandBoxWrapper 0.7s linear calc(#{$expand-time} + 0.3s) forwards,
+                       revealContent 0.2s ease-out 1.5s reverse forwards;
 
             .corner-box {
                 position: absolute;
@@ -254,7 +252,7 @@ export default class MainMenu extends Vue {
                 border: 1px solid rgba(205, 205, 205, 0.3);
                 opacity: 0;
                 animation: revealContent 0.1s ease calc(#{$expand-time} + 0.5s) forwards,
-                           expandBox 0.3s linear calc(#{$expand-time} + 0.7s) forwards;
+                           expandBox 0.4s linear calc(#{$expand-time} + 0.7s) forwards;
             }
 
             @keyframes expandBoxWrapper {
@@ -262,7 +260,7 @@ export default class MainMenu extends Vue {
                     width: 1vw;
                     height: 0.5vh;
                 }
-                40% {
+                45% {
                     width: 70%;
                     height: 2vh;
                 }
@@ -280,10 +278,12 @@ export default class MainMenu extends Vue {
                 from {
                     width: 70%;
                     height: 20%;
+                    background-color: transparent;
                 }
                 to {
                     width: 95%;
                     height: 95%;
+                    background-color: rgba(205, 205, 205, 0.1);
                 }
             }
         }
