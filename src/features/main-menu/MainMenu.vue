@@ -10,7 +10,7 @@
         </div>
 
         <div v-show="stage >= 2 && stage < 3 && !isClosing" class="stage-2">
-            <div class="blur-layer"></div>
+            <div class="menu-blur-layer"></div>
 
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1)"></div>
@@ -26,16 +26,16 @@
         </div>
 
         <div v-show="stage >= 3 && !isClosing" class="stage-3">
-            <div class="blur-layer"></div>
+            <div class="menu-blur-layer"></div>
 
             <div class="menu-area">
-                <view-selector class="view-selector"></view-selector>
+                <view-selector class="view-selector" @view:selected="onViewSelected($event)"></view-selector>
                 <menu-button class="close-button" @click="onClose()">Close</menu-button>
             </div>
         </div>
 
         <div v-show="isClosing" class="closing-stage">
-            <div class="blur-layer"></div>
+            <div class="menu-blur-layer"></div>
 
             <div class="box-wrapper">
                 <div class="corner-box"></div>
@@ -83,7 +83,7 @@ export default class MainMenu extends Vue {
         // 4 animations for closing stage
         document.querySelector('.closing-stage')?.addEventListener('animationend', () => {
             if (++this.closingStage === 4) {
-                store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive)
+                store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
             }
         });
     }
@@ -97,6 +97,10 @@ export default class MainMenu extends Vue {
             left: `calc((100% - var(--square-dimension)) / 7 * ${columnIndex})`,
             visibility: showAll || this.isVisibleSquare(rowIndex, columnIndex) ? 'visible' : 'hidden'
         };
+    }
+
+    public onViewSelected(view: ViewOption): void {
+        store.commit(`${mainViewKey}/setActiveView`, view);
     }
 
     public onClose(): void {
@@ -137,7 +141,7 @@ export default class MainMenu extends Vue {
         background-color: rgba(205, 205, 205, 0.55);
     }
 
-    .blur-layer {
+    .menu-blur-layer {
         width: 100%;
         height: 100%;
         background-color: rgba(227, 227, 227, 0.05);
@@ -259,7 +263,7 @@ export default class MainMenu extends Vue {
         width: 100%;
         height: 100%;
 
-        .blur-layer {
+        .menu-blur-layer {
             width: 0;
             height: 0;
             animation: expandPanel $box-expand-time ease-in forwards;

@@ -1,5 +1,7 @@
 <template>
+    <div v-if="showBlurLayer" class="global-blur-layer"></div>
     <main-menu v-if="activeView === viewOption.MainMenu"></main-menu>
+    <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
     <agent-watch class="agent-watch"></agent-watch>
 </template>
 
@@ -11,11 +13,13 @@ import { mainViewKey } from './store/main-view/main-view.state';
 import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
+import ActivityManager from './features/activity-manager/ActivityManager.vue';
 
 @Options({
     components: {
         AgentWatch,
-        MainMenu
+        MainMenu,
+        ActivityManager
     }
 })
 export default class App extends Vue {
@@ -23,6 +27,10 @@ export default class App extends Vue {
 
     get activeView(): ViewOption {
         return store.getters[`${mainViewKey}/activeView`];
+    }
+
+    get showBlurLayer(): boolean {
+        return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenu;
     }
 
     public mounted(): void {
@@ -79,6 +87,14 @@ html, body {
     background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
 }
 
+.global-blur-layer {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(227, 227, 227, 0.05);
+    backdrop-filter: blur(5px);
+}
+
 .agent-watch {
     $dimension: 30vh;
 
@@ -87,5 +103,11 @@ html, body {
     right: calc(#{$dimension} / 20);
     width: $dimension;
     height: $dimension;
+}
+
+.activity-manager {
+    position: absolute;
+    width: 50%;
+    height: 87.5%;
 }
 </style>
