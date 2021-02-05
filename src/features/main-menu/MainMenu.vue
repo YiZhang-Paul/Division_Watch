@@ -1,6 +1,6 @@
 <template>
     <div class="main-menu-container">
-        <div v-show="stage < 2" class="stage-1">
+        <div v-show="stage < 2 && !isClosing" class="stage-1">
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1, false)"></div>
             </div>
@@ -9,7 +9,7 @@
             <div class="wave-circle last-wave"></div>
         </div>
 
-        <div v-show="stage >= 2 && stage < 3" class="stage-2">
+        <div v-show="stage >= 2 && stage < 3 && !isClosing" class="stage-2">
             <div class="blur-layer"></div>
 
             <div class="squares">
@@ -25,12 +25,24 @@
             </div>
         </div>
 
-        <div v-show="stage >= 3" class="stage-3">
+        <div v-show="stage >= 3 && !isClosing" class="stage-3">
             <div class="blur-layer"></div>
 
             <div class="menu-area">
                 <view-selector class="view-selector"></view-selector>
-                <menu-button class="close-button" @click="closeMenu()">Close</menu-button>
+                <menu-button class="close-button" @click="onClose()">Close</menu-button>
+            </div>
+        </div>
+
+        <div v-show="isClosing" class="closing-stage">
+            <div class="blur-layer"></div>
+
+            <div class="box-wrapper">
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="corner-box"></div>
+                <div class="box"></div>
             </div>
         </div>
     </div>
@@ -56,19 +68,24 @@ import ViewSelector from './ViewSelector.vue';
 })
 export default class MainMenu extends Vue {
     public stage = 1;
+    public isClosing = false;
+    private closingStage = 0;
 
     public created(): void {
         store.dispatch(`${taskItemKey}/loadIncompleteItems`);
     }
 
     public mounted(): void {
-        const lastWaveWrapper = document.querySelector('.last-wave');
-        const stage2Wrapper = document.querySelector('.stage-2');
-        const menuArea = document.querySelector('.menu-area') as HTMLElement;
-        lastWaveWrapper?.addEventListener('animationend', () => this.stage++);
-        // 8 animations in total
-        stage2Wrapper?.addEventListener('animationend', () => this.stage += 1 / 8);
-        VanillaTilt.init(menuArea, { max: 1, glare: true });
+        VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 1, glare: true });
+        document.querySelector('.last-wave')?.addEventListener('animationend', () => this.stage++);
+        // 8 animations for stage 2
+        document.querySelector('.stage-2')?.addEventListener('animationend', () => this.stage += 1 / 8);
+        // 4 animations for closing stage
+        document.querySelector('.closing-stage')?.addEventListener('animationend', () => {
+            if (++this.closingStage === 4) {
+                store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive)
+            }
+        });
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
@@ -82,8 +99,9 @@ export default class MainMenu extends Vue {
         };
     }
 
-    public closeMenu(): void {
-        store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    public onClose(): void {
+        this.isClosing = true;
+        this.closingStage = 0;
     }
 
     private isVisibleSquare(rowIndex: number, columnIndex: number): boolean {
@@ -102,6 +120,7 @@ export default class MainMenu extends Vue {
 
 <style lang="scss" scoped>
 .main-menu-container {
+    $box-expand-time: 0.3s;
     --square-dimension: 0.25vh;
 
     display: flex;
@@ -125,7 +144,47 @@ export default class MainMenu extends Vue {
         backdrop-filter: blur(5px);
     }
 
-    .stage-1, .stage-2, .stage-3 {
+    .box-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+
+        .corner-box {
+            position: absolute;
+            width: 1vw;
+            height: 0.5vh;
+            background-color: rgba(205, 205, 205, 0.4);
+
+            &:nth-child(1) {
+                left: 0;
+                top: 0;
+            }
+
+            &:nth-child(2) {
+                left: 0;
+                bottom: 0;
+            }
+
+            &:nth-child(3) {
+                right: 0;
+                top: 0;
+            }
+
+            &:nth-child(4) {
+                right: 0;
+                bottom: 0;
+            }
+        }
+
+        .box {
+            position: absolute;
+            min-height: 0.4vh;
+            border: 1px solid rgba(205, 205, 205, 0.3);
+        }
+    }
+
+    .stage-1, .stage-2, .stage-3, .closing-stage {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -197,15 +256,13 @@ export default class MainMenu extends Vue {
     }
 
     .stage-2 {
-        $expand-time: 0.3s;
-
         width: 100%;
         height: 100%;
 
         .blur-layer {
             width: 0;
             height: 0;
-            animation: expandPanel $expand-time ease-in forwards;
+            animation: expandPanel $box-expand-time ease-in forwards;
         }
 
         .squares {
@@ -214,7 +271,7 @@ export default class MainMenu extends Vue {
             position: absolute;
             width: $initial-dimension;
             height: $initial-dimension;
-            animation: expandStage2Squares $expand-time ease-in forwards,
+            animation: expandStage2Squares $box-expand-time ease-in forwards,
                        revealContent 0.2s ease-out 1.5s reverse forwards;
 
             .square {
@@ -234,86 +291,20 @@ export default class MainMenu extends Vue {
         }
 
         .box-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
             width: 1vw;
             height: 0.5vh;
             opacity: 0;
-            animation: revealContent 0.1s ease $expand-time forwards,
-                       blinkNormal 0.9s ease calc(#{$expand-time} + 0.09s) forwards,
-                       expandBoxWrapper 0.7s linear calc(#{$expand-time} + 0.3s) forwards,
+            animation: revealContent 0.1s ease $box-expand-time forwards,
+                       blinkNormal 0.9s ease calc(#{$box-expand-time} + 0.09s) forwards,
+                       expandBoxWrapper 0.7s linear calc(#{$box-expand-time} + 0.3s) forwards,
                        revealContent 0.2s ease-out 1.5s reverse forwards;
 
-            .corner-box {
-                position: absolute;
-                width: 1vw;
-                height: 0.5vh;
-                background-color: rgba(205, 205, 205, 0.4);
-
-                &:nth-child(1) {
-                    left: 0;
-                    top: 0;
-                }
-
-                &:nth-child(2) {
-                    left: 0;
-                    bottom: 0;
-                }
-
-                &:nth-child(3) {
-                    right: 0;
-                    top: 0;
-                }
-
-                &:nth-child(4) {
-                    right: 0;
-                    bottom: 0;
-                }
-            }
-
             .box {
-                position: absolute;
                 width: 70%;
                 height: 20%;
-                min-height: 0.4vh;
-                border: 1px solid rgba(205, 205, 205, 0.3);
                 opacity: 0;
-                animation: revealContent 0.1s ease calc(#{$expand-time} + 0.5s) forwards,
-                           expandBox 0.4s linear calc(#{$expand-time} + 0.7s) forwards;
-            }
-
-            @keyframes expandBoxWrapper {
-                0% {
-                    width: 1vw;
-                    height: 0.5vh;
-                }
-                45% {
-                    width: 60%;
-                    height: 2vh;
-                }
-                70% {
-                    width: 60%;
-                    height: 2vh;
-                }
-                100% {
-                    width: 67.5%;
-                    height: 72.5%;
-                }
-            }
-
-            @keyframes expandBox {
-                from {
-                    width: 70%;
-                    height: 20%;
-                    background-color: transparent;
-                }
-                to {
-                    width: 90%;
-                    height: 90%;
-                    background-color: rgba(205, 205, 205, 0.1);
-                }
+                animation: revealContent 0.1s ease calc(#{$box-expand-time} + 0.5s) forwards,
+                           expandBox 0.4s linear calc(#{$box-expand-time} + 0.7s) forwards;
             }
         }
     }
@@ -342,6 +333,58 @@ export default class MainMenu extends Vue {
                 color: rgb(240, 123, 14);
                 animation: blinkFast 0.15s ease-in forwards 2;
             }
+        }
+    }
+
+    .closing-stage {
+        width: 100%;
+        height: 100%;
+
+        .box-wrapper {
+            width: 67.5%;
+            height: 72.5%;
+            animation: expandBoxWrapper 0.4s linear calc(#{$box-expand-time} / 2) forwards reverse,
+                       revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.4s) forwards reverse;
+
+            .box {
+                width: 90%;
+                height: 90%;
+                background-color: rgba(205, 205, 205, 0.1);
+                animation: expandBox 0.25s linear calc(#{$box-expand-time} / 2 + 0.25s) forwards reverse,
+                           revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.2s) forwards reverse;
+            }
+        }
+    }
+
+    @keyframes expandBoxWrapper {
+        0% {
+            width: 1vw;
+            height: 0.5vh;
+        }
+        45% {
+            width: 60%;
+            height: 2vh;
+        }
+        70% {
+            width: 60%;
+            height: 2vh;
+        }
+        100% {
+            width: 67.5%;
+            height: 72.5%;
+        }
+    }
+
+    @keyframes expandBox {
+        from {
+            width: 70%;
+            height: 20%;
+            background-color: transparent;
+        }
+        to {
+            width: 90%;
+            height: 90%;
+            background-color: rgba(205, 205, 205, 0.1);
         }
     }
 }
