@@ -27,7 +27,11 @@
 
         <div v-show="stage >= 3" class="stage-3">
             <div class="blur-layer"></div>
-            <view-selector class="view-selector"></view-selector>
+
+            <div class="menu-area">
+                <view-selector class="view-selector"></view-selector>
+                <menu-button class="close-button" @click="closeMenu()">Close</menu-button>
+            </div>
         </div>
     </div>
 </template>
@@ -38,12 +42,16 @@ import VanillaTilt from "vanilla-tilt";
 
 import store from '../../store';
 import { taskItemKey } from '../../store/task-item/task-item.state';
+import { mainViewKey } from '../../store/main-view/main-view.state';
+import { ViewOption } from '../../core/enums/view-option.enum';
+import MenuButton from '../../shared/controls/MenuButton.vue';
 
 import ViewSelector from './ViewSelector.vue';
 
 @Options({
     components: {
-        ViewSelector
+        ViewSelector,
+        MenuButton
     }
 })
 export default class MainMenu extends Vue {
@@ -56,11 +64,11 @@ export default class MainMenu extends Vue {
     public mounted(): void {
         const lastWaveWrapper = document.querySelector('.last-wave');
         const stage2Wrapper = document.querySelector('.stage-2');
-        const viewSelector = document.querySelector('.view-selector') as HTMLElement;
+        const menuArea = document.querySelector('.menu-area') as HTMLElement;
         lastWaveWrapper?.addEventListener('animationend', () => this.stage++);
         // 8 animations in total
         stage2Wrapper?.addEventListener('animationend', () => this.stage += 1 / 8);
-        VanillaTilt.init(viewSelector, { max: 1, glare: true });
+        VanillaTilt.init(menuArea, { max: 1, glare: true });
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
@@ -72,6 +80,10 @@ export default class MainMenu extends Vue {
             left: `calc((100% - var(--square-dimension)) / 7 * ${columnIndex})`,
             visibility: showAll || this.isVisibleSquare(rowIndex, columnIndex) ? 'visible' : 'hidden'
         };
+    }
+
+    public closeMenu(): void {
+        store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 
     private isVisibleSquare(rowIndex: number, columnIndex: number): boolean {
@@ -310,10 +322,26 @@ export default class MainMenu extends Vue {
         width: 100%;
         height: 100%;
 
-        .view-selector {
+        .menu-area {
+            $close-button-height: 5vh;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: absolute;
             width: 57.5%;
-            height: 65%;
+            height: 70%;
+
+            .view-selector {
+                height: calc(98% - #{$close-button-height});
+            }
+
+            .close-button {
+                width: 6.5vw;
+                height: $close-button-height;
+                color: rgb(240, 123, 14);
+                animation: blinkFast 0.15s ease-in forwards 2;
+            }
         }
     }
 }
