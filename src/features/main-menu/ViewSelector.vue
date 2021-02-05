@@ -6,7 +6,10 @@
         </div>
 
         <div class="ongoing-selection-card selection-card"></div>
-        <activities-selection-card class="activities-selection-card selection-card"></activities-selection-card>
+
+        <activities-selection-card class="activities-selection-card selection-card"
+            @click="$emit('view:selected', options.Activities)">
+        </activities-selection-card>
 
         <div class="login-selection-card selection-card">
             <user-avatar class="user-avatar"></user-avatar>
@@ -24,6 +27,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import { ViewOption } from '../../core/enums/view-option.enum';
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
 import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionCard.vue';
@@ -32,9 +36,12 @@ import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionC
     components: {
         UserAvatar,
         ActivitiesSelectionCard
-    }
+    },
+    emits: ['view:selected']
 })
-export default class ViewSelector extends Vue { }
+export default class ViewSelector extends Vue {
+    public options = ViewOption;
+}
 </script>
 
 <style lang="scss" scoped>
