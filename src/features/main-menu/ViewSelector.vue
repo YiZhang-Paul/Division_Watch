@@ -1,5 +1,5 @@
 <template>
-    <div class="view-selector-container">
+    <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
         <div class="planner-selection-card selection-card">
             <span>Planner</span>
             <div class="planner-icon"></div>
@@ -8,6 +8,7 @@
         <div class="ongoing-selection-card selection-card"></div>
 
         <activities-selection-card class="activities-selection-card selection-card"
+            :chartDelay="allowAnimation ? 3200 : 650"
             @click="$emit('view:selected', options.Activities)">
         </activities-selection-card>
 
@@ -25,12 +26,16 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 import { ViewOption } from '../../core/enums/view-option.enum';
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
 import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionCard.vue';
+
+class ViewSelectorProp {
+    public allowAnimation = prop<boolean>({ default: true });
+}
 
 @Options({
     components: {
@@ -39,7 +44,7 @@ import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionC
     },
     emits: ['view:selected']
 })
-export default class ViewSelector extends Vue {
+export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     public options = ViewOption;
 }
 </script>
@@ -77,6 +82,10 @@ export default class ViewSelector extends Vue {
             border-color: rgba(240, 240, 240, 0.7);
             filter: brightness(1);
         }
+    }
+
+    &.no-op .selection-card {
+        animation: none;
     }
 
     .planner-selection-card,

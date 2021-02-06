@@ -1,6 +1,6 @@
 <template>
     <div class="main-menu-container">
-        <div v-show="stage < 2 && !isClosing" class="stage-1">
+        <div v-show="allowAnimation && stage < 2 && !isClosing" class="stage-1">
             <div class="squares">
                 <div class="square" v-for="n in 64" :key="n" :style="getSquareStyle(n - 1, false)"></div>
             </div>
@@ -9,7 +9,7 @@
             <div class="wave-circle last-wave"></div>
         </div>
 
-        <div v-show="stage >= 2 && stage < 3 && !isClosing" class="stage-2">
+        <div v-show="allowAnimation && stage >= 2 && stage < 3 && !isClosing" class="stage-2">
             <div class="menu-blur-layer"></div>
 
             <div class="squares">
@@ -25,11 +25,18 @@
             </div>
         </div>
 
-        <div v-show="stage >= 3 && !isClosing" class="stage-3">
+        <div v-show="(!allowAnimation || stage >= 3) && !isClosing"
+            class="stage-3"
+            :class="{ 'no-op': !allowAnimation }">
+
             <div class="menu-blur-layer"></div>
 
             <div class="menu-area">
-                <view-selector class="view-selector" @view:selected="onViewSelected($event)"></view-selector>
+                <view-selector class="view-selector"
+                    :allowAnimation="allowAnimation"
+                    @view:selected="onViewSelected($event)">
+                </view-selector>
+
                 <menu-button class="close-button" @click="onClose()">Close</menu-button>
             </div>
         </div>
@@ -49,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from "vanilla-tilt";
 
 import store from '../../store';
@@ -60,13 +67,17 @@ import MenuButton from '../../shared/controls/MenuButton.vue';
 
 import ViewSelector from './ViewSelector.vue';
 
+class MainMenuProp {
+    public allowAnimation = prop<boolean>({ default: true });
+}
+
 @Options({
     components: {
         ViewSelector,
         MenuButton
     }
 })
-export default class MainMenu extends Vue {
+export default class MainMenu extends Vue.with(MainMenuProp) {
     public stage = 1;
     public isClosing = false;
     private closingStage = 0;
@@ -76,7 +87,7 @@ export default class MainMenu extends Vue {
     }
 
     public mounted(): void {
-        VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 1, glare: true });
+        VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 1 });
         document.querySelector('.last-wave')?.addEventListener('animationend', () => this.stage++);
         // 8 animations for stage 2
         document.querySelector('.stage-2')?.addEventListener('animationend', () => this.stage += 1 / 8);
@@ -336,6 +347,15 @@ export default class MainMenu extends Vue {
                 height: $close-button-height;
                 color: rgb(240, 123, 14);
                 animation: blinkFast 0.15s ease-in forwards 2;
+            }
+        }
+
+        &.no-op {
+            opacity: 0;
+            animation: revealContent 0.4s ease 0.2s forwards;
+
+            .close-button {
+                animation: none;
             }
         }
     }
