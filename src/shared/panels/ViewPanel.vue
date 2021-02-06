@@ -1,7 +1,15 @@
 <template>
     <div :class="{ [containerClass]: true, 'expanded-panel': stage >= 11 }">
+        <div class="header">
+            <slot name="header"></slot>
+        </div>
+
         <div class="content">
             <slot></slot>
+        </div>
+
+        <div class="footer">
+            <slot name="footer"></slot>
         </div>
 
         <div class="panel-box-wrapper">
@@ -26,7 +34,11 @@ export default class ViewPanel extends Vue {
 
 <style lang="scss" scoped>
 .view-panel-container {
+    $max-content-width: 95%;
+    $box-expanded-height: 82.5%;
+
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -42,7 +54,29 @@ export default class ViewPanel extends Vue {
         box-shadow: 3px 3px 3px 0 rgba(120, 120, 120, 0.25);
     }
 
+    .header, .content, .footer {
+        width: $max-content-width;
+        max-width: $max-content-width;
+    }
+
+    .header, .footer {
+        height: calc((100% - #{$box-expanded-height}) / 2.75);
+        max-height: calc((100% - #{$box-expanded-height}) / 2.75);
+    }
+
+    .header {
+        margin-bottom: calc((100% - #{$box-expanded-height}) / 20);
+    }
+
     .content {
+        margin-top: calc(#{$box-expanded-height} * 0.025);
+        margin-bottom: calc(#{$box-expanded-height} * 0.025);
+        height: calc(#{$box-expanded-height} * 0.95);
+        max-height: calc(#{$box-expanded-height} * 0.95);
+    }
+
+    .footer {
+        margin-top: calc((100% - #{$box-expanded-height}) / 20);
     }
 
     .panel-box-wrapper {
@@ -116,7 +150,7 @@ export default class ViewPanel extends Vue {
             }
             100% {
                 width: 95%;
-                height: 82.5%;
+                height: $box-expanded-height;
             }
         }
 
