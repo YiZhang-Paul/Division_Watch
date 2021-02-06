@@ -22,6 +22,7 @@ import { ExclamationThick, InboxMultiple, Target } from 'mdue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
@@ -45,7 +46,7 @@ export default class ActivityManager extends Vue {
     public readonly tabs = [
         markRaw(new TabGroupOption('Task', Target, this.tasks)),
         markRaw(new TabGroupOption('Interruption', ExclamationThick, this.interruptions)),
-        markRaw(new TabGroupOption('Category', InboxMultiple))
+        markRaw(new TabGroupOption('Category', InboxMultiple, this.categories))
     ];
 
     public activeTab = 0;
@@ -56,6 +57,10 @@ export default class ActivityManager extends Vue {
 
     get interruptions(): number {
         return store.getters[`${taskItemKey}/incompleteInterruptions`].length;
+    }
+
+    get categories(): number {
+        return store.getters[`${categoryKey}/categories`].length;
     }
 
     public backToMain(): void {

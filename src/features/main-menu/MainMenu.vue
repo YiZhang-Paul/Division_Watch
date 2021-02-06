@@ -60,6 +60,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from "vanilla-tilt";
 
 import store from '../../store';
+import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { ViewOption } from '../../core/enums/view-option.enum';
@@ -83,6 +84,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     private closingStage = 0;
 
     public created(): void {
+        store.dispatch(`${categoryKey}/loadCategories`);
         store.dispatch(`${taskItemKey}/loadIncompleteItems`);
     }
 

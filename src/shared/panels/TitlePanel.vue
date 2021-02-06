@@ -63,7 +63,7 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
 
             &.active-grid {
                 background-color: rgb(240, 123, 14);
-                animation: rotateColor 1.75s linear 0.2s infinite;
+                animation: rotateColor 1.25s linear 0.2s infinite;
             }
         }
     }
