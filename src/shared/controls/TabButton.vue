@@ -5,6 +5,7 @@
         <display-panel :class="buttonClass">
             <div class="content">
                 <div class="tab-name">
+                    <component v-if="icon" class="icon" :is="icon"></component>
                     <slot></slot>
                 </div>
 
@@ -24,6 +25,7 @@ import DisplayPanel from '../panels/DisplayPanel.vue';
 
 class TabButtonProp {
     public isActive = prop<boolean>({ default: false });
+    public icon = prop<any>({ default: null });
     public badgeValue = prop<number>({ default: 0 });
 }
 
@@ -55,7 +57,9 @@ export default class TabButton extends Vue.with(TabButtonProp) {
         width: 20%;
         height: $indicator-height;
         background-color: rgb(240, 123, 14);
-        animation: expandIndicator 0.4s ease 0.1s forwards;
+        opacity: 0;
+        animation: revealContent 0.2s ease 0.05s forwards,
+                   expandIndicator 0.3s ease 0.1s forwards;
     }
 
     .tab-button {
@@ -75,9 +79,16 @@ export default class TabButton extends Vue.with(TabButtonProp) {
             margin: 0.35vh 0.4vh;
 
             .tab-name {
-                padding: 0.25% 1.75rem;
+                display: flex;
+                align-items: center;
+                padding: 0.25% 1.25rem;
                 background-color: rgba(55, 55, 55, 0.45);
                 transition: background-color 0.3s;
+
+                .icon {
+                    margin-right: 0.1rem;
+                    font-size: 0.7rem;
+                }
             }
 
             .badge {
