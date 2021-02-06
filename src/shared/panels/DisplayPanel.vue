@@ -1,7 +1,7 @@
 <template>
     <div class="display-panel-container">
-        <slot></slot>
         <div class="corner-grid" v-for="n in 4" :key="n"></div>
+        <slot></slot>
     </div>
 </template>
 
@@ -14,8 +14,6 @@ export default class DisplayPanel extends Vue { }
 <style lang="scss" scoped>
 .display-panel-container {
     position: relative;
-    width: inherit;
-    height: inherit;
 
     .corner-grid {
         position: absolute;
