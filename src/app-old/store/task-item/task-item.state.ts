@@ -1,31 +1,21 @@
-import { ActionContext } from 'vuex';
-
-import { TaskItem } from '../../core/data-model/task-item';
-import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import { UpdateTaskResult } from '../../core/data-model/update-task-result';
 import { DeleteTaskResult } from '../../core/data-model/delete-task-result';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
-import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import { ItemListName } from '../../core/enums/item-list-name.enum';
 
-const taskItemHttpService = new TaskItemHttpService();
-
 export interface ITaskItemState {
-    taskItemOptions: TaskItemOptions;
     incompleteTaskItems: TaskItem[];
     activeTaskItem: TaskItem | null;
     activeItemListName: ItemListName;
 }
 
 const state = (): ITaskItemState => ({
-    taskItemOptions: new TaskItemOptions(),
     incompleteTaskItems: [],
     activeTaskItem: null,
     activeItemListName: ItemListName.Tasks
 });
 
 const getters = {
-    taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
     incompleteTask: (state: ITaskItemState) => (id: string): TaskItem | null => {
         return state.incompleteTaskItems.find(_ => !_.isInterruption && _.id === id) ?? null;
     },
@@ -47,9 +37,6 @@ const getters = {
 };
 
 const mutations = {
-    setTaskItemOptions(state: ITaskItemState, taskItemOptions: TaskItemOptions): void {
-        state.taskItemOptions = taskItemOptions;
-    },
     addIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
     },
@@ -76,9 +63,6 @@ const mutations = {
 };
 
 const actions = {
-    async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>, date: string): Promise<void> {
-        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(date));
-    },
     async loadIncompleteTaskItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteTaskItems', await taskItemHttpService.getIncompleteTaskItems());
     },

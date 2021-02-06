@@ -85,6 +85,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
 
     public created(): void {
         store.dispatch(`${categoryKey}/loadCategories`);
+        store.dispatch(`${taskItemKey}/loadTaskItemOptions`);
         store.dispatch(`${taskItemKey}/loadIncompleteItems`);
     }
 

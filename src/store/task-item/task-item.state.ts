@@ -1,19 +1,23 @@
 import { ActionContext } from 'vuex';
 
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 
 const taskItemHttpService = new TaskItemHttpService();
 
 export interface ITaskItemState {
+    taskItemOptions: TaskItemOptions;
     incompleteItems: TaskItem[];
 }
 
 const state = (): ITaskItemState => ({
+    taskItemOptions: new TaskItemOptions(),
     incompleteItems: []
 });
 
 const getters = {
+    taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
     incompleteItems: (state: ITaskItemState): TaskItem[] => state.incompleteItems,
     incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
         const parents = state.incompleteItems.filter(_ => !_.isInterruption && !_.parent);
@@ -33,12 +37,19 @@ const getters = {
 };
 
 const mutations = {
+    setTaskItemOptions(state: ITaskItemState, taskItemOptions: TaskItemOptions): void {
+        state.taskItemOptions = taskItemOptions;
+    },
     setIncompleteItems(state: ITaskItemState, items: TaskItem[]): void {
         state.incompleteItems = items;
     }
 };
 
 const actions = {
+    async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>): Promise<void> {
+        const date = new Date().toISOString().replace(/T.*/g, '');
+        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(date));
+    },
     async loadIncompleteItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteItems', await taskItemHttpService.getIncompleteItems());
     }

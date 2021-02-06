@@ -1,4 +1,3 @@
-import { TaskItemOptions } from '../../../data-model/task-item-options';
 import { AddChildResult } from '../../../data-model/add-child-result';
 import { UpdateTaskResult } from '../../../data-model/update-task-result';
 import { DeleteTaskResult } from '../../../data-model/delete-task-result';
@@ -34,12 +33,5 @@ export class TaskItemHttpService {
         const endpoint = `${this._api}/${id}?keepChildren=${keepChildren}`;
 
         return (await axios.delete(endpoint)).data;
-    }
-
-    public async getTaskItemOptions(date: string): Promise<TaskItemOptions> {
-        const endpoint = `${this._api}/options`;
-        const headers = { 'content-type': 'application/json' };
-
-        return (await axios.post(endpoint, JSON.stringify(date), { headers })).data;
     }
 }
