@@ -1,6 +1,8 @@
 <template>
     <overlay-scrollbar-panel class="item-list-panel-container">
-        <slot></slot>
+        <div class="content">
+            <slot></slot>
+        </div>
     </overlay-scrollbar-panel>
 </template>
 
@@ -22,5 +24,9 @@ export default class ItemListPanel extends Vue { }
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.content {
+    padding-right: 10px;
 }
 </style>
