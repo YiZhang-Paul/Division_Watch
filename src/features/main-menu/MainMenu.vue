@@ -87,7 +87,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     }
 
     public mounted(): void {
-        VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 1 });
+        VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 0.3 });
         document.querySelector('.last-wave')?.addEventListener('animationend', () => this.stage++);
         // 8 animations for stage 2
         document.querySelector('.stage-2')?.addEventListener('animationend', () => this.stage += 1 / 8);

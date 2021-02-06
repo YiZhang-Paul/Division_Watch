@@ -35,7 +35,7 @@ export default class ViewPanel extends Vue {
     public mounted(): void {
         const container = document.querySelector(`.${this.containerClass}`);
         container?.addEventListener('animationend', () => this.stage++);
-        VanillaTilt.init(container as HTMLElement, { max: 1, glare: true, "max-glare": 0.1 });
+        VanillaTilt.init(container as HTMLElement, { max: 0.3, glare: true, "max-glare": 0.1 });
     }
 }
 </script>
