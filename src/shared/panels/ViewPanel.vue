@@ -1,16 +1,18 @@
 <template>
-    <div :class="{ [containerClass]: true, 'expanded-panel': stage >= 11 }">
-        <div class="header">
-            <slot name="header"></slot>
-        </div>
+    <div :class="{ [containerClass]: true, 'expanded-panel': isExpanded }">
+        <template v-if="isExpanded">
+            <div class="header">
+                <slot name="header"></slot>
+            </div>
 
-        <div class="content">
-            <slot></slot>
-        </div>
+            <div class="content">
+                <slot></slot>
+            </div>
 
-        <div class="footer">
-            <slot name="footer"></slot>
-        </div>
+            <div class="footer">
+                <slot name="footer"></slot>
+            </div>
+        </template>
 
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
@@ -24,7 +26,11 @@ import VanillaTilt from "vanilla-tilt";
 
 export default class ViewPanel extends Vue {
     public readonly containerClass = 'view-panel-container';
-    public stage = 1;
+    private stage = 1;
+
+    get isExpanded(): boolean {
+        return this.stage >= 11;
+    }
 
     public mounted(): void {
         const container = document.querySelector(`.${this.containerClass}`);
@@ -59,6 +65,8 @@ export default class ViewPanel extends Vue {
     .header, .content, .footer {
         width: $max-content-width;
         max-width: $max-content-width;
+        opacity: 0;
+        animation: revealContent 0.4s ease 0.5s forwards;
     }
 
     .header, .footer {
