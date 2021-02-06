@@ -6,7 +6,7 @@
         </div>
 
         <div class="distribution-charts">
-            <distribution-chart class="chart" :groups="itemsDistribution">
+            <distribution-chart class="chart" :groups="itemsDistribution" :renderDelay="chartDelay">
                 <div class="item-counts">
                     <span class="task-count">
                         <span>{{ tasks }}&nbsp;</span>
@@ -20,13 +20,16 @@
                 </div>
             </distribution-chart>
 
-            <distribution-chart class="chart" :groups="priorityDistribution"></distribution-chart>
+            <distribution-chart class="chart"
+                :groups="priorityDistribution"
+                :renderDelay="chartDelay">
+            </distribution-chart>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../../store';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
@@ -35,10 +38,14 @@ import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { DistributionGroup } from '../../../core/data-model/generic/distribution-group';
 import DistributionChart from '../../../shared/widgets/DistributionChart.vue';
 
+class ActivitiesSelectionCardProp {
+    public chartDelay = prop<number>({ default: 3200 });
+}
+
 @Options({
     components: { DistributionChart }
 })
-export default class ActivitiesSelectionCard extends Vue {
+export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectionCardProp) {
 
     get tasks(): number {
         return store.getters[`${taskItemKey}/incompleteParentTasks`].length;
