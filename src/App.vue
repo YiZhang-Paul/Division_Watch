@@ -1,6 +1,7 @@
 <template>
     <div v-if="showBlurLayer" class="global-blur-layer"></div>
-    <main-menu v-if="activeView === viewOption.MainMenu"></main-menu>
+    <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
+    <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
     <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
     <agent-watch class="agent-watch"></agent-watch>
 </template>
@@ -30,7 +31,7 @@ export default class App extends Vue {
     }
 
     get showBlurLayer(): boolean {
-        return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenu;
+        return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenuAnimated;
     }
 
     public mounted(): void {

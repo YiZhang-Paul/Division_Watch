@@ -84,7 +84,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
             store.commit(`${mainViewKey}/setActiveView`, ViewOption.Settings);
         }
         else if (option === WatchMenuOption.MainMenu) {
-            store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenu);
+            store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuAnimated);
         }
 
         this.onMenuClose();
