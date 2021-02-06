@@ -10,6 +10,7 @@
         <template v-slot:footer>
             <div class="footer">
                 <menu-button class="back-button" @click="backToMain()">Back</menu-button>
+                <menu-button class="close-button" @click="closePanel()">Close</menu-button>
             </div>
         </template>
     </view-panel>
@@ -66,6 +67,10 @@ export default class ActivityManager extends Vue {
     public backToMain(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuNoop);
     }
+
+    public closePanel(): void {
+        store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    }
 }
 </script>
 
@@ -86,10 +91,18 @@ export default class ActivityManager extends Vue {
     .footer {
         align-items: center;
 
+        .back-button, .close-button {
+            width: 5vw;
+            height: 3.75vh;
+        }
+
         .back-button {
-            width: 6.5vw;
-            height: 5vh;
+            margin-right: 1.5%;
             color: rgb(255, 255, 255);
+        }
+
+        .close-button {
+            color: rgb(240, 123, 14);
         }
     }
 }
