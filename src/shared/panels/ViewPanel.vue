@@ -1,5 +1,9 @@
 <template>
     <div :class="{ [containerClass]: true, 'expanded-panel': isExpanded }">
+        <div class="panel-box-wrapper">
+            <div class="panel-box" v-for="n in 4" :key="n"></div>
+        </div>
+
         <template v-if="isExpanded">
             <div class="header">
                 <slot name="header"></slot>
@@ -13,10 +17,6 @@
                 <slot name="footer"></slot>
             </div>
         </template>
-
-        <div class="panel-box-wrapper">
-            <div class="panel-box" v-for="n in 4" :key="n"></div>
-        </div>
     </div>
 </template>
 

@@ -82,16 +82,22 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     $tall-row-height: 62.5%;
     $narrow-column-width: 15%;
 
-    & > div {
-        box-sizing: border-box;
-    }
-
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     background-color: rgba(36, 35, 38, 0.75);
     color: rgb(255, 255, 255);
     font-size: 0.7rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+        cursor: pointer;
+        background-color: rgb(89, 82, 134);
+    }
+
+    & > div {
+        box-sizing: border-box;
+    }
 
     .category, .attributes, .splitter-1 {
         width: $narrow-column-width;
