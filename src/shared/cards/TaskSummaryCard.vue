@@ -2,7 +2,11 @@
     <div v-if="task" class="task-summary-card">
         <div class="category"></div>
         <div class="splitter-1"></div>
-        <div class="attributes"></div>
+
+        <div class="attributes">
+            <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
+        </div>
+
         <div class="splitter-2"></div>
 
         <div class="name">
@@ -25,7 +29,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, prop } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
+import { Autorenew } from 'mdue';
 
 import store from '../../store';
 import { taskItemKey } from '../../store/task-item/task-item.state';
@@ -38,6 +43,11 @@ class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
 }
 
+@Options({
+    components: {
+        Autorenew
+    }
+})
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     get estimation(): string {
@@ -87,7 +97,21 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .attributes {
+        display: flex;
+        flex-direction: columns;
+        justify-content: space-around;
+        align-items: center;
         height: $tall-row-height;
+        font-size: 1rem;
+
+        .recur-indicator {
+            color: rgba(185, 185, 185, 0.5);
+            transform: rotate(90deg) rotateY(180deg);
+
+            &.recur-active {
+                color: rgb(255, 255, 255);
+            }
+        }
     }
 
     .splitter-2 {
@@ -113,7 +137,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         font-size: 0.6rem;
 
         .progress {
-            width: 62.5%;
+            width: 67.5%;
             height: 0.9vh;
             border-radius: 1px;
             background-color: rgb(185, 185, 185);
@@ -128,7 +152,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
             justify-content: center;
             align-items: center;
             width: 12.5%;
-            height: 90%;
+            height: 85%;
             overflow: hidden;
 
             img {
