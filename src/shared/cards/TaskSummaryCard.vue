@@ -4,6 +4,13 @@
         <div class="splitter-1"></div>
 
         <div class="attributes">
+            <div class="priority-indicator">
+                <chevron-up class="arrow-icon"
+                    v-for="n in 3"
+                    :key="n"
+                    :style="{ color: n - 1 <= task.priority.rank ? priorityColor : null }" />
+            </div>
+
             <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
         </div>
 
@@ -30,7 +37,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Autorenew } from 'mdue';
+import { Autorenew, ChevronUp } from 'mdue';
 
 import store from '../../store';
 import { taskItemKey } from '../../store/task-item/task-item.state';
@@ -45,7 +52,8 @@ class TaskSummaryCardProp {
 
 @Options({
     components: {
-        Autorenew
+        Autorenew,
+        ChevronUp
     }
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
@@ -56,12 +64,21 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         return estimation < 1 ? '<1' : `x${Math.floor(estimation)}`;
     }
+
+    get priorityColor(): string {
+        if (!this.task.priority.rank) {
+            return 'rgb(40, 212, 57)';
+        }
+
+        return `rgb(${this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72'})`;
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 .task-summary-card {
     $splitter-thickness: 1px;
+    $attribute-row-height: 65%;
     $tall-row-height: 62.5%;
     $narrow-column-width: 15%;
 
@@ -89,7 +106,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .category {
-        height: calc(100% - #{$tall-row-height} - #{$splitter-thickness});
+        height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
     }
 
     .splitter-1 {
@@ -97,15 +114,46 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .attributes {
+        $inactive-color: rgba(170, 170, 170, 0.45);
+
         display: flex;
-        flex-direction: columns;
-        justify-content: space-around;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        height: $tall-row-height;
+        height: $attribute-row-height;
         font-size: 1rem;
 
+        .priority-indicator {
+            $dimension: 1rem;
+            $font-size: 1.35rem;
+
+            position: relative;
+            width: $dimension;
+            height: $dimension;
+            overflow: hidden;
+            color: $inactive-color;
+            font-size: $font-size;
+
+            .arrow-icon {
+                $distance: 0.275rem;
+                $margin: calc((#{$dimension} - #{$font-size}) / 2);
+
+                position: absolute;
+                top: $margin;
+                left: $margin;
+
+                &:nth-child(1) {
+                    top: calc(#{$margin} + #{$distance});
+                }
+
+                &:nth-child(3) {
+                    top: calc(#{$margin} - #{$distance});
+                }
+            }
+        }
+
         .recur-indicator {
-            color: rgba(185, 185, 185, 0.5);
+            color: $inactive-color;
             transform: rotate(90deg) rotateY(180deg);
 
             &.recur-active {
