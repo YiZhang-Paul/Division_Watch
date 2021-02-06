@@ -3,6 +3,7 @@
         <template v-slot:header>
             <div class="header">
                 <title-panel class="title-panel">Activities</title-panel>
+                <tab-group class="tab-group" :options="tabs" @tab:selected="activeTab = $event"></tab-group>
             </div>
         </template>
 
@@ -16,22 +17,46 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { markRaw } from 'vue';
+import { ExclamationThick, InboxMultiple, Target } from 'mdue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { taskItemKey } from '../../store/task-item/task-item.state';
 import { ViewOption } from '../../core/enums/view-option.enum';
+import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
+import TabGroup from '../../shared/controls/TabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 
 @Options({
     components: {
+        ExclamationThick,
+        InboxMultiple,
+        Target,
         TitlePanel,
         ViewPanel,
+        TabGroup,
         MenuButton
     }
 })
 export default class ActivityManager extends Vue {
+    public readonly tabs = [
+        markRaw(new TabGroupOption('Task', Target, this.tasks)),
+        markRaw(new TabGroupOption('Interruption', ExclamationThick, this.interruptions)),
+        markRaw(new TabGroupOption('Category', InboxMultiple))
+    ];
+
+    public activeTab = 0;
+
+    get tasks(): number {
+        return store.getters[`${taskItemKey}/incompleteParentTasks`].length;
+    }
+
+    get interruptions(): number {
+        return store.getters[`${taskItemKey}/incompleteInterruptions`].length;
+    }
 
     public backToMain(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuNoop);
@@ -44,15 +69,23 @@ export default class ActivityManager extends Vue {
 
     .header, .footer {
         display: flex;
-        align-items: center;
         width: 100%;
         height: 100%;
     }
 
-    .footer .back-button {
-        width: 6.5vw;
-        height: 5vh;
-        color: rgb(255, 255, 255);
+    .header {
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .footer {
+        align-items: center;
+
+        .back-button {
+            width: 6.5vw;
+            height: 5vh;
+            color: rgb(255, 255, 255);
+        }
     }
 }
 </style>

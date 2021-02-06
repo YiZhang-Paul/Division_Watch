@@ -4,6 +4,7 @@
             v-for="(option, index) of options"
             :key="index"
             :isActive="activeIndex === index"
+            :icon="option.icon"
             :badgeValue="option.badgeValue"
             @click="onSelect(index)">
 
@@ -32,9 +33,13 @@ class TabGroupProp {
 export default class TabGroup extends Vue.with(TabGroupProp) {
     public activeIndex = 0;
 
+    public mounted(): void {
+        this.$emit('tab:selected', this.activeIndex);
+    }
+
     public onSelect(index: number): void {
         this.activeIndex = index;
-        this.$emit('tab:selected', this.options[index].name);
+        this.$emit('tab:selected', index);
     }
 }
 </script>
