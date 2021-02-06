@@ -1,12 +1,19 @@
 <template>
-    <div class="item-list-panel-container">
+    <overlay-scrollbar-panel class="item-list-panel-container">
         <slot></slot>
-    </div>
+    </overlay-scrollbar-panel>
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 
+import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
+
+@Options({
+    components: {
+        OverlayScrollbarPanel
+    }
+})
 export default class ItemListPanel extends Vue { }
 </script>
 
@@ -14,6 +21,6 @@ export default class ItemListPanel extends Vue { }
 .item-list-panel-container {
     display: flex;
     flex-direction: column;
-    border: 1px solid red;
+    overflow: hidden;
 }
 </style>

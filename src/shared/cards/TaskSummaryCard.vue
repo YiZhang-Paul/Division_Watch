@@ -92,7 +92,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     &:hover {
         cursor: pointer;
-        background-color: rgb(89, 82, 134);
+        background-color: rgb(72, 66, 110);
     }
 
     & > div {

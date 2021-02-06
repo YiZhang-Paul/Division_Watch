@@ -42,9 +42,12 @@ export default class TaskManager extends Vue {
         height: 95%;
 
         .summary-card {
-            margin-bottom: 1vh;
             width: 100%;
             height: 12.5vh;
+
+            &:not(:nth-last-child(1)) {
+                margin-bottom: 1vh;
+            }
         }
     }
 }
