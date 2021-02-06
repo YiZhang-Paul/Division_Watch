@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Vue } from 'vue-class-component';
+import VanillaTilt from "vanilla-tilt";
 
 export default class ViewPanel extends Vue {
     public readonly containerClass = 'view-panel-container';
@@ -28,6 +29,7 @@ export default class ViewPanel extends Vue {
     public mounted(): void {
         const container = document.querySelector(`.${this.containerClass}`);
         container?.addEventListener('animationend', () => this.stage++);
+        VanillaTilt.init(container as HTMLElement, { max: 1, glare: true, "max-glare": 0.1 });
     }
 }
 </script>
