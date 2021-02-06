@@ -184,7 +184,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     .estimation {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         padding: 0 3.5%;
         height: calc(100% - #{$tall-row-height});

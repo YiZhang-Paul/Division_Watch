@@ -25,7 +25,7 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
 <style lang="scss" scoped>
 .title-panel-container {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     color: rgb(255, 255, 255);
     font-size: 0.9rem;
