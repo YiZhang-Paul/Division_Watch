@@ -11,6 +11,7 @@
             :useSimpleView="!group.highlight"
             :color="group.color"
             :percentage="getPercentage(index)"
+            :renderDelay="renderDelay"
             :glowDelay="index * 2000"
             @chart:rendered="totalRendered++"
             @chart:mouseover="tooltip = group.total + ' ' + group.name"
@@ -28,6 +29,7 @@ import PercentageChart from './PercentageChart.vue';
 
 class DistributionChartProp {
     public groups = prop<DistributionGroup[]>({ default: [] });
+    public renderDelay = prop<number>({ default: 3200 });
 }
 
 @Options({
