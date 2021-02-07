@@ -18,15 +18,6 @@
         </input-panel>
 
         <option-dropdown class="edit-item"
-            :name="'Category'"
-            :selected="selectedCategory"
-            :options="categories"
-            :transform="_ => _.name"
-            :delay="0.3"
-            @options:select="onTaskItemChange('categoryId', $event.id)">
-        </option-dropdown>
-
-        <option-dropdown class="edit-item"
             :name="'Priority'"
             :selected="task.priority"
             :options="taskOptions.priorities"
@@ -106,7 +97,6 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { ArrowLeftCircle, CloudUpload } from 'mdue';
 
 import store from '../../store';
-import { Category } from '../../core/data-model/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item';
 // eslint-disable-next-line no-unused-vars
@@ -139,7 +129,6 @@ class TaskDetailsViewProp {
         TaskDangerZone
     },
     emits: [
-        'task:change',
         'task:update',
         'task:delete',
         'interruption:convert',
@@ -158,16 +147,6 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
 
     get taskOptions(): TaskItemOptions {
         return store.getters['taskItem/taskItemOptions'];
-    }
-
-    get categories(): Category[] {
-        const categories: Category[] = store.getters['category/categories'];
-
-        return [new Category('N/A'), ...categories];
-    }
-
-    get selectedCategory(): Category {
-        return store.getters['category/category'](this.task.categoryId);
     }
 
     get isDaily(): boolean {
@@ -189,12 +168,6 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     }
 
     public onTaskItemChange(key: string, value: any): void {
-        this.$emit('task:change', { ...this.task, [key]: value });
-
-        if (!this.task.id) {
-            return;
-        }
-
         if (this.updateDebounceTimer) {
             clearTimeout(this.updateDebounceTimer);
         }

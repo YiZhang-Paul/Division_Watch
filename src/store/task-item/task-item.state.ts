@@ -9,11 +9,13 @@ const taskItemHttpService = new TaskItemHttpService();
 export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
     incompleteItems: TaskItem[];
+    activeTaskItem: TaskItem | null;
 }
 
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
-    incompleteItems: []
+    incompleteItems: [],
+    activeTaskItem: null
 });
 
 const getters = {
@@ -33,7 +35,8 @@ const getters = {
         const interruptions = state.incompleteItems.filter(_ => _.isInterruption);
 
         return interruptions.sort((a, b) => b.priority.rank - a.priority.rank);
-    }
+    },
+    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem
 };
 
 const mutations = {
@@ -42,6 +45,9 @@ const mutations = {
     },
     setIncompleteItems(state: ITaskItemState, items: TaskItem[]): void {
         state.incompleteItems = items;
+    },
+    setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
+        state.activeTaskItem = taskItem;
     }
 };
 
@@ -52,6 +58,10 @@ const actions = {
     },
     async loadIncompleteItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteItems', await taskItemHttpService.getIncompleteItems());
+    },
+    swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
+        context.commit('setActiveTaskItem', null);
+        setTimeout(() => context.commit('setActiveTaskItem', taskItem));
     }
 };
 

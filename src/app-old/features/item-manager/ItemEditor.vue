@@ -134,10 +134,6 @@ export default class ItemEditor extends Vue {
         }
     }
 
-    public onTaskChange(task: TaskItem): void {
-        store.commit('taskItem/setActiveTaskItem', task);
-    }
-
     public onTaskUpdate(task: TaskItem): void {
         store.dispatch('taskItem/updateTaskItem', task);
     }
