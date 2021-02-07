@@ -1,14 +1,16 @@
 <template>
-    <div v-if="task" class="task-summary-card">
+    <div v-if="task"
+        class="task-summary-card"
+        :class="{ 'mouseover-card': isMouseover }"
+        @mouseover="isMouseover = true"
+        @mouseout="isMouseover = false">
+
         <div class="category"></div>
         <div class="splitter-1"></div>
 
         <div class="attributes">
             <div class="priority-indicator">
-                <chevron-up class="arrow-icon"
-                    v-for="n in 3"
-                    :key="n"
-                    :style="{ color: n - 1 <= task.priority.rank ? priorityColor : null }" />
+                <chevron-up class="arrow-icon" v-for="n in 3" :key="n" :style="getArrowStyle(n - 1)" />
             </div>
 
             <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
@@ -57,6 +59,7 @@ class TaskSummaryCardProp {
     }
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
+    public isMouseover = false;
 
     get estimation(): string {
         const { skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
@@ -72,6 +75,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         return `rgb(${this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72'})`;
     }
+
+    public getArrowStyle(index: number): { [key: string]: string | null } {
+        const color = index <= this.task.priority.rank ? this.priorityColor : null;
+
+        return { '--priority-color': color, color };
+    }
 }
 </script>
 
@@ -81,6 +90,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     $attribute-row-height: 65%;
     $tall-row-height: 62.5%;
     $narrow-column-width: 15%;
+    $inactive-color: rgba(170, 170, 170, 0.45);
 
     display: flex;
     flex-direction: column;
@@ -97,6 +107,10 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     & > div {
         box-sizing: border-box;
+    }
+
+    &.mouseover-card .arrow-icon {
+        animation: glowArrow 1s ease infinite;
     }
 
     .category, .attributes, .splitter-1 {
@@ -120,8 +134,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .attributes {
-        $inactive-color: rgba(170, 170, 170, 0.45);
-
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -216,6 +228,18 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         span {
             align-self: flex-end;
+        }
+    }
+
+    @keyframes glowArrow {
+        0% {
+            color: var(--priority-color);
+        }
+        50% {
+            color: $inactive-color;
+        }
+        100% {
+            color: var(--priority-color);
         }
     }
 }
