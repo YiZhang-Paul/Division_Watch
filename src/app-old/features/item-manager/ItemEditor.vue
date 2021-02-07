@@ -134,10 +134,6 @@ export default class ItemEditor extends Vue {
         }
     }
 
-    public onTaskUpdate(task: TaskItem): void {
-        store.dispatch('taskItem/updateTaskItem', task);
-    }
-
     public async onTaskDelete(payload: { taskItem: TaskItem, keepChildren: boolean }): Promise<void> {
         if (!await store.dispatch('taskItem/deleteTaskItem', payload)) {
             return;

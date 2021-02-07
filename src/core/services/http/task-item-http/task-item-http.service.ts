@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { TaskItem } from '../../../data-model/task-item/task-item';
+import { UpdateTaskResult } from '../../../data-model/task-item/update-task-result';
 import { TaskItemOptions } from '../../../data-model/task-item/task-item-options';
 
 export class TaskItemHttpService {
@@ -14,6 +15,15 @@ export class TaskItemHttpService {
         }
         catch {
             return [];
+        }
+    }
+
+    public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult | null> {
+        try {
+            return (await axios.put(this._api, item)).data;
+        }
+        catch {
+            return null;
         }
     }
 

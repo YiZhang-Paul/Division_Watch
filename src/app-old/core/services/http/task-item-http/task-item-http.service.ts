@@ -1,5 +1,4 @@
 import { AddChildResult } from '../../../data-model/add-child-result';
-import { UpdateTaskResult } from '../../../data-model/update-task-result';
 import { DeleteTaskResult } from '../../../data-model/delete-task-result';
 
 export class TaskItemHttpService {
@@ -23,10 +22,6 @@ export class TaskItemHttpService {
         const endpoint = `${this._api}/${parentId}/children`;
 
         return (await axios.post(endpoint, item)).data;
-    }
-
-    public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult> {
-        return (await axios.put(this._api, item)).data;
     }
 
     public async deleteTaskItem(id: string, keepChildren = true): Promise<DeleteTaskResult> {

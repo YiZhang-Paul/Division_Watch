@@ -110,8 +110,6 @@ class TaskDetailsViewProp {
     ]
 })
 export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
-    private updateDebounceTimer: NodeJS.Timeout | null = null;
-
     get isDaily(): boolean {
         return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
     }
@@ -120,25 +118,8 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
         return Boolean(this.task.id) && !this.task.isInterruption;
     }
 
-    public beforeUnmount(): void {
-        if (this.updateDebounceTimer) {
-            this.$emit('task:update', this.task);
-        }
-    }
-
     public onDailyToggle(isDaily: boolean): void {
         this.onItemChange('recur', new Array(7).fill(isDaily));
-    }
-
-    public onItemChange(key: string, value: any): void {
-        if (this.updateDebounceTimer) {
-            clearTimeout(this.updateDebounceTimer);
-        }
-
-        this.updateDebounceTimer = setTimeout(() => {
-            this.$emit('task:update', this.task);
-            this.updateDebounceTimer = null;
-        }, 1000);
     }
 }
 </script>

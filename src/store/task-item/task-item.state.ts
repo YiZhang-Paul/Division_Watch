@@ -2,14 +2,16 @@ import { ActionContext } from 'vuex';
 
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import { UpdateTaskResult } from '../../core/data-model/task-item/update-task-result';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 const taskItemHttpService = new TaskItemHttpService();
 
 export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
     incompleteItems: TaskItem[];
-    activeTaskItem: TaskItem | null;
+    activeItem: TaskItem | null;
 }
 
 function sortByPriority(tasks: TaskItem[]): TaskItem[] {
@@ -19,7 +21,7 @@ function sortByPriority(tasks: TaskItem[]): TaskItem[] {
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
     incompleteItems: [],
-    activeTaskItem: null
+    activeItem: null
 });
 
 const getters = {
@@ -39,7 +41,7 @@ const getters = {
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
-    activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem
+    activeItem: (state: ITaskItemState): TaskItem | null => state.activeItem
 };
 
 const mutations = {
@@ -49,8 +51,16 @@ const mutations = {
     setIncompleteItems(state: ITaskItemState, items: TaskItem[]): void {
         state.incompleteItems = items;
     },
-    setActiveTaskItem(state: ITaskItemState, taskItem: TaskItem | null): void {
-        state.activeTaskItem = taskItem;
+    setIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
+        const tasks = state.incompleteItems;
+        const index = tasks.findIndex(_ => _.id === taskItem.id);
+
+        if (index !== -1) {
+            state.incompleteItems = GenericUtility.replaceAt(tasks, taskItem, index);
+        }
+    },
+    setActiveItem(state: ITaskItemState, taskItem: TaskItem | null): void {
+        state.activeItem = taskItem;
     }
 };
 
@@ -62,9 +72,24 @@ const actions = {
     async loadIncompleteItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
         context.commit('setIncompleteItems', await taskItemHttpService.getIncompleteItems());
     },
-    swapActiveTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
-        context.commit('setActiveTaskItem', null);
-        setTimeout(() => context.commit('setActiveTaskItem', taskItem));
+    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<UpdateTaskResult | null> {
+        const result = await taskItemHttpService.updateTaskItem(taskItem);
+
+        if (!result) {
+            return null;
+        }
+
+        context.commit('setIncompleteItem', result.target);
+
+        if (result.parent) {
+            context.commit('setIncompleteItem', result.parent);
+        }
+
+        return result;
+    },
+    swapActiveItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
+        context.commit('setActiveItem', null);
+        setTimeout(() => context.commit('setActiveItem', taskItem));
     }
 };
 

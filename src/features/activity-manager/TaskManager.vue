@@ -76,6 +76,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
 })
 export default class TaskManager extends Vue {
     public searchText = '';
+    private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get taskOptions(): TaskItemOptions {
         return store.getters[`${taskItemKey}/taskItemOptions`];
@@ -92,7 +93,7 @@ export default class TaskManager extends Vue {
     }
 
     get activeTask(): TaskItem | null {
-        return store.getters[`${taskItemKey}/activeTaskItem`];
+        return store.getters[`${taskItemKey}/activeItem`];
     }
 
     get activeChildTasks(): TaskItem[] {
@@ -115,17 +116,32 @@ export default class TaskManager extends Vue {
         return tasks.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
+    public beforeUnmount(): void {
+        if (this.updateDebounceTimer) {
+            store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
+        }
+    }
+
     public onItemChange(key: string, value: any): void {
         const changed = { ...this.activeTask!, [key]: value };
-        store.commit(`${taskItemKey}/setActiveTaskItem`, changed);
+        store.commit(`${taskItemKey}/setActiveItem`, changed);
 
         if (!changed.id) {
             return;
         }
+
+        if (this.updateDebounceTimer) {
+            clearTimeout(this.updateDebounceTimer);
+        }
+
+        this.updateDebounceTimer = setTimeout(() => {
+            store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
+            this.updateDebounceTimer = null;
+        }, 1000);
     }
 
     public onTaskSelected(task: TaskItem): void {
-        store.dispatch(`${taskItemKey}/swapActiveTaskItem`, task);
+        store.dispatch(`${taskItemKey}/swapActiveItem`, task);
     }
 
     public toDisplayDate(raw: string): string {

@@ -1,6 +1,4 @@
-import { UpdateTaskResult } from '../../core/data-model/update-task-result';
 import { DeleteTaskResult } from '../../core/data-model/delete-task-result';
-import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 const getters = {
     incompleteTask: (state: ITaskItemState) => (id: string): TaskItem | null => {
@@ -11,14 +9,6 @@ const getters = {
 const mutations = {
     addIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
-    },
-    setIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
-        const tasks = state.incompleteTaskItems;
-        const index = tasks.findIndex(_ => _.id === taskItem.id);
-
-        if (index !== -1) {
-            state.incompleteTaskItems = GenericUtility.replaceAt(tasks, taskItem, index);
-        }
     },
     deleteIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteTaskItems = state.incompleteTaskItems.filter(_ => _.id !== taskItem.id);
@@ -52,21 +42,6 @@ const actions = {
         if (getters['activeTaskItem']?.id === result.parent.id) {
             commit('setActiveTaskItem', result.parent);
         }
-    },
-    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<UpdateTaskResult | null> {
-        const result = await taskItemHttpService.updateTaskItem(taskItem);
-
-        if (!result) {
-            return null;
-        }
-
-        context.commit('setIncompleteTaskItem', result.target);
-
-        if (result.parent) {
-            context.commit('setIncompleteTaskItem', result.parent);
-        }
-
-        return result;
     },
     async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { taskItem: TaskItem, keepChildren: boolean | null }): Promise<DeleteTaskResult | null> {
         const { taskItem, keepChildren } = payload;
