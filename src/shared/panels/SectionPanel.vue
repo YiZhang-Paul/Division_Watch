@@ -87,7 +87,6 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         }
 
         .edit-icon {
-            margin-left: 0.25rem;
             color: rgb(241, 165, 78);
             font-size: 0.5rem;
             transition: color 0.3s;

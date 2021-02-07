@@ -25,13 +25,6 @@
                     </checkbox>
                 </div>
             </input-panel>
-
-            <week-day-selector class="day-selector"
-                :days="task.recur.slice()"
-                :delay="0.7"
-                :disabled="task.parent"
-                @days:select="onItemChange('recur', $event)">
-            </week-day-selector>
         </template>
 
         <task-group v-if="!task.parent"

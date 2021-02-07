@@ -49,6 +49,13 @@
                     :transform="toDisplayEstimation"
                     @options:select="onItemChange('estimate', $event)">
                 </option-dropdown>
+
+                <day-selector class="editor-control"
+                    :name="'Recur'"
+                    :days="activeTask.recur.slice()"
+                    :isDisabled="activeTask.parent"
+                    @days:select="onItemChange('recur', $event)">
+                </day-selector>
             </section-panel>
         </div>
     </div>
@@ -68,6 +75,7 @@ import { TaskItemOptions } from '../../core/data-model/task-item/task-item-optio
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
+import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
@@ -76,6 +84,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         ItemListPanel,
         SectionPanel,
         OptionDropdown,
+        DaySelector,
         TaskSummaryCard
     }
 })
