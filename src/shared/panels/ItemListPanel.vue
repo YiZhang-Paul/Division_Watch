@@ -2,7 +2,10 @@
     <div class="item-list-panel-container">
         <div class="actions">
             <search-box class="search-box" @search="$emit('search', $event)"></search-box>
-            <plus class="add-item-button" />
+
+            <div class="button-wrapper">
+                <plus class="add-item-button" />
+            </div>
         </div>
 
         <overlay-scrollbar-panel class="scroll-panel" @created="scroll = $event" @scroll="scroll = $event">
@@ -66,15 +69,28 @@ $padding-right: 10px;
             height: 50%;
         }
 
-        .add-item-button {
-            margin-left: 1.5%;
-            color: rgb(240, 123, 14);
-            filter: brightness(0.85);
-            transition: filter 0.3s;
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 2%;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: rgb(216, 124, 37);
 
             &:hover {
                 cursor: pointer;
-                filter: brightness(1);
+
+                .add-item-button {
+                    filter: brightness(1);
+                }
+            }
+
+            .add-item-button {
+                color: rgb(250, 250, 250);
+                filter: brightness(0.85);
+                transition: filter 0.3s;
             }
         }
     }
