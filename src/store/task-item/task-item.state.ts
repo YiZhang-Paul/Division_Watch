@@ -12,6 +12,10 @@ export interface ITaskItemState {
     activeTaskItem: TaskItem | null;
 }
 
+function sortByPriority(tasks: TaskItem[]): TaskItem[] {
+    return tasks.sort((a, b) => b.priority.rank - a.priority.rank);
+}
+
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
     incompleteItems: [],
@@ -22,19 +26,18 @@ const getters = {
     taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
     incompleteItems: (state: ITaskItemState): TaskItem[] => state.incompleteItems,
     incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
-        const parents = state.incompleteItems.filter(_ => !_.isInterruption && !_.parent);
-
-        return parents.sort((a, b) => b.priority.rank - a.priority.rank);
+        return sortByPriority(state.incompleteItems.filter(_ => !_.isInterruption && !_.parent));
     },
     incompleteChildTasks: (state: ITaskItemState): TaskItem[] => {
-        const children = state.incompleteItems.filter(_ => !_.isInterruption && _.parent);
+        return sortByPriority(state.incompleteItems.filter(_ => !_.isInterruption && _.parent));
+    },
+    incompleteChildTasksByParentId: (_: ITaskItemState, getters: any) => (id: string): TaskItem[] => {
+        const children: TaskItem[] = getters.incompleteChildTasks;
 
-        return children.sort((a, b) => b.priority.rank - a.priority.rank);
+        return children.filter(_ => _.parent === id);
     },
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
-        const interruptions = state.incompleteItems.filter(_ => _.isInterruption);
-
-        return interruptions.sort((a, b) => b.priority.rank - a.priority.rank);
+        return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
     activeTaskItem: (state: ITaskItemState): TaskItem | null => state.activeTaskItem
 };

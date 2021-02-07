@@ -12,39 +12,10 @@
 
                 <input type="text"
                     :value="task.name"
-                    @input="onTaskItemChange('name', $event.target.value)"
+                    @input="onItemChange('name', $event.target.value)"
                     placeholder="enter name here..." />
             </div>
         </input-panel>
-
-        <option-dropdown class="edit-item"
-            :name="'Priority'"
-            :selected="task.priority"
-            :options="taskOptions.priorities"
-            :transform="_ => _.name"
-            :delay="0.3"
-            @options:select="onTaskItemChange('priority', $event)">
-        </option-dropdown>
-
-        <option-dropdown class="edit-item"
-            :name="'Deadline'"
-            :selected="task.deadline"
-            :options="taskOptions.deadlines"
-            :transform="toDisplayDate"
-            :delay="0.3"
-            @options:select="onTaskItemChange('deadline', $event)">
-        </option-dropdown>
-
-        <option-dropdown class="edit-item"
-            :name="'Estimate'"
-            :selected="task.estimate"
-            :disabled="childTasks.length"
-            :disabledText="toDisplayEstimation(totalChildEstimation)"
-            :options="taskOptions.estimates"
-            :transform="toDisplayEstimation"
-            :delay="0.3"
-            @options:select="onTaskItemChange('estimate', $event)">
-        </option-dropdown>
 
         <template v-if="!task.isInterruption">
             <input-panel class="edit-item" :delay="0.3">
@@ -64,7 +35,7 @@
                 :days="task.recur.slice()"
                 :delay="0.7"
                 :disabled="task.parent"
-                @days:select="onTaskItemChange('recur', $event)">
+                @days:select="onItemChange('recur', $event)">
             </week-day-selector>
         </template>
 
@@ -141,14 +112,6 @@ class TaskDetailsViewProp {
 export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
-    get totalChildEstimation(): number {
-        return this.childTasks.reduce((total, _) => total + _.estimate, 0);
-    }
-
-    get taskOptions(): TaskItemOptions {
-        return store.getters['taskItem/taskItemOptions'];
-    }
-
     get isDaily(): boolean {
         return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
     }
@@ -164,10 +127,10 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
     }
 
     public onDailyToggle(isDaily: boolean): void {
-        this.onTaskItemChange('recur', new Array(7).fill(isDaily));
+        this.onItemChange('recur', new Array(7).fill(isDaily));
     }
 
-    public onTaskItemChange(key: string, value: any): void {
+    public onItemChange(key: string, value: any): void {
         if (this.updateDebounceTimer) {
             clearTimeout(this.updateDebounceTimer);
         }
@@ -176,14 +139,6 @@ export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
             this.$emit('task:update', this.task);
             this.updateDebounceTimer = null;
         }, 1000);
-    }
-
-    public toDisplayDate(raw: string): string {
-        return raw ? TimeUtility.toShortDateString(raw) : 'N/A';
-    }
-
-    public toDisplayEstimation(time: number): string {
-        return TimeUtility.toEstimationString(time, this.taskOptions.skullDuration);
     }
 }
 </script>
