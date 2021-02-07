@@ -1,14 +1,18 @@
 <template>
     <view-panel class="activity-manager-container">
         <template v-slot:header>
-            <div class="header">
+            <div class="header-content">
                 <title-panel class="title-panel">Activities</title-panel>
                 <tab-group class="tab-group" :options="tabs" @tab:selected="activeTab = $event"></tab-group>
             </div>
         </template>
 
+        <template v-slot:default>
+            <task-manager v-if="activeTab === 0" class="task-manager"></task-manager>
+        </template>
+
         <template v-slot:footer>
-            <div class="footer">
+            <div class="footer-content">
                 <menu-button class="back-button" @click="backToMain()">Back</menu-button>
                 <menu-button class="close-button" @click="closePanel()">Close</menu-button>
             </div>
@@ -32,6 +36,8 @@ import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import TabGroup from '../../shared/controls/TabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 
+import TaskManager from './TaskManager.vue';
+
 @Options({
     components: {
         ExclamationThick,
@@ -40,7 +46,8 @@ import MenuButton from '../../shared/controls/MenuButton.vue';
         TitlePanel,
         ViewPanel,
         TabGroup,
-        MenuButton
+        MenuButton,
+        TaskManager
     }
 })
 export default class ActivityManager extends Vue {
@@ -75,35 +82,32 @@ export default class ActivityManager extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.activity-manager-container {
+.header-content, .task-manager, .footer-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
 
-    .header, .footer {
-        display: flex;
-        width: 100%;
-        height: 100%;
+.header-content {
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.footer-content {
+    align-items: center;
+
+    .back-button, .close-button {
+        width: 5vw;
+        height: 3.75vh;
     }
 
-    .header {
-        justify-content: space-between;
-        align-items: flex-end;
+    .back-button {
+        margin-right: 1.5%;
+        color: rgb(255, 255, 255);
     }
 
-    .footer {
-        align-items: center;
-
-        .back-button, .close-button {
-            width: 5vw;
-            height: 3.75vh;
-        }
-
-        .back-button {
-            margin-right: 1.5%;
-            color: rgb(255, 255, 255);
-        }
-
-        .close-button {
-            color: rgb(240, 123, 14);
-        }
+    .close-button {
+        color: rgb(240, 123, 14);
     }
 }
 </style>
