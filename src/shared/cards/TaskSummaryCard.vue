@@ -5,7 +5,10 @@
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
-        <div class="category"></div>
+        <div class="category">
+            <component v-if="categoryIcon" :is="categoryIcon" :style="{ color: category.color }"></component>
+        </div>
+
         <div class="splitter-1"></div>
 
         <div class="attributes">
@@ -42,11 +45,15 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { Autorenew, ChevronUp } from 'mdue';
 
 import store from '../../store';
+import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
+// eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
@@ -60,6 +67,14 @@ class TaskSummaryCardProp {
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     public isMouseover = false;
+
+    get category(): Category | null {
+        return store.getters[`${categoryKey}/category`](this.task.categoryId);
+    }
+
+    get categoryIcon(): any {
+        return GenericUtility.getIcon(this.category?.icon ?? '');
+    }
 
     get estimation(): string {
         const { skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
@@ -126,7 +141,11 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .category {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
+        font-size: 1rem;
     }
 
     .splitter-1 {

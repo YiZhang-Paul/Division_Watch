@@ -14,6 +14,9 @@ const state = (): ICategoryState => ({
 });
 
 const getters = {
+    category: (state: ICategoryState) => (id: string): Category | null => {
+        return state.categories.find(_ => _.id === id) ?? null;
+    },
     categories: (state: ICategoryState): Category[] => state.categories.slice()
 };
 
