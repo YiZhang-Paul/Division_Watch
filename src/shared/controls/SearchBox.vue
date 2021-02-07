@@ -1,7 +1,7 @@
 <template>
     <display-panel class="search-box-container">
         <magnify class="icon" />
-        <input type="text" placeholder="search here..." @input="$emit('search', $event.target.value)" />
+        <input type="text" placeholder="search here..." @input="onSearch($event.target.value)" />
     </display-panel>
 </template>
 
@@ -18,7 +18,12 @@ import DisplayPanel from '../panels/DisplayPanel.vue';
     },
     emits: ['search']
 })
-export default class SearchBox extends Vue { }
+export default class SearchBox extends Vue {
+
+    public onSearch(text: string): void {
+        this.$emit('search', (text ?? '').toLowerCase());
+    }
+}
 </script>
 
 <style lang="scss" scoped>

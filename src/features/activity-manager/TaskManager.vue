@@ -1,6 +1,6 @@
 <template>
     <div class="task-manager-container">
-        <item-list-panel class="item-list-panel">
+        <item-list-panel class="item-list-panel" @search="searchText = $event">
             <task-summary-card class="summary-card"
                 v-for="task of tasks"
                 :key="task.id"
@@ -27,9 +27,12 @@ import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
     }
 })
 export default class TaskManager extends Vue {
+    public searchText = '';
 
     get tasks(): TaskItem[] {
-        return store.getters[`${taskItemKey}/incompleteParentTasks`];
+        const tasks: TaskItem[] = store.getters[`${taskItemKey}/incompleteParentTasks`];
+
+        return tasks.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 }
 </script>

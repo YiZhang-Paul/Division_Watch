@@ -1,5 +1,10 @@
 <template>
     <div class="item-list-panel-container">
+        <div class="actions">
+            <search-box class="search-box" @search="$emit('search', $event)"></search-box>
+            <plus class="add-item-button" />
+        </div>
+
         <overlay-scrollbar-panel class="scroll-panel" @created="scroll = $event" @scroll="scroll = $event">
             <div class="content">
                 <slot></slot>
@@ -13,14 +18,19 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { Plus } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { ScrollPosition } from '../../core/data-model/generic/scroll-position';
 import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
+import SearchBox from '../../shared/controls/SearchBox.vue';
 
 @Options({
     components: {
-        OverlayScrollbarPanel
-    }
+        Plus,
+        OverlayScrollbarPanel,
+        SearchBox
+    },
+    emits: ['search']
 })
 export default class ItemListPanel extends Vue {
     public scroll: ScrollPosition | null = null;
@@ -39,32 +49,59 @@ $padding-right: 10px;
 
 .item-list-panel-container {
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
+    $actions-height: 10%;
+    $content-width: calc(100% - #{$padding-right});
 
     position: relative;
 
-    .top-scroll-indicator, .bottom-scroll-indicator {
-        position: absolute;
-        left: 0;
-        width: calc(100% - #{$padding-right});
-        height: 7.5%;
-        pointer-events: none;
-    }
+    .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: $content-width;
+        height: $actions-height;
 
-    .top-scroll-indicator {
-        top: 0;
-        background-image: linear-gradient($scroll-indicator-color, transparent);
-    }
+        .search-box {
+            flex-grow: 1;
+            height: 50%;
+        }
 
-    .bottom-scroll-indicator {
-        bottom: 0;
-        background-image: linear-gradient(to top, $scroll-indicator-color, transparent);
+        .add-item-button {
+            margin-left: 1.5%;
+            color: rgb(240, 123, 14);
+            filter: brightness(0.85);
+            transition: filter 0.3s;
+
+            &:hover {
+                cursor: pointer;
+                filter: brightness(1);
+            }
+        }
     }
 
     .scroll-panel {
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 100%;
+        height: calc(100% - #{$actions-height});
+    }
+
+    .top-scroll-indicator, .bottom-scroll-indicator {
+        position: absolute;
+        left: 0;
+        width: $content-width;
+        height: 7.5%;
+        pointer-events: none;
+    }
+
+    .top-scroll-indicator {
+        top: $actions-height;
+        background-image: linear-gradient($scroll-indicator-color, transparent);
+    }
+
+    .bottom-scroll-indicator {
+        bottom: 0;
+        background-image: linear-gradient(to top, $scroll-indicator-color, transparent);
     }
 }
 
