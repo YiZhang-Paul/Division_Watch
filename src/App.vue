@@ -108,7 +108,7 @@ html, body {
 
 .activity-manager {
     position: absolute;
-    width: 50%;
+    width: 60%;
     height: 87.5%;
 }
 </style>

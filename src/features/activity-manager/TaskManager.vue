@@ -38,8 +38,8 @@ export default class TaskManager extends Vue {
 .task-manager-container {
 
     .item-list-panel {
-        width: 37.5%;
-        height: 90%;
+        width: 35%;
+        height: 95%;
 
         .summary-card {
             width: 100%;
