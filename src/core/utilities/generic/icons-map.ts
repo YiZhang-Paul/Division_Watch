@@ -1,6 +1,6 @@
 import * as Icons from 'mdue';
 
-const icons = new Map<string, any>([
+export const icons = new Map<string, any>([
     ['access-point', Icons.AccessPoint],
     ['account-circle', Icons.AccountCircle],
     ['account-box-multiple', Icons.AccountBoxMultiple],
@@ -52,14 +52,3 @@ const icons = new Map<string, any>([
     ['thumb-up', Icons.ThumbUp],
     ['web', Icons.Web]
 ]);
-
-export class GenericUtility {
-
-    public static getIconNames(): string[] {
-        return Array.from(icons).map(_ => _[0]);
-    }
-
-    public static getIcon(name: string): any {
-        return icons.get(name) ?? null;
-    }
-}
