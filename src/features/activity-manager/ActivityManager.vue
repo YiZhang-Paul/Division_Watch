@@ -7,9 +7,8 @@
             </div>
         </template>
 
-        <template v-slot:default>
-            <task-manager v-if="activeTab === 0" class="task-manager"></task-manager>
-        </template>
+        <div class="dummy-for-vue-internal-error-cannot-read-0-of-null"></div>
+        <task-manager v-if="activeTab === 0" class="task-manager"></task-manager>
 
         <template v-slot:footer>
             <div class="footer-content">
