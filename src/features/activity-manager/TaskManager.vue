@@ -10,39 +10,41 @@
         </item-list-panel>
 
         <div v-if="activeTask" class="editor-area">
-            <option-dropdown class="editor-control"
-                :name="'Category'"
-                :selected="selectedCategory"
-                :options="categories"
-                :transform="_ => _.name"
-                @options:select="onItemChange('categoryId', $event.id)">
-            </option-dropdown>
+            <section-panel class="basic-information" :name="activeTask.name">
+                <option-dropdown class="editor-control"
+                    :name="'Category'"
+                    :selected="selectedCategory"
+                    :options="categories"
+                    :transform="_ => _.name"
+                    @options:select="onItemChange('categoryId', $event.id)">
+                </option-dropdown>
 
-            <option-dropdown class="editor-control"
-                :name="'Priority'"
-                :selected="activeTask.priority"
-                :options="taskOptions.priorities"
-                :transform="_ => _.name"
-                @options:select="onItemChange('priority', $event)">
-            </option-dropdown>
+                <option-dropdown class="editor-control"
+                    :name="'Priority'"
+                    :selected="activeTask.priority"
+                    :options="taskOptions.priorities"
+                    :transform="_ => _.name"
+                    @options:select="onItemChange('priority', $event)">
+                </option-dropdown>
 
-            <option-dropdown class="editor-control"
-                :name="'Deadline'"
-                :selected="activeTask.deadline"
-                :options="taskOptions.deadlines"
-                :transform="toDisplayDate"
-                @options:select="onItemChange('deadline', $event)">
-            </option-dropdown>
+                <option-dropdown class="editor-control"
+                    :name="'Deadline'"
+                    :selected="activeTask.deadline"
+                    :options="taskOptions.deadlines"
+                    :transform="toDisplayDate"
+                    @options:select="onItemChange('deadline', $event)">
+                </option-dropdown>
 
-            <option-dropdown class="editor-control"
-                :name="'Estimate'"
-                :selected="activeTask.estimate"
-                :options="taskOptions.estimates"
-                :isDisabled="activeChildTasks.length"
-                :disableText="activeChildTasksEstimation"
-                :transform="toDisplayEstimation"
-                @options:select="onItemChange('estimate', $event)">
-            </option-dropdown>
+                <option-dropdown class="editor-control"
+                    :name="'Estimate'"
+                    :selected="activeTask.estimate"
+                    :options="taskOptions.estimates"
+                    :isDisabled="activeChildTasks.length"
+                    :disableText="activeChildTasksEstimation"
+                    :transform="toDisplayEstimation"
+                    @options:select="onItemChange('estimate', $event)">
+                </option-dropdown>
+            </section-panel>
         </div>
     </div>
 </template>
@@ -59,6 +61,7 @@ import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
+import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
@@ -66,6 +69,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
 @Options({
     components: {
         ItemListPanel,
+        SectionPanel,
         OptionDropdown,
         TaskSummaryCard
     }
@@ -159,9 +163,13 @@ export default class TaskManager extends Vue {
         width: calc(100% - #{$list-width});
         height: 100%;
 
-        .editor-control {
-            margin-top: 3%;
-            width: 75%;
+        .basic-information {
+            width: 95%;
+
+            .editor-control {
+                margin-top: 3%;
+                width: 100%;
+            }
         }
     }
 }

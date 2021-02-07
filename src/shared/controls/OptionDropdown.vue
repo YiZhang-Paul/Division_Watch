@@ -59,6 +59,7 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
 .option-dropdown-container {
     $name-width: 45%;
 
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     padding: 1.5% 4%;
