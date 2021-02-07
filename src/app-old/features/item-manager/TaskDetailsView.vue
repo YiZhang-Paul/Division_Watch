@@ -9,11 +9,6 @@
                 <cloud-upload v-if="!task.id"
                     class="save-button"
                     @click="$emit('parent:add', task)" />
-
-                <input type="text"
-                    :value="task.name"
-                    @input="onItemChange('name', $event.target.value)"
-                    placeholder="enter name here..." />
             </div>
         </input-panel>
 

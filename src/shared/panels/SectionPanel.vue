@@ -4,7 +4,21 @@
             <div v-for="n in 3" :key="n"></div>
         </div>
 
-        <span class="name">{{ name }}</span>
+        <div class="name" :class="{ editable: isEditable }" @click="onEditStart()">
+            <template v-if="!isEditing">
+                <span>{{ name }}</span>
+                <circle-edit-outline v-if="isEditable" class="edit-icon" />
+            </template>
+
+            <input type="text"
+                v-if="isEditing"
+                ref="nameInput"
+                class="edit-field"
+                v-model="editedName"
+                :placeholder="placeholder"
+                @keyup.enter="onEditConfirm()"
+                @keyup.esc="isEditing = false" />
+        </div>
 
         <div class="content">
             <slot></slot>
@@ -13,13 +27,38 @@
 </template>
 
 <script lang="ts">
-import { Vue, prop } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
+import { CircleEditOutline } from 'mdue';
 
 class SectionPanelProp {
     public name = prop<string>({ default: '' });
+    public placeholder = prop<string>({ default: 'type here...' });
+    public isEditable = prop<boolean>({ default: false });
 }
 
-export default class SectionPanel extends Vue.with(SectionPanelProp) { }
+@Options({
+    components: {
+        CircleEditOutline
+    },
+    emits: ['name:edited']
+})
+export default class SectionPanel extends Vue.with(SectionPanelProp) {
+    public isEditing = false;
+    public editedName = this.name;
+
+    public onEditStart(): void {
+        this.isEditing = this.isEditable;
+
+        if (this.isEditing) {
+            setTimeout(() => (this.$refs.nameInput as any).focus());
+        }
+    }
+
+    public onEditConfirm(): void {
+        this.isEditing = false;
+        this.$emit('name:edited', this.editedName);
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -35,10 +74,47 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) { }
     font-family: 'Jost';
 
     .name {
+        display: flex;
+        align-items: center;
         align-self: flex-start;
         margin-left: $margin-left;
         opacity: 0;
         animation: revealContent 0.3s ease 1s forwards;
+        transition: color 0.3s;
+
+        span, .edit-field {
+            padding: 2px 0.25rem;
+        }
+
+        .edit-icon {
+            margin-left: 0.25rem;
+            color: rgb(241, 165, 78);
+            font-size: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .edit-field {
+            outline: none;
+            border: none;
+            background-color: rgba(37, 34, 34, 0.3);
+            color: rgb(255, 255, 255);
+            font-family: 'Jost';
+            font-size: 1rem;
+
+            &::placeholder {
+                font-size: 0.75rem;
+                color: rgba(200, 200, 200, 0.7);
+            }
+        }
+
+        &.editable:hover {
+            cursor: pointer;
+            color: rgb(74, 236, 223);
+
+            .edit-icon {
+                color: rgb(74, 236, 223);
+            }
+        }
     }
 
     .content {

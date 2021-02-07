@@ -10,7 +10,12 @@
         </item-list-panel>
 
         <div v-if="activeTask" class="editor-area">
-            <section-panel class="basic-information" :name="activeTask.name">
+            <section-panel class="basic-information"
+                :name="activeTask.name"
+                :isEditable="true"
+                :placeholder="'enter task name here...'"
+                @name:edited="onItemChange('name', $event)">
+
                 <option-dropdown class="editor-control"
                     :name="'Category'"
                     :selected="selectedCategory"
