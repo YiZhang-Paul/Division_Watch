@@ -30,12 +30,7 @@
         <div class="estimation">
             <div class="progress"></div>
             <div class="filler"></div>
-
-            <div class="image-wrapper">
-                <img src="../../assets/images/rogue_skull.png" />
-            </div>
-
-            <span>{{ estimation }}</span>
+            <estimation-skulls class="estimation-skulls" :estimation="task.estimate"></estimation-skulls>
         </div>
     </div>
 </template>
@@ -46,13 +41,11 @@ import { Autorenew, ChevronUp } from 'mdue';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
-import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
-// eslint-disable-next-line no-unused-vars
-import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class TaskSummaryCardProp {
@@ -62,7 +55,8 @@ class TaskSummaryCardProp {
 @Options({
     components: {
         Autorenew,
-        ChevronUp
+        ChevronUp,
+        EstimationSkulls
     }
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
@@ -74,13 +68,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     get categoryIcon(): any {
         return GenericUtility.getIcon(this.category?.icon ?? '');
-    }
-
-    get estimation(): string {
-        const { skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
-        const estimation = this.task.estimate / skullDuration;
-
-        return estimation < 1 ? '<1' : `x${Math.floor(estimation)}`;
     }
 
     get priorityColor(): string {
@@ -232,21 +219,9 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
             flex-grow: 1;
         }
 
-        .image-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 12.5%;
-            height: 85%;
-            overflow: hidden;
-
-            img {
-                height: 150%;
-            }
-        }
-
-        span {
-            align-self: flex-end;
+        .estimation-skulls {
+            width: 22.5%;
+            height: 100%;
         }
     }
 
