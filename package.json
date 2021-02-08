@@ -20,7 +20,7 @@
         "mdue": "^0.1.4",
         "overlayscrollbars": "^1.13.1",
         "vanilla-tilt": "^1.7.0",
-        "vue": "^3.0.0",
+        "vue": "^3.0.5",
         "vue-class-component": "^8.0.0-0",
         "vuex": "^4.0.0-0"
     },
