@@ -1,7 +1,6 @@
 <template>
     <div v-if="task"
         class="task-summary-card"
-        :class="{ 'mouseover-card': isMouseover }"
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
@@ -12,10 +11,7 @@
         <div class="splitter-1"></div>
 
         <div class="attributes">
-            <div class="priority-indicator">
-                <chevron-up class="arrow-icon" v-for="n in 3" :key="n" :style="getArrowStyle(n - 1)" />
-            </div>
-
+            <priority-indicator :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
             <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
         </div>
 
@@ -37,7 +33,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Autorenew, ChevronUp } from 'mdue';
+import { Autorenew } from 'mdue';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
@@ -45,6 +41,7 @@ import { categoryKey } from '../../store/category/category.state';
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import PriorityIndicator from '../../shared/widgets/PriorityIndicator.vue';
 import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
@@ -55,7 +52,7 @@ class TaskSummaryCardProp {
 @Options({
     components: {
         Autorenew,
-        ChevronUp,
+        PriorityIndicator,
         EstimationSkulls
     }
 })
@@ -68,20 +65,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     get categoryIcon(): any {
         return GenericUtility.getIcon(this.category?.icon ?? '');
-    }
-
-    get priorityColor(): string {
-        if (!this.task.priority.rank) {
-            return 'rgb(40, 212, 57)';
-        }
-
-        return `rgb(${this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72'})`;
-    }
-
-    public getArrowStyle(index: number): { [key: string]: string | null } {
-        const color = index <= this.task.priority.rank ? this.priorityColor : null;
-
-        return { '--priority-color': color, color };
     }
 }
 </script>
@@ -109,10 +92,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     & > div {
         box-sizing: border-box;
-    }
-
-    &.mouseover-card .arrow-icon {
-        animation: glowArrow 1s ease infinite;
     }
 
     .category, .attributes, .splitter-1 {
@@ -146,35 +125,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         align-items: center;
         height: $attribute-row-height;
         font-size: 1rem;
-
-        .priority-indicator {
-            $dimension: 1rem;
-            $font-size: 1.35rem;
-
-            position: relative;
-            width: $dimension;
-            height: $dimension;
-            overflow: hidden;
-            color: $inactive-color;
-            font-size: $font-size;
-
-            .arrow-icon {
-                $distance: 0.275rem;
-                $margin: calc((#{$dimension} - #{$font-size}) / 2);
-
-                position: absolute;
-                top: $margin;
-                left: $margin;
-
-                &:nth-child(1) {
-                    top: calc(#{$margin} + #{$distance});
-                }
-
-                &:nth-child(3) {
-                    top: calc(#{$margin} - #{$distance});
-                }
-            }
-        }
 
         .recur-indicator {
             color: $inactive-color;
@@ -222,18 +172,6 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         .estimation-skulls {
             width: 22.5%;
             height: 100%;
-        }
-    }
-
-    @keyframes glowArrow {
-        0% {
-            color: var(--priority-color);
-        }
-        50% {
-            color: $inactive-color;
-        }
-        100% {
-            color: var(--priority-color);
         }
     }
 }
