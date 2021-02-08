@@ -154,6 +154,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     .name {
         padding: 1.5% 4%;
         height: calc(#{$tall-row-height} - #{$splitter-thickness});
+        transition: color 0.3s;
     }
 
     .splitter-3 {
