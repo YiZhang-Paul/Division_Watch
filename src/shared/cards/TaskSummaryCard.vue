@@ -1,6 +1,7 @@
 <template>
     <div v-if="task"
         class="task-summary-card"
+        :class="{ 'active-card': isActive }"
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
@@ -47,6 +48,7 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
+    public isActive = prop<boolean>({ default: false });
 }
 
 @Options({
@@ -88,6 +90,14 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     &:hover {
         cursor: pointer;
         background-color: rgb(72, 66, 110);
+    }
+
+    &.active-card {
+        background-color: rgb(29, 24, 44);
+
+        .name {
+            color: rgb(247, 174, 18);
+        }
     }
 
     & > div {

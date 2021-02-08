@@ -5,6 +5,7 @@
                 v-for="task of tasks"
                 :key="task.id"
                 :task="task"
+                :isActive="task.id === activeTask.id"
                 @click="onTaskSelected(task)">
             </task-summary-card>
         </item-list-panel>
