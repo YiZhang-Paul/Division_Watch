@@ -78,9 +78,10 @@
                     @item:add="addChecklistItem($event)">
 
                     <checklist-card class="checklist-card"
-                        v-for="item of activeTask.checklist"
+                        v-for="(item, index) of activeTask.checklist"
                         :key="item.description"
-                        :item="item">
+                        :item="item"
+                        @checked:change="onChecklistChecked(index, $event)">
                     </checklist-card>
                 </item-group-panel>
             </div>
@@ -109,6 +110,7 @@ import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
 import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 @Options({
     components: {
@@ -201,6 +203,11 @@ export default class TaskManager extends Vue {
             store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
             this.updateDebounceTimer = null;
         }, 1000);
+    }
+
+    public onChecklistChecked(index: number, item: ChecklistItem): void {
+        const checklist = this.activeTask?.checklist ?? [];
+        this.onItemChange('checklist', GenericUtility.replaceAt(checklist, item, index));
     }
 
     public async addChildTask(name: string): Promise<void> {
