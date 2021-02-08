@@ -72,8 +72,14 @@ const actions = {
         const date = new Date().toISOString().replace(/T.*/g, '');
         context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(date));
     },
-    async loadIncompleteItems(context: ActionContext<ITaskItemState, any>): Promise<void> {
-        context.commit('setIncompleteItems', await taskItemHttpService.getIncompleteItems());
+    async loadIncompleteItems(context: ActionContext<ITaskItemState, any>, autoOpen = false): Promise<void> {
+        const { commit, getters } = context;
+        const items = await taskItemHttpService.getIncompleteItems();
+        commit('setIncompleteItems', items);
+
+        if (autoOpen && !getters.activeItem && items[0]) {
+            commit('setActiveItem', items[0]);
+        }
     },
     async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
         const { commit, getters } = context;
