@@ -1,12 +1,12 @@
 <template>
-    <div class="section-panel-container">
+    <div class="section-panel-container" :style="{ '--title-size': isSubsection ? '0.45rem' : '1rem' }">
         <div class="side-guards">
             <div v-for="n in 3" :key="n"></div>
         </div>
 
         <div class="name" :class="{ editable: isEditable }" @click="onEditStart()">
             <template v-if="!isEditing">
-                <span>{{ name }}</span>
+                <span :class="{ subsection: isSubsection }">{{ name }}</span>
                 <circle-edit-outline v-if="isEditable" class="edit-icon" />
             </template>
 
@@ -33,6 +33,7 @@ import { CircleEditOutline } from 'mdue';
 class SectionPanelProp {
     public name = prop<string>({ default: '' });
     public placeholder = prop<string>({ default: 'type here...' });
+    public isSubsection = prop<boolean>({ default: false });
     public isEditable = prop<boolean>({ default: false });
 }
 
@@ -68,10 +69,12 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     position: relative;
     color: rgb(255, 255, 255);
     font-family: 'Jost';
+    font-size: var(--title-size);
 
     .name {
         display: flex;
@@ -118,7 +121,9 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
     .content {
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
+        justify-content: space-between;
         align-items: center;
         width: $content-width;
         opacity: 0;
@@ -126,7 +131,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
     }
 
     .side-guards {
-        $top: 0.75rem;
+        $top: calc(var(--title-size) * 0.75);
         $gap: 1.75%;
         $horizontal-guard-height: 2px;
         $vertical-guard-start-height: calc((100% - #{$gap}) / 3);

@@ -57,6 +57,24 @@
                     @days:select="onItemChange('recur', $event)">
                 </day-selector>
             </section-panel>
+
+            <div class="subsections">
+                <section-panel class="child-tasks"
+                    :name="'Subtasks (' + activeChildTasks.length + ')'"
+                    :isSubsection="true">
+
+                    <subtask-summary-card class="subtask-summary-card"
+                        v-for="task of activeChildTasks"
+                        :key="task.id"
+                        :task="task">
+                    </subtask-summary-card>
+                </section-panel>
+
+                <section-panel class="checklist-items"
+                    :name="'Checklist'"
+                    :isSubsection="true">
+                </section-panel>
+            </div>
         </div>
     </div>
 </template>
@@ -77,6 +95,7 @@ import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
+import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
@@ -85,7 +104,8 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         SectionPanel,
         OptionDropdown,
         DaySelector,
-        TaskSummaryCard
+        TaskSummaryCard,
+        SubtaskSummaryCard
     }
 })
 export default class TaskManager extends Vue {
@@ -187,6 +207,8 @@ export default class TaskManager extends Vue {
     }
 
     .editor-area {
+        $content-width: 95%;
+
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -194,11 +216,28 @@ export default class TaskManager extends Vue {
         height: 100%;
 
         .basic-information {
-            width: 95%;
+            width: $content-width;
+            height: 50%;
 
             .editor-control {
-                margin-top: 3%;
                 width: 100%;
+            }
+        }
+
+        .subsections {
+            display: flex;
+            margin-top: 3%;
+            width: calc(#{$content-width} - 3.5%);
+            height: 35%;
+
+            .child-tasks, .checklist-items {
+                width: 50%;
+                height: 100%;
+            }
+
+            .subtask-summary-card {
+                width: 100%;
+                height: 5vh;
             }
         }
     }
