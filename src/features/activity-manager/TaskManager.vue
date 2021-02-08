@@ -59,16 +59,17 @@
             </section-panel>
 
             <div class="subsections">
-                <section-panel class="child-tasks"
+                <item-group-panel class="child-tasks"
                     :name="'Subtasks (' + activeChildTasks.length + ')'"
-                    :isSubsection="true">
+                    :placeholder="'add child task here...'"
+                    @item:add="addChildTask($event)">
 
                     <subtask-summary-card class="subtask-summary-card"
                         v-for="task of activeChildTasks"
                         :key="task.id"
                         :task="task">
                     </subtask-summary-card>
-                </section-panel>
+                </item-group-panel>
 
                 <section-panel class="checklist-items"
                     :name="'Checklist'"
@@ -92,6 +93,7 @@ import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
+import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
@@ -102,6 +104,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
     components: {
         ItemListPanel,
         SectionPanel,
+        ItemGroupPanel,
         OptionDropdown,
         DaySelector,
         TaskSummaryCard,
@@ -156,6 +159,10 @@ export default class TaskManager extends Vue {
         }
     }
 
+    public onTaskSelected(task: TaskItem): void {
+        store.dispatch(`${taskItemKey}/swapActiveItem`, task);
+    }
+
     public onItemChange(key: string, value: any): void {
         const changed = { ...this.activeTask!, [key]: value };
         store.commit(`${taskItemKey}/setActiveItem`, changed);
@@ -174,8 +181,12 @@ export default class TaskManager extends Vue {
         }, 1000);
     }
 
-    public onTaskSelected(task: TaskItem): void {
-        store.dispatch(`${taskItemKey}/swapActiveItem`, task);
+    public async addChildTask(name: string): Promise<void> {
+        if (this.activeTask) {
+            const child: TaskItem = { ...new TaskItem(), name };
+            const payload = { parentId: this.activeTask.id, task: child };
+            await store.dispatch(`${taskItemKey}/addChildTaskItem`, payload);
+        }
     }
 
     public toDisplayDate(raw: string): string {
@@ -199,6 +210,8 @@ export default class TaskManager extends Vue {
         .summary-card {
             width: 100%;
             height: 12.5vh;
+            opacity: 0;
+            animation: revealContent 0.3s ease 0.1s forwards;
 
             &:not(:nth-last-child(1)) {
                 margin-bottom: 1vh;
@@ -228,7 +241,7 @@ export default class TaskManager extends Vue {
             display: flex;
             margin-top: 3%;
             width: calc(#{$content-width} - 3.5%);
-            height: 35%;
+            height: 40%;
 
             .child-tasks, .checklist-items {
                 width: 50%;
@@ -238,6 +251,12 @@ export default class TaskManager extends Vue {
             .subtask-summary-card {
                 width: 100%;
                 height: 5vh;
+                opacity: 0;
+                animation: revealContent 0.3s ease 0.1s forwards;
+
+                &:not(:nth-last-child(1)) {
+                    margin-bottom: 1.5%;
+                }
             }
         }
     }

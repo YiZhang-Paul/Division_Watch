@@ -15,14 +15,6 @@
         <template v-if="!task.isInterruption">
             <input-panel class="edit-item" :delay="0.3">
                 <div class="recur-content">
-                    <span>Recur</span>
-
-                    <checkbox class="checkbox"
-                        :name="'daily event'"
-                        :checked="isDaily"
-                        :disabled="task.parent"
-                        @update:checked="onDailyToggle($event)">
-                    </checkbox>
                 </div>
             </input-panel>
         </template>
@@ -55,18 +47,12 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { ArrowLeftCircle, CloudUpload } from 'mdue';
 
-import store from '../../store';
-// eslint-disable-next-line no-unused-vars
-import { TaskItem } from '../../core/data-model/task-item';
-// eslint-disable-next-line no-unused-vars
-import { TaskItemOptions } from '../../core/data-model/task-item-options';
 import InputPanel from '../../shared/panels/InputPanel.vue';
 import ConfirmPanel from '../../shared/panels/ConfirmPanel.vue';
 import Checkbox from '../../shared/inputs/Checkbox.vue';
 import OptionDropdown from '../../shared/inputs/OptionDropdown.vue';
 import WeekDaySelector from '../../shared/inputs/WeekDaySelector.vue';
 import TaskGroup from '../../shared/components/TaskGroup.vue';
-import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 import TaskDangerZone from './TaskDangerZone.vue';
 
@@ -98,16 +84,8 @@ class TaskDetailsViewProp {
     ]
 })
 export default class TaskDetailsView extends Vue.with(TaskDetailsViewProp) {
-    get isDaily(): boolean {
-        return !!this.task && this.task.recur.length === 7 && this.task.recur.every(_ => _);
-    }
-
     get allowChildTask(): boolean {
         return Boolean(this.task.id) && !this.task.isInterruption;
-    }
-
-    public onDailyToggle(isDaily: boolean): void {
-        this.onItemChange('recur', new Array(7).fill(isDaily));
     }
 }
 </script>

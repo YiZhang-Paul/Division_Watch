@@ -147,14 +147,6 @@ export default class ItemEditor extends Vue {
         }
     }
 
-    public async addChildTask(name: string): Promise<void> {
-        if (this.task) {
-            const child: TaskItem = { ...new TaskItem(), name };
-            const payload = { parentId: this.task.id, task: child };
-            await store.dispatch('taskItem/addChildTaskItem', payload);
-        }
-    }
-
     public openParentTask(child: TaskItem): void {
         const parent = store.getters['taskItem/incompleteTask'](child?.parent ?? '');
 
