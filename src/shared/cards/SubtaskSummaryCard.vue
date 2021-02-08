@@ -41,6 +41,7 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
     padding-right: 5%;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);
+    transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
