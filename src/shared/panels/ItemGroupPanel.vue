@@ -1,7 +1,9 @@
 <template>
     <section-panel class="item-group-panel-container" :name="name" :isSubsection="true">
         <overlay-scrollbar-panel class="content">
-            <slot></slot>
+            <div class="items">
+                <slot></slot>
+            </div>
         </overlay-scrollbar-panel>
 
         <div class="add-item-panel">
@@ -59,11 +61,15 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
     $add-item-panel-height: 5.25vh;
 
     .content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         width: 100%;
         height: calc(100% - #{$add-item-panel-height});
+
+        .items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
     }
 
     .add-item-panel {
