@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { TaskItem } from '../../../data-model/task-item/task-item';
+import { AddChildResult } from '../../../data-model/task-item/add-child-result';
 import { UpdateTaskResult } from '../../../data-model/task-item/update-task-result';
 import { TaskItemOptions } from '../../../data-model/task-item/task-item-options';
 
@@ -15,6 +16,17 @@ export class TaskItemHttpService {
         }
         catch {
             return [];
+        }
+    }
+
+    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<AddChildResult | null> {
+        try {
+            const endpoint = `${this._api}/${parentId}/children`;
+
+            return (await axios.post(endpoint, item)).data;
+        }
+        catch {
+            return null;
         }
     }
 

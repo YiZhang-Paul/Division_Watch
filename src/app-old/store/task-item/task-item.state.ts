@@ -7,9 +7,6 @@ const getters = {
 };
 
 const mutations = {
-    addIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
-        state.incompleteTaskItems = [...state.incompleteTaskItems, taskItem];
-    },
     deleteIncompleteTaskItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteTaskItems = state.incompleteTaskItems.filter(_ => _.id !== taskItem.id);
     }
@@ -27,21 +24,6 @@ const actions = {
         }
 
         return added;
-    },
-    async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
-        const { commit, getters } = context;
-        const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
-
-        if (!result) {
-            return;
-        }
-
-        commit('addIncompleteTaskItem', result.child);
-        commit('setIncompleteTaskItem', result.parent);
-
-        if (getters['activeTaskItem']?.id === result.parent.id) {
-            commit('setActiveTaskItem', result.parent);
-        }
     },
     async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { taskItem: TaskItem, keepChildren: boolean | null }): Promise<DeleteTaskResult | null> {
         const { taskItem, keepChildren } = payload;
