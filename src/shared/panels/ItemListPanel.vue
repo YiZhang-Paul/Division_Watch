@@ -37,13 +37,6 @@ import SearchBox from '../../shared/controls/SearchBox.vue';
 })
 export default class ItemListPanel extends Vue {
     public scroll: ScrollPosition | null = null;
-
-    get containerClasses(): { [key: string]: boolean } {
-        return {
-            'top-scroll-indicator': !!this.scroll && !this.scroll.isTop,
-            'bottom-scroll-indicator': !!this.scroll && !this.scroll.isBottom
-        };
-    }
 }
 </script>
 

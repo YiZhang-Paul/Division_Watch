@@ -1,23 +1,28 @@
 <template>
     <section-panel class="item-group-panel-container" :name="name" :isSubsection="true">
-        <overlay-scrollbar-panel class="content">
-            <div class="items">
-                <slot></slot>
+        <div class="content">
+            <overlay-scrollbar-panel class="items" @created="scroll = $event" @scroll="scroll = $event">
+                <div class="items-wrapper">
+                    <slot></slot>
+                </div>
+            </overlay-scrollbar-panel>
+
+            <div class="add-item-panel">
+                <div class="panel-guard"></div>
+
+                <display-panel class="add-item">
+                    <input type="text"
+                        v-model="itemName"
+                        :placeholder="placeholder"
+                        @keyup.enter="onItemAdd"
+                        @keyup.esc="itemName = ''" />
+
+                    <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
+                </display-panel>
             </div>
-        </overlay-scrollbar-panel>
 
-        <div class="add-item-panel">
-            <div class="panel-guard"></div>
-
-            <display-panel class="add-item">
-                <input type="text"
-                    v-model="itemName"
-                    :placeholder="placeholder"
-                    @keyup.enter="onItemAdd"
-                    @keyup.esc="itemName = ''" />
-
-                <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
-            </display-panel>
+            <div v-if="scroll && !scroll.isTop" class="top-scroll-indicator"></div>
+            <div v-if="scroll && !scroll.isBottom" class="bottom-scroll-indicator"></div>
         </div>
     </section-panel>
 </template>
@@ -25,7 +30,8 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { Plus } from 'mdue';
-
+// eslint-disable-next-line no-unused-vars
+import { ScrollPosition } from '../../core/data-model/generic/scroll-position';
 import SectionPanel from '../panels/SectionPanel.vue';
 import DisplayPanel from '../panels/DisplayPanel.vue';
 import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
@@ -45,6 +51,7 @@ class ItemGroupPanelProp {
     emits: ['item:add']
 })
 export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
+    public scroll: ScrollPosition | null = null;
     public itemName = '';
 
     public onItemAdd(): void {
@@ -59,12 +66,37 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
 <style lang="scss" scoped>
 .item-group-panel-container {
     $add-item-panel-height: 5.25vh;
+    $scroll-indicator-color: rgba(14, 119, 240, 0.35);
 
     .content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        .top-scroll-indicator, .bottom-scroll-indicator {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 7.5%;
+            pointer-events: none;
+        }
+
+        .top-scroll-indicator {
+            top: 0;
+            background-image: linear-gradient($scroll-indicator-color, transparent);
+        }
+
+        .bottom-scroll-indicator {
+            bottom: $add-item-panel-height;
+            background-image: linear-gradient(to top, $scroll-indicator-color, transparent);
+        }
+    }
+
+    .items {
         width: 100%;
         height: calc(100% - #{$add-item-panel-height});
 
-        .items {
+        .items-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -101,6 +133,10 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
                 color: rgb(225, 225, 225);
                 font-family: 'Jost';
                 font-size: 0.5rem;
+
+                &::placeholder {
+                    color: rgba(185, 185, 185, 0.85);
+                }
             }
 
             .add-icon {

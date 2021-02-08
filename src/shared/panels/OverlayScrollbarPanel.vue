@@ -1,10 +1,11 @@
 <template>
-    <div :class="id"><slot></slot></div>
+    <div :id="id"><slot></slot></div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import OverlayScrollbars from 'overlayscrollbars';
+import * as uuid from 'uuid';
 
 import { ScrollPosition } from '../../core/data-model/generic/scroll-position';
 
@@ -15,13 +16,13 @@ import { ScrollPosition } from '../../core/data-model/generic/scroll-position';
     ]
 })
 export default class OverlayScrollbarPanel extends Vue {
-    public readonly id = 'overlay-scrollbar-panel-container';
+    public readonly id = `overlay-scrollbar-panel-container-${uuid.v4()}`;
 
     public mounted(): void {
-        const { offsetHeight, scrollHeight } = document.querySelector(`.${this.id}`) as HTMLElement;
+        const { offsetHeight, scrollHeight } = document.querySelector(`#${this.id}`) as HTMLElement;
         this.$emit('created', offsetHeight === scrollHeight ? null : new ScrollPosition());
 
-        OverlayScrollbars(document.querySelectorAll(`.${this.id}`), {
+        OverlayScrollbars(document.querySelectorAll(`#${this.id}`), {
             scrollbars: {
                 autoHide: 'leave',
                 autoHideDelay: 125
