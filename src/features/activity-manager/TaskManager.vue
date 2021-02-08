@@ -73,9 +73,15 @@
                 </item-group-panel>
 
                 <item-group-panel class="checklist-items"
-                    :name="'Checklist (' + activeTask.checklist.length + ')'"
+                    :name="checklistTitle"
                     :placeholder="'add checklist here...'"
                     @item:add="addChecklistItem($event)">
+
+                    <checklist-card class="checklist-card"
+                        v-for="item of activeTask.checklist"
+                        :key="item.description"
+                        :item="item">
+                    </checklist-card>
                 </item-group-panel>
             </div>
         </div>
@@ -101,6 +107,7 @@ import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
+import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
@@ -111,7 +118,8 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         OptionDropdown,
         DaySelector,
         TaskSummaryCard,
-        SubtaskSummaryCard
+        SubtaskSummaryCard,
+        ChecklistCard
     }
 })
 export default class TaskManager extends Vue {
@@ -148,6 +156,17 @@ export default class TaskManager extends Vue {
         const estimation = this.activeChildTasks.reduce((total, _) => total + _.estimate, 0);
 
         return this.toDisplayEstimation(estimation);
+    }
+
+    get checklistTitle(): string {
+        if (!this.activeTask?.checklist) {
+            return '';
+        }
+
+        const { checklist } = this.activeTask;
+        const completed = checklist.filter(_ => _.isCompleted).length;
+
+        return `Checklist (${completed}/${checklist.length})`;
     }
 
     get tasks(): TaskItem[] {
@@ -258,7 +277,7 @@ export default class TaskManager extends Vue {
                 height: 100%;
             }
 
-            .subtask-summary-card {
+            .subtask-summary-card, .checklist-card {
                 width: 100%;
                 height: 5vh;
                 opacity: 0;
