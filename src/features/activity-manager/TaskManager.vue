@@ -72,10 +72,11 @@
                     </subtask-summary-card>
                 </item-group-panel>
 
-                <section-panel class="checklist-items"
-                    :name="'Checklist'"
-                    :isSubsection="true">
-                </section-panel>
+                <item-group-panel class="checklist-items"
+                    :name="'Checklist (' + activeTask.checklist.length + ')'"
+                    :placeholder="'add checklist here...'"
+                    @item:add="addChecklistItem($event)">
+                </item-group-panel>
             </div>
         </div>
     </div>
@@ -88,6 +89,7 @@ import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
+import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
@@ -187,6 +189,13 @@ export default class TaskManager extends Vue {
             const child: TaskItem = { ...new TaskItem(), name };
             const payload = { parentId: this.activeTask.id, task: child };
             await store.dispatch(`${taskItemKey}/addChildTaskItem`, payload);
+        }
+    }
+
+    public addChecklistItem(name: string): void {
+        if (this.activeTask) {
+            this.activeTask.checklist.push(new ChecklistItem(name));
+            store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
         }
     }
 
