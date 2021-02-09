@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import VanillaTilt from "vanilla-tilt";
+import VanillaTilt from 'vanilla-tilt';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';

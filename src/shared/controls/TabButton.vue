@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import VanillaTilt from "vanilla-tilt";
+import VanillaTilt from 'vanilla-tilt';
 
 import DisplayPanel from '../panels/DisplayPanel.vue';
 
@@ -39,7 +39,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
 
     public mounted(): void {
         const container = document.querySelector(`.${this.buttonClass}`);
-        VanillaTilt.init(container as HTMLElement, { max: 0, glare: true, "max-glare": 0.2 });
+        VanillaTilt.init(container as HTMLElement, { max: 0, glare: true, 'max-glare': 0.2 });
     }
 }
 </script>
