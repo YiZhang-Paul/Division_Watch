@@ -1,36 +1,36 @@
 <template>
-    <view-panel :maxTilt="1">
-        <div class="content">
-            <span>{{ title }}</span>
+    <div v-if="option" class="confirm-panel-container">
+        <view-panel class="view-panel" :class="$attrs.class" :maxTilt="2">
+            <div class="content">
+                <span>{{ option.title }}</span>
 
-            <div class="actions">
-                <menu-button class="menu-button" @click="$emit('confirmed')">
-                    {{ cancelText }}
-                </menu-button>
+                <div class="actions">
+                    <menu-button class="menu-button" @click="$emit('confirmed')">
+                        {{ option.cancelText }}
+                    </menu-button>
 
-                <menu-button class="menu-button"
-                    :class="{ warning: isWarning }"
-                    @click="$emit('cancelled')">
+                    <menu-button class="menu-button"
+                        :class="{ warning: option.isWarning }"
+                        @click="$emit('cancelled')">
 
-                    {{ confirmText }}
-                </menu-button>
+                        {{ option.confirmText }}
+                    </menu-button>
+                </div>
             </div>
-        </div>
-    </view-panel>
+        </view-panel>
+    </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-
+// eslint-disable-next-line no-unused-vars
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import MenuButton from '../controls/MenuButton.vue';
 
 import ViewPanel from './ViewPanel.vue';
 
 class ConfirmPanelProp {
-    public title = prop<string>({ default: '' });
-    public cancelText = prop<string>({ default: 'Cancel' });
-    public confirmText = prop<string>({ default: 'Confirm' });
-    public isWarning = prop<boolean>({ default: false });
+    public option = prop<DialogOption>({ default: null });
 }
 
 @Options({
@@ -47,6 +47,14 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) { }
 </script>
 
 <style lang="scss" scoped>
+.confirm-panel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
 .content {
     display: flex;
     flex-direction: column;
@@ -65,22 +73,26 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) { }
         height: 30%;
 
         .menu-button {
+            margin-right: 3%;
             width: 20%;
             height: 85%;
 
             &:nth-child(1) {
                 background-color: rgba(185, 185, 185, 0.2);
+
+                &:hover {
+                    background-color: rgb(225, 225, 225, 0.2);
+                }
             }
 
             &:nth-child(2) {
-                margin-left: 3%;
-
-                &.warning {
-                    background-color: rgba(241, 58, 25, 0.8);
-                }
 
                 &:hover {
                     background-color: rgb(240, 123, 14);
+                }
+
+                &.warning {
+                    background-color: rgba(241, 58, 25, 0.8);
                 }
 
                 &.warning:hover {

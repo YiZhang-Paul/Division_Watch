@@ -1,8 +1,25 @@
 <template>
     <div v-if="showBlurLayer" class="global-blur-layer"></div>
-    <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
-    <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
-    <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
+
+    <main-menu v-show="!activeDialogOption"
+        v-if="activeView === viewOption.MainMenuAnimated">
+    </main-menu>
+
+    <main-menu v-show="!activeDialogOption"
+        v-if="activeView === viewOption.MainMenuNoop"
+        :allowAnimation="false">
+    </main-menu>
+
+    <activity-manager class="activity-manager"
+        v-show="!activeDialogOption"
+        v-if="activeView === viewOption.Activities">
+    </activity-manager>
+
+    <confirm-panel v-if="activeDialogOption"
+        class="confirm-panel"
+        :option="activeDialogOption">
+    </confirm-panel>
+
     <agent-watch class="agent-watch"></agent-watch>
 </template>
 
@@ -10,21 +27,30 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from './store';
+import { dialogKey } from './store/dialog/dialog.state';
 import { mainViewKey } from './store/main-view/main-view.state';
+// eslint-disable-next-line no-unused-vars
+import { DialogOption } from './core/data-model/generic/dialog-option';
 import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
+import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 
 @Options({
     components: {
         AgentWatch,
         MainMenu,
-        ActivityManager
+        ActivityManager,
+        ConfirmPanel
     }
 })
 export default class App extends Vue {
     public viewOption = ViewOption;
+
+    get activeDialogOption(): DialogOption {
+        return store.getters[`${dialogKey}/dialogOption`];
+    }
 
     get activeView(): ViewOption {
         return store.getters[`${mainViewKey}/activeView`];
@@ -88,12 +114,22 @@ html, body {
     background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
 }
 
-.global-blur-layer {
+.global-blur-layer, .confirm-panel {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
+}
+
+.global-blur-layer {
     background-color: rgba(227, 227, 227, 0.05);
     backdrop-filter: blur(5px);
+}
+
+.confirm-panel {
+    width: 25vw;
+    height: 20vh;
 }
 
 .agent-watch {
