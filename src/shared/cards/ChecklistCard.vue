@@ -15,13 +15,14 @@
             @keyup.esc="isEditing = false"
             @blur="isEditing = false" />
 
+        <delete class="delete-button" @click="$emit('delete')" />
         <checkbox class="checkbox" :isChecked="item.isCompleted" @change="onCheckedChange($event)"></checkbox>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Check, RadioboxBlank } from 'mdue';
+import { Check, Delete, RadioboxBlank } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 import Checkbox from '../../shared/controls/Checkbox.vue';
@@ -33,10 +34,14 @@ class ChecklistCardProp {
 @Options({
     components: {
         Check,
+        Delete,
         RadioboxBlank,
         Checkbox
     },
-    emits: ['change']
+    emits: [
+        'change',
+        'delete'
+    ]
 })
 export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     public description = this.item?.description ?? '';
@@ -60,11 +65,15 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
 
 <style lang="scss" scoped>
 .checklist-card-container {
+    $padding-right: 5%;
+    $checkbox-dimension: 0.6rem;
+
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    position: relative;
     padding-left: 2.5%;
-    padding-right: 5%;
+    padding-right: $padding-right;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);
     color: rgb(255, 255, 255);
@@ -73,6 +82,10 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     &:hover {
         cursor: pointer;
         background-color: rgb(72, 66, 110);
+
+        .delete-button {
+            display: initial;
+        }
     }
 
     .incomplete-icon, .complete-icon {
@@ -92,10 +105,12 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     & > span, & > input {
         padding: 3px;
         margin-left: 2.25%;
-        font-size: 0.5rem;
-        font-family: 'Jost';
         width: 67.5%;
         max-width: 67.5%;
+        font-size: 0.5rem;
+        font-family: 'Jost';
+        opacity: 0;
+        animation: revealContent 0.1s ease forwards;
     }
 
     & > span {
@@ -113,10 +128,24 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         color: rgb(255, 255, 255);
     }
 
+    .delete-button {
+        display: none;
+        position: absolute;
+        right: calc(#{$padding-right} + #{$checkbox-dimension} + 2.5%);
+        font-size: 0.75rem;
+        opacity: 0;
+        transition: color 0.3s;
+        animation: revealContent 0.35s ease 0.1s forwards;
+
+        &:hover {
+            color: rgb(243, 58, 45);
+        }
+    }
+
     .checkbox {
         margin-left: auto;
-        width: 0.6rem;
-        height: 0.6rem;
+        width: $checkbox-dimension;
+        height: $checkbox-dimension;
     }
 }
 </style>
