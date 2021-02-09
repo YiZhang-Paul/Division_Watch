@@ -5,13 +5,13 @@
                 <span>{{ option.title }}</span>
 
                 <div class="actions">
-                    <menu-button class="menu-button" @click="$emit('confirmed')">
+                    <menu-button class="menu-button" @click="onCancel()">
                         {{ option.cancelText }}
                     </menu-button>
 
                     <menu-button class="menu-button"
                         :class="{ warning: option.isWarning }"
-                        @click="$emit('cancelled')">
+                        @click="onConfirm()">
 
                         {{ option.confirmText }}
                     </menu-button>
@@ -43,7 +43,24 @@ class ConfirmPanelProp {
         'cancelled'
     ]
 })
-export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) { }
+export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
+
+    public onConfirm(): void {
+        if (this.option.confirmCallback) {
+            this.option.confirmCallback();
+        }
+
+        this.$emit('confirmed');
+    }
+
+    public onCancel(): void {
+        if (this.option.cancelCallback) {
+            this.option.cancelCallback();
+        }
+
+        this.$emit('cancelled');
+    }
+}
 </script>
 
 <style lang="scss" scoped>

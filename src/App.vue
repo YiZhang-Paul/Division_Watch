@@ -17,7 +17,9 @@
 
     <confirm-panel v-if="activeDialogOption"
         class="confirm-panel"
-        :option="activeDialogOption">
+        :option="activeDialogOption"
+        @confirmed="closeDialog()"
+        @cancelled="closeDialog()">
     </confirm-panel>
 
     <agent-watch class="agent-watch"></agent-watch>
@@ -67,6 +69,10 @@ export default class App extends Vue {
 
     public beforeUnmount(): void {
         window.removeEventListener('resize', this.updateFontSize);
+    }
+
+    public closeDialog(): void {
+        store.dispatch(`${dialogKey}/closeDialog`);
     }
 
     private updateFontSize(): void {

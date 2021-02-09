@@ -94,6 +94,7 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
@@ -102,6 +103,7 @@ import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
@@ -212,8 +214,15 @@ export default class TaskManager extends Vue {
     }
 
     public onChecklistDelete(index: number): void {
-        const checklist = this.activeTask?.checklist ?? [];
-        this.onItemChange('checklist', GenericUtility.removeAt(checklist, index))
+        const title = 'This item will be permanently deleted.';
+        const option = new DialogOption(title, 'Delete', 'Cancel', true);
+
+        option.confirmCallback = () => {
+            const checklist = this.activeTask?.checklist ?? [];
+            this.onItemChange('checklist', GenericUtility.removeAt(checklist, index));
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
     }
 
     public async addChildTask(name: string): Promise<void> {

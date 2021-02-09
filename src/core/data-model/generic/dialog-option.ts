@@ -3,6 +3,8 @@ export class DialogOption {
     public confirmText: string;
     public cancelText: string;
     public isWarning: boolean;
+    public confirmCallback: (() => void) | null = null;
+    public cancelCallback: (() => void) | null = null;
 
     constructor(title = '', confirmText = '', cancelText = '', isWarning = false) {
         this.title = title;
