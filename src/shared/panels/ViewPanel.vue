@@ -21,10 +21,14 @@
 </template>
 
 <script lang="ts">
-import { Vue } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 import VanillaTilt from "vanilla-tilt";
 
-export default class ViewPanel extends Vue {
+class ViewPanelProp {
+    public maxTilt = prop<number>({ default: 0.3 });
+}
+
+export default class ViewPanel extends Vue.with(ViewPanelProp) {
     public readonly containerClass = 'view-panel-container';
     private stage = 1;
 
@@ -35,7 +39,7 @@ export default class ViewPanel extends Vue {
     public mounted(): void {
         const container = document.querySelector(`.${this.containerClass}`);
         container?.addEventListener('animationend', () => this.stage++);
-        VanillaTilt.init(container as HTMLElement, { max: 0.3, glare: true, "max-glare": 0.1 });
+        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt, glare: true, "max-glare": 0.1 });
     }
 }
 </script>
@@ -159,7 +163,7 @@ export default class ViewPanel extends Vue {
                 height: 1.5vh;
             }
             100% {
-                width: 95%;
+                width: calc(95% - 5px);
                 height: $box-expanded-height;
             }
         }
