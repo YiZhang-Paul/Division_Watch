@@ -17,7 +17,8 @@
                 v-model="editedName"
                 :placeholder="placeholder"
                 @keyup.enter="onEditConfirm()"
-                @keyup.esc="isEditing = false" />
+                @keyup.esc="isEditing = false"
+                @blur="isEditing = false" />
         </div>
 
         <div class="content">

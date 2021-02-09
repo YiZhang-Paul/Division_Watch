@@ -2,7 +2,19 @@
     <div v-if="item" class="checklist-card-container">
         <radiobox-blank v-if="!item.isCompleted" class="incomplete-icon" />
         <check v-if="item.isCompleted" class="complete-icon" />
-        <span :class="{ 'completed': item.isCompleted }">{{ item.description }}</span>
+
+        <span v-if="!isEditing" :class="{ completed: item.isCompleted }" @click="onEditStart()">
+            {{ item.description }}
+        </span>
+
+        <input type="text"
+            v-if="isEditing"
+            ref="descriptionInput"
+            v-model="description"
+            @keyup.enter="onEditConfirm()"
+            @keyup.esc="isEditing = false"
+            @blur="isEditing = false" />
+
         <checkbox class="checkbox" :isChecked="item.isCompleted" @change="onCheckedChange($event)"></checkbox>
     </div>
 </template>
@@ -24,12 +36,24 @@ class ChecklistCardProp {
         RadioboxBlank,
         Checkbox
     },
-    emits: ['checked:change']
+    emits: ['change']
 })
 export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
+    public description = this.item?.description ?? '';
+    public isEditing = false;
+
+    public onEditStart(): void {
+        this.isEditing = true;
+        setTimeout(() => (this.$refs.descriptionInput as any).focus());
+    }
+
+    public onEditConfirm(): void {
+        this.isEditing = false;
+        this.$emit('change', { ...this.item, description: this.description });
+    }
 
     public onCheckedChange(value: boolean): void {
-        this.$emit('checked:change', { ...this.item, isCompleted: value });
+        this.$emit('change', { ...this.item, isCompleted: value });
     }
 }
 </script>
@@ -43,6 +67,7 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     padding-right: 5%;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);
+    color: rgb(255, 255, 255);
     transition: background-color 0.3s;
 
     &:hover {
@@ -64,13 +89,28 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         color: rgb(29, 255, 51);
     }
 
-    & > span {
+    & > span, & > input {
+        padding: 3px;
         margin-left: 2.25%;
+        font-size: 0.5rem;
+        font-family: 'Jost';
+        width: 67.5%;
+        max-width: 67.5%;
+    }
+
+    & > span {
         transition: filter 0.3s;
 
         &.completed {
             filter: brightness(0.6);
         }
+    }
+
+    & > input {
+        outline: none;
+        border: none;
+        background-color: rgba(11, 11, 12, 0.8);
+        color: rgb(255, 255, 255);
     }
 
     .checkbox {

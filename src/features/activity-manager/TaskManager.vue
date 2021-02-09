@@ -81,7 +81,7 @@
                         v-for="(item, index) of activeTask.checklist"
                         :key="item.description"
                         :item="item"
-                        @checked:change="onChecklistChecked(index, $event)">
+                        @change="onChecklistChange(index, $event)">
                     </checklist-card>
                 </item-group-panel>
             </div>
@@ -205,7 +205,7 @@ export default class TaskManager extends Vue {
         }, 1000);
     }
 
-    public onChecklistChecked(index: number, item: ChecklistItem): void {
+    public onChecklistChange(index: number, item: ChecklistItem): void {
         const checklist = this.activeTask?.checklist ?? [];
         this.onItemChange('checklist', GenericUtility.replaceAt(checklist, item, index));
     }
