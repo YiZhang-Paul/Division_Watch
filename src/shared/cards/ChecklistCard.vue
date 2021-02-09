@@ -2,7 +2,7 @@
     <div v-if="item" class="checklist-card-container">
         <radiobox-blank v-if="!item.isCompleted" class="incomplete-icon" />
         <check v-if="item.isCompleted" class="complete-icon" />
-        <span>{{ item.description }}</span>
+        <span :class="{ 'completed': item.isCompleted }">{{ item.description }}</span>
         <checkbox class="checkbox" :isChecked="item.isCompleted" @change="onCheckedChange($event)"></checkbox>
     </div>
 </template>
@@ -66,6 +66,11 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
 
     & > span {
         margin-left: 2.25%;
+        transition: filter 0.3s;
+
+        &.completed {
+            filter: brightness(0.6);
+        }
     }
 
     .checkbox {
