@@ -1,221 +1,188 @@
 <template>
-    <div v-if="task" class="task-summary-card-container" :style="containerStyle">
-        <div class="card-content">
-            <template v-if="!task.parent">
-                <div v-if="!category?.icon"
-                    class="default-category-icon"
-                    :style="{ 'background-color': category?.color }">
-                </div>
+    <div v-if="task"
+        class="task-summary-card"
+        :class="{ 'active-card': isActive }"
+        @mouseover="isMouseover = true"
+        @mouseout="isMouseover = false">
 
-                <rotate-3d-variant v-if="isRecur" class="icon-indicator" />
-            </template>
-
-            <span :class="{ 'child-task-name': task.parent }" :style="taskNameStyle">{{ task.name }}</span>
-
-            <div v-if="skulls >= 1" class="skulls">
-                <img v-for="(skull, index) in skulls"
-                    :key="skull"
-                    :style="getSkullStyle(index)"
-                    src="../../assets/images/rogue_skull.png" />
-            </div>
-
-            <div v-if="skulls < 1" class="skulls half-skull">
-                <div><img src="../../assets/images/rogue_skull.png" /></div>
-                <div><img src="../../assets/images/rogue_skull.png" /></div>
-            </div>
+        <div class="category">
+            <component v-if="categoryIcon" :is="categoryIcon" :style="{ color: category.color }"></component>
         </div>
 
-        <div v-if="task.parent" class="card-actions" @click.stop="$emit('delete')">
-            <close class="close-icon" />
+        <div class="splitter-1"></div>
+
+        <div class="attributes">
+            <priority-indicator :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
+            <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
+        </div>
+
+        <div class="splitter-2"></div>
+
+        <div class="name">
+            <span>{{ task.name }}</span>
+        </div>
+
+        <div class="splitter-3"></div>
+
+        <div class="estimation">
+            <div class="progress"></div>
+            <div class="filler"></div>
+            <estimation-skulls class="estimation-skulls" :estimation="task.estimate"></estimation-skulls>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Close, Rotate_3dVariant } from 'mdue';
+import { Autorenew } from 'mdue';
 
 import store from '../../store';
+import { categoryKey } from '../../store/category/category.state';
 // eslint-disable-next-line no-unused-vars
-import { Category } from '../../core/data-model/category';
+import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
-import { TaskItem } from '../../core/data-model/task-item';
-// eslint-disable-next-line no-unused-vars
-import { TaskItemOptions } from '../../core/data-model/task-item-options';
+import { TaskItem } from '../../core/data-model/task-item/task-item';
+import PriorityIndicator from '../../shared/widgets/PriorityIndicator.vue';
+import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
+    public isActive = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
-        Close,
-        Rotate3dVariant: Rotate_3dVariant
-    },
-    emits: ['delete']
+        Autorenew,
+        PriorityIndicator,
+        EstimationSkulls
+    }
 })
 export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
-    private readonly skullSpacing = 0.25;
+    public isMouseover = false;
 
-    get category(): Category {
-        return store.getters['category/category'](this.task.categoryId);
+    get category(): Category | null {
+        return store.getters[`${categoryKey}/category`](this.task.categoryId);
     }
 
-    get containerStyle(): { [key: string]: string } {
-        return { 'background-color': `rgba(${this.baseColor}, 0.5)` };
-    }
-
-    get baseColor(): string {
-        if (!this.task.priority.rank) {
-            return '73, 207, 73';
-        }
-
-        return this.task.priority.rank === 1 ? '238, 171, 70' : '231, 72, 72';
-    }
-
-    get taskNameStyle(): { [key: string]: string } {
-        const width = 2.2 + (this.skulls - 1) * this.skullSpacing;
-
-        return { 'max-width': `calc(100% - ${width}rem)` };
-    }
-
-    get skulls(): number {
-        const options = store.getters['taskItem/taskItemOptions'] as TaskItemOptions;
-
-        return Math.floor(this.task.estimate / options.skullDuration);
-    }
-
-    get isRecur(): boolean {
-        return this.task.recur.some(_ => _);
-    }
-
-    public getSkullStyle(index: number): { [key: string]: string } {
-        const step = Math.floor(0.9 / this.skulls * 10) / 10;
-
-        return {
-            right: `${index * this.skullSpacing}rem`,
-            filter: `brightness(${1 - (this.skulls - 1 - index) * step})`
-        };
+    get categoryIcon(): any {
+        return GenericUtility.getIcon(this.category?.icon ?? '');
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.task-summary-card-container {
+.task-summary-card {
+    $splitter-thickness: 1px;
+    $attribute-row-height: 65%;
+    $tall-row-height: 62.5%;
+    $narrow-column-width: 15%;
+    $inactive-color: rgba(170, 170, 170, 0.45);
+
     display: flex;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.4rem;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: rgba(36, 35, 38, 0.75);
+    color: rgb(255, 255, 255);
+    font-size: 0.7rem;
+    transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        color: rgba(255, 255, 255);
-        filter: brightness(1.2);
+        background-color: rgb(72, 66, 110);
     }
 
-    .card-content {
-        display: flex;
-        flex-grow: 1;
-        align-items: center;
-        position: relative;
-        transition: opacity 0.15s, color 0.3s;
+    &.active-card {
+        background-color: rgb(29, 24, 44);
 
-        & > span:first-of-type {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .name {
+            color: rgb(247, 174, 18);
         }
     }
 
-    .card-actions {
+    & > div {
+        box-sizing: border-box;
+    }
+
+    .category, .attributes, .splitter-1 {
+        width: $narrow-column-width;
+    }
+
+    .name, .estimation, .splitter-3 {
+        width: calc(100% - #{$narrow-column-width} - #{$splitter-thickness});
+    }
+
+    .splitter-1, .splitter-2, .splitter-3 {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .category {
         display: flex;
-        flex-grow: 0;
         justify-content: center;
         align-items: center;
-        margin-right: 0.3rem;
-        max-width: 0.75rem;
-        height: 50%;
-        border-radius: 4px;
-        background-color: rgb(175, 27, 22);
-
-        &:hover {
-            background-color: rgb(206, 37, 31);
-        }
-
-        .close-icon {
-            display: none;
-            font-size: 0.5rem;
-            opacity: 0;
-        }
+        height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
+        font-size: 1rem;
     }
 
-    &:hover .card-actions {
-        flex-grow: 1;
-        transition: flex 1s, background-color 0.3s;
-
-        .close-icon {
-            display: inline-block;
-            animation: revealContent 0.2s ease-in forwards;
-        }
+    .splitter-1 {
+        height: $splitter-thickness;
     }
 
-    .default-category-icon, .child-task-name {
-        margin-left: 0.25rem;
-    }
-
-    .default-category-icon {
-        margin-right: 0.25rem;
-        width: 0.4rem;
-        height: 0.4rem;
-        border-radius: 50%;
-    }
-
-    .icon-indicator {
-        margin-right: 1.5%;
-        width: 0.6rem;
-        height: 0.6rem;
-        color: rgb(255, 255, 255);
-    }
-
-    .skulls {
+    .attributes {
         display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        position: absolute;
-        right: 0;
-        height: 100%;
+        height: $attribute-row-height;
+        font-size: 1rem;
 
-        img {
-            position: absolute;
-            width: 1.25rem;
+        .recur-indicator {
+            color: $inactive-color;
+            transform: rotate(90deg) rotateY(180deg);
+
+            &.recur-active {
+                color: rgb(255, 255, 255);
+            }
         }
     }
 
-    .half-skull {
-        width: 1.25rem;
-        overflow: hidden;
+    .splitter-2 {
+        width: $splitter-thickness;
+        height: 100%;
+    }
 
-        & > div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            left: 0;
-            width: 100%;
+    .name {
+        padding: 1.5% 4%;
+        height: calc(#{$tall-row-height} - #{$splitter-thickness});
+        transition: color 0.3s;
+    }
+
+    .splitter-3 {
+        height: $splitter-thickness;
+    }
+
+    .estimation {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0 3.5%;
+        height: calc(100% - #{$tall-row-height});
+        font-size: 0.6rem;
+
+        .progress {
+            width: 67.5%;
+            height: 0.9vh;
+            border-radius: 1px;
+            background-color: rgb(185, 185, 185);
+        }
+
+        .filler {
+            flex-grow: 1;
+        }
+
+        .estimation-skulls {
+            width: 22.5%;
             height: 100%;
-        }
-
-        & > div:first-of-type {
-            opacity: 0.4;
-        }
-
-        & > div:last-of-type {
-            width: 50%;
-            overflow: hidden;
-
-            img {
-                position: absolute;
-                left: 0;
-            }
         }
     }
 }

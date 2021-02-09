@@ -1,56 +1,53 @@
 import axios from 'axios';
 
-import { TaskItem } from '../../../data-model/task-item';
-import { TaskItemOptions } from '../../../data-model/task-item-options';
-import { AddChildResult } from '../../../data-model/add-child-result';
-import { UpdateTaskResult } from '../../../data-model/update-task-result';
-import { DeleteTaskResult } from '../../../data-model/delete-task-result';
+import { TaskItem } from '../../../data-model/task-item/task-item';
+import { AddChildResult } from '../../../data-model/task-item/add-child-result';
+import { UpdateTaskResult } from '../../../data-model/task-item/update-task-result';
+import { TaskItemOptions } from '../../../data-model/task-item/task-item-options';
 
 export class TaskItemHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/task-item`;
 
-    public async getIncompleteTaskItems(limit = 0): Promise<TaskItem[]> {
-        const endpoint = `${this._api}/incomplete?limit=${limit}`;
+    public async getIncompleteItems(limit = 0): Promise<TaskItem[]> {
+        try {
+            const endpoint = `${this._api}/incomplete?limit=${limit}`;
 
-        return (await axios.get(endpoint)).data;
+            return (await axios.get(endpoint)).data;
+        }
+        catch {
+            return [];
+        }
     }
 
-    public async getTaskItem(id: string): Promise<TaskItem> {
-        const endpoint = `${this._api}/${id}`;
+    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<AddChildResult | null> {
+        try {
+            const endpoint = `${this._api}/${parentId}/children`;
 
-        return (await axios.get(endpoint)).data;
+            return (await axios.post(endpoint, item)).data;
+        }
+        catch {
+            return null;
+        }
     }
 
-    public async getEmptyTaskItem(): Promise<TaskItem> {
-        const endpoint = `${this._api}/empty`;
-
-        return (await axios.get(endpoint)).data;
-    }
-
-    public async addTaskItem(item: TaskItem): Promise<TaskItem> {
-        return (await axios.post(this._api, item)).data;
-    }
-
-    public async addChildTaskItem(parentId: string, item: TaskItem): Promise<AddChildResult> {
-        const endpoint = `${this._api}/${parentId}/children`;
-
-        return (await axios.post(endpoint, item)).data;
-    }
-
-    public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult> {
-        return (await axios.put(this._api, item)).data;
-    }
-
-    public async deleteTaskItem(id: string, keepChildren = true): Promise<DeleteTaskResult> {
-        const endpoint = `${this._api}/${id}?keepChildren=${keepChildren}`;
-
-        return (await axios.delete(endpoint)).data;
+    public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult | null> {
+        try {
+            return (await axios.put(this._api, item)).data;
+        }
+        catch {
+            return null;
+        }
     }
 
     public async getTaskItemOptions(date: string): Promise<TaskItemOptions> {
-        const endpoint = `${this._api}/options`;
-        const headers = { 'content-type': 'application/json' };
+        try {
+            const endpoint = `${this._api}/options`;
+            const headers = { 'content-type': 'application/json' };
 
-        return (await axios.post(endpoint, JSON.stringify(date), { headers })).data;
+            return (await axios.post(endpoint, JSON.stringify(date), { headers })).data;
+        }
+        catch {
+            return new TaskItemOptions();
+        }
     }
 }

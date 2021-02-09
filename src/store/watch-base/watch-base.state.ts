@@ -1,7 +1,7 @@
 import { ActionContext } from 'vuex';
 
-import { ValueChange } from '../../core/data-model/value-change';
-import { RangeChange } from '../../core/data-model/range-change';
+import { ValueChange } from '../../core/data-model/generic/value-change';
+import { RangeChange } from '../../core/data-model/generic/range-change';
 
 export interface IWatchColorOption {
     background: string;
@@ -20,7 +20,7 @@ export interface IWatchColorOption {
     batteryHigh: string;
     menuBorder: string;
     menuBorderShadow: string;
-    countDown: string;
+    session: string;
 }
 
 export interface IAngleAnimation {
@@ -60,7 +60,7 @@ const defaultColorOption: IWatchColorOption = {
     batteryHigh: 'rgb(0, 255, 0)',
     menuBorder: 'rgba(218, 220, 69, 0.9)',
     menuBorderShadow: 'rgba(227, 94, 19, 0.85)',
-    countDown: 'rgb(251, 255, 36)'
+    session: 'rgb(251, 255, 36)'
 };
 
 const state = (): IWatchBaseState => ({
@@ -127,12 +127,14 @@ const actions = {
 
         const option: IWatchColorOption = {
             ...state.colorOption,
-            countDown: 'rgb(62, 255, 36)'
+            session: 'rgb(62, 255, 36)'
         };
 
         commit('setColor', option);
     }
 };
+
+export const watchBaseKey = 'watchBase';
 
 export const watchBase = {
     namespaced: true,

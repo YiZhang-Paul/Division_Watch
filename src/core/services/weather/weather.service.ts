@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { WeatherDescription } from '../../data-model/weather-description';
+import { WeatherDescription } from '../../data-model/generic/weather-description';
 
 export class WeatherService {
     private readonly api = 'https://api.openweathermap.org/data/2.5/weather';

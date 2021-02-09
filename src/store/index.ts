@@ -1,19 +1,25 @@
 import { createStore } from 'vuex';
 
-import { ICategoryState, category } from './category/category.state';
-import { ITaskItemState, taskItem } from './task-item/task-item.state';
-import { IWatchBaseState, watchBase } from './watch-base/watch-base.state';
+import { IDialogState, dialog, dialogKey } from './dialog/dialog.state';
+import { IMainViewState, mainView, mainViewKey } from './main-view/main-view.state';
+import { ICategoryState, category, categoryKey } from './category/category.state';
+import { ITaskItemState, taskItem, taskItemKey } from './task-item/task-item.state';
+import { IWatchBaseState, watchBase, watchBaseKey } from './watch-base/watch-base.state';
 
 type StoreType = {
-    category: ICategoryState;
-    taskItem: ITaskItemState;
-    watchBase: IWatchBaseState;
+    [dialogKey]: IDialogState,
+    [mainViewKey]: IMainViewState;
+    [categoryKey]: ICategoryState;
+    [taskItemKey]: ITaskItemState;
+    [watchBaseKey]: IWatchBaseState;
 };
 
 export default createStore<StoreType>({
     modules: {
-        category,
-        taskItem,
-        watchBase
+        [dialogKey]: dialog,
+        [mainViewKey]: mainView,
+        [categoryKey]: category,
+        [taskItemKey]: taskItem,
+        [watchBaseKey]: watchBase
     }
 });

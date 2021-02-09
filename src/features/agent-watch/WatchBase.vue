@@ -1,5 +1,5 @@
 <template>
-    <div class="base-layer">
+    <div class="watch-base-container">
         <canvas :id="backgroundCanvasId" :style="backgroundCanvasStyle"></canvas>
         <canvas :id="ringsCanvasId"></canvas>
 
@@ -16,10 +16,10 @@ import { Vue, Options, prop } from 'vue-class-component';
 
 import store from '../../store';
 // eslint-disable-next-line no-unused-vars
-import { IWatchColorOption, IAngleAnimation, IBlurAnimation } from '../../store/watch-base/watch-base.state';
+import { IWatchColorOption, IAngleAnimation, IBlurAnimation, watchBaseKey } from '../../store/watch-base/watch-base.state';
 import { WatchState } from '../../core/enums/watch-state.enum';
-import { RingOption } from '../../core/data-model/ring-option';
-import { ShadowOption } from '../../core/data-model/shadow-option';
+import { RingOption } from '../../core/data-model/watch-option/ring-option';
+import { ShadowOption } from '../../core/data-model/watch-option/shadow-option';
 import { AnimationService } from '../../core/services/animation/animation.service';
 import { CanvasService } from '../../core/services/canvas/canvas.service';
 
@@ -30,12 +30,12 @@ class WatchBaseProp {
     public state = prop<WatchState>({ default: WatchState.AgentBooting });
 }
 
-Options({
+@Options({
     emits: ['state:booted']
 })
 export default class WatchBase extends Vue.with(WatchBaseProp) {
-    public readonly backgroundCanvasId = 'background-canvas';
-    public readonly ringsCanvasId = 'rings-canvas';
+    public readonly backgroundCanvasId = `background-canvas-${Date.now()}`;
+    public readonly ringsCanvasId = `rings-canvas-${Date.now()}`;
     public backgroundCanvasStyle = { 'background-color': '', 'box-shadow': '' };
     private canAnimate = false;
     private lastRender = 0;
@@ -46,15 +46,15 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     }
 
     get colorOption(): IWatchColorOption {
-        return store.getters['watchBase/colorOption'];
+        return store.getters[`${watchBaseKey}/colorOption`];
     }
 
     get angleAnimation(): IAngleAnimation {
-        return store.getters['watchBase/angleAnimation'];
+        return store.getters[`${watchBaseKey}/angleAnimation`];
     }
 
     get blurAnimation(): IBlurAnimation {
-        return store.getters['watchBase/blurAnimation'];
+        return store.getters[`${watchBaseKey}/blurAnimation`];
     }
 
     public mounted(): void {
@@ -186,7 +186,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
 </script>
 
 <style lang="scss" scoped>
-.base-layer {
+.watch-base-container {
     position: relative;
     width: 100%;
     height: 100%;
@@ -203,7 +203,7 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         height: calc(100% - #{$gap} * 2);
     }
 
-    #background-canvas {
+    & > canvas:first-of-type {
         $gap: 5.5%;
 
         margin: $gap;

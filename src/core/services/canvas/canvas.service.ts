@@ -1,4 +1,4 @@
-import { ShadowOption } from '../../data-model/shadow-option';
+import { ShadowOption } from '../../data-model/watch-option/shadow-option';
 
 export class CanvasService {
 

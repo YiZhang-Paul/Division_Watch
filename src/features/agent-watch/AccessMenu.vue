@@ -30,20 +30,19 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { Cog, CloseCircle, Finance, InboxMultiple, PowerStandby, Play, PaletteSwatch, TimerSand } from 'mdue';
+import { Apps, CloseCircle, Cog, ExclamationThick, PowerStandby, Timer } from 'mdue';
 
 import store from '../../store';
+import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
 
 @Options({
     components: {
-        Cog,
+        Apps,
         CloseCircle,
-        Finance,
-        InboxMultiple,
+        Cog,
+        ExclamationThick,
         PowerStandby,
-        Play,
-        PaletteSwatch,
-        TimerSand
+        Timer
     },
     emits: [
         'menu:select',
@@ -52,13 +51,11 @@ import store from '../../store';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        markRaw({ name: 'On/Off', icon: PowerStandby, angle: 51, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Start', icon: Play, angle: 131, color: 'rgb(24, 238, 20)' }),
-        markRaw({ name: 'Tasks', icon: TimerSand, angle: 211, color: 'rgb(238, 255, 133)' }),
-        markRaw({ name: 'Planner', icon: PaletteSwatch, angle: 251, color: 'rgb(238, 123, 107)' }),
-        markRaw({ name: 'Backlog', icon: InboxMultiple, angle: 291, color: 'rgb(255, 9, 9)' }),
-        markRaw({ name: 'Stats', icon: Finance, angle: 331, color: 'rgb(33, 188, 254)' }),
-        markRaw({ name: 'Settings', icon: Cog, angle: 371, color: 'rgb(255, 255, 255)' })
+        markRaw({ name: WatchMenuOption.Power, icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: WatchMenuOption.Setting, icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
+        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
+        markRaw({ name: WatchMenuOption.Ongoing, icon: Timer, angle: 271, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: WatchMenuOption.Interruption, icon: ExclamationThick, angle: 306, color: 'rgb(33, 188, 254)' })
     ];
 
     public activeOption = '';
@@ -81,22 +78,13 @@ export default class AccessMenu extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.glass-panel {
-    background: linear-gradient(to bottom, rgba(121, 117, 131, 0.33), rgba(54, 53, 103, 0.33));
-    background-color: rgba(18, 18, 19, 0.95);
-    box-shadow: 0 0 4px 1px var(--border-shadow);
-    border: 2px solid var(--border-color);
-    border-radius: 50%;
-    opacity: 0.95;
-}
-
 .access-menu-container {
     $option-name-dimension: 60%;
 
     width: 100%;
     height: 100%;
     color: rgb(255, 255, 255);
-    font-family: 'Bruno Ace';
+    font-family: 'Jost';
 
     .option-name span, .close-menu {
         opacity: 0;
@@ -112,7 +100,7 @@ export default class AccessMenu extends Vue {
         left: calc(50% - #{$option-name-dimension} / 2);
         width: calc(#{$option-name-dimension} - 4px);
         height: calc(#{$option-name-dimension} - 4px);
-        font-size: 0.5rem;
+        font-size: 0.6rem;
     }
 
     .option-button {

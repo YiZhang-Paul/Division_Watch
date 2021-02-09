@@ -1,21 +1,66 @@
 <template>
-    <agent-watch id="watch-face-area" class="watch-face"></agent-watch>
-    <item-manager class="item-manager"></item-manager>
+    <div v-if="showBlurLayer" class="global-blur-layer"></div>
+
+    <main-menu v-show="!activeDialogOption"
+        v-if="activeView === viewOption.MainMenuAnimated">
+    </main-menu>
+
+    <main-menu v-show="!activeDialogOption"
+        v-if="activeView === viewOption.MainMenuNoop"
+        :allowAnimation="false">
+    </main-menu>
+
+    <activity-manager class="activity-manager"
+        v-show="!activeDialogOption"
+        v-if="activeView === viewOption.Activities">
+    </activity-manager>
+
+    <confirm-panel v-if="activeDialogOption"
+        class="confirm-panel"
+        :option="activeDialogOption"
+        @confirmed="closeDialog()"
+        @cancelled="closeDialog()">
+    </confirm-panel>
+
+    <agent-watch class="agent-watch"></agent-watch>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 
+import store from './store';
+import { dialogKey } from './store/dialog/dialog.state';
+import { mainViewKey } from './store/main-view/main-view.state';
+// eslint-disable-next-line no-unused-vars
+import { DialogOption } from './core/data-model/generic/dialog-option';
+import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
-import ItemManager from './features/item-manager/ItemManager.vue';
+import MainMenu from './features/main-menu/MainMenu.vue';
+import ActivityManager from './features/activity-manager/ActivityManager.vue';
+import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 
 @Options({
     components: {
         AgentWatch,
-        ItemManager
+        MainMenu,
+        ActivityManager,
+        ConfirmPanel
     }
 })
 export default class App extends Vue {
+    public viewOption = ViewOption;
+
+    get activeDialogOption(): DialogOption {
+        return store.getters[`${dialogKey}/dialogOption`];
+    }
+
+    get activeView(): ViewOption {
+        return store.getters[`${mainViewKey}/activeView`];
+    }
+
+    get showBlurLayer(): boolean {
+        return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenuAnimated;
+    }
 
     public mounted(): void {
         this.updateFontSize();
@@ -24,6 +69,10 @@ export default class App extends Vue {
 
     public beforeUnmount(): void {
         window.removeEventListener('resize', this.updateFontSize);
+    }
+
+    public closeDialog(): void {
+        store.dispatch(`${dialogKey}/closeDialog`);
     }
 
     private updateFontSize(): void {
@@ -37,10 +86,8 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-@font-face {
-    font-family: 'Bruno Ace';
-    src: url('assets/fonts/Bruno Ace Regular.ttf');
-}
+@import './styles/preset.scss';
+@import './styles/animations.scss';
 
 @font-face {
     font-family: 'Digital Numbers';
@@ -48,15 +95,15 @@ export default class App extends Vue {
 }
 
 @font-face {
-    font-family: 'Segoe UI';
-    src: url('assets/fonts/segoeui.ttf');
+    font-family: 'Jost';
+    src: url('assets/fonts/Jost-Regular.ttf');
 }
 
 html, body, #app {
     width: 100%;
     height: 100%;
     background-color: transparent;
-    font-family: 'Segoe UI';
+    font-family: 'Jost';
     user-select: none;
 }
 
@@ -70,28 +117,28 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    background-color: rgb(0, 0, 0);
+    background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
 }
 
-.os-theme-dark {
-
-    & > .os-scrollbar-vertical {
-        width: 11px;
-    }
-
-    & > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle {
-        border-radius: 0;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>"),
-                          url("data:image/svg+xml;utf8,<svg fill='none' height='2' viewBox='0 0 2 2' width='2' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h2v2H0z' fill='rgba(255, 255, 255, 0.6)'/></svg>");
-        background-repeat: no-repeat;
-        background-size: 2px 2px;
-        background-position: left top, left bottom, right bottom, right top;
-    }
+.global-blur-layer, .confirm-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
 }
 
-.watch-face {
+.global-blur-layer {
+    background-color: rgba(227, 227, 227, 0.05);
+    backdrop-filter: blur(5px);
+}
+
+.confirm-panel {
+    width: 25vw;
+    height: 20vh;
+}
+
+.agent-watch {
     $dimension: 30vh;
 
     position: absolute;
@@ -101,113 +148,9 @@ html, body {
     height: $dimension;
 }
 
-.item-manager {
-    width: 50%;
-    height: 90%;
-}
-
-@keyframes revealContent {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes blinkFast {
-    0% {
-        opacity: 0;
-    }
-    33% {
-        opacity: 0.5;
-    }
-    66% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes blinkNormal {
-    0% {
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.1;
-    }
-    11% {
-        opacity: 1;
-    }
-    30% {
-        opacity: 1;
-    }
-    31% {
-        opacity: 0.1;
-    }
-    50% {
-        opacity: 0.1;
-    }
-    51% {
-        opacity: 1;
-    }
-    70% {
-        opacity: 1;
-    }
-    71% {
-        opacity: 0.1;
-    }
-    72% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes blinkSlow {
-    0% {
-        opacity: 0;
-    }
-    25% {
-        opacity: 0.2;
-    }
-    50% {
-        opacity: 1;
-    }
-    51% {
-        opacity: 0.5;
-    }
-    53% {
-        opacity: 0.5;
-    }
-    54% {
-        opacity: 1;
-    }
-    56% {
-        opacity: 1;
-    }
-    57% {
-        opacity: 0.5;
-    }
-    59% {
-        opacity: 0.5;
-    }
-    60% {
-        opacity: 1;
-    }
-    62% {
-        opacity: 1;
-    }
-    63% {
-        opacity: 0.5;
-    }
-    70% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 1;
-    }
+.activity-manager {
+    position: absolute;
+    width: 60%;
+    height: 87.5%;
 }
 </style>

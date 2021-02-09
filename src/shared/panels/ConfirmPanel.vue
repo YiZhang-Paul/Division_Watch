@@ -1,155 +1,121 @@
 <template>
-    <input-panel class="confirm-panel-container" :class="{ 'confirming': isConfirming, 'warning': isWarning }">
-        <div class="content" @click="isConfirming = true">
-            <span v-if="!isConfirming">{{ displayText }}</span>
-
-            <template v-if="isConfirming">
-                <span :class="{ 'no-checkbox': !modifierText }">{{ displayText }}</span>
-
-                <checkbox v-if="modifierText"
-                    class="checkbox"
-                    :name="modifierText"
-                    v-model:checked="modifierValue">
-                </checkbox>
+    <div v-if="option" class="confirm-panel-container">
+        <view-panel class="view-panel" :class="$attrs.class" :maxTilt="2">
+            <div class="content">
+                <span>{{ option.title }}</span>
 
                 <div class="actions">
-                    <input-panel class="confirm-button"
-                        :delay="0"
-                        @click="$emit('confirm:confirmed', modifierText ? modifierValue : null)">
+                    <menu-button class="menu-button" @click="onCancel()">
+                        {{ option.cancelText }}
+                    </menu-button>
 
-                        <div class="action-content">{{ confirmText }}</div>
-                    </input-panel>
+                    <menu-button class="menu-button"
+                        :class="{ warning: option.isWarning }"
+                        @click="onConfirm()">
 
-                    <input-panel :delay="0" @click.stop="isConfirming = false">
-                        <div class="action-content">{{ cancelText }}</div>
-                    </input-panel>
+                        {{ option.confirmText }}
+                    </menu-button>
                 </div>
-            </template>
-        </div>
-    </input-panel>
+            </div>
+        </view-panel>
+    </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+// eslint-disable-next-line no-unused-vars
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import MenuButton from '../controls/MenuButton.vue';
 
-import Checkbox from '../../shared/inputs/Checkbox.vue';
-import InputPanel from '../../shared/panels/InputPanel.vue';
+import ViewPanel from './ViewPanel.vue';
 
 class ConfirmPanelProp {
-    public isWarning = prop<boolean>({ default: false });
-    public modifierText = prop<string>({ default: '' });
-    public displayText = prop<string>({ default: 'confirm' });
-    public confirmText = prop<string>({ default: 'Confirm' });
-    public cancelText = prop<string>({ default: 'Cancel' });
+    public option = prop<DialogOption>({ default: null });
 }
 
 @Options({
     components: {
-        Checkbox,
-        InputPanel
-    },
-    watch: {
-        isConfirming(current: boolean, previous: boolean): void {
-            if (!previous && current) {
-                this.$emit('confirm:start');
-            }
-        }
+        MenuButton,
+        ViewPanel
     },
     emits: [
-        'confirm:start',
-        'confirm:confirmed'
+        'confirmed',
+        'cancelled'
     ]
 })
 export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
-    public isConfirming = false;
-    public modifierValue = false;
+
+    public onConfirm(): void {
+        if (this.option.confirmCallback) {
+            this.option.confirmCallback();
+        }
+
+        this.$emit('confirmed');
+    }
+
+    public onCancel(): void {
+        if (this.option.cancelCallback) {
+            this.option.cancelCallback();
+        }
+
+        this.$emit('cancelled');
+    }
 }
 </script>
 
 <style lang="scss" scoped>
 .confirm-panel-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
 
-    &:not(.confirming) .content {
-        cursor: pointer;
-        background-color: rgb(84, 83, 92);
-    }
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: rgb(255, 255, 255);
+    font-size: 0.75rem;
 
-    &:hover:not(.confirming) .content {
-        background-color: rgb(110, 109, 121);
-    }
-
-    &.warning:not(.confirming) .content {
-        background-color: rgb(109, 13, 13);
-    }
-
-    &.warning:hover:not(.confirming) .content {
-        background-color: rgb(134, 24, 24);
-    }
-
-    .content {
+    .actions {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
-        padding: 0.3rem 0.35rem;
-        color: rgb(255, 255, 255);
-        background-color: rgba(63, 62, 68, 0.6);
-        font-family: 'Bruno Ace';
-        font-size: 0.4rem;
-        white-space: nowrap;
-        transition: background-color 0.3s;
+        width: 100%;
+        height: 30%;
 
-        .no-checkbox {
-            margin-bottom: 0.35rem;
-        }
+        .menu-button {
+            margin-right: 3%;
+            width: 20%;
+            height: 85%;
 
-        .checkbox {
-            margin-top: 0.25rem;
-            margin-bottom: 0.35rem;
-            font-family: 'Segoe UI';
-            opacity: 0;
-            animation: revealContent 0.3s ease-in forwards;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            width: 100%;
-
-            .action-content {
-                padding: 0.12rem 0.23rem;
-                cursor: pointer;
-                color: rgb(255, 255, 255);
-                background-color: rgb(84, 83, 92);
-                font-family: 'Bruno Ace';
-                font-size: 0.4rem;
-                transition: background-color 0.3s;
+            &:nth-child(1) {
+                background-color: rgba(185, 185, 185, 0.2);
 
                 &:hover {
-                    background-color: rgb(110, 109, 121);
+                    background-color: rgb(225, 225, 225, 0.2);
                 }
             }
 
-            .confirm-button {
-                margin-right: 0.4rem;
+            &:nth-child(2) {
 
-                .action-content {
-                    background-color: rgb(226, 118, 30);
+                &:hover {
+                    background-color: rgb(240, 123, 14);
+                }
 
-                    &:hover {
-                        background-color: rgb(238, 147, 74);
-                    }
+                &.warning {
+                    background-color: rgba(241, 58, 25, 0.8);
+                }
+
+                &.warning:hover {
+                    background-color: rgb(226, 17, 10);
                 }
             }
-        }
-    }
-
-    &.warning .content .confirm-button .action-content {
-        background-color: rgb(175, 13, 13);
-
-        &:hover {
-            background-color: rgb(206, 32, 32);
         }
     }
 }

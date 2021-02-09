@@ -1,5 +1,5 @@
-import { ValueChange } from '../../data-model/value-change';
-import { RangeChange } from '../../data-model/range-change';
+import { ValueChange } from '../../data-model/generic/value-change';
+import { RangeChange } from '../../data-model/generic/range-change';
 
 export class AnimationService {
 
