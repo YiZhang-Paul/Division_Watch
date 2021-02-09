@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ [containerClass]: true, 'expanded-panel': isExpanded }">
+    <div :id="id" class="view-panel-container" :class="{ 'expanded-panel': isExpanded }">
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
@@ -22,14 +22,15 @@
 
 <script lang="ts">
 import { Vue, prop } from 'vue-class-component';
-import VanillaTilt from "vanilla-tilt";
+import VanillaTilt from 'vanilla-tilt';
+import * as uuid from 'uuid';
 
 class ViewPanelProp {
     public maxTilt = prop<number>({ default: 0.3 });
 }
 
 export default class ViewPanel extends Vue.with(ViewPanelProp) {
-    public readonly containerClass = 'view-panel-container';
+    public readonly id = `view-panel-container-${uuid.v4()}`;
     private stage = 1;
 
     get isExpanded(): boolean {
@@ -37,9 +38,9 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
     }
 
     public mounted(): void {
-        const container = document.querySelector(`.${this.containerClass}`);
+        const container = document.querySelector(`#${this.id}`);
         container?.addEventListener('animationend', () => this.stage++);
-        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt, glare: true, "max-glare": 0.1 });
+        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt, glare: true, 'max-glare': 0.1 });
     }
 }
 </script>
