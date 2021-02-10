@@ -3,6 +3,7 @@ import axios from 'axios';
 import { TaskItem } from '../../../data-model/task-item/task-item';
 import { AddChildResult } from '../../../data-model/task-item/add-child-result';
 import { UpdateTaskResult } from '../../../data-model/task-item/update-task-result';
+import { DeleteTaskResult } from '../../../data-model/task-item/delete-task-result';
 import { TaskItemOptions } from '../../../data-model/task-item/task-item-options';
 
 export class TaskItemHttpService {
@@ -33,6 +34,17 @@ export class TaskItemHttpService {
     public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult | null> {
         try {
             return (await axios.put(this._api, item)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
+    public async deleteTaskItem(id: string, keepChildren = true): Promise<DeleteTaskResult | null> {
+        try {
+            const endpoint = `${this._api}/${id}?keepChildren=${keepChildren}`;
+
+            return (await axios.delete(endpoint)).data;
         }
         catch {
             return null;

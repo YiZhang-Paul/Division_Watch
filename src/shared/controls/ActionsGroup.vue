@@ -5,9 +5,9 @@
         <div class="actions">
             <menu-button class="action"
                 v-for="action of actions"
-                :key="action.name"
+                :key="action.action"
                 :class="{ 'warning-button': action.isWarning }"
-                @click="$emit('action:selected', action.name)">
+                @click="$emit('action:selected', action.action)">
 
                 {{ action.name }}
             </menu-button>
@@ -24,7 +24,7 @@ import MenuButton from './MenuButton.vue';
 
 class ActionsGroupProp {
     public name = prop<string>({ default: '' });
-    public actions = prop<BasicAction[]>({ default: [] });
+    public actions = prop<BasicAction<unknown>[]>({ default: [] });
     public isWarning = prop<boolean>({ default: false });
 }
 

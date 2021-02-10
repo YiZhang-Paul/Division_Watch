@@ -90,7 +90,8 @@
             <actions-group class="actions-group"
                 :name="'Danger Zone'"
                 :actions="dangerZoneActions"
-                :isWarning="true">
+                :isWarning="true"
+                @action:selected="onActionSelected($event)">
             </actions-group>
         </div>
     </div>
@@ -120,6 +121,7 @@ import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
 import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
+import { TaskAction } from '../../core/enums/task-action.enum';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
@@ -137,7 +139,7 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
     }
 })
 export default class TaskManager extends Vue {
-    public readonly dangerZoneActions = [new BasicAction('Delete Task', true)];
+    public readonly dangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -235,6 +237,19 @@ export default class TaskManager extends Vue {
         store.dispatch(`${dialogKey}/openDialog`, option);
     }
 
+    public onActionSelected(action: TaskAction): void {
+        if (action === TaskAction.Delete) {
+            const title = 'This task will be permanently deleted.';
+            const option = new DialogOption(title, 'Delete', 'Cancel', true);
+
+            option.confirmCallback = () => {
+                store.dispatch(`${taskItemKey}/deleteTaskItem`, { item: this.activeTask });
+            };
+
+            store.dispatch(`${dialogKey}/openDialog`, option);
+        }
+    }
+
     public async addChildTask(name: string): Promise<void> {
         if (this.activeTask) {
             const child: TaskItem = { ...new TaskItem(), name };
@@ -328,6 +343,8 @@ export default class TaskManager extends Vue {
             margin-top: auto;
             margin-left: $margin-left;
             width: calc(#{$content-width} - #{$margin-left});
+            opacity: 0;
+            animation: revealContent 0.3s ease 1.2s forwards;
         }
     }
 }

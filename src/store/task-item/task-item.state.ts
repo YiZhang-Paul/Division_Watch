@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { UpdateTaskResult } from '../../core/data-model/task-item/update-task-result';
+import { DeleteTaskResult } from '../../core/data-model/task-item/delete-task-result';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
@@ -47,6 +48,9 @@ const getters = {
 const mutations = {
     addIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
         state.incompleteItems = [...state.incompleteItems, taskItem];
+    },
+    deleteIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
+        state.incompleteItems = state.incompleteItems.filter(_ => _.id !== taskItem.id);
     },
     setIncompleteItems(state: ITaskItemState, items: TaskItem[]): void {
         state.incompleteItems = items;
@@ -107,6 +111,35 @@ const actions = {
 
         if (result.parent) {
             context.commit('setIncompleteItem', result.parent);
+        }
+
+        return result;
+    },
+    async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { item: TaskItem, keepChildren: boolean | null }): Promise<DeleteTaskResult | null> {
+        const { item, keepChildren } = payload;
+        const { commit, getters } = context;
+        const result = await taskItemHttpService.deleteTaskItem(item.id!, Boolean(keepChildren));
+
+        if (!result) {
+            return null;
+        }
+
+        commit('deleteIncompleteItem', item);
+
+        if (item.id === getters.activeItem?.id) {
+            commit('setActiveItem', null);
+        }
+
+        if (result.parent) {
+            commit('setIncompleteItem', result.parent);
+        }
+
+        for (const child of result.updatedChildren) {
+            commit('setIncompleteItem', child);
+        }
+
+        for (const child of result.deletedChildren) {
+            commit('deleteIncompleteItem', child);
         }
 
         return result;

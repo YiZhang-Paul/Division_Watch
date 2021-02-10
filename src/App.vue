@@ -116,6 +116,7 @@ html, body {
 
 .app-views {
     position: relative;
+    transition: opacity 0.2s;
 
     &.invisible {
         opacity: 0;
