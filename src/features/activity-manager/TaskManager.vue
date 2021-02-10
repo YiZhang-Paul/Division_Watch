@@ -219,7 +219,7 @@ export default class TaskManager extends Vue {
 
         option.confirmCallback = () => {
             const checklist = this.activeTask?.checklist ?? [];
-            this.onItemChange('checklist', GenericUtility.removeAt(checklist, index), 300);
+            this.onItemChange('checklist', GenericUtility.removeAt(checklist, index), 200);
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);
