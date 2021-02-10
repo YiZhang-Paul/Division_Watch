@@ -86,6 +86,12 @@
                     </checklist-card>
                 </item-group-panel>
             </div>
+
+            <actions-group class="actions-group"
+                :name="'Danger Zone'"
+                :actions="dangerZoneActions"
+                :isWarning="true">
+            </actions-group>
         </div>
     </div>
 </template>
@@ -103,10 +109,12 @@ import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import { BasicAction } from '../../core/data-model/generic/basic-action';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
+import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
@@ -120,6 +128,7 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
         ItemListPanel,
         SectionPanel,
         ItemGroupPanel,
+        ActionsGroup,
         OptionDropdown,
         DaySelector,
         TaskSummaryCard,
@@ -128,6 +137,7 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
     }
 })
 export default class TaskManager extends Vue {
+    public readonly dangerZoneActions = [new BasicAction('Delete Task', true)];
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -310,6 +320,14 @@ export default class TaskManager extends Vue {
                     margin-bottom: 1%;
                 }
             }
+        }
+
+        .actions-group {
+            $margin-left: 0.75rem;
+
+            margin-top: auto;
+            margin-left: $margin-left;
+            width: calc(#{$content-width} - #{$margin-left});
         }
     }
 }
