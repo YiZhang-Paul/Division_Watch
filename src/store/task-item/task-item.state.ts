@@ -46,28 +46,28 @@ const getters = {
 };
 
 const mutations = {
-    addIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
-        state.incompleteItems = [...state.incompleteItems, taskItem];
+    addIncompleteItem(state: ITaskItemState, item: TaskItem): void {
+        state.incompleteItems = [...state.incompleteItems, item];
     },
-    deleteIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
-        state.incompleteItems = state.incompleteItems.filter(_ => _.id !== taskItem.id);
+    deleteIncompleteItem(state: ITaskItemState, item: TaskItem): void {
+        state.incompleteItems = state.incompleteItems.filter(_ => _.id !== item.id);
     },
     setIncompleteItems(state: ITaskItemState, items: TaskItem[]): void {
         state.incompleteItems = items;
     },
-    setIncompleteItem(state: ITaskItemState, taskItem: TaskItem): void {
+    setIncompleteItem(state: ITaskItemState, item: TaskItem): void {
         const tasks = state.incompleteItems;
-        const index = tasks.findIndex(_ => _.id === taskItem.id);
+        const index = tasks.findIndex(_ => _.id === item.id);
 
         if (index !== -1) {
-            state.incompleteItems = GenericUtility.replaceAt(tasks, taskItem, index);
+            state.incompleteItems = GenericUtility.replaceAt(tasks, item, index);
         }
     },
-    setActiveItem(state: ITaskItemState, taskItem: TaskItem | null): void {
-        state.activeItem = taskItem;
+    setActiveItem(state: ITaskItemState, item: TaskItem | null): void {
+        state.activeItem = item;
     },
-    setTaskItemOptions(state: ITaskItemState, taskItemOptions: TaskItemOptions): void {
-        state.taskItemOptions = taskItemOptions;
+    setTaskItemOptions(state: ITaskItemState, options: TaskItemOptions): void {
+        state.taskItemOptions = options;
     }
 };
 
@@ -85,9 +85,21 @@ const actions = {
             commit('setActiveItem', getters.incompleteParentTasks[0]);
         }
     },
-    async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
+    async getEmptyTaskItem(): Promise<TaskItem | null> {
+        return await taskItemHttpService.getEmptyTaskItem();
+    },
+    async addParentTaskItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
+        const added = await taskItemHttpService.addTaskItem(item);
+
+        if (added) {
+            context.commit('addIncompleteItem', added);
+        }
+
+        return added;
+    },
+    async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, item: TaskItem }): Promise<void> {
         const { commit, getters } = context;
-        const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.task);
+        const result = await taskItemHttpService.addChildTaskItem(payload.parentId, payload.item);
 
         if (!result) {
             return;
@@ -100,8 +112,8 @@ const actions = {
             commit('setActiveItem', result.parent);
         }
     },
-    async updateTaskItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): Promise<UpdateTaskResult | null> {
-        const result = await taskItemHttpService.updateTaskItem(taskItem);
+    async updateTaskItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<UpdateTaskResult | null> {
+        const result = await taskItemHttpService.updateTaskItem(item);
 
         if (!result) {
             return null;
@@ -144,9 +156,9 @@ const actions = {
 
         return result;
     },
-    swapActiveItem(context: ActionContext<ITaskItemState, any>, taskItem: TaskItem): void {
+    swapActiveItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): void {
         context.commit('setActiveItem', null);
-        setTimeout(() => context.commit('setActiveItem', taskItem));
+        setTimeout(() => context.commit('setActiveItem', item));
     }
 };
 

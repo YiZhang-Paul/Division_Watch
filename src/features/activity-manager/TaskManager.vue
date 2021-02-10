@@ -1,6 +1,9 @@
 <template>
     <div class="task-manager-container">
-        <item-list-panel class="item-list-panel" @search="searchText = $event">
+        <item-list-panel class="item-list-panel"
+            @item:search="searchText = $event"
+            @item:add="openEmptyTask()">
+
             <task-summary-card class="summary-card"
                 v-for="task of tasks"
                 :key="task.id"
@@ -195,6 +198,14 @@ export default class TaskManager extends Vue {
     public beforeUnmount(): void {
         if (this.updateDebounceTimer) {
             store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
+        }
+    }
+
+    public async openEmptyTask(): Promise<void> {
+        const task = await store.dispatch(`${taskItemKey}/getEmptyTaskItem`);
+
+        if (task) {
+            store.dispatch(`${taskItemKey}/swapActiveItem`, task);
         }
     }
 

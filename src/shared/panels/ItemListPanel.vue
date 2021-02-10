@@ -1,10 +1,10 @@
 <template>
     <div class="item-list-panel-container">
         <div class="actions">
-            <search-box class="search-box" @search="$emit('search', $event)"></search-box>
+            <search-box class="search-box" @search="$emit('item:search', $event)"></search-box>
 
             <div class="button-wrapper">
-                <plus class="add-item-button" />
+                <plus class="add-item-button" @click="$emit('item:add')" />
             </div>
         </div>
 
@@ -33,7 +33,10 @@ import SearchBox from '../../shared/controls/SearchBox.vue';
         OverlayScrollbarPanel,
         SearchBox
     },
-    emits: ['search']
+    emits: [
+        'item:search',
+        'item:add'
+    ]
 })
 export default class ItemListPanel extends Vue {
     public scroll: ScrollPosition | null = null;
