@@ -190,9 +190,9 @@ export default class TaskManager extends Vue {
         store.dispatch(`${taskItemKey}/swapActiveItem`, task);
     }
 
-    public onItemChange(key: string, value: any): void {
+    public onItemChange(key: string, value: any, delay = 0): void {
         const changed = { ...this.activeTask!, [key]: value };
-        store.commit(`${taskItemKey}/setActiveItem`, changed);
+        setTimeout(() => store.commit(`${taskItemKey}/setActiveItem`, changed), delay);
 
         if (!changed.id) {
             return;
@@ -219,7 +219,7 @@ export default class TaskManager extends Vue {
 
         option.confirmCallback = () => {
             const checklist = this.activeTask?.checklist ?? [];
-            this.onItemChange('checklist', GenericUtility.removeAt(checklist, index));
+            this.onItemChange('checklist', GenericUtility.removeAt(checklist, index), 300);
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);

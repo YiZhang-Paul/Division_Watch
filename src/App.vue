@@ -1,19 +1,11 @@
 <template>
     <div v-if="showBlurLayer" class="global-blur-layer"></div>
 
-    <main-menu v-show="!activeDialogOption"
-        v-if="activeView === viewOption.MainMenuAnimated">
-    </main-menu>
-
-    <main-menu v-show="!activeDialogOption"
-        v-if="activeView === viewOption.MainMenuNoop"
-        :allowAnimation="false">
-    </main-menu>
-
-    <activity-manager class="activity-manager"
-        v-show="!activeDialogOption"
-        v-if="activeView === viewOption.Activities">
-    </activity-manager>
+    <div class="app-views" :class="{ invisible: activeDialogOption }">
+        <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
+        <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
+        <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
+    </div>
 
     <confirm-panel v-if="activeDialogOption"
         class="confirm-panel"
@@ -99,7 +91,7 @@ export default class App extends Vue {
     src: url('assets/fonts/Jost-Regular.ttf');
 }
 
-html, body, #app {
+html, body, #app, .app-views {
     width: 100%;
     height: 100%;
     background-color: transparent;
@@ -112,12 +104,22 @@ html, body {
     padding: 0;
 }
 
-#app {
+#app, .app-views {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+}
+
+#app {
     background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
+}
+
+.app-views {
+    position: relative;
+
+    &.invisible {
+        opacity: 0;
+    }
 }
 
 .global-blur-layer, .confirm-panel {
