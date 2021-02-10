@@ -77,8 +77,10 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
             position: absolute;
             left: 0;
             width: 100%;
-            height: 7.5%;
+            height: 5%;
             pointer-events: none;
+            opacity: 0;
+            animation: revealContent 0.6s ease forwards;
         }
 
         .top-scroll-indicator {

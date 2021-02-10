@@ -99,8 +99,10 @@ $padding-right: 10px;
         position: absolute;
         left: 0;
         width: $content-width;
-        height: 7.5%;
+        height: 5%;
         pointer-events: none;
+        opacity: 0;
+        animation: revealContent 0.6s ease forwards;
     }
 
     .top-scroll-indicator {
