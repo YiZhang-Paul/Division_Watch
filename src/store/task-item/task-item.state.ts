@@ -77,8 +77,8 @@ const actions = {
         const items = await taskItemHttpService.getIncompleteItems();
         commit('setIncompleteItems', items);
 
-        if (autoOpen && !getters.activeItem && items[0]) {
-            commit('setActiveItem', items[0]);
+        if (autoOpen && !getters.activeItem && getters.incompleteParentTasks[0]) {
+            commit('setActiveItem', getters.incompleteParentTasks[0]);
         }
     },
     async addChildTaskItem(context: ActionContext<ITaskItemState, any>, payload: { parentId: string, task: TaskItem }): Promise<void> {
