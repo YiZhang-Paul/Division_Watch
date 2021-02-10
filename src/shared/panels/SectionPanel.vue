@@ -1,5 +1,5 @@
 <template>
-    <div class="section-panel-container" :style="{ '--title-size': isSubsection ? '0.45rem' : '1rem' }">
+    <div class="section-panel-container" :style="{ '--title-size': isSubsection ? '0.475rem' : '0.85rem' }">
         <div class="side-guards">
             <div v-for="n in 3" :key="n"></div>
         </div>
@@ -65,8 +65,8 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
 <style lang="scss" scoped>
 .section-panel-container {
-    $content-width: 85%;
-    $margin-left: calc((100% - #{$content-width}) / 2);
+    $margin-left: 0.75rem;
+    $content-width: calc(100% - #{$margin-left});
 
     display: flex;
     flex-direction: column;
@@ -87,13 +87,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         transition: color 0.3s;
 
         span, .edit-field {
-            padding: 2px 0.25rem;
-        }
-
-        .edit-icon {
-            color: rgb(241, 165, 78);
-            font-size: 0.5rem;
-            transition: color 0.3s;
+            padding: 1px 0.25rem 1px 0.2rem;
         }
 
         .edit-field {
@@ -102,12 +96,18 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
             background-color: rgba(37, 34, 34, 0.3);
             color: rgb(255, 255, 255);
             font-family: 'Jost';
-            font-size: 1rem;
+            font-size: var(--title-size);
 
             &::placeholder {
                 font-size: 0.75rem;
                 color: rgba(200, 200, 200, 0.7);
             }
+        }
+
+        .edit-icon {
+            color: rgb(241, 165, 78);
+            font-size: 0.475rem;
+            transition: color 0.3s;
         }
 
         &.editable:hover {
@@ -126,6 +126,8 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+        margin-top: 1.25%;
+        margin-left: $margin-left;
         width: $content-width;
         opacity: 0;
         animation: revealContent 0.2s ease 1.2s forwards;
@@ -147,14 +149,14 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
         & > div {
             position: absolute;
-            left: calc(55% + #{$gap} * 2);
+            left: calc(25% + #{$gap} * 2);
             background-color: rgba(225, 225, 225, 0.8);
             opacity: 0;
         }
 
         & > div:nth-child(1) {
             top: calc((100% - #{$horizontal-guard-height}) / 2);
-            width: 32.5%;
+            width: 72.5%;
             height: $horizontal-guard-height;
             opacity: 1;
             animation: blinkFast $blink-duration ease forwards $blink-repeat,
@@ -163,7 +165,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
         & > div:nth-child(2) {
             top: calc(#{$gap} / 2 + #{$vertical-guard-start-height});
-            left: calc(55% - #{$gap});
+            left: calc(25% - #{$gap});
             width: 1px;
             height: $vertical-guard-start-height;
             background-color: rgba(225, 225, 225, 0.5);
@@ -173,7 +175,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
         & > div:nth-child(3) {
             top: calc((100% - #{$horizontal-guard-height}) / 2);
-            width: 17.5%;
+            width: 45%;
             height: $horizontal-guard-height;
             animation: revealContent 0.01s ease calc(#{$blink-duration} * #{$blink-repeat}) forwards,
                        moveGuard3 0.35s ease calc(#{$blink-duration} * #{$blink-repeat}) forwards;

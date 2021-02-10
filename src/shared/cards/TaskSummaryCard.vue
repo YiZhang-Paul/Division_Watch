@@ -84,7 +84,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     flex-wrap: wrap;
     background-color: rgba(36, 35, 38, 0.75);
     color: rgb(255, 255, 255);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     transition: background-color 0.3s;
 
     &:hover {
@@ -121,7 +121,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         justify-content: center;
         align-items: center;
         height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
 
     .splitter-1 {
@@ -134,7 +134,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         justify-content: center;
         align-items: center;
         height: $attribute-row-height;
-        font-size: 1rem;
+        font-size: 0.85rem;
 
         .recur-indicator {
             color: $inactive-color;
@@ -170,8 +170,8 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         font-size: 0.6rem;
 
         .progress {
-            width: 67.5%;
-            height: 0.9vh;
+            width: 65%;
+            height: 0.85vh;
             border-radius: 1px;
             background-color: rgb(185, 185, 185);
         }
@@ -181,7 +181,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         }
 
         .estimation-skulls {
-            width: 22.5%;
+            width: 21.5%;
             height: 100%;
         }
     }

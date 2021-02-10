@@ -332,7 +332,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         height: 100%;
 
         .menu-area {
-            $close-button-height: 3.75vh;
+            $close-button-height: 3.5vh;
 
             display: flex;
             flex-direction: column;
@@ -346,7 +346,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             }
 
             .close-button {
-                width: 5vw;
+                width: 4.75vw;
                 height: $close-button-height;
                 color: rgb(240, 123, 14);
                 animation: blinkFast 0.15s ease-in forwards 2;

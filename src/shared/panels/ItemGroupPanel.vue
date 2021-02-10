@@ -65,7 +65,7 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
 
 <style lang="scss" scoped>
 .item-group-panel-container {
-    $add-item-panel-height: 5.25vh;
+    $add-item-panel-height: 4.6vh;
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
 
     .content {
@@ -111,7 +111,7 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
         .panel-guard {
             margin-bottom: 1%;
             width: 100%;
-            height: 7.5%;
+            height: 6.5%;
             border-radius: 2px;
             background-color: rgb(240, 123, 14);
         }

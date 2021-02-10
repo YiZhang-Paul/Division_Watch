@@ -45,7 +45,7 @@ $padding-right: 10px;
 
 .item-list-panel-container {
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
-    $actions-height: 10%;
+    $actions-height: 9%;
     $content-width: calc(100% - #{$padding-right});
 
     position: relative;
@@ -66,9 +66,9 @@ $padding-right: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-left: 2%;
-            width: 1rem;
-            height: 1rem;
+            margin-left: 3%;
+            width: 0.8rem;
+            height: 0.8rem;
             border-radius: 50%;
             background-color: rgb(216, 124, 37);
 

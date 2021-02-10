@@ -4,7 +4,7 @@
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
-        <priority-indicator :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
+        <priority-indicator class="priority-indicator" :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
         <span>{{ task.name }}</span>
         <estimation-skulls class="estimation-skulls" :estimation="task.estimate"></estimation-skulls>
     </div>
@@ -37,8 +37,8 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    padding-left: 2.5%;
-    padding-right: 5%;
+    padding-left: 2%;
+    padding-right: 4%;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);
     transition: background-color 0.3s;
@@ -48,13 +48,17 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
         background-color: rgb(72, 66, 110);
     }
 
+    .priority-indicator {
+        height: 80%;
+    }
+
     & > span {
         margin-left: 1%;
     }
 
     .estimation-skulls {
         margin-left: auto;
-        width: 15%;
+        width: 16.5%;
         height: 85%;
     }
 }

@@ -28,14 +28,14 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
     justify-content: flex-start;
     align-items: center;
     color: rgb(255, 255, 255);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 
     .grids {
         display: flex;
         flex-wrap: wrap;
         margin-right: 1vh;
-        width: 5vh;
-        height: 5vh;
+        width: 5.25vh;
+        height: 5.25vh;
         max-width: 40px;
         max-height: 40px;
 

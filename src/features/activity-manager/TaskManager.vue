@@ -252,26 +252,26 @@ export default class TaskManager extends Vue {
 
 <style lang="scss" scoped>
 .task-manager-container {
-    $list-width: 30%;
+    $list-width: 29%;
 
     .item-list-panel {
         width: $list-width;
-        height: 95%;
+        height: 97.5%;
 
         .summary-card {
             width: 100%;
-            height: 12.5vh;
+            height: 10.5vh;
             opacity: 0;
             animation: revealContent 0.3s ease 0.1s forwards;
 
             &:not(:nth-last-child(1)) {
-                margin-bottom: 1vh;
+                margin-bottom: 0.9vh;
             }
         }
     }
 
     .editor-area {
-        $content-width: 95%;
+        $content-width: 92.5%;
 
         display: flex;
         flex-direction: column;
@@ -281,7 +281,7 @@ export default class TaskManager extends Vue {
 
         .basic-information {
             width: $content-width;
-            height: 50%;
+            height: 42%;
 
             .editor-control {
                 width: 100%;
@@ -290,23 +290,24 @@ export default class TaskManager extends Vue {
 
         .subsections {
             display: flex;
-            margin-top: 3%;
-            width: calc(#{$content-width} - 3.5%);
-            height: 40%;
+            justify-content: space-between;
+            margin-top: 1.75%;
+            width: $content-width;
+            height: 39.5%;
 
             .child-tasks, .checklist-items {
-                width: 50%;
+                width: 48.75%;
                 height: 100%;
             }
 
             .subtask-summary-card, .checklist-card {
                 width: 100%;
-                height: 5vh;
+                height: 4.5vh;
                 opacity: 0;
                 animation: revealContent 0.3s ease 0.1s forwards;
 
                 &:not(:nth-last-child(1)) {
-                    margin-bottom: 1.5%;
+                    margin-bottom: 1%;
                 }
             }
         }

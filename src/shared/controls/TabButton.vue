@@ -49,7 +49,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
     position: relative;
 
     .indicator {
-        $indicator-height: 0.4vh;
+        $indicator-height: 0.35vh;
 
         position: absolute;
         top: calc(-#{$indicator-height} - 0.25vh);
@@ -68,7 +68,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
         align-items: center;
         background-color: rgba(180, 180, 180, 0.2);
         color: rgb(255, 255, 255);
-        font-size: 0.6rem;
+        font-size: 0.55rem;
 
         &:hover {
             cursor: pointer;
@@ -76,7 +76,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
 
         .content {
             display: flex;
-            margin: 0.35vh 0.4vh;
+            margin: 0.3vh 0.35vh;
 
             .tab-name {
                 display: flex;

@@ -62,19 +62,19 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    padding: 1.5% 4%;
+    padding: 1% 3.5%;
     color: rgb(255, 255, 255);
     background-color: rgba(52, 51, 56, 0.8);
     font-family: 'Jost';
 
     & > span {
         width: $name-width;
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 
     select {
         display: block;
-        padding: 1% 3%;
+        padding: 0.75% 3%;
         margin: 0;
         width: calc(100% - #{$name-width});
         background-color: rgba(29, 29, 32, 0.8);

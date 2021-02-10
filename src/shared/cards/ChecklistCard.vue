@@ -65,14 +65,14 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
 
 <style lang="scss" scoped>
 .checklist-card-container {
-    $padding-right: 5%;
+    $padding-right: 4%;
     $checkbox-dimension: 0.6rem;
 
     box-sizing: border-box;
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 2.5%;
+    padding-left: 2%;
     padding-right: $padding-right;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);

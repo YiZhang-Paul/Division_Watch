@@ -56,22 +56,24 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    padding: 1.5% 4%;
+    padding: 1% 3.5%;
     color: rgb(255, 255, 255);
     background-color: rgba(52, 51, 56, 0.8);
     font-family: 'Jost';
 
     & > span {
         width: $name-width;
-        font-size: 0.55rem;
+        font-size: 0.5rem;
     }
 
     .selections {
-        width: calc(100% - #{$name-width});
+        box-sizing: border-box;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        font-size: 0.55rem;
+        padding: 0 4%;
+        width: calc(100% - #{$name-width});
+        font-size: 0.45rem;
         font-family: 'Jost';
 
         & > div {
@@ -80,8 +82,8 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: calc(0.9rem - #{$border-width} * 2);
-            height: calc(0.9rem - #{$border-width} * 2);
+            width: calc(0.75rem - #{$border-width} * 2);
+            height: calc(0.75rem - #{$border-width} * 2);
             border: $border-width solid rgb(195, 195, 195);
             background-color: rgba(42, 42, 46, 0.8);
             opacity: 0;

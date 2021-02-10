@@ -2,8 +2,8 @@
     <view-panel class="activity-manager-container">
         <template v-slot:header>
             <div class="header-content">
-                <title-panel class="title-panel">Activities</title-panel>
-                <tab-group class="tab-group" :options="tabs" @tab:selected="activeTab = $event"></tab-group>
+                <title-panel>Activities</title-panel>
+                <tab-group :options="tabs" @tab:selected="activeTab = $event"></tab-group>
             </div>
         </template>
 
@@ -93,12 +93,19 @@ export default class ActivityManager extends Vue {
     align-items: flex-end;
 }
 
+.main-content {
+    $margin: 1.5%;
+
+    margin-left: $margin;
+    width: calc(100% - #{$margin} * 2);
+}
+
 .footer-content {
     align-items: center;
 
     .back-button, .close-button {
-        width: 5vw;
-        height: 3.75vh;
+        width: 4.75vw;
+        height: 3.5vh;
     }
 
     .back-button {

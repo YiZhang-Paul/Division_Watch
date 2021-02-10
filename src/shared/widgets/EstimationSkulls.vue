@@ -41,7 +41,7 @@ export default class EstimationSkulls extends Vue.with(EstimationSkullsProp) {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 85%;
+        height: 82.5%;
         overflow: hidden;
 
         img {
@@ -51,6 +51,7 @@ export default class EstimationSkulls extends Vue.with(EstimationSkullsProp) {
 
     span {
         align-self: flex-end;
+        font-size: 0.575rem;
     }
 }
 </style>
