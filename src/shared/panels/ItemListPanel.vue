@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <overlay-scrollbar-panel class="scroll-panel" @created="scroll = $event" @scroll="scroll = $event">
+        <overlay-scrollbar-panel class="scroll-panel" @scroll="scroll = $event">
             <div class="content">
                 <slot></slot>
             </div>

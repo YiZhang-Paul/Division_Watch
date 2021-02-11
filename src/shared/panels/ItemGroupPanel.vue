@@ -1,7 +1,7 @@
 <template>
     <section-panel class="item-group-panel-container" :name="name" :isSubsection="true">
         <div class="content">
-            <overlay-scrollbar-panel class="items" @created="scroll = $event" @scroll="scroll = $event">
+            <overlay-scrollbar-panel class="items" @scroll="scroll = $event">
                 <div class="items-wrapper">
                     <slot></slot>
                 </div>
