@@ -18,7 +18,8 @@
                 :task="activeTask"
                 :childTasks="activeChildTasks"
                 @task:change="onTaskChange($event)"
-                @child:add="addChildTask($event)">
+                @child:add="addChildTask($event)"
+                @child:open="onTaskSelected($event)">
             </task-editor>
 
             <actions-group v-if="!activeTask.id"
