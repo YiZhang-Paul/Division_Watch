@@ -14,6 +14,11 @@
         </item-list-panel>
 
         <div v-if="activeTask" class="content">
+            <div v-if="activeTask.parent" class="parent-link" @click="onTaskSelected(activeParentTask)">
+                <arrow-left-circle class="back-button" />
+                <span>parent - {{ activeParentTask.name }}</span>
+            </div>
+
             <task-editor class="task-editor"
                 :task="activeTask"
                 :childTasks="activeChildTasks"
@@ -42,6 +47,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { ArrowLeftCircle } from 'mdue';
 
 import store from '../../store';
 import { dialogKey } from '../../store/dialog/dialog.state';
@@ -59,6 +65,7 @@ import TaskEditor from './TaskEditor.vue';
 
 @Options({
     components: {
+        ArrowLeftCircle,
         ItemListPanel,
         ActionsGroup,
         TaskSummaryCard,
@@ -79,6 +86,10 @@ export default class TaskManager extends Vue {
 
     get activeTask(): TaskItem | null {
         return store.getters[`${taskItemKey}/activeItem`];
+    }
+
+    get activeParentTask(): TaskItem | null {
+        return store.getters[`${taskItemKey}/incompleteItem`](this.activeTask?.parent ?? '');
     }
 
     get activeChildTasks(): TaskItem[] {
@@ -181,6 +192,29 @@ export default class TaskManager extends Vue {
         align-items: center;
         width: calc(100% - #{$list-width});
         height: 100%;
+
+        .parent-link {
+            display: flex;
+            align-items: center;
+            align-self: flex-start;
+            margin-left: calc((100% - #{$content-width}) / 2);
+            margin-bottom: 1%;
+            color: rgb(241, 165, 78);
+            font-size: 0.625rem;
+            opacity: 0;
+            transition: color 0.3s;
+            animation: revealContent 0.3s ease 1.2s forwards;
+
+            &:hover {
+                cursor: pointer;
+                color: rgb(74, 236, 223);
+            }
+
+            .back-button {
+                margin-right: 3px;
+                font-size: 0.775rem;
+            }
+        }
 
         .task-editor {
             width: $content-width;

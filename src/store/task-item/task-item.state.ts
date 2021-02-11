@@ -27,6 +27,9 @@ const state = (): ITaskItemState => ({
 
 const getters = {
     taskItemOptions: (state: ITaskItemState): TaskItemOptions => state.taskItemOptions,
+    incompleteItem: (state: ITaskItemState) => (id: string): TaskItem | null => {
+        return id ? state.incompleteItems.find(_ => _.id === id) ?? null : null;
+    },
     incompleteItems: (state: ITaskItemState): TaskItem[] => state.incompleteItems,
     incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => !_.isInterruption && !_.parent));
