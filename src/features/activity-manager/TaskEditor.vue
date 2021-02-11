@@ -41,7 +41,8 @@
                 @options:select="onTaskChange('estimate', $event)">
             </option-dropdown>
 
-            <day-selector class="editor-control"
+            <day-selector v-if="!task.parent"
+                class="editor-control"
                 :name="'Recur'"
                 :days="task.recur.slice()"
                 :isDisabled="task.parent"
@@ -218,10 +219,13 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
 
     .basic-information {
         width: 100%;
-        height: 42%;
 
         .editor-control {
             width: 100%;
+        }
+
+        .editor-control:not(:nth-last-child(1)) {
+            margin-bottom: 1%;
         }
     }
 
