@@ -67,6 +67,7 @@ export default class ActionsGroup extends Vue.with(ActionsGroupProp) { }
         font-size: 0.875rem;
 
         .action {
+            background-color: rgb(59, 163, 154);
             padding: 2px;
         }
 

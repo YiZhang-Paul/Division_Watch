@@ -21,7 +21,15 @@
                 @child:add="addChildTask($event)">
             </task-editor>
 
-            <actions-group class="actions-group"
+            <actions-group v-if="!activeTask.id"
+                class="actions-group"
+                :name="'Actions'"
+                :actions="emptyTaskActions"
+                @action:selected="onActionSelected($event)">
+            </actions-group>
+
+            <actions-group v-if="activeTask.id"
+                class="actions-group"
                 :name="'Danger Zone'"
                 :actions="dangerZoneActions"
                 :isWarning="true"
@@ -57,6 +65,7 @@ import TaskEditor from './TaskEditor.vue';
     }
 })
 export default class TaskManager extends Vue {
+    public readonly emptyTaskActions = [new BasicAction('Create Task', TaskAction.Create)];
     public readonly dangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
@@ -93,7 +102,7 @@ export default class TaskManager extends Vue {
         }
     }
 
-    public onTaskSelected(task: TaskItem): void {
+    public onTaskSelected(task: TaskItem | null): void {
         store.dispatch(`${taskItemKey}/swapActiveItem`, task);
     }
 
@@ -121,8 +130,15 @@ export default class TaskManager extends Vue {
         }
     }
 
-    public onActionSelected(action: TaskAction): void {
-        if (action === TaskAction.Delete) {
+    public async onActionSelected(action: TaskAction): Promise<void> {
+        if (action === TaskAction.Create) {
+            const result = await store.dispatch(`${taskItemKey}/addParentTaskItem`, this.activeTask);
+
+            if (result) {
+                this.onTaskSelected(result);
+            }
+        }
+        else if (action === TaskAction.Delete) {
             const title = 'This task will be permanently deleted.';
             const option = new DialogOption(title, 'Delete', 'Cancel', true);
 
