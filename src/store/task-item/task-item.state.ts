@@ -129,7 +129,7 @@ const actions = {
     },
     async deleteTaskItem(context: ActionContext<ITaskItemState, any>, payload: { item: TaskItem, keepChildren: boolean | null }): Promise<DeleteTaskResult | null> {
         const { item, keepChildren } = payload;
-        const { commit, getters } = context;
+        const { commit, getters, dispatch } = context;
         const result = await taskItemHttpService.deleteTaskItem(item.id!, Boolean(keepChildren));
 
         if (!result) {
@@ -144,6 +144,7 @@ const actions = {
 
         if (result.parent) {
             commit('setIncompleteItem', result.parent);
+            dispatch('swapActiveItem', result.parent);
         }
 
         for (const child of result.updatedChildren) {

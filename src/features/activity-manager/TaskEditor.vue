@@ -234,7 +234,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         justify-content: space-between;
         margin-top: 1.75%;
         width: 100%;
-        height: 39.5%;
+        height: 45%;
 
         .child-tasks, .checklist-items {
             width: 48.75%;
