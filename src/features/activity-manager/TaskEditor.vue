@@ -6,7 +6,8 @@
             :placeholder="'enter task name here...'"
             @name:edited="onTaskChange('name', $event)">
 
-            <option-dropdown class="editor-control"
+            <option-dropdown v-if="!task.parent"
+                class="editor-control"
                 :name="'Category'"
                 :selected="selectedCategory"
                 :options="categories"
@@ -51,8 +52,8 @@
         <div class="subsections">
             <item-group-panel class="child-tasks"
                 :name="'Subtasks (' + childTasks.length + ')'"
-                :isDisabled="!task.id"
-                :placeholder="task.id ? 'add child task here...' : 'must create parent task first.'"
+                :isDisabled="!task.id || task.parent"
+                :placeholder="subtaskPlaceholder"
                 @item:add="onChildTaskAdded($event)">
 
                 <subtask-summary-card class="subtask-summary-card"
@@ -124,6 +125,18 @@ class TaskEditorProp {
     ]
 })
 export default class TaskEditor extends Vue.with(TaskEditorProp) {
+
+    get subtaskPlaceholder(): string {
+        if (this.task.parent) {
+            return 'unavailable for child task.';
+        }
+
+        if (!this.task.id) {
+            return 'must create parent task first.';
+        }
+
+        return 'add child task here...';
+    }
 
     get selectedCategory(): Category {
         return store.getters[`${categoryKey}/category`](this.task?.categoryId);
