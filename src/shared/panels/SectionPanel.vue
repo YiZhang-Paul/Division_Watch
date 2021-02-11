@@ -5,20 +5,20 @@
         </div>
 
         <div class="name" :class="{ editable: isEditable }" @click="onEditStart()">
-            <template v-if="!isEditing">
+            <template v-if="!isEditing && name">
                 <span :class="{ subsection: isSubsection }">{{ name }}</span>
                 <circle-edit-outline v-if="isEditable" class="edit-icon" />
             </template>
 
             <input type="text"
-                v-if="isEditing"
+                v-if="isEditing || !name"
                 ref="nameInput"
                 class="edit-field"
                 v-model="editedName"
                 :placeholder="placeholder"
                 @keyup.enter="onEditConfirm()"
-                @keyup.esc="isEditing = false"
-                @blur="isEditing = false" />
+                @keyup.esc="isEditing = !name"
+                @blur="isEditing = !name" />
         </div>
 
         <div class="content">
@@ -45,20 +45,34 @@ class SectionPanelProp {
     emits: ['name:edited']
 })
 export default class SectionPanel extends Vue.with(SectionPanelProp) {
-    public isEditing = false;
     public editedName = this.name;
+    public isEditing = !this.name;
+
+    public mounted(): void {
+        this.tryFocusInput();
+    }
 
     public onEditStart(): void {
         this.isEditing = this.isEditable;
 
         if (this.isEditing) {
-            setTimeout(() => (this.$refs.nameInput as any).focus());
+            this.tryFocusInput();
         }
     }
 
     public onEditConfirm(): void {
-        this.isEditing = false;
-        this.$emit('name:edited', this.editedName);
+        if (this.editedName) {
+            this.isEditing = false;
+            this.$emit('name:edited', this.editedName);
+        }
+    }
+
+    private tryFocusInput(): void {
+        setTimeout(() => {
+            if (this.$refs.nameInput) {
+                (this.$refs.nameInput as any).focus();
+            }
+        });
     }
 }
 </script>
