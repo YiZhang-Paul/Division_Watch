@@ -7,13 +7,14 @@
                 </div>
             </overlay-scrollbar-panel>
 
-            <div class="add-item-panel">
+            <div class="add-item-panel" :class="{ 'disabled-panel': isDisabled }">
                 <div class="panel-guard"></div>
 
                 <display-panel class="add-item">
                     <input type="text"
                         v-model="itemName"
                         :placeholder="placeholder"
+                        :disabled="isDisabled"
                         @keyup.enter="onItemAdd"
                         @keyup.esc="itemName = ''" />
 
@@ -38,6 +39,7 @@ import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
 
 class ItemGroupPanelProp {
     public name = prop<string>({ default: '' });
+    public isDisabled = prop<boolean>({ default: false });
     public placeholder = prop<string>({ default: 'add item here...' });
 }
 
@@ -155,6 +157,17 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
                     filter: brightness(1);
                 }
             }
+        }
+    }
+
+    .disabled-panel {
+
+        .panel-guard {
+            background-color: rgb(160, 160, 160);
+        }
+
+        .add-item:hover, .add-item input:hover {
+            cursor: not-allowed;
         }
     }
 }

@@ -51,7 +51,8 @@
         <div class="subsections">
             <item-group-panel class="child-tasks"
                 :name="'Subtasks (' + childTasks.length + ')'"
-                :placeholder="'add child task here...'"
+                :isDisabled="!task.id"
+                :placeholder="task.id ? 'add child task here...' : 'must create parent task first.'"
                 @item:add="onChildTaskAdded($event)">
 
                 <subtask-summary-card class="subtask-summary-card"
