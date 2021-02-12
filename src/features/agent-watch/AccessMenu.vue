@@ -1,5 +1,5 @@
 <template>
-    <div class="access-menu-container glass-panel" :style="colorOption">
+    <div class="access-menu-container glass-panel-dark" :style="colorOption">
         <div v-for="option of options"
             class="option-button"
             :style="{ transform: 'rotate(' + (isOptionsVisible ? option.angle : 0) + 'deg)' }"
@@ -15,7 +15,7 @@
             </button>
         </div>
 
-        <div class="option-name glass-panel">
+        <div class="option-name glass-panel-dark">
             <span v-if="activeOption">{{ activeOption }}</span>
 
             <close-circle v-if="!activeOption"

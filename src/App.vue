@@ -136,11 +136,6 @@ html, body {
     backdrop-filter: blur(5px);
 }
 
-.confirm-panel {
-    width: 25vw;
-    height: 20vh;
-}
-
 .agent-watch {
     $dimension: 30vh;
 
