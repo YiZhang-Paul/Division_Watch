@@ -123,6 +123,7 @@ const actions = {
         }
 
         context.commit('setIncompleteItem', result.target);
+        context.commit('setActiveItem', result.target);
 
         if (result.parent) {
             context.commit('setIncompleteItem', result.parent);

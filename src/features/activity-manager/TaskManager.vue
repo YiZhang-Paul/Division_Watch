@@ -37,7 +37,7 @@
             <actions-group v-if="activeTask.id"
                 class="actions-group"
                 :name="'Danger Zone'"
-                :actions="dangerZoneActions"
+                :actions="activeTask.parent ? childDangerZoneActions : parentDangerZoneActions"
                 :isWarning="true"
                 @action:selected="onActionSelected($event)">
             </actions-group>
@@ -74,7 +74,13 @@ import TaskEditor from './TaskEditor.vue';
 })
 export default class TaskManager extends Vue {
     public readonly emptyTaskActions = [new BasicAction('Create Task', TaskAction.Create)];
-    public readonly dangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
+    public readonly parentDangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
+
+    public readonly childDangerZoneActions = [
+        new BasicAction('Convert to Parent', TaskAction.ConvertToParent),
+        ...this.parentDangerZoneActions
+    ];
+
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -149,6 +155,16 @@ export default class TaskManager extends Vue {
             if (result) {
                 this.onTaskSelected(result);
             }
+        }
+        else if (action === TaskAction.ConvertToParent) {
+            const title = 'This task will be converted to a parent task.';
+            const option = new DialogOption(title, 'Convert', 'Cancel');
+
+            option.confirmCallback = () => {
+                store.dispatch(`${taskItemKey}/updateTaskItem`, { ...this.activeTask, parent: null });
+            };
+
+            store.dispatch(`${dialogKey}/openDialog`, option);
         }
         else if (action === TaskAction.Delete) {
             const title = 'This task will be permanently deleted.';

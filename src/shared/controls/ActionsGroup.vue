@@ -50,6 +50,8 @@ export default class ActionsGroup extends Vue.with(ActionsGroupProp) { }
     font-family: 'Jost';
 
     & > span {
+        align-self: baseline;
+        margin-top: 0.1rem;
         width: $name-width;
         font-size: 0.5rem;
 
@@ -69,6 +71,10 @@ export default class ActionsGroup extends Vue.with(ActionsGroupProp) { }
         .action {
             background-color: rgb(59, 163, 154);
             padding: 2px;
+
+            &:not(:nth-last-child(1)) {
+                margin-bottom: 1.5%;
+            }
         }
 
         .warning-button {
