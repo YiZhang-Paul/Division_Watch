@@ -1,7 +1,14 @@
 <template>
     <div v-if="item" class="checklist-card-container">
-        <radiobox-blank v-if="!item.isCompleted" class="incomplete-icon" />
-        <check v-if="item.isCompleted" class="complete-icon" />
+        <div class="status-toggle"
+            :class="{ 'glowing-toggle': isGlowing }"
+            @click="onCheckedChange()"
+            @mouseover="isGlowing = true"
+            @mouseout="isGlowing = false">
+
+            <radiobox-blank v-if="!item.isCompleted" class="incomplete-icon" />
+            <check v-if="item.isCompleted" class="complete-icon" />
+        </div>
 
         <span v-if="!isEditing" :class="{ completed: item.isCompleted }" @click="onEditStart()">
             {{ item.description }}
@@ -16,7 +23,6 @@
             @blur="isEditing = false" />
 
         <delete class="delete-button" @click="$emit('delete')" />
-        <checkbox class="checkbox" :isChecked="item.isCompleted" @change="onCheckedChange($event)"></checkbox>
     </div>
 </template>
 
@@ -25,7 +31,6 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { Check, Delete, RadioboxBlank } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
-import Checkbox from '../../shared/controls/Checkbox.vue';
 
 class ChecklistCardProp {
     public item = prop<ChecklistItem>({ default: null });
@@ -35,8 +40,7 @@ class ChecklistCardProp {
     components: {
         Check,
         Delete,
-        RadioboxBlank,
-        Checkbox
+        RadioboxBlank
     },
     emits: [
         'change',
@@ -45,6 +49,7 @@ class ChecklistCardProp {
 })
 export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     public description = this.item?.description ?? '';
+    public isGlowing = false;
     public isEditing = false;
 
     public onEditStart(): void {
@@ -57,23 +62,19 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         this.$emit('change', { ...this.item, description: this.description });
     }
 
-    public onCheckedChange(value: boolean): void {
-        this.$emit('change', { ...this.item, isCompleted: value });
+    public onCheckedChange(): void {
+        this.$emit('change', { ...this.item, isCompleted: !this.item.isCompleted });
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .checklist-card-container {
-    $padding-right: 4%;
-    $checkbox-dimension: 0.6rem;
-
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    position: relative;
-    padding-left: 2%;
-    padding-right: $padding-right;
+    padding-left: 2.75%;
+    padding-right: 4%;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.8);
     color: rgb(255, 255, 255);
@@ -88,25 +89,36 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         }
     }
 
-    .incomplete-icon, .complete-icon {
-        font-size: 0.75rem;
-        opacity: 0;
-        animation: revealContent 0.4s ease 0.1s forwards;
-    }
+    .status-toggle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-    .incomplete-icon {
-        color: rgb(250, 255, 14);
-    }
+        &.glowing-toggle .incomplete-icon, &.glowing-toggle .complete-icon {
+            animation: revealContent 0.4s ease 0.1s forwards,
+                       glowToggle 1s ease infinite;
+        }
 
-    .complete-icon {
-        color: rgb(29, 255, 51);
+        .incomplete-icon, .complete-icon {
+            font-size: 0.75rem;
+            opacity: 0;
+            animation: revealContent 0.4s ease 0.1s forwards;
+        }
+
+        .incomplete-icon {
+            color: rgb(250, 255, 14);
+        }
+
+        .complete-icon {
+            color: rgb(29, 255, 51);
+        }
     }
 
     & > span, & > input {
         padding: 3px;
         margin-left: 2.25%;
-        width: 67.5%;
-        max-width: 67.5%;
+        width: 72.5%;
+        max-width: 72.5%;
         font-size: 0.5rem;
         font-family: 'Jost';
         opacity: 0;
@@ -114,7 +126,11 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     }
 
     & > span {
-        transition: filter 0.3s;
+        transition: filter 0.3s, background-color 0.3s 0.05s;
+
+        &:hover {
+            background-color: rgba(58, 56, 61, 0.8);
+        }
 
         &.completed {
             filter: brightness(0.6);
@@ -130,8 +146,7 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
 
     .delete-button {
         display: none;
-        position: absolute;
-        right: calc(#{$padding-right} + #{$checkbox-dimension} + 2.5%);
+        margin-left: auto;
         font-size: 0.75rem;
         opacity: 0;
         transition: color 0.3s;
@@ -142,10 +157,16 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         }
     }
 
-    .checkbox {
-        margin-left: auto;
-        width: $checkbox-dimension;
-        height: $checkbox-dimension;
+    @keyframes glowToggle {
+        0% {
+            color: rgb(74, 236, 223);
+        }
+        50% {
+            color: rgb(200, 200, 200);
+        }
+        100% {
+            color: rgb(74, 236, 223);
+        }
     }
 }
 </style>

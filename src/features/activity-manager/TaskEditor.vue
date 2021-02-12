@@ -72,7 +72,7 @@
 
                 <checklist-card class="checklist-card"
                     v-for="(item, index) of task.checklist"
-                    :key="item.description"
+                    :key="index"
                     :item="item"
                     @change="onChecklistChange(index, $event)"
                     @delete="onChecklistDelete(index)">
