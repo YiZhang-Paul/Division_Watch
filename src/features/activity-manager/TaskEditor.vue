@@ -89,6 +89,7 @@ import store from '../../store';
 import { dialogKey } from '../../store/dialog/dialog.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
+// eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
@@ -144,9 +145,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     }
 
     get categories(): Category[] {
-        const categories: Category[] = store.getters[`${categoryKey}/categories`];
-
-        return [new Category('N/A'), ...categories];
+        return store.getters[`${categoryKey}/categories`];
     }
 
     get taskOptions(): TaskItemOptions {

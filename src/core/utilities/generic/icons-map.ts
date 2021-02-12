@@ -29,6 +29,7 @@ export const icons = new Map<string, any>([
     ['cat', Icons.Cat],
     ['chat', Icons.Chat],
     ['check-decagram', Icons.CheckDecagram],
+    ['circle', Icons.Circle],
     ['code-braces', Icons.CodeBraces],
     ['coffee', Icons.Coffee],
     ['emoticon', Icons.Emoticon],

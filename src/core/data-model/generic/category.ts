@@ -4,6 +4,7 @@ export class Category {
     public description = '';
     public icon = '';
     public color = 'rgb(33, 109, 224)';
+    public isEditable = true;
 
     constructor(name = '') {
         this.name = name;
