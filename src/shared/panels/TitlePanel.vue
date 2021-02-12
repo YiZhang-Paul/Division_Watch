@@ -31,8 +31,7 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
     font-size: 0.95rem;
 
     .grids {
-        display: flex;
-        flex-wrap: wrap;
+        position: relative;
         margin-right: 1vh;
         width: 5.25vh;
         height: 5.25vh;
@@ -42,28 +41,90 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
         .grid {
             $gap: 5%;
             $dimension: calc((100% - #{$gap} * 2) / 3);
+            $initial-halt-duration: 1s;
+            $intermediate-halt-duration: 0.15s;
+            $move-duration: 0.25s;
 
+            position: absolute;
+            top: calc(#{$dimension} + #{$gap});
+            left: calc(#{$dimension} + #{$gap});
             width: $dimension;
             height: $dimension;
             background-color: rgb(200, 200, 200);
 
-            &:nth-child(2),
-            &:nth-child(5),
-            &:nth-child(8) {
-                margin-left: $gap;
-                margin-right: $gap;
+            &:nth-child(1) {
+                animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                           moveGridTop $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards;
             }
 
-            &:nth-child(4),
-            &:nth-child(5),
+            &:nth-child(2) {
+                animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                           moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                           moveGridCenterLeft $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards;
+            }
+
+            &:nth-child(3) {
+                animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                           moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards;
+            }
+
+            &:nth-child(4) {
+                animation: moveGridLeft $move-duration ease $initial-halt-duration forwards;
+            }
+
             &:nth-child(6) {
-                margin-top: $gap;
-                margin-bottom: $gap;
+                animation: moveGridRight $move-duration ease $initial-halt-duration forwards;
+            }
+
+            &:nth-child(7) {
+                animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                           moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards;
+            }
+
+            &:nth-child(8) {
+                animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                           moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                           moveGridCenterRight $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards;
+            }
+
+            &:nth-child(9) {
+                animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                           moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards;
             }
 
             &.active-grid {
                 background-color: rgb(240, 123, 14);
                 animation: rotateColor 1.25s linear 0.2s infinite;
+            }
+
+            @keyframes moveGridTop {
+                from { top: calc(#{$dimension} + #{$gap}) }
+                to { top: 0 }
+            }
+
+            @keyframes moveGridBottom {
+                from { top: calc(#{$dimension} + #{$gap}) }
+                to { top: calc((#{$dimension} + #{$gap}) * 2) }
+            }
+
+            @keyframes moveGridCenterLeft {
+                from { left: calc((#{$dimension} + #{$gap}) * 2) }
+                to { left: calc(#{$dimension} + #{$gap}) }
+            }
+
+            @keyframes moveGridCenterRight {
+                from { left: 0 }
+                to { left: calc(#{$dimension} + #{$gap}) }
+            }
+
+            @keyframes moveGridLeft {
+                from { left: calc(#{$dimension} + #{$gap}) }
+                to { left: 0 }
+            }
+
+            @keyframes moveGridRight {
+                from { left: calc(#{$dimension} + #{$gap}) }
+                to { left: calc((#{$dimension} + #{$gap}) * 2) }
             }
         }
     }
