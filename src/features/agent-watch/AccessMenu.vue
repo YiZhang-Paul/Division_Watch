@@ -5,7 +5,7 @@
             :style="{ transform: 'rotate(' + (isOptionsVisible ? option.angle : 0) + 'deg)' }"
             :key="option.name">
 
-            <button class="glass-panel"
+            <button class="glass-panel-dark"
                 :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: isOptionsDisabled ? 'grey' : option.color }"
                 @mouseover="activeOption = option.name"
                 @mouseout="activeOption = ''"

@@ -1,5 +1,8 @@
 <template>
-    <div :id="id" class="view-panel-container" :class="{ 'expanded-panel': isExpanded }">
+    <div :id="id"
+        class="view-panel-container"
+        :class="{ 'unexpanded-panel': !isExpanded, 'glass-panel-light': isExpanded }">
+
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
@@ -55,16 +58,13 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
     justify-content: center;
     align-items: center;
     position: relative;
-    border: 1px solid transparent;
-    background-color: transparent;
-    box-shadow: 3px 3px 3px 0 transparent;
-    transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
     transition-delay: 0.15s;
 
-    &.expanded-panel {
-        border-color: rgba(170, 170, 170, 0.4);
-        background-color: rgba(160, 160, 160, 0.25);
-        box-shadow: 3px 3px 3px 0 rgba(120, 120, 120, 0.25);
+    &.unexpanded-panel {
+        border: 1px solid transparent;
+        background-color: transparent;
+        box-shadow: 3px 3px 3px 0 transparent;
     }
 
     .header, .content, .footer {
