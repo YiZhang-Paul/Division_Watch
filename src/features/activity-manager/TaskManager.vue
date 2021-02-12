@@ -24,7 +24,8 @@
                 :childTasks="activeChildTasks"
                 @task:change="onTaskChange($event)"
                 @child:add="addChildTask($event)"
-                @child:open="onTaskSelected($event)">
+                @child:open="onTaskSelected($event)"
+                @child:delete="onTaskDelete($event)">
             </task-editor>
 
             <actions-group v-if="!activeTask.id"
@@ -167,15 +168,19 @@ export default class TaskManager extends Vue {
             store.dispatch(`${dialogKey}/openDialog`, option);
         }
         else if (action === TaskAction.Delete) {
-            const title = 'This task will be permanently deleted.';
-            const option = new DialogOption(title, 'Delete', 'Cancel', true);
-
-            option.confirmCallback = () => {
-                store.dispatch(`${taskItemKey}/deleteTaskItem`, { item: this.activeTask });
-            };
-
-            store.dispatch(`${dialogKey}/openDialog`, option);
+            this.onTaskDelete(this.activeTask!);
         }
+    }
+
+    public onTaskDelete(task: TaskItem): void {
+        const title = 'This task will be permanently deleted.';
+        const option = new DialogOption(title, 'Delete', 'Cancel', true);
+
+        option.confirmCallback = () => {
+            store.dispatch(`${taskItemKey}/deleteTaskItem`, { item: task });
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
     }
 }
 </script>

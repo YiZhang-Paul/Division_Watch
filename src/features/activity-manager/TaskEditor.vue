@@ -61,7 +61,8 @@
                     v-for="task of childTasks"
                     :key="task.id"
                     :task="task"
-                    @click="$emit('child:open', task)">
+                    @click="$emit('child:open', task)"
+                    @delete="$emit('child:delete', task)">
                 </subtask-summary-card>
             </item-group-panel>
 
@@ -123,7 +124,8 @@ class TaskEditorProp {
     emits: [
         'task:change',
         'child:add',
-        'child:open'
+        'child:open',
+        'child:delete'
     ]
 })
 export default class TaskEditor extends Vue.with(TaskEditorProp) {

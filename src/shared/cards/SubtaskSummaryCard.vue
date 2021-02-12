@@ -6,12 +6,18 @@
 
         <priority-indicator class="priority-indicator" :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
         <span>{{ task.name }}</span>
-        <estimation-skulls class="estimation-skulls" :estimation="task.estimate"></estimation-skulls>
+        <delete class="delete-button" @click.stop="$emit('delete')" />
+
+        <estimation-skulls v-if="!isMouseover"
+            class="estimation-skulls"
+            :estimation="task.estimate">
+        </estimation-skulls>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { Delete } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import PriorityIndicator from '../../shared/widgets/PriorityIndicator.vue';
@@ -23,9 +29,11 @@ class SubtaskSummaryCardProp {
 
 @Options({
     components: {
+        Delete,
         PriorityIndicator,
         EstimationSkulls
-    }
+    },
+    emits: ['delete']
 })
 export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp) {
     public isMouseover = false;
@@ -37,6 +45,7 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
     box-sizing: border-box;
     display: flex;
     align-items: center;
+    position: relative;
     padding-left: 2%;
     padding-right: 4%;
     max-height: 7.5vh;
@@ -46,6 +55,10 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
     &:hover {
         cursor: pointer;
         background-color: rgb(72, 66, 110);
+
+        .delete-button {
+            display: initial;
+        }
     }
 
     .priority-indicator {
@@ -54,6 +67,23 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
 
     & > span {
         margin-left: 1%;
+    }
+
+    .delete-button, .estimation-skulls {
+        opacity: 0;
+        animation: revealContent 0.35s ease 0.1s forwards;
+    }
+
+    .delete-button {
+        display: none;
+        position: absolute;
+        right: 4%;
+        font-size: 0.75rem;
+        transition: color 0.3s;
+
+        &:hover {
+            color: rgb(243, 58, 45);
+        }
     }
 
     .estimation-skulls {
