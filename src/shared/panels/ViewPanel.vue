@@ -1,8 +1,5 @@
 <template>
-    <div :id="id"
-        class="view-panel-container"
-        :class="{ 'unexpanded-panel': !isExpanded, 'glass-panel-light': isExpanded }">
-
+    <div :id="id" :class="containerClasses" class="view-panel-container">
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
@@ -38,6 +35,10 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 
     get isExpanded(): boolean {
         return this.stage >= 11;
+    }
+
+    get containerClasses(): { [key: string]: boolean } {
+        return { 'glass-panel-light': this.isExpanded, 'unexpanded-panel': !this.isExpanded };
     }
 
     public mounted(): void {
