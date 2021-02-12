@@ -1,11 +1,11 @@
 <template>
     <div class="item-list-panel-container">
         <div class="actions">
-            <search-box class="search-box" @search="$emit('item:search', $event)"></search-box>
-
             <div class="button-wrapper">
                 <plus class="add-item-button" @click="$emit('item:add')" />
             </div>
+
+            <search-box class="search-box" @search="$emit('item:search', $event)"></search-box>
         </div>
 
         <overlay-scrollbar-panel class="scroll-panel" @scroll="scroll = $event">
@@ -60,16 +60,11 @@ $padding-right: 10px;
         width: $content-width;
         height: $actions-height;
 
-        .search-box {
-            flex-grow: 1;
-            height: 50%;
-        }
-
         .button-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-left: 3%;
+            margin-right: 3%;
             width: 0.8rem;
             height: 0.8rem;
             border-radius: 50%;
@@ -88,6 +83,11 @@ $padding-right: 10px;
                 filter: brightness(0.85);
                 transition: filter 0.3s;
             }
+        }
+
+        .search-box {
+            flex-grow: 1;
+            height: 50%;
         }
     }
 
