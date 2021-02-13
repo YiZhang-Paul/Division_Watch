@@ -221,7 +221,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
 
     public onTaskDelete(task: TaskItem): void {
         const title = 'This task will be permanently deleted.';
-        const checkboxText = 'keep child tasks';
+        const checkboxText = task.parent || task.isInterruption ? '' : 'keep child tasks';
         const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, true);
 
         option.confirmCallback = (keepChildren: boolean) => {
