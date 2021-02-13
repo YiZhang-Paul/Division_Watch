@@ -41,7 +41,7 @@
                 @options:select="onTaskChange('estimate', $event)">
             </option-dropdown>
 
-            <day-selector v-if="!task.parent"
+            <day-selector v-if="!task.isInterruption && !task.parent"
                 class="editor-control"
                 :name="'Recur'"
                 :days="task.recur.slice()"
@@ -53,7 +53,7 @@
         <div class="subsections">
             <item-group-panel class="child-tasks"
                 :name="'Subtasks (' + childTasks.length + ')'"
-                :isDisabled="!task.id || task.parent"
+                :isDisabled="task.isInterruption || !task.id || task.parent"
                 :placeholder="subtaskPlaceholder"
                 @item:add="onChildTaskAdded($event)">
 
@@ -160,6 +160,10 @@ class TaskEditorProp {
 export default class TaskEditor extends Vue.with(TaskEditorProp) {
 
     get subtaskPlaceholder(): string {
+        if (this.task.isInterruption) {
+            return 'unavailable for interruptions.';
+        }
+
         if (this.task.parent) {
             return 'unavailable for child task.';
         }
