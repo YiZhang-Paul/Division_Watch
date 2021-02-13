@@ -221,7 +221,7 @@ export default class TaskManager extends Vue {
             align-self: flex-start;
             margin-left: calc((100% - #{$content-width}) / 2);
             margin-bottom: 1%;
-            color: rgb(241, 165, 78);
+            color: rgb(235, 235, 235);
             font-size: 0.625rem;
             opacity: 0;
             transition: color 0.3s;
@@ -229,7 +229,7 @@ export default class TaskManager extends Vue {
 
             &:hover {
                 cursor: pointer;
-                color: rgb(74, 236, 223);
+                color: rgb(241, 165, 78);
             }
 
             .back-button {

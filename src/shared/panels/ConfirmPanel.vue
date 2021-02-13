@@ -168,21 +168,22 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
                 height: 85%;
 
                 &:nth-child(1) {
-                    background-color: rgba(185, 185, 185, 0.2);
+                    background-color: rgba(215, 215, 215, 0.05);
 
                     &:hover {
-                        background-color: rgb(225, 225, 225, 0.2);
+                        background-color: rgb(215, 215, 215, 0.3);
                     }
                 }
 
                 &:nth-child(2) {
+                    background-color: rgba(71, 179, 170, 0.65);
 
                     &:hover {
-                        background-color: rgb(240, 123, 14);
+                        background-color: rgb(50, 158, 149);
                     }
 
                     &.warning {
-                        background-color: rgba(241, 58, 25, 0.8);
+                        background-color: rgba(241, 58, 25, 0.65);
                     }
 
                     &.warning:hover {

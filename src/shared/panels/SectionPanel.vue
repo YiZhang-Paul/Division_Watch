@@ -126,11 +126,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
         &.editable:hover {
             cursor: pointer;
-            color: rgb(74, 236, 223);
-
-            .edit-icon {
-                color: rgb(74, 236, 223);
-            }
+            color: rgb(241, 165, 78);
         }
     }
 
