@@ -7,6 +7,7 @@
                 v-for="category of categories"
                 :key="category.id"
                 :category="category"
+                :totalItems="categoryBreakdown.get(category.id)"
                 :isActive="category.id === activeCategory?.id"
                 @click="onCategorySelected(category)">
             </category-summary-card>
@@ -28,8 +29,11 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
+import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
+// eslint-disable-next-line no-unused-vars
+import { TaskItem } from '../../core/data-model/task-item/task-item';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
@@ -50,6 +54,18 @@ export default class CategoryManager extends Vue {
 
     get activeCategory(): Category | null {
         return store.getters[`${categoryKey}/activeCategory`];
+    }
+
+    get categoryBreakdown(): Map<string, number> {
+        const breakdown = new Map<string, number>();
+        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
+
+        for (const item of items) {
+            const id = item.categoryId ?? '';
+            breakdown.set(id, (breakdown.get(id) ?? 0) + 1);
+        }
+
+        return breakdown;
     }
 
     public onCategorySelected(category: Category | null): void {
