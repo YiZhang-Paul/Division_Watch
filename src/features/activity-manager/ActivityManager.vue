@@ -9,6 +9,7 @@
 
         <div class="main-content">
             <task-manager v-if="activeTab === 0" class="task-manager"></task-manager>
+            <task-manager v-if="activeTab === 1" class="task-manager" :isInterruption="true"></task-manager>
         </div>
 
         <template v-slot:footer>

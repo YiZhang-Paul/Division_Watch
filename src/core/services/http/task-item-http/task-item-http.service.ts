@@ -20,9 +20,9 @@ export class TaskItemHttpService {
         }
     }
 
-    public async getEmptyTaskItem(): Promise<TaskItem | null> {
+    public async getEmptyTaskItem(isInterruption = false): Promise<TaskItem | null> {
         try {
-            const endpoint = `${this._api}/empty`;
+            const endpoint = `${this._api}/empty?isInterruption=${isInterruption}`;
 
             return (await axios.get(endpoint)).data;
         }

@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 import { ArrowLeftCircle } from 'mdue';
 
 import store from '../../store';
@@ -74,6 +74,10 @@ import { TaskAction } from '../../core/enums/task-action.enum';
 
 import TaskEditor from './TaskEditor.vue';
 
+class TaskManagerProp {
+    public isInterruption = prop<boolean>({ default: false });
+}
+
 @Options({
     components: {
         ArrowLeftCircle,
@@ -84,7 +88,7 @@ import TaskEditor from './TaskEditor.vue';
         TaskEditor
     }
 })
-export default class TaskManager extends Vue {
+export default class TaskManager extends Vue.with(TaskManagerProp) {
     public readonly emptyTaskActions = [new BasicAction('Create Task', TaskAction.Create)];
     public readonly parentDangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
 
@@ -97,21 +101,28 @@ export default class TaskManager extends Vue {
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get tasks(): TaskItem[] {
-        const tasks: TaskItem[] = store.getters[`${taskItemKey}/incompleteParentTasks`];
+        const getter = this.isInterruption ? 'incompleteInterruptions' : 'incompleteParentTasks';
+        const tasks: TaskItem[] = store.getters[`${taskItemKey}/${getter}`];
 
         return tasks.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
     get activeTask(): TaskItem | null {
-        return store.getters[`${taskItemKey}/activeItem`];
+        const getter = this.isInterruption ? 'activeInterruption' : 'activeItem';
+
+        return store.getters[`${taskItemKey}/${getter}`];
     }
 
     get activeParentTask(): TaskItem | null {
+        if (this.isInterruption) {
+            return null;
+        }
+
         return store.getters[`${taskItemKey}/incompleteItem`](this.activeTask?.parent ?? '');
     }
 
     get activeChildTasks(): TaskItem[] {
-        if (!this.activeTask) {
+        if (this.isInterruption || !this.activeTask) {
             return [];
         }
 
@@ -125,19 +136,21 @@ export default class TaskManager extends Vue {
     }
 
     public async openEmptyTask(): Promise<void> {
-        const task = await store.dispatch(`${taskItemKey}/getEmptyTaskItem`);
+        const task = await store.dispatch(`${taskItemKey}/getEmptyTaskItem`, this.isInterruption);
 
         if (task) {
-            store.dispatch(`${taskItemKey}/swapActiveItem`, task);
+            this.onTaskSelected(task);
         }
     }
 
     public onTaskSelected(task: TaskItem | null): void {
-        store.dispatch(`${taskItemKey}/swapActiveItem`, task);
+        const action = this.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+        store.dispatch(`${taskItemKey}/${action}`, task);
     }
 
     public onTaskChange(task: TaskItem): void {
-        store.commit(`${taskItemKey}/setActiveItem`, task);
+        const mutation = this.isInterruption ? 'setActiveInterruption' : 'setActiveItem';
+        store.commit(`${taskItemKey}/${mutation}`, task);
 
         if (!task.id) {
             return;

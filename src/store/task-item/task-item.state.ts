@@ -13,6 +13,7 @@ export interface ITaskItemState {
     taskItemOptions: TaskItemOptions;
     incompleteItems: TaskItem[];
     activeItem: TaskItem | null;
+    activeInterruption: TaskItem | null;
 }
 
 function sortByPriority(tasks: TaskItem[]): TaskItem[] {
@@ -22,7 +23,8 @@ function sortByPriority(tasks: TaskItem[]): TaskItem[] {
 const state = (): ITaskItemState => ({
     taskItemOptions: new TaskItemOptions(),
     incompleteItems: [],
-    activeItem: null
+    activeItem: null,
+    activeInterruption: null
 });
 
 const getters = {
@@ -45,7 +47,8 @@ const getters = {
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
-    activeItem: (state: ITaskItemState): TaskItem | null => state.activeItem
+    activeItem: (state: ITaskItemState): TaskItem | null => state.activeItem,
+    activeInterruption: (state: ITaskItemState): TaskItem | null => state.activeInterruption
 };
 
 const mutations = {
@@ -69,6 +72,9 @@ const mutations = {
     setActiveItem(state: ITaskItemState, item: TaskItem | null): void {
         state.activeItem = item;
     },
+    setActiveInterruption(state: ITaskItemState, item: TaskItem | null): void {
+        state.activeInterruption = item;
+    },
     setTaskItemOptions(state: ITaskItemState, options: TaskItemOptions): void {
         state.taskItemOptions = options;
     }
@@ -88,8 +94,8 @@ const actions = {
             commit('setActiveItem', getters.incompleteParentTasks[0]);
         }
     },
-    async getEmptyTaskItem(): Promise<TaskItem | null> {
-        return await taskItemHttpService.getEmptyTaskItem();
+    async getEmptyTaskItem(_: ActionContext<ITaskItemState, any>, isInterruption: boolean): Promise<TaskItem | null> {
+        return await taskItemHttpService.getEmptyTaskItem(isInterruption);
     },
     async addParentTaskItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
         const added = await taskItemHttpService.addTaskItem(item);
@@ -164,6 +170,10 @@ const actions = {
     swapActiveItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): void {
         context.commit('setActiveItem', null);
         setTimeout(() => context.commit('setActiveItem', item));
+    },
+    swapActiveInterruption(context: ActionContext<ITaskItemState, any>, item: TaskItem): void {
+        context.commit('setActiveInterruption', null);
+        setTimeout(() => context.commit('setActiveInterruption', item));
     }
 };
 
