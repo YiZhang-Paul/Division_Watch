@@ -18,11 +18,8 @@
             </placeholder-panel>
         </item-list-panel>
 
-        <div class="placeholder-wrapper">
-            <placeholder-panel v-if="!activeTask"
-                class="placeholder-panel"
-                :text="'no entry selected.'">
-            </placeholder-panel>
+        <div v-if="!activeTask" class="placeholder-wrapper">
+            <placeholder-panel class="placeholder-panel" :text="'no entry selected.'"></placeholder-panel>
         </div>
 
         <div v-if="activeTask" class="content">
@@ -221,8 +218,8 @@ export default class TaskManager extends Vue {
         }
 
         .placeholder-panel {
-            margin-left: 10%;
-            width: 80%;
+            margin-left: 2.5%;
+            width: 95%;
         }
     }
 

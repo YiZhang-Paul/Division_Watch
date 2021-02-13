@@ -17,10 +17,8 @@ export default class DisplayPanel extends Vue { }
 
     .corner-grid {
         position: absolute;
-        width: 0.25vh;
-        height: 0.25vh;
-        max-width: 3px;
-        max-height: 3px;
+        width: 2px;
+        height: 2px;
         background-color: rgb(200, 200, 200);
 
         &:nth-child(1) {
