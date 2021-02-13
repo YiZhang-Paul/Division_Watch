@@ -64,6 +64,11 @@
                     @click="$emit('child:open', task)"
                     @delete="$emit('child:delete', task)">
                 </subtask-summary-card>
+
+                <placeholder-panel v-if="!childTasks.length"
+                    class="placeholder-panel"
+                    :text="'no entry created yet.'">
+                </placeholder-panel>
             </item-group-panel>
 
             <item-group-panel class="checklist-items"
@@ -91,6 +96,11 @@
                         </div>
                     </template>
                 </draggable>
+
+                <placeholder-panel v-if="!task.checklist.length"
+                    class="placeholder-panel"
+                    :text="'no entry created yet.'">
+                </placeholder-panel>
             </item-group-panel>
         </div>
     </div>
@@ -114,6 +124,7 @@ import { TaskItemOptions } from '../../core/data-model/task-item/task-item-optio
 import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
+import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
@@ -132,6 +143,7 @@ class TaskEditorProp {
         DragVertical,
         Draggable,
         ItemGroupPanel,
+        PlaceholderPanel,
         SectionPanel,
         OptionDropdown,
         DaySelector,
@@ -248,11 +260,20 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     }
 
     .subsections {
+        $margin-left: 0.5rem;
+
         display: flex;
         justify-content: space-between;
         margin-top: 1.75%;
         width: 100%;
         height: 45%;
+
+        .placeholder-panel {
+            box-sizing: border-box;
+            margin-left: $margin-left;
+            width: calc(95% - #{$margin-left});
+            height: 100%;
+        }
 
         .child-tasks, .checklist-items {
             width: 48.75%;
@@ -264,7 +285,6 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         }
 
         .subtask-summary-card, .sortable-card {
-            $margin-left: 0.5rem;
             margin-left: $margin-left;
             width: calc(100% - #{$margin-left});
             height: 4.5vh;

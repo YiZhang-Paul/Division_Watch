@@ -13,9 +13,17 @@
             </task-summary-card>
 
             <placeholder-panel v-if="!tasks.length"
-                :text="searchText ? 'no matching task found.' : 'no task created yet.'">
+                class="placeholder-panel"
+                :text="searchText ? 'no matching entry found.' : 'no entry created yet.'">
             </placeholder-panel>
         </item-list-panel>
+
+        <div class="placeholder-wrapper">
+            <placeholder-panel v-if="!activeTask"
+                class="placeholder-panel"
+                :text="'no entry selected.'">
+            </placeholder-panel>
+        </div>
 
         <div v-if="activeTask" class="content">
             <div v-if="activeTask.parent" class="parent-link" @click="onTaskSelected(activeParentTask)">
@@ -195,6 +203,7 @@ export default class TaskManager extends Vue {
 <style lang="scss" scoped>
 .task-manager-container {
     $list-width: 29%;
+    $content-width: 92.5%;
 
     .item-list-panel {
         width: $list-width;
@@ -210,11 +219,26 @@ export default class TaskManager extends Vue {
                 margin-bottom: 0.9vh;
             }
         }
+
+        .placeholder-panel {
+            margin-left: 10%;
+            width: 80%;
+        }
+    }
+
+    .placeholder-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(100% - #{$list-width});
+        height: 100%;
+
+        .placeholder-panel {
+            width: 35%;
+        }
     }
 
     .content {
-        $content-width: 92.5%;
-
         display: flex;
         flex-direction: column;
         align-items: center;

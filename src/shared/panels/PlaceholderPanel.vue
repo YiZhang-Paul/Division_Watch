@@ -35,8 +35,8 @@ export default class PlaceholderPanel extends Vue.with(PlaceholderPanelProp) {
     align-items: center;
     position: relative;
     padding: 1.25rem 0;
-    border: 1px solid rgba(235, 235, 235, 0.15);
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(186, 186, 186, 0.1) 100%);
+    border: 1px solid rgba(235, 235, 235, 0.075);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(186, 186, 186, 0.05) 100%);
     color: rgb(235, 235, 235);
     opacity: 0;
     animation: revealContent 0.3s ease 0.2s forwards;
@@ -45,7 +45,7 @@ export default class PlaceholderPanel extends Vue.with(PlaceholderPanelProp) {
         position: absolute;
         height: 50%;
         fill: none;
-        stroke: rgba(195, 195, 195, 0.15);
+        stroke: rgba(195, 195, 195, 0.07);
 
         &:nth-child(1) {
             top: 0;
