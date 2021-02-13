@@ -137,7 +137,7 @@ const actions = {
         }
 
         context.commit('setIncompleteItem', result.target);
-        context.commit('setActiveItem', result.target);
+        context.commit(result.target.isInterruption ? 'setActiveInterruption' : 'setActiveItem', result.target);
 
         if (result.parent) {
             context.commit('setIncompleteItem', result.parent);
