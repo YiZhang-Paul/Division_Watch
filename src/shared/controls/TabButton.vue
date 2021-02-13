@@ -9,7 +9,7 @@
                     <slot></slot>
                 </div>
 
-                <div v-if="badgeValue" class="badge">
+                <div class="badge">
                     <span>{{ badgeValue }}</span>
                 </div>
             </div>

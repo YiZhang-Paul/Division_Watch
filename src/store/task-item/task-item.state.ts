@@ -160,6 +160,10 @@ const actions = {
             commit('setActiveItem', null);
         }
 
+        if (item.id === getters.activeInterruption?.id) {
+            commit('setActiveInterruption', null);
+        }
+
         if (result.parent) {
             commit('setIncompleteItem', result.parent);
             dispatch('swapActiveItem', result.parent);
@@ -176,7 +180,7 @@ const actions = {
         return result;
     },
     async convertInterruption(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
-        const { commit, getters, dispatch } = context;
+        const { commit, getters } = context;
         const result = await taskItemHttpService.convertToTask(item);
 
         if (!result) {
@@ -186,7 +190,7 @@ const actions = {
         commit('setIncompleteItem', result);
 
         if (getters.activeInterruption?.id === result.id) {
-            dispatch('swapActiveInterruption', getters.incompleteInterruptions[0] ?? null);
+            commit('setActiveInterruption', null);
         }
 
         return result;
