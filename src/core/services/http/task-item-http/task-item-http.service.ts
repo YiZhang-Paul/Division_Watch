@@ -51,6 +51,15 @@ export class TaskItemHttpService {
         }
     }
 
+    public async convertToTask(item: TaskItem): Promise<TaskItem | null> {
+        try {
+            return (await axios.put(`${this._api}/convert`, item)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
     public async updateTaskItem(item: TaskItem): Promise<UpdateTaskResult | null> {
         try {
             return (await axios.put(this._api, item)).data;

@@ -47,7 +47,7 @@
             <actions-group v-if="activeTask.id"
                 class="actions-group"
                 :name="'Danger Zone'"
-                :actions="activeTask.parent ? childDangerZoneActions : parentDangerZoneActions"
+                :actions="dangerZoneActions"
                 :isWarning="true"
                 @action:selected="onActionSelected($event)">
             </actions-group>
@@ -92,6 +92,11 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
     public readonly emptyTaskActions = [new BasicAction('Create Task', TaskAction.Create)];
     public readonly parentDangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
 
+    public readonly interruptionDangerZoneActions = [
+        new BasicAction('Convert to Task', TaskAction.ConvertToTask),
+        ...this.parentDangerZoneActions
+    ];
+
     public readonly childDangerZoneActions = [
         new BasicAction('Convert to Parent', TaskAction.ConvertToParent),
         ...this.parentDangerZoneActions
@@ -127,6 +132,14 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         }
 
         return store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.activeTask.id);
+    }
+
+    get dangerZoneActions(): BasicAction<TaskAction>[] {
+        if (this.activeTask?.isInterruption) {
+            return this.interruptionDangerZoneActions;
+        }
+
+        return this.activeTask?.parent ? this.childDangerZoneActions : this.parentDangerZoneActions;
     }
 
     public beforeUnmount(): void {
@@ -180,6 +193,16 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
             if (result) {
                 this.onTaskSelected(result);
             }
+        }
+        else if (action === TaskAction.ConvertToTask) {
+            const title = 'This interruption will be converted to a task.';
+            const option = new DialogOption(title, 'Convert', 'Cancel');
+
+            option.confirmCallback = () => {
+                store.dispatch(`${taskItemKey}/convertInterruption`, this.activeTask);
+            };
+
+            store.dispatch(`${dialogKey}/openDialog`, option);
         }
         else if (action === TaskAction.ConvertToParent) {
             const title = 'This task will be converted to a parent task.';

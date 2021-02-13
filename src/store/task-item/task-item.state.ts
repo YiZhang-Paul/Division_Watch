@@ -175,6 +175,22 @@ const actions = {
 
         return result;
     },
+    async convertInterruption(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
+        const { commit, getters, dispatch } = context;
+        const result = await taskItemHttpService.convertToTask(item);
+
+        if (!result) {
+            return null;
+        }
+
+        commit('setIncompleteItem', result);
+
+        if (getters.activeInterruption?.id === result.id) {
+            dispatch('swapActiveInterruption', getters.incompleteInterruptions[0] ?? null);
+        }
+
+        return result;
+    },
     swapActiveItem(context: ActionContext<ITaskItemState, any>, item: TaskItem): void {
         context.commit('setActiveItem', null);
         setTimeout(() => context.commit('setActiveItem', item));
