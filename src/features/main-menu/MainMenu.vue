@@ -84,7 +84,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     private closingStage = 0;
 
     public created(): void {
-        store.dispatch(`${categoryKey}/loadCategories`);
+        store.dispatch(`${categoryKey}/loadCategories`, true);
         store.dispatch(`${taskItemKey}/loadTaskItemOptions`);
         store.dispatch(`${taskItemKey}/loadIncompleteItems`, true);
     }

@@ -34,8 +34,13 @@ const mutations = {
 };
 
 const actions = {
-    async loadCategories(context: ActionContext<ICategoryState, any>): Promise<void> {
-        context.commit('setCategories', await categoryHttpService.getCategories());
+    async loadCategories(context: ActionContext<ICategoryState, any>, autoOpen = false): Promise<void> {
+        const { commit, getters } = context;
+        commit('setCategories', await categoryHttpService.getCategories());
+
+        if (autoOpen && !getters.activeCategory && getters.editableCategories[0]) {
+            commit('setActiveCategory', getters.editableCategories[0]);
+        }
     },
     swapActiveCategory(context: ActionContext<ICategoryState, any>, category: Category | null): void {
         context.commit('setActiveCategory', null);
