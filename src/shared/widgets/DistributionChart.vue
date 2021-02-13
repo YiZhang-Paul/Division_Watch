@@ -1,11 +1,11 @@
 <template>
     <div class="distribution-chart-container" :title="tooltip">
-        <div class="embed-content" :style="{ opacity: totalRendered === groups.length ? 1 : 0 }">
+        <div class="embed-content" :style="{ opacity: totalRendered === visibleGroups.length ? 1 : 0 }">
             <slot></slot>
         </div>
 
         <percentage-chart class="percentage-chart"
-            v-for="(group, index) of groups"
+            v-for="(group, index) of visibleGroups"
             :key="index"
             :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
             :useSimpleView="!group.highlight"
@@ -39,6 +39,10 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     public tooltip = '';
     public totalRendered = 0;
 
+    get visibleGroups(): DistributionGroup[] {
+        return this.groups.filter(_ => _.total);
+    }
+
     public getRotation(index: number): number {
         const indexes = new Array(index).fill(0);
         const percentages = indexes.map((_, i) => this.getPercentage(i));
@@ -47,9 +51,9 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     }
 
     public getPercentage(index: number): number {
-        const grandTotal = this.groups.reduce((total, _) => total + _.total, 0);
+        const grandTotal = this.visibleGroups.reduce((total, _) => total + _.total, 0);
 
-        return Math.floor(this.groups[index].total / grandTotal * 100 * 10) / 10;
+        return Math.floor(this.visibleGroups[index].total / grandTotal * 100 * 10) / 10;
     }
 }
 </script>
