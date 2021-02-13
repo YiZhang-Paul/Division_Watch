@@ -11,6 +11,10 @@
                 :isActive="task.id === activeTask?.id"
                 @click="onTaskSelected(task)">
             </task-summary-card>
+
+            <placeholder-panel v-if="!tasks.length"
+                :text="searchText ? 'no matching task found.' : 'no task created yet.'">
+            </placeholder-panel>
         </item-list-panel>
 
         <div v-if="activeTask" class="content">
@@ -58,6 +62,7 @@ import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { BasicAction } from '../../core/data-model/generic/basic-action';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
+import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import { TaskAction } from '../../core/enums/task-action.enum';
@@ -68,6 +73,7 @@ import TaskEditor from './TaskEditor.vue';
     components: {
         ArrowLeftCircle,
         ItemListPanel,
+        PlaceholderPanel,
         ActionsGroup,
         TaskSummaryCard,
         TaskEditor
