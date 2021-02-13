@@ -1,29 +1,31 @@
 <template>
     <section-panel class="item-group-panel-container" :name="name" :isSubsection="true">
-        <div class="content">
-            <overlay-scrollbar-panel class="items" @scroll="scroll = $event">
-                <div class="items-wrapper">
-                    <slot></slot>
+        <div class="content-wrapper">
+            <div class="content">
+                <overlay-scrollbar-panel class="items" @scroll="scroll = $event">
+                    <div class="items-wrapper">
+                        <slot></slot>
+                    </div>
+                </overlay-scrollbar-panel>
+
+                <div class="add-item-panel" :class="{ 'disabled-panel': isDisabled }">
+                    <div class="panel-guard"></div>
+
+                    <display-panel class="add-item">
+                        <input type="text"
+                            v-model="itemName"
+                            :placeholder="placeholder"
+                            :disabled="isDisabled"
+                            @keyup.enter="onItemAdd"
+                            @keyup.esc="itemName = ''" />
+
+                        <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
+                    </display-panel>
                 </div>
-            </overlay-scrollbar-panel>
 
-            <div class="add-item-panel" :class="{ 'disabled-panel': isDisabled }">
-                <div class="panel-guard"></div>
-
-                <display-panel class="add-item">
-                    <input type="text"
-                        v-model="itemName"
-                        :placeholder="placeholder"
-                        :disabled="isDisabled"
-                        @keyup.enter="onItemAdd"
-                        @keyup.esc="itemName = ''" />
-
-                    <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
-                </display-panel>
+                <div v-if="scroll && !scroll.isTop" class="top-scroll-indicator"></div>
+                <div v-if="scroll && !scroll.isBottom" class="bottom-scroll-indicator"></div>
             </div>
-
-            <div v-if="scroll && !scroll.isTop" class="top-scroll-indicator"></div>
-            <div v-if="scroll && !scroll.isBottom" class="bottom-scroll-indicator"></div>
         </div>
     </section-panel>
 </template>
@@ -70,15 +72,28 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
     $add-item-panel-height: 4.6vh;
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
 
-    .content {
+    .content-wrapper {
         position: relative;
         width: 100%;
         height: 100%;
+    }
+
+    .content {
+        $margin-left: 0.5rem;
+
+        position: absolute;
+        left: -$margin-left;
+        width: calc(100% + #{$margin-left});
+        height: 100%;
+
+        .add-item-panel, .top-scroll-indicator, .bottom-scroll-indicator {
+            margin-left: $margin-left;
+            width: calc(100% - #{$margin-left});
+        }
 
         .top-scroll-indicator, .bottom-scroll-indicator {
             position: absolute;
             left: 0;
-            width: 100%;
             height: 5%;
             pointer-events: none;
             opacity: 0;
@@ -109,7 +124,6 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
     }
 
     .add-item-panel {
-        width: 100%;
         height: $add-item-panel-height;
 
         .panel-guard {

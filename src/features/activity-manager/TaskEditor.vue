@@ -73,17 +73,22 @@
 
                 <draggable class="drag-wrapper"
                     v-model="task.checklist"
+                    handle=".list-handle"
                     @start="drag = true"
                     @end="drag = false"
                     @change="onTaskChange('checklist', task.checklist)"
                     item-key="description">
 
                     <template #item="{ element, index }">
-                        <checklist-card class="checklist-card"
-                            :item="element"
-                            @change="onChecklistChange(index, $event)"
-                            @delete="onChecklistDelete(index)">
-                        </checklist-card>
+                        <div class="sortable-card">
+                            <drag-vertical class="list-handle" />
+
+                            <checklist-card class="checklist-card"
+                                :item="element"
+                                @change="onChecklistChange(index, $event)"
+                                @delete="onChecklistDelete(index)">
+                            </checklist-card>
+                        </div>
                     </template>
                 </draggable>
             </item-group-panel>
@@ -93,6 +98,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
 import store from '../../store';
@@ -123,6 +129,7 @@ class TaskEditorProp {
 
 @Options({
     components: {
+        DragVertical,
         Draggable,
         ItemGroupPanel,
         SectionPanel,
@@ -256,14 +263,47 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
             width: 100%;
         }
 
-        .subtask-summary-card, .checklist-card {
-            width: 100%;
+        .subtask-summary-card, .sortable-card {
+            $margin-left: 0.5rem;
+            margin-left: $margin-left;
+            width: calc(100% - #{$margin-left});
             height: 4.5vh;
             opacity: 0;
             animation: revealContent 0.3s ease 0.1s forwards;
 
             &:not(:nth-last-child(1)) {
                 margin-bottom: 1%;
+            }
+        }
+
+        .sortable-card {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            &:hover .list-handle {
+                opacity: 1;
+            }
+
+            .list-handle {
+                position: absolute;
+                left: -0.7rem;
+                font-size: 0.9rem;
+                opacity: 0;
+                transition: all 0.3s;
+
+                &:hover {
+                    cursor: grab;
+                }
+
+                &:active {
+                    cursor: grabbing;
+                }
+            }
+
+            .checklist-card {
+                width: 100%;
+                height: 100%;
             }
         }
     }
