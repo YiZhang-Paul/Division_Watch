@@ -69,6 +69,17 @@ export default class CategoryManager extends Vue {
         width: $list-width;
         height: 97.5%;
 
+        .summary-card {
+            width: 100%;
+            height: 8.5vh;
+            opacity: 0;
+            animation: revealContent 0.3s ease 0.1s forwards;
+
+            &:not(:nth-last-child(1)) {
+                margin-bottom: 0.9vh;
+            }
+        }
+
         .placeholder-panel {
             margin-left: 2.5%;
             width: 95%;
