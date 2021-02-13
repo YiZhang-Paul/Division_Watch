@@ -71,13 +71,20 @@
                 :placeholder="'add checklist here...'"
                 @item:add="onChecklistAdded($event)">
 
-                <checklist-card class="checklist-card"
-                    v-for="(item, index) of task.checklist"
-                    :key="index"
-                    :item="item"
-                    @change="onChecklistChange(index, $event)"
-                    @delete="onChecklistDelete(index)">
-                </checklist-card>
+                <draggable class="drag-wrapper"
+                    v-model="task.checklist"
+                    @start="drag = true"
+                    @end="drag = false"
+                    item-key="description">
+
+                    <template #item="{ element }">
+                        <checklist-card class="checklist-card"
+                            :item="element"
+                            @change="onChecklistChange(index, $event)"
+                            @delete="onChecklistDelete(index)">
+                        </checklist-card>
+                    </template>
+                </draggable>
             </item-group-panel>
         </div>
     </div>
@@ -85,6 +92,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import Draggable from 'vuedraggable';
 
 import store from '../../store';
 import { dialogKey } from '../../store/dialog/dialog.state';
@@ -114,6 +122,7 @@ class TaskEditorProp {
 
 @Options({
     components: {
+        Draggable,
         ItemGroupPanel,
         SectionPanel,
         OptionDropdown,
@@ -240,6 +249,10 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         .child-tasks, .checklist-items {
             width: 48.75%;
             height: 100%;
+        }
+
+        .drag-wrapper {
+            width: 100%;
         }
 
         .subtask-summary-card, .checklist-card {
