@@ -8,7 +8,7 @@
                 v-for="task of tasks"
                 :key="task.id"
                 :task="task"
-                :isActive="task.id === activeTask?.id"
+                :isActive="task.id === activeTask?.id || task.id === activeTask?.parent"
                 @click="onTaskSelected(task)">
             </task-summary-card>
 
