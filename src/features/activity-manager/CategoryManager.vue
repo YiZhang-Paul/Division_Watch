@@ -21,6 +21,16 @@
         <div v-if="!activeCategory" class="placeholder-wrapper">
             <placeholder-panel class="placeholder-panel" :text="'no entry selected.'"></placeholder-panel>
         </div>
+
+        <div v-if="activeCategory" class="content">
+            <actions-group v-if="activeCategory.id"
+                class="actions-group"
+                :name="'Danger Zone'"
+                :actions="dangerZoneActions"
+                :isWarning="true"
+                @action:selected="onActionSelected($event)">
+            </actions-group>
+        </div>
     </div>
 </template>
 
@@ -34,18 +44,23 @@ import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import { BasicAction } from '../../core/data-model/generic/basic-action';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
+import { CategoryAction } from '../../core/enums/category-action.enum';
 
 @Options({
     components: {
         ItemListPanel,
         PlaceholderPanel,
+        ActionsGroup,
         CategorySummaryCard
     }
 })
 export default class CategoryManager extends Vue {
+    public readonly dangerZoneActions = [new BasicAction('Delete Category', CategoryAction.Delete, true)];
     public searchText = '';
 
     get categories(): Category[] {
@@ -72,6 +87,10 @@ export default class CategoryManager extends Vue {
         if (!this.activeCategory || category?.id !== this.activeCategory.id) {
             store.dispatch(`${categoryKey}/swapActiveCategory`, category);
         }
+    }
+
+    public async onActionSelected(action: CategoryAction): Promise<void> {
+        console.log(action);
     }
 }
 </script>
@@ -111,6 +130,24 @@ export default class CategoryManager extends Vue {
 
         .placeholder-panel {
             width: 35%;
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: calc(100% - #{$list-width});
+        height: 100%;
+
+        .actions-group {
+            $margin-left: 0.75rem;
+
+            margin-top: auto;
+            margin-left: $margin-left;
+            width: calc(#{$content-width} - #{$margin-left});
+            opacity: 0;
+            animation: revealContent 0.3s ease 1.2s forwards;
         }
     }
 }
