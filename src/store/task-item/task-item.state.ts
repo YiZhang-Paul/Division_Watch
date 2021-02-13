@@ -90,8 +90,16 @@ const actions = {
         const items = await taskItemHttpService.getIncompleteItems();
         commit('setIncompleteItems', items);
 
-        if (autoOpen && !getters.activeItem && getters.incompleteParentTasks[0]) {
+        if (!autoOpen) {
+            return;
+        }
+
+        if (!getters.activeItem && getters.incompleteParentTasks[0]) {
             commit('setActiveItem', getters.incompleteParentTasks[0]);
+        }
+
+        if (!getters.activeInterruption && getters.incompleteInterruptions[0]) {
+            commit('setActiveInterruption', getters.incompleteInterruptions[0]);
         }
     },
     async getEmptyTaskItem(_: ActionContext<ITaskItemState, any>, isInterruption: boolean): Promise<TaskItem | null> {
