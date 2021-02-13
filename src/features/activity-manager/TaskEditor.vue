@@ -75,9 +75,10 @@
                     v-model="task.checklist"
                     @start="drag = true"
                     @end="drag = false"
+                    @change="onTaskChange('checklist', task.checklist)"
                     item-key="description">
 
-                    <template #item="{ element }">
+                    <template #item="{ element, index }">
                         <checklist-card class="checklist-card"
                             :item="element"
                             @change="onChecklistChange(index, $event)"
