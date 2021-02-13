@@ -10,6 +10,7 @@
         <div class="main-content">
             <task-manager v-if="activeTab === 0" class="task-manager"></task-manager>
             <task-manager v-if="activeTab === 1" class="task-manager" :isInterruption="true"></task-manager>
+            <category-manager v-if="activeTab === 2" class="category-manager"></category-manager>
         </div>
 
         <template v-slot:footer>
@@ -38,6 +39,7 @@ import TabGroup from '../../shared/controls/TabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 
 import TaskManager from './TaskManager.vue';
+import CategoryManager from './CategoryManager.vue';
 
 @Options({
     components: {
@@ -48,7 +50,8 @@ import TaskManager from './TaskManager.vue';
         ViewPanel,
         TabGroup,
         MenuButton,
-        TaskManager
+        TaskManager,
+        CategoryManager
     }
 })
 export default class ActivityManager extends Vue {
@@ -85,7 +88,7 @@ export default class ActivityManager extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.header-content, .main-content, .task-manager, .footer-content {
+.header-content, .main-content, .task-manager, .category-manager, .footer-content {
     display: flex;
     width: 100%;
     height: 100%;
