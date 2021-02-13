@@ -76,7 +76,9 @@ export default class CategoryManager extends Vue {
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get categories(): Category[] {
-        return store.getters[`${categoryKey}/editableCategories`];
+        const categories: Category[] = store.getters[`${categoryKey}/editableCategories`];
+
+        return categories.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
     get activeCategory(): Category | null {
