@@ -3,11 +3,23 @@
         <item-list-panel class="item-list-panel"
             @item:search="searchText = $event">
 
+            <category-summary-card class="summary-card"
+                v-for="category of categories"
+                :key="category.id"
+                :category="category"
+                :isActive="category.id === activeCategory?.id"
+                @click="onCategorySelected(category)">
+            </category-summary-card>
+
             <placeholder-panel v-if="!categories.length"
                 class="placeholder-panel"
                 :text="searchText ? 'no matching entry found.' : 'no entry created yet.'">
             </placeholder-panel>
         </item-list-panel>
+
+        <div v-if="!activeCategory" class="placeholder-wrapper">
+            <placeholder-panel class="placeholder-panel" :text="'no entry selected.'"></placeholder-panel>
+        </div>
     </div>
 </template>
 
@@ -20,11 +32,13 @@ import { categoryKey } from '../../store/category/category.state';
 import { Category } from '../../core/data-model/generic/category';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 
 @Options({
     components: {
         ItemListPanel,
-        PlaceholderPanel
+        PlaceholderPanel,
+        CategorySummaryCard
     }
 })
 export default class CategoryManager extends Vue {
@@ -32,6 +46,16 @@ export default class CategoryManager extends Vue {
 
     get categories(): Category[] {
         return store.getters[`${categoryKey}/categories`];
+    }
+
+    get activeCategory(): Category | null {
+        return store.getters[`${categoryKey}/activeCategory`];
+    }
+
+    public onCategorySelected(category: Category | null): void {
+        if (!this.activeCategory || category?.id !== this.activeCategory.id) {
+            store.dispatch(`${categoryKey}/swapActiveCategory`, category);
+        }
     }
 }
 </script>
@@ -48,6 +72,18 @@ export default class CategoryManager extends Vue {
         .placeholder-panel {
             margin-left: 2.5%;
             width: 95%;
+        }
+    }
+
+    .placeholder-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: calc(100% - #{$list-width});
+        height: 100%;
+
+        .placeholder-panel {
+            width: 35%;
         }
     }
 }

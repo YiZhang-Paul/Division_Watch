@@ -7,28 +7,38 @@ const categoryHttpService = new CategoryHttpService();
 
 export interface ICategoryState {
     categories: Category[];
+    activeCategory: Category | null;
 }
 
 const state = (): ICategoryState => ({
-    categories: []
+    categories: [],
+    activeCategory: null
 });
 
 const getters = {
     category: (state: ICategoryState) => (id: string): Category | null => {
         return state.categories.find(_ => _.id === id) ?? null;
     },
-    categories: (state: ICategoryState): Category[] => state.categories.slice()
+    categories: (state: ICategoryState): Category[] => state.categories.slice(),
+    activeCategory: (state: ICategoryState): Category | null => state.activeCategory
 };
 
 const mutations = {
     setCategories(state: ICategoryState, categories: Category[]): void {
         state.categories = categories;
+    },
+    setActiveCategory(state: ICategoryState, category: Category | null): void {
+        state.activeCategory = category;
     }
 };
 
 const actions = {
     async loadCategories(context: ActionContext<ICategoryState, any>): Promise<void> {
         context.commit('setCategories', await categoryHttpService.getCategories());
+    },
+    swapActiveCategory(context: ActionContext<ICategoryState, any>, category: Category | null): void {
+        context.commit('setActiveCategory', null);
+        setTimeout(() => context.commit('setActiveCategory', category));
     }
 }
 
