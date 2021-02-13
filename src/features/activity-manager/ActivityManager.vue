@@ -74,7 +74,7 @@ export default class ActivityManager extends Vue {
     }
 
     get categories(): number {
-        return store.getters[`${categoryKey}/categories`].length;
+        return store.getters[`${categoryKey}/editableCategories`].length;
     }
 
     public backToMain(): void {

@@ -20,6 +20,7 @@ const getters = {
         return state.categories.find(_ => _.id === id) ?? null;
     },
     categories: (state: ICategoryState): Category[] => state.categories.slice(),
+    editableCategories: (state: ICategoryState): Category[] => state.categories.filter(_ => _.isEditable),
     activeCategory: (state: ICategoryState): Category | null => state.activeCategory
 };
 

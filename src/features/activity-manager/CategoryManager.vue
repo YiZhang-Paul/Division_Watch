@@ -45,7 +45,7 @@ export default class CategoryManager extends Vue {
     public searchText = '';
 
     get categories(): Category[] {
-        return store.getters[`${categoryKey}/categories`];
+        return store.getters[`${categoryKey}/editableCategories`];
     }
 
     get activeCategory(): Category | null {

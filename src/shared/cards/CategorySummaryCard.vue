@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, prop } from 'vue-class-component';
+import { Vue, prop } from 'vue-class-component';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
@@ -24,9 +24,6 @@ class CategorySummaryCardProp {
     public isActive = prop<boolean>({ default: false });
 }
 
-@Options({
-
-})
 export default class CategorySummaryCard extends Vue.with(CategorySummaryCardProp) {
 
     get categoryIcon(): any {
