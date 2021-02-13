@@ -29,6 +29,12 @@
                     :isEditable="true"
                     :placeholder="'enter category name here...'"
                     @name:edited="onCategoryChange('name', $event)">
+
+                    <field-textarea class="editor-control"
+                        :name="'Description'"
+                        v-model="activeCategory.description"
+                        @update:modelValue="onCategoryChange('description', $event)">
+                    </field-textarea>
                 </section-panel>
             </div>
 
@@ -57,6 +63,7 @@ import { BasicAction } from '../../core/data-model/generic/basic-action';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import FieldTextarea from '../../shared/controls/FieldTextarea.vue';
 import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 import { CategoryAction } from '../../core/enums/category-action.enum';
@@ -66,6 +73,7 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
         ItemListPanel,
         SectionPanel,
         PlaceholderPanel,
+        FieldTextarea,
         ActionsGroup,
         CategorySummaryCard
     }
@@ -180,6 +188,18 @@ export default class CategoryManager extends Vue {
 
         .editor-area {
             width: $content-width;
+
+            .section-panel {
+                width: 100%;
+
+                .editor-control {
+                    width: 100%;
+                }
+
+                .editor-control:not(:nth-last-child(1)) {
+                    margin-bottom: 1%;
+                }
+            }
         }
 
         .actions-group {
