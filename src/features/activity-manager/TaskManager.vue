@@ -89,8 +89,13 @@ class TaskManagerProp {
     }
 })
 export default class TaskManager extends Vue.with(TaskManagerProp) {
-    public readonly emptyTaskActions = [new BasicAction('Create Task', TaskAction.Create)];
-    public readonly parentDangerZoneActions = [new BasicAction('Delete Task', TaskAction.Delete, true)];
+    public readonly emptyTaskActions = [
+        new BasicAction(`Create ${this.isInterruption ? 'Interruption' : 'Task'}`, TaskAction.Create)
+    ];
+
+    public readonly parentDangerZoneActions = [
+        new BasicAction(`Delete ${this.isInterruption ? 'Interruption' : 'Task'}`, TaskAction.Delete, true)
+    ];
 
     public readonly interruptionDangerZoneActions = [
         new BasicAction('Convert to Task', TaskAction.ConvertToTask),
@@ -220,7 +225,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
     }
 
     public onTaskDelete(task: TaskItem): void {
-        const title = 'This task will be permanently deleted.';
+        const title = 'This item will be permanently deleted.';
         const checkboxText = task.parent || task.isInterruption ? '' : 'keep child tasks';
         const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, true);
 

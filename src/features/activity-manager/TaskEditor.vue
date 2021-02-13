@@ -3,7 +3,7 @@
         <section-panel class="basic-information"
             :name="task.name"
             :isEditable="true"
-            :placeholder="'enter task name here...'"
+            :placeholder="'enter ' + (task.isInterruption ? 'interruption' : 'task') + ' name here...'"
             @name:edited="onTaskChange('name', $event)">
 
             <option-dropdown v-if="!task.parent"

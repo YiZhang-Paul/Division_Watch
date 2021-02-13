@@ -96,6 +96,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         align-items: center;
         align-self: flex-start;
         margin-left: $margin-left;
+        width: $content-width;
         opacity: 0;
         animation: revealContent 0.3s ease 1s forwards;
         transition: color 0.3s;
@@ -105,6 +106,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         }
 
         .edit-field {
+            width: 100%;
             outline: none;
             border: none;
             background-color: rgba(37, 34, 34, 0.3);
