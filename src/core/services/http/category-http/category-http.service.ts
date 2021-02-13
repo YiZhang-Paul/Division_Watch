@@ -13,4 +13,13 @@ export class CategoryHttpService {
             return [];
         }
     }
+
+    public async updateCategory(category: Category): Promise<boolean> {
+        try {
+            return (await axios.put(this._api, category)).data;
+        }
+        catch {
+            return false;
+        }
+    }
 }

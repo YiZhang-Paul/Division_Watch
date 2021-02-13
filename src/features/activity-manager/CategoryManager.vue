@@ -23,6 +23,15 @@
         </div>
 
         <div v-if="activeCategory" class="content">
+            <div class="editor-area">
+                <section-panel class="section-panel"
+                    :name="activeCategory.name"
+                    :isEditable="true"
+                    :placeholder="'enter category name here...'"
+                    @name:edited="onCategoryChange('name', $event)">
+                </section-panel>
+            </div>
+
             <actions-group v-if="activeCategory.id"
                 class="actions-group"
                 :name="'Danger Zone'"
@@ -46,6 +55,7 @@ import { Category } from '../../core/data-model/generic/category';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { BasicAction } from '../../core/data-model/generic/basic-action';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
+import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
@@ -54,6 +64,7 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
 @Options({
     components: {
         ItemListPanel,
+        SectionPanel,
         PlaceholderPanel,
         ActionsGroup,
         CategorySummaryCard
@@ -62,6 +73,7 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
 export default class CategoryManager extends Vue {
     public readonly dangerZoneActions = [new BasicAction('Delete Category', CategoryAction.Delete, true)];
     public searchText = '';
+    private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get categories(): Category[] {
         return store.getters[`${categoryKey}/editableCategories`];
@@ -83,6 +95,12 @@ export default class CategoryManager extends Vue {
         return breakdown;
     }
 
+    public beforeUnmount(): void {
+        if (this.updateDebounceTimer) {
+            store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
+        }
+    }
+
     public onCategorySelected(category: Category | null): void {
         if (!this.activeCategory || category?.id !== this.activeCategory.id) {
             store.dispatch(`${categoryKey}/swapActiveCategory`, category);
@@ -91,6 +109,24 @@ export default class CategoryManager extends Vue {
 
     public async onActionSelected(action: CategoryAction): Promise<void> {
         console.log(action);
+    }
+
+    public onCategoryChange(key: string, value: any, delay = 0): void {
+        const changed = { ...this.activeCategory, [key]: value } as Category;
+        setTimeout(() => store.commit(`${categoryKey}/setActiveCategory`, changed), delay);
+
+        if (!changed.id) {
+            return;
+        }
+
+        if (this.updateDebounceTimer) {
+            clearTimeout(this.updateDebounceTimer);
+        }
+
+        this.updateDebounceTimer = setTimeout(() => {
+            store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
+            this.updateDebounceTimer = null;
+        }, 1000);
     }
 }
 </script>
@@ -139,6 +175,10 @@ export default class CategoryManager extends Vue {
         align-items: center;
         width: calc(100% - #{$list-width});
         height: 100%;
+
+        .editor-area {
+            width: $content-width;
+        }
 
         .actions-group {
             $margin-left: 0.75rem;

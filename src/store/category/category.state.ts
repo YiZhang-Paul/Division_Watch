@@ -2,6 +2,7 @@ import { ActionContext } from 'vuex';
 
 import { Category } from '../../core/data-model/generic/category';
 import { CategoryHttpService } from '../../core/services/http/category-http/category-http.service';
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 const categoryHttpService = new CategoryHttpService();
 
@@ -25,6 +26,13 @@ const getters = {
 };
 
 const mutations = {
+    setCategory(state: ICategoryState, category: Category): void {
+        const index = state.categories.findIndex(_ => _.id === category.id);
+
+        if (index !== -1) {
+            state.categories = GenericUtility.replaceAt(state.categories, category, index);
+        }
+    },
     setCategories(state: ICategoryState, categories: Category[]): void {
         state.categories = categories;
     },
@@ -40,6 +48,11 @@ const actions = {
 
         if (autoOpen && !getters.activeCategory && getters.editableCategories[0]) {
             commit('setActiveCategory', getters.editableCategories[0]);
+        }
+    },
+    async updateCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<void> {
+        if (await categoryHttpService.updateCategory(category)) {
+            context.commit('setCategory', category);
         }
     },
     swapActiveCategory(context: ActionContext<ICategoryState, any>, category: Category | null): void {
