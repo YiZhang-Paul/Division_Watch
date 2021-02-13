@@ -162,8 +162,10 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
     }
 
     public onTaskSelected(task: TaskItem | null): void {
-        const action = this.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
-        store.dispatch(`${taskItemKey}/${action}`, task);
+        if (!this.activeTask || task?.id !== this.activeTask.id) {
+            const action = this.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+            store.dispatch(`${taskItemKey}/${action}`, task);
+        }
     }
 
     public onTaskChange(task: TaskItem): void {
