@@ -52,13 +52,15 @@ import TaskManager from './TaskManager.vue';
     }
 })
 export default class ActivityManager extends Vue {
-    public readonly tabs = [
-        markRaw(new TabGroupOption('Task', Target, this.tasks)),
-        markRaw(new TabGroupOption('Interruption', ExclamationThick, this.interruptions)),
-        markRaw(new TabGroupOption('Category', InboxMultiple, this.categories))
-    ];
-
     public activeTab = 0;
+
+    get tabs(): TabGroupOption[] {
+        return [
+            markRaw(new TabGroupOption('Task', Target, this.tasks)),
+            markRaw(new TabGroupOption('Interruption', ExclamationThick, this.interruptions)),
+            markRaw(new TabGroupOption('Category', InboxMultiple, this.categories))
+        ]
+    }
 
     get tasks(): number {
         return store.getters[`${taskItemKey}/incompleteParentTasks`].length;
