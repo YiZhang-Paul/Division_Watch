@@ -8,6 +8,11 @@
 
             <span class="title">{{ option.title }}</span>
 
+            <div v-if="option.checkboxText" class="checkbox-area">
+                <checkbox class="checkbox" v-model="isChecked" />
+                <span>{{ option.checkboxText }}</span>
+            </div>
+
             <div class="actions">
                 <menu-button class="menu-button" @click="onCancel()">
                     {{ option.cancelText }}
@@ -31,6 +36,7 @@ import * as uuid from 'uuid';
 // eslint-disable-next-line no-unused-vars
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import MenuButton from '../controls/MenuButton.vue';
+import Checkbox from '../controls/Checkbox.vue';
 
 class ConfirmPanelProp {
     public option = prop<DialogOption>({ default: null });
@@ -38,7 +44,8 @@ class ConfirmPanelProp {
 
 @Options({
     components: {
-        MenuButton
+        MenuButton,
+        Checkbox
     },
     emits: [
         'confirmed',
@@ -47,6 +54,7 @@ class ConfirmPanelProp {
 })
 export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
     public readonly id = `content-panel-${uuid.v4()}`;
+    public isChecked = false;
 
     public mounted(): void {
         const container = document.querySelector(`#${this.id}`);
@@ -55,7 +63,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 
     public onConfirm(): void {
         if (this.option.confirmCallback) {
-            this.option.confirmCallback();
+            this.option.confirmCallback(this.isChecked);
         }
 
         this.$emit('confirmed');
@@ -127,6 +135,22 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             margin-top: 0.15rem;
             opacity: 0;
             animation: revealContent 0.2s ease 0.3s forwards;
+        }
+
+        .checkbox-area {
+            display: flex;
+            align-self: flex-start;
+            align-items: center;
+            margin-top: auto;
+            margin-left: 1.5rem;
+            height: 1rem;
+            font-size: 0.5rem;
+
+            .checkbox {
+                margin-right: 0.25rem;
+                width: 0.6rem;
+                height: 0.6rem;
+            }
         }
 
         .actions {

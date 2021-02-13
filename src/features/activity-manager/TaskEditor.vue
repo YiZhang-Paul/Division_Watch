@@ -186,7 +186,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
 
     public onChecklistDelete(index: number): void {
         const title = 'This item will be permanently deleted.';
-        const option = new DialogOption(title, 'Delete', 'Cancel', true);
+        const option = new DialogOption(title, 'Delete', 'Cancel', '', true);
 
         option.confirmCallback = () => {
             const checklist = this.task?.checklist ?? [];
