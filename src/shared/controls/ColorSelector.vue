@@ -5,7 +5,7 @@
         <div class="palette">
             <div class="row" v-for="n in 3" :key="n">
                 <div class="option"
-                    v-for="m in 9"
+                    v-for="m in columns"
                     :key="m"
                     :class="{ 'selected-option': getColor(n, m) === selected }"
                     :style="{ 'background-color': getColor(n, m) }"
@@ -28,6 +28,8 @@ class ColorSelectorProp {
     emits: ['select']
 })
 export default class ColorSelector extends Vue.with(ColorSelectorProp) {
+    public readonly columns = 9;
+
     public readonly colors = [
         'rgb(255, 182, 193)',
         'rgb(229, 112, 126)',
@@ -59,7 +61,7 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
     ];
 
     public getColor(row: number, column: number): string {
-        return this.colors[(row - 1) * 9 + column - 1];
+        return this.colors[(row - 1) * this.columns + column - 1];
     }
 }
 </script>

@@ -18,11 +18,11 @@ export class GenericUtility {
         return [...elements.slice(0, index), ...elements.slice(index + 1)];
     }
 
-    public static getIconNames(): string[] {
-        return Array.from(icons).map(_ => _[0]);
+    public static getIconNames(includeReserved = true): string[] {
+        return Array.from(icons).filter(_ => includeReserved || !_[1].isReserved).map(_ => _[0]);
     }
 
     public static getIcon(name: string): any {
-        return icons.get(name) ?? null;
+        return icons.get(name)?.icon ?? null;
     }
 }
