@@ -53,7 +53,7 @@ export class TaskItemHttpService {
 
     public async convertToTask(item: TaskItem): Promise<TaskItem | null> {
         try {
-            return (await axios.put(`${this._api}/convert`, item)).data;
+            return (await axios.put(`${this._api}/convert-interruption`, item)).data;
         }
         catch {
             return null;
