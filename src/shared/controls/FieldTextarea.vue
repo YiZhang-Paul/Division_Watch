@@ -5,6 +5,7 @@
         <textarea cols="30"
             rows="7"
             v-model="content"
+            :placeholder="placeholder"
             @input="$emit('update:modelValue', content)">
         </textarea>
     </div>
@@ -15,6 +16,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 class FieldTextareaProp {
     public name = prop<string>({ default: '' });
+    public placeholder = prop<string>({ default: 'add text here...' });
     public modelValue = prop<string>({ default: '' });
 }
 

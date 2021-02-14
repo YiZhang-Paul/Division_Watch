@@ -1,7 +1,8 @@
 <template>
     <div class="category-manager-container">
         <item-list-panel class="item-list-panel"
-            @item:search="searchText = $event">
+            @item:search="searchText = $event"
+            @item:add="openEmptyCategory()">
 
             <category-summary-card class="summary-card"
                 v-for="category of categories"
@@ -33,6 +34,7 @@
                     <field-textarea class="editor-control"
                         :name="'Description'"
                         v-model="activeCategory.description"
+                        :placeholder="'add description here...'"
                         @update:modelValue="onCategoryChange('description', $event)">
                     </field-textarea>
 
@@ -49,6 +51,13 @@
                     </color-selector>
                 </section-panel>
             </div>
+
+            <actions-group v-if="!activeCategory.id"
+                class="actions-group"
+                :name="'Actions'"
+                :actions="emptyCategoryActions"
+                @action:selected="onActionSelected($event)">
+            </actions-group>
 
             <actions-group v-if="activeCategory.id"
                 class="actions-group"
@@ -67,7 +76,6 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
-// eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
@@ -95,6 +103,7 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
     }
 })
 export default class CategoryManager extends Vue {
+    public readonly emptyCategoryActions = [new BasicAction('Create Category', CategoryAction.Create)];
     public readonly dangerZoneActions = [new BasicAction('Delete Category', CategoryAction.Delete, true)];
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
@@ -127,14 +136,14 @@ export default class CategoryManager extends Vue {
         }
     }
 
+    public openEmptyCategory(): void {
+        store.dispatch(`${categoryKey}/swapActiveCategory`, new Category());
+    }
+
     public onCategorySelected(category: Category | null): void {
         if (!this.activeCategory || category?.id !== this.activeCategory.id) {
             store.dispatch(`${categoryKey}/swapActiveCategory`, category);
         }
-    }
-
-    public async onActionSelected(action: CategoryAction): Promise<void> {
-        console.log(action);
     }
 
     public onCategoryChange(key: string, value: any, delay = 0): void {
@@ -153,6 +162,16 @@ export default class CategoryManager extends Vue {
             store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
             this.updateDebounceTimer = null;
         }, 1000);
+    }
+
+    public async onActionSelected(action: CategoryAction): Promise<void> {
+        if (action === CategoryAction.Create) {
+            const result = await store.dispatch(`${categoryKey}/addCategory`, this.activeCategory);
+
+            if (result) {
+                this.onCategorySelected(result);
+            }
+        }
     }
 }
 </script>

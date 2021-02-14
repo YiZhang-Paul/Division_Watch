@@ -26,6 +26,9 @@ const getters = {
 };
 
 const mutations = {
+    addCategory(state: ICategoryState, category: Category): void {
+        state.categories = [...state.categories, category];
+    },
     setCategory(state: ICategoryState, category: Category): void {
         const index = state.categories.findIndex(_ => _.id === category.id);
 
@@ -42,6 +45,15 @@ const mutations = {
 };
 
 const actions = {
+    async addCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<Category | null> {
+        const added = await categoryHttpService.addCategory(category);
+
+        if (added) {
+            context.commit('addCategory', added);
+        }
+
+        return added;
+    },
     async loadCategories(context: ActionContext<ICategoryState, any>, autoOpen = false): Promise<void> {
         const { commit, getters } = context;
         commit('setCategories', await categoryHttpService.getCategories());
