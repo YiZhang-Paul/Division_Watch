@@ -1,12 +1,20 @@
 <template>
     <div v-if="category" class="category-summary-card-container" :class="{ 'active-card': isActive }">
         <div class="basic-information">
-            <component v-if="categoryIcon" :is="categoryIcon" :style="{ color: category.color }"></component>
+            <component v-if="categoryIcon"
+                class="icon"
+                :is="categoryIcon"
+                :style="{ color: category.color }">
+            </component>
+
             <span class="total-item">{{ totalItemsText }}</span>
         </div>
 
         <div class="detail-information">
-            <span class="name">{{ category.name }}</span>
+            <div class="name-wrapper">
+                <span class="name">{{ category.name }}</span>
+            </div>
+
             <span class="description">{{ category.description }}</span>
         </div>
     </div>
@@ -68,6 +76,12 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
         border-right: 1px solid rgba(255, 255, 255, 0.5);
         font-size: 1.25rem;
 
+        .icon {
+            opacity: 0;
+            transition: color 0.2s;
+            animation: revealContent 0.3s ease forwards;
+        }
+
         .total-item {
             margin-top: 0.1rem;
             font-size: 0.4rem;
@@ -77,17 +91,26 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     .detail-information {
         display: flex;
         flex-direction: column;
-        padding: 1.5% 4%;
         width: 75%;
         height: 100%;
 
-        .name {
-            transition: color 0.3s;
+        .name-wrapper {
+            padding: 1% 4%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+
+            .name {
+                transition: color 0.3s;
+            }
         }
 
         .description {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            padding: 0.5% 4%;
             margin-top: 0.1rem;
             color: rgb(225, 225, 225);
+            overflow: hidden;
             font-size: 0.425rem;
         }
     }

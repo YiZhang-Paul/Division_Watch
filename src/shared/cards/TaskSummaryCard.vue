@@ -6,7 +6,11 @@
         @mouseout="isMouseover = false">
 
         <div class="category">
-            <component v-if="categoryIcon" :is="categoryIcon" :style="{ color: category.color }"></component>
+            <component v-if="categoryIcon"
+                class="icon"
+                :is="categoryIcon"
+                :style="{ color: category.color }">
+            </component>
         </div>
 
         <div class="splitter-1"></div>
@@ -122,6 +126,11 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         align-items: center;
         height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
         font-size: 0.85rem;
+
+        .icon {
+            opacity: 0;
+            animation: revealContent 0.3s ease forwards;
+        }
     }
 
     .splitter-1 {
@@ -138,6 +147,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
         .recur-indicator {
             color: $inactive-color;
+            transition: color 0.3s;
             transform: rotate(90deg) rotateY(180deg);
 
             &.recur-active {

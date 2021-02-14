@@ -126,7 +126,7 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
                     height: 0.1rem;
                     border: 1px solid rgba(135, 135, 135, 0.6);
                     border-radius: 50%;
-                    background-color: rgba(255, 255, 255, 0.35);
+                    background-color: rgba(255, 255, 255, 0.75);
                 }
 
                 &.selected-option::before {
