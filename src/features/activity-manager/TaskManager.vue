@@ -216,7 +216,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
             const option = new DialogOption(title, 'Convert', 'Cancel');
 
             option.confirmCallback = () => {
-                store.dispatch(`${taskItemKey}/updateTaskItem`, { ...this.activeTask, parent: null });
+                store.dispatch(`${taskItemKey}/convertChildTask`, this.activeTask);
             };
 
             store.dispatch(`${dialogKey}/openDialog`, option);

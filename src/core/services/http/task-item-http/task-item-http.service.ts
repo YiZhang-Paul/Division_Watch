@@ -51,6 +51,15 @@ export class TaskItemHttpService {
         }
     }
 
+    public async convertToParent(item: TaskItem): Promise<TaskItem | null> {
+        try {
+            return (await axios.put(`${this._api}/convert-child`, item)).data;
+        }
+        catch {
+            return null;
+        }
+    }
+
     public async convertToTask(item: TaskItem): Promise<TaskItem | null> {
         try {
             return (await axios.put(`${this._api}/convert-interruption`, item)).data;

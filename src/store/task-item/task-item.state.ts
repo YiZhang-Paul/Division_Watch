@@ -179,6 +179,22 @@ const actions = {
 
         return result;
     },
+    async convertChildTask(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
+        const { commit, getters } = context;
+        const result = await taskItemHttpService.convertToParent(item);
+
+        if (!result) {
+            return null;
+        }
+
+        commit('setIncompleteItem', result);
+
+        if (getters.activeItem?.id === result.id) {
+            commit('setActiveItem', result);
+        }
+
+        return result;
+    },
     async convertInterruption(context: ActionContext<ITaskItemState, any>, item: TaskItem): Promise<TaskItem | null> {
         const { commit, getters } = context;
         const result = await taskItemHttpService.convertToTask(item);
