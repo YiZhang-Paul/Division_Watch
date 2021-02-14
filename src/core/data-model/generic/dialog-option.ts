@@ -5,9 +5,9 @@ export class DialogOption<T> {
     public confirmText: string;
     public cancelText: string;
     public checkboxText: string;
-    public dropdownOption: DropdownOption<T> | null = null;
+    public dropdown: DropdownOption<T> | null = null;
     public isWarning: boolean;
-    public confirmCallback: ((_: any) => void) | null = null;
+    public confirmCallback: ((checked: any, selected: T) => void) | null = null;
     public cancelCallback: (() => void) | null = null;
 
     constructor(
@@ -15,14 +15,14 @@ export class DialogOption<T> {
         confirmText = '',
         cancelText = '',
         checkboxText = '',
-        dropdownOption: DropdownOption<T> | null = null,
+        dropdown: DropdownOption<T> | null = null,
         isWarning = false
     ) {
         this.title = title;
         this.confirmText = confirmText;
         this.cancelText = cancelText;
         this.checkboxText = checkboxText;
-        this.dropdownOption = dropdownOption;
+        this.dropdown = dropdown;
         this.isWarning = isWarning;
     }
 }

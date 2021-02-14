@@ -114,6 +114,7 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
 
         select {
             width: 100%;
+            height: 100%;
         }
     }
 }

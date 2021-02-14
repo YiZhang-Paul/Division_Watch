@@ -177,12 +177,14 @@ export default class CategoryManager extends Vue {
         }
         else if (action === CategoryAction.Delete) {
             const title = 'This item will be permanently deleted.';
-            const dropdownText = 'Affected items will be placed under';
-            const transform = (_: Category) => _.name;
-            const dropdown = new DropdownOption(dropdownText, this.categories, this.categories[0], transform);
+            const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
+            const remaining = allCategories.filter(_ => _.id !== this.activeCategory?.id);
+            const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
+            const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
             const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
 
-            option.confirmCallback = () => {
+            option.confirmCallback = (_: boolean, transfer: Category) => {
+                console.log(transfer);
                 store.dispatch(`${categoryKey}/deleteCategory`, this.activeCategory);
             };
 

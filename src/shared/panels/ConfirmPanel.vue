@@ -13,6 +13,18 @@
                 <span>{{ option.checkboxText }}</span>
             </div>
 
+            <div class="dropdown-area" v-if="option.dropdown">
+                <span>{{ option.dropdown.text }}</span>
+
+                <option-dropdown class="option-dropdown"
+                    :useSimpleView="true"
+                    :options="option.dropdown.options"
+                    :selected="selected"
+                    :transform="option.dropdown.transform"
+                    @options:select="selected = $event">
+                </option-dropdown>
+            </div>
+
             <div class="actions">
                 <menu-button class="menu-button" @click="onCancel()">
                     {{ option.cancelText }}
@@ -37,6 +49,7 @@ import * as uuid from 'uuid';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import MenuButton from '../controls/MenuButton.vue';
 import Checkbox from '../controls/Checkbox.vue';
+import OptionDropdown from '../controls/OptionDropdown.vue';
 
 class ConfirmPanelProp {
     public option = prop<DialogOption<any>>({ default: null });
@@ -45,7 +58,8 @@ class ConfirmPanelProp {
 @Options({
     components: {
         MenuButton,
-        Checkbox
+        Checkbox,
+        OptionDropdown
     },
     emits: [
         'confirmed',
@@ -55,6 +69,7 @@ class ConfirmPanelProp {
 export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
     public readonly id = `content-panel-${uuid.v4()}`;
     public isChecked = false;
+    public selected = this.option.dropdown?.selected ?? this.option.dropdown?.options?.[0];
 
     public mounted(): void {
         const container = document.querySelector(`#${this.id}`);
@@ -63,7 +78,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 
     public onConfirm(): void {
         if (this.option.confirmCallback) {
-            this.option.confirmCallback(this.isChecked);
+            this.option.confirmCallback(this.isChecked, this.selected);
         }
 
         this.$emit('confirmed');
@@ -137,7 +152,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             animation: revealContent 0.2s ease 0.3s forwards;
         }
 
-        .checkbox-area {
+        .checkbox-area, .dropdown-area {
             display: flex;
             align-self: flex-start;
             align-items: center;
@@ -145,11 +160,26 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             margin-left: 1.5rem;
             height: 1rem;
             font-size: 0.5rem;
+        }
+
+        .checkbox-area {
 
             .checkbox {
                 margin-right: 0.25rem;
                 width: 0.6rem;
                 height: 0.6rem;
+            }
+        }
+
+        .dropdown-area {
+
+            span {
+                margin-right: 0.25rem;
+            }
+
+            .option-dropdown {
+                min-width: 5rem;
+                height: 85%;
             }
         }
 
