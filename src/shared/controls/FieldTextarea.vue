@@ -33,7 +33,7 @@ export default class FieldTextarea extends Vue.with(FieldTextareaProp) {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    padding: 1% 3.5%;
+    padding: 1.5% 3.5%;
     color: rgb(255, 255, 255);
     background-color: rgba(52, 51, 56, 0.8);
     font-family: 'Jost';
@@ -46,6 +46,7 @@ export default class FieldTextarea extends Vue.with(FieldTextareaProp) {
     }
 
     & > textarea {
+        box-sizing: border-box;
         padding: 1.25%;
         width: calc(100% - #{$name-width});
         outline: none;
