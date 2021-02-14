@@ -42,7 +42,7 @@ import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 export default class App extends Vue {
     public viewOption = ViewOption;
 
-    get activeDialogOption(): DialogOption {
+    get activeDialogOption(): DialogOption<any> {
         return store.getters[`${dialogKey}/dialogOption`];
     }
 

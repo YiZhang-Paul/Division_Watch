@@ -39,7 +39,7 @@ import MenuButton from '../controls/MenuButton.vue';
 import Checkbox from '../controls/Checkbox.vue';
 
 class ConfirmPanelProp {
-    public option = prop<DialogOption>({ default: null });
+    public option = prop<DialogOption<any>>({ default: null });
 }
 
 @Options({

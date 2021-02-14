@@ -82,6 +82,7 @@ import { Category } from '../../core/data-model/generic/category';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { BasicAction } from '../../core/data-model/generic/basic-action';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import { DropdownOption } from '../../core/data-model/generic/dropdown-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
@@ -176,7 +177,10 @@ export default class CategoryManager extends Vue {
         }
         else if (action === CategoryAction.Delete) {
             const title = 'This item will be permanently deleted.';
-            const option = new DialogOption(title, 'Delete', 'Cancel', '', true);
+            const dropdownText = 'Affected items will be placed under';
+            const transform = (_: Category) => _.name;
+            const dropdown = new DropdownOption(dropdownText, this.categories, this.categories[0], transform);
+            const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
 
             option.confirmCallback = () => {
                 store.dispatch(`${categoryKey}/deleteCategory`, this.activeCategory);
