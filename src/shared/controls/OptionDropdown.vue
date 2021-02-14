@@ -1,5 +1,5 @@
 <template>
-    <div class="option-dropdown-container">
+    <div class="option-dropdown-container" :class="{ 'simple-view': useSimpleView }">
         <span>{{ name }}</span>
 
         <select :disabled="isDisabled"
@@ -30,6 +30,7 @@ class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
     public selected = prop<any>({ default: null });
+    public useSimpleView = prop<boolean>({ default: false });
     public isDisabled = prop<boolean>({ default: false });
     public disableText = prop<string>({ default: '' });
     public transform = prop<(_: any) => string>({ default: null });
@@ -100,6 +101,19 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
         &.disabled-dropdown {
             cursor: not-allowed;
             background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='30' viewBox='0 0 24 24' width='30' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(145, 145, 145)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
+        }
+    }
+
+    &.simple-view {
+        padding: 0;
+        background-color: transparent;
+
+        & > span {
+            display: none;
+        }
+
+        select {
+            width: 100%;
         }
     }
 }
