@@ -199,7 +199,7 @@ export default class CategoryManager extends Vue {
 
         .summary-card {
             width: 100%;
-            height: 8.5vh;
+            height: 9.5vh;
             opacity: 0;
             animation: revealContent 0.3s ease 0.1s forwards;
 

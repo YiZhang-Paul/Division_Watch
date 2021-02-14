@@ -95,7 +95,7 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
         height: 100%;
 
         .name-wrapper {
-            padding: 1% 4%;
+            padding: 2% 4%;
             border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 
             .name {
