@@ -15,7 +15,7 @@
                 <span class="name">{{ category.name }}</span>
             </div>
 
-            <span class="description">{{ category.description }}</span>
+            <span class="description">{{ description }}</span>
         </div>
     </div>
 </template>
@@ -40,6 +40,12 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
 
     get totalItemsText(): string {
         return `${this.totalItems} item${this.totalItems > 1 ? 's' : ''}`;
+    }
+
+    get description(): string {
+        const description = this.category.description?.trim() ?? '';
+
+        return description ? description : 'no description available.';
     }
 }
 </script>
