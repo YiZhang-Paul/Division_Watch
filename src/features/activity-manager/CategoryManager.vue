@@ -36,6 +36,12 @@
                         @update:modelValue="onCategoryChange('description', $event)">
                     </field-textarea>
 
+                    <icon-selector class="editor-control"
+                        :name="'Icon'"
+                        :selected="activeCategory.icon"
+                        @select="onCategoryChange('icon', $event)">
+                    </icon-selector>
+
                     <color-selector class="editor-control"
                         :name="'Color'"
                         :selected="activeCategory.color"
@@ -70,6 +76,7 @@ import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import FieldTextarea from '../../shared/controls/FieldTextarea.vue';
+import IconSelector from '../../shared/controls/IconSelector.vue';
 import ColorSelector from '../../shared/controls/ColorSelector.vue';
 import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
@@ -81,6 +88,7 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
         SectionPanel,
         PlaceholderPanel,
         FieldTextarea,
+        IconSelector,
         ColorSelector,
         ActionsGroup,
         CategorySummaryCard
