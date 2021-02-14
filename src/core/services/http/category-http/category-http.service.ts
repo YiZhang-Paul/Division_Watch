@@ -31,4 +31,15 @@ export class CategoryHttpService {
             return false;
         }
     }
+
+    public async deleteCategory(category: Category): Promise<boolean> {
+        try {
+            const endpoint = `${this._api}/${category.id}`;
+
+            return (await axios.delete(endpoint)).data;
+        }
+        catch {
+            return false;
+        }
+    }
 }

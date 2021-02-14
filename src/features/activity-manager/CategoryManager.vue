@@ -74,12 +74,14 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { BasicAction } from '../../core/data-model/generic/basic-action';
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
@@ -171,6 +173,16 @@ export default class CategoryManager extends Vue {
             if (result) {
                 this.onCategorySelected(result);
             }
+        }
+        else if (action === CategoryAction.Delete) {
+            const title = 'This item will be permanently deleted.';
+            const option = new DialogOption(title, 'Delete', 'Cancel', '', true);
+
+            option.confirmCallback = () => {
+                store.dispatch(`${categoryKey}/deleteCategory`, this.activeCategory);
+            };
+
+            store.dispatch(`${dialogKey}/openDialog`, option);
         }
     }
 }
