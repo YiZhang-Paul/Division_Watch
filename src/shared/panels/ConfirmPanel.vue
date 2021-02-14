@@ -10,7 +10,7 @@
 
             <div v-if="option.checkboxText" class="checkbox-area">
                 <checkbox class="checkbox" v-model="isChecked" />
-                <span>{{ option.checkboxText }}</span>
+                <span @click="isChecked = !isChecked">{{ option.checkboxText }}</span>
             </div>
 
             <div class="dropdown-area" v-if="option.dropdown">
@@ -160,6 +160,11 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             margin-left: 1.5rem;
             height: 1rem;
             font-size: 0.5rem;
+
+            span {
+                filter: brightness(0.85);
+                transition: filter 0.2s;
+            }
         }
 
         .checkbox-area {
@@ -168,6 +173,11 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
                 margin-right: 0.25rem;
                 width: 0.6rem;
                 height: 0.6rem;
+            }
+
+            span:hover {
+                cursor: pointer;
+                filter: brightness(1);
             }
         }
 
