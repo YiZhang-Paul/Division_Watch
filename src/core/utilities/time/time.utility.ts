@@ -9,12 +9,32 @@ const months = [
 
 export class TimeUtility {
 
+    public static isLeapYear(year: number): boolean {
+        return year % 400 === 0 || (year % 4 === 0 && year % 100 !== 0);
+    }
+
     public static getDayOfWeek(index: number): string {
         return index < 0 || index > 6 ? '' : days[index];
     }
 
     public static getMonthName(index: number): string {
         return index < 0 || index > 11 ? '' : months[index];
+    }
+
+    public static getDateSuffix(date: number): string {
+        const lastDigit = String(date).slice(-1)[0];
+
+        if (lastDigit === '1') {
+            return 'st';
+        }
+        else if (lastDigit === '2') {
+            return 'nd';
+        }
+        else if (lastDigit === '3') {
+            return 'rd';
+        }
+
+        return 'th';
     }
 
     public static prependZero(value: number): string {

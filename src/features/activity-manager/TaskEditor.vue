@@ -252,6 +252,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     height: 100%;
 
     .basic-information {
+        z-index: 1;
         width: 100%;
 
         .editor-control {
@@ -267,6 +268,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         $margin-left: 0.5rem;
 
         display: flex;
+        z-index: 0;
         justify-content: space-between;
         margin-top: 1.75%;
         width: 100%;
