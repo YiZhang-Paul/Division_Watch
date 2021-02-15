@@ -133,21 +133,24 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
             position: relative;
             width: 100%;
             height: 100%;
-            font-size: 0.45rem;
+            font-size: 0.4rem;
 
             &.active-wrapper .current-date-wrapper {
                 color: rgb(240, 123, 14);
             }
 
             .current-date-wrapper {
+                box-sizing: border-box;
                 display: flex;
-                justify-content: center;
                 align-items: center;
-                padding: 0.9% 0;
+                padding: 1.35% 5.5%;
                 width: 100%;
                 height: 100%;
                 border-radius: 3px;
                 background-color: rgba(29, 29, 32, 0.8);
+                background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='30' viewBox='0 0 24 24' width='30' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(228, 122, 47)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
+                background-repeat: no-repeat;
+                background-position-x: 100%;
                 transition: background-color 0.3s, color 0.3s;
 
                 &:hover {
@@ -174,13 +177,18 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 padding: 3% 4.5% 4% 4.5%;
                 width: 100%;
                 background-color: rgb(42, 42, 48);
+                font-size: 0.45rem;
 
                 .month-selection {
                     box-sizing: border-box;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     padding: 0 3%;
                     margin-bottom: 1.75%;
                     width: 100%;
                     color: rgb(225, 225, 225);
+                    font-size: 0.5rem;
                 }
 
                 .day-headers, .row {

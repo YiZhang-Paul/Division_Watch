@@ -85,6 +85,17 @@ export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
         font-size: 0.4rem;
         font-family: 'Jost';
         appearance: none;
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(42, 42, 48, 0.8);
+            color: rgb(240, 123, 14);
+
+            option {
+                color: rgb(255, 255, 255);
+            }
+        }
 
         &:focus {
             background-color: rgba(44, 44, 48, 0.8);
