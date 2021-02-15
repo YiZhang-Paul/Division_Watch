@@ -30,7 +30,8 @@
                         <div class="day"
                             v-for="column in 7"
                             :key="column"
-                            :class="getDayOptionClasses(row, column)">
+                            :class="getDayOptionClasses(row, column)"
+                            @click="onDateSelect(row, column)">
 
                             <span>{{ getDate(row, column).getDate() }}</span>
                         </div>
@@ -122,6 +123,14 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
             'today': now.toLocaleDateString() === date.toLocaleDateString(),
             'selected-day': this.selected.toLocaleDateString() === date.toLocaleDateString()
         };
+    }
+
+    public onDateSelect(row: number, column: number): void {
+        const date = this.getDate(row, column);
+
+        if (this.isSelectable(date)) {
+            this.$emit('update:modelValue', date);
+        }
     }
 
     public getDate(row: number, column: number): Date {
