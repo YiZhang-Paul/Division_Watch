@@ -21,7 +21,11 @@
                     </div>
 
                     <div class="day-headers">
-                        <div class="header" v-for="letter in letters" :key="letter">
+                        <div class="header"
+                            v-for="(letter, index) in letters"
+                            :key="letter"
+                            :style="{ 'animation-delay': 0.1 + Math.abs(3 - index) * 0.025 + 's' }">
+
                             <span>{{ letter }}</span>
                         </div>
                     </div>
@@ -245,6 +249,8 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 width: 100%;
                 background-color: rgb(42, 42, 48);
                 font-size: 0.45rem;
+                opacity: 0;
+                animation: revealContent 0.2s ease forwards;
 
                 .month-selection {
                     box-sizing: border-box;
@@ -290,6 +296,8 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                         width: 1rem;
                         height: 1rem;
                         color: rgb(225, 225, 225);
+                        opacity: 0;
+                        animation: revealContent 0.2s ease forwards;
 
                         &:nth-child(1), &:nth-last-child(1) {
                             color: rgb(74, 236, 223);
