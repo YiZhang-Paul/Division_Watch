@@ -183,9 +183,12 @@ export default class CategoryManager extends Vue {
             const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
             const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
 
-            option.confirmCallback = (_: boolean, transfer: Category) => {
-                console.log(transfer);
-                store.dispatch(`${categoryKey}/deleteCategory`, this.activeCategory);
+            option.confirmCallback = async(_: boolean, transfer: Category) => {
+                const payload = { target: this.activeCategory, transfer };
+
+                if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
+                    store.dispatch(`${taskItemKey}/loadIncompleteItems`);
+                }
             };
 
             store.dispatch(`${dialogKey}/openDialog`, option);

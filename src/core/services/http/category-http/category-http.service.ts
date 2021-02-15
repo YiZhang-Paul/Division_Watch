@@ -32,9 +32,9 @@ export class CategoryHttpService {
         }
     }
 
-    public async deleteCategory(category: Category): Promise<boolean> {
+    public async deleteCategory(target: Category, transfer?: Category): Promise<boolean> {
         try {
-            const endpoint = `${this._api}/${category.id}`;
+            const endpoint = `${this._api}/${target.id}?transfer=${transfer?.id ?? ''}`;
 
             return (await axios.delete(endpoint)).data;
         }

@@ -70,14 +70,14 @@ const actions = {
             context.commit('setCategory', category);
         }
     },
-    async deleteCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<boolean> {
-        if (!await categoryHttpService.deleteCategory(category)) {
+    async deleteCategory(context: ActionContext<ICategoryState, any>, payload: { target: Category, transfer: Category }): Promise<boolean> {
+        if (!await categoryHttpService.deleteCategory(payload.target, payload.transfer)) {
             return false;
         }
 
-        context.commit('deleteCategory', category);
+        context.commit('deleteCategory', payload.target);
 
-        if (category.id === context.getters.activeCategory?.id) {
+        if (payload.target.id === context.getters.activeCategory?.id) {
             context.commit('setActiveCategory', null);
         }
 
