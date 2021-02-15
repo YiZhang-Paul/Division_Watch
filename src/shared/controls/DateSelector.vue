@@ -30,9 +30,9 @@
                         <div class="day"
                             v-for="column in 7"
                             :key="column"
-                            :class="{ 'other-month': month !== getDate(row, column).month }">
+                            :class="getDayOptionClasses(row, column)">
 
-                            <span>{{ getDate(row, column).date }}</span>
+                            <span>{{ getDate(row, column).getDate() }}</span>
                         </div>
                     </div>
                 </div>
@@ -113,23 +113,41 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         this.setConstraints();
     }
 
-    public getDate(row: number, column: number): { date: number, month: number } {
+    public getDayOptionClasses(row: number, column: number): { [key: string]: boolean } {
+        const now = new Date();
+        const date = this.getDate(row, column);
+
+        return {
+            'unselectable-day': !this.isSelectable(date),
+            'today': now.toLocaleDateString() === date.toLocaleDateString(),
+            'selected-day': this.selected.toLocaleDateString() === date.toLocaleDateString()
+        };
+    }
+
+    public getDate(row: number, column: number): Date {
         const dayCount = (this.rowOffset + row - 1) * 7 + column;
 
         if (dayCount <= this.columnOffset) {
-            return { date: dayCount - this.columnOffset + this.days.slice(-1)[0], month: 12 };
+            return new Date(this.year - 1, 11, dayCount - this.columnOffset + this.days.slice(-1)[0]);
         }
 
         const dayOffset = dayCount - this.getPrefixSum(this.month);
 
         if (dayOffset <= 0) {
-            return { date: this.days[this.month - 2] + dayOffset, month: this.month - 1 };
+            return new Date(this.year, this.month - 2, this.days[this.month - 2] + dayOffset);
         }
         else if (dayOffset <= this.days[this.month - 1]) {
-            return { date: dayOffset, month: this.month };
+            return new Date(this.year, this.month - 1, dayOffset);
+        }
+        else if (this.month === 12) {
+            return new Date(this.year + 1, 1, dayOffset - this.days[this.month - 1]);
         }
 
-        return { date: dayOffset - this.days[this.month - 1], month: this.month + 1 };
+        return new Date(this.year, this.month + 1, dayOffset - this.days[this.month - 1]);
+    }
+
+    private isSelectable(date: Date): boolean {
+        return this.month === date.getMonth() + 1 && date.getTime() >= Date.now();
     }
 
     private setConstraints(): void {
@@ -281,14 +299,23 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                         height: 1rem;
                         transition: background-color 0.1s, color 0.1s;
 
-                        &:not(.other-month):hover {
+                        &:not(.unselectable-day):hover {
                             cursor: pointer;
                             background-color: rgb(240, 123, 14);
                         }
 
-                        &.other-month {
+                        &.unselectable-day {
                             color: rgb(135, 135, 135);
                             transition: none;
+                        }
+
+                        &.today {
+                            background-color: rgba(135, 135, 135, 0.3);
+                        }
+
+                        &.selected-day {
+                            background-color: rgb(240, 123, 14);
+                            color: rgb(0, 0, 0);
                         }
                     }
                 }
