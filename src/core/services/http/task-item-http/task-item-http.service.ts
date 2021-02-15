@@ -89,12 +89,9 @@ export class TaskItemHttpService {
         }
     }
 
-    public async getTaskItemOptions(date: string): Promise<TaskItemOptions> {
+    public async getTaskItemOptions(): Promise<TaskItemOptions> {
         try {
-            const endpoint = `${this._api}/options`;
-            const headers = { 'content-type': 'application/json' };
-
-            return (await axios.post(endpoint, JSON.stringify(date), { headers })).data;
+            return (await axios.get(`${this._api}/options`)).data;
         }
         catch {
             return new TaskItemOptions();

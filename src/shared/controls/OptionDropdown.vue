@@ -24,8 +24,6 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
-import DisplayPanel from '../panels/DisplayPanel.vue';
-
 class OptionDropdownProp {
     public name = prop<string>({ default: '' });
     public options = prop<string[]>({ default: [] });
@@ -37,7 +35,6 @@ class OptionDropdownProp {
 }
 
 @Options({
-    components: { DisplayPanel },
     emits: ['options:select']
 })
 export default class OptionDropdown extends Vue.with(OptionDropdownProp) {

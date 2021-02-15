@@ -82,8 +82,7 @@ const mutations = {
 
 const actions = {
     async loadTaskItemOptions(context: ActionContext<ITaskItemState, any>): Promise<void> {
-        const date = new Date().toISOString().replace(/T.*/g, '');
-        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions(date));
+        context.commit('setTaskItemOptions', await taskItemHttpService.getTaskItemOptions());
     },
     async loadIncompleteItems(context: ActionContext<ITaskItemState, any>, autoOpen = false): Promise<void> {
         const { commit, getters } = context;
