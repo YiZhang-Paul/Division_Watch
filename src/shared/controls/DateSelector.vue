@@ -3,7 +3,7 @@
         <span>{{ name }}</span>
 
         <div class="dates">
-            <div class="dates-wrapper" :class="{ 'active-wrapper': isActive }">
+            <div class="dates-wrapper">
                 <div class="current-date-wrapper" @click="isActive = !isActive">
                     <span>{{ selectedMonthAndDate }}</span>
                     <span class="date-suffix">{{ selectedDateSuffix }}</span>
@@ -206,10 +206,6 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
             height: 100%;
             font-size: 0.4rem;
 
-            &.active-wrapper .current-date-wrapper {
-                color: rgb(240, 123, 14);
-            }
-
             .current-date-wrapper {
                 box-sizing: border-box;
                 display: flex;
@@ -222,12 +218,11 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='30' viewBox='0 0 24 24' width='30' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(228, 122, 47)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
                 background-repeat: no-repeat;
                 background-position-x: 100%;
-                transition: background-color 0.3s, color 0.3s;
+                transition: background-color 0.3s;
 
                 &:hover {
                     cursor: pointer;
                     background-color: rgba(42, 42, 48, 0.8);
-                    color: rgb(240, 123, 14);
                 }
 
                 .date-suffix {
