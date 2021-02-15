@@ -74,7 +74,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     get allowPreviousMonth(): boolean {
         const now = new Date();
 
-        return this.year >= now.getFullYear() && this.month > 0;
+        return this.year > now.getFullYear() || this.month > now.getMonth() + 1;
     }
 
     get monthAndDate(): string {
@@ -114,9 +114,13 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     public getDate(row: number, column: number): { date: number, month: number } {
-        const prefixSum = this.getPrefixSum(this.month);
-        const rowIndex = this.rowOffset + row - 1;
-        const dayOffset = rowIndex * 7 + column - prefixSum;
+        const dayCount = (this.rowOffset + row - 1) * 7 + column;
+
+        if (dayCount <= this.columnOffset) {
+            return { date: dayCount - this.columnOffset + this.days.slice(-1)[0], month: 12 };
+        }
+
+        const dayOffset = dayCount - this.getPrefixSum(this.month);
 
         if (dayOffset <= 0) {
             return { date: this.days[this.month - 2] + dayOffset, month: this.month - 1 };
@@ -277,18 +281,14 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                         height: 1rem;
                         transition: background-color 0.1s, color 0.1s;
 
-                        &:hover {
+                        &:not(.other-month):hover {
                             cursor: pointer;
                             background-color: rgb(240, 123, 14);
                         }
 
                         &.other-month {
                             color: rgb(135, 135, 135);
-
-                            &:hover {
-                                cursor: pointer;
-                                color: rgb(255, 255, 255);
-                            }
+                            transition: none;
                         }
                     }
                 }
