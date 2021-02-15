@@ -5,8 +5,8 @@
         <div class="dates">
             <div class="dates-wrapper" :class="{ 'active-wrapper': isActive }">
                 <div class="current-date-wrapper" @click="isActive = !isActive">
-                    <span>{{ monthAndDate }}</span>
-                    <span class="date-suffix">{{ suffix }}</span>
+                    <span>{{ selectedMonthAndDate }}</span>
+                    <span class="date-suffix">{{ selectedDateSuffix }}</span>
                     <span>, {{ selected.getFullYear() }}</span>
                 </div>
 
@@ -16,7 +16,7 @@
                             :class="{ 'disabled-arrow': !allowPreviousMonth }"
                             @click="moveMonth(false)" />
 
-                        <span>{{ monthAndYear }}</span>
+                        <span>{{ panelMonthAndYear }}</span>
                         <chevron-right class="page-arrow" @click="moveMonth(true)" />
                     </div>
 
@@ -63,31 +63,31 @@ class DateSelectorProp {
 export default class DateSelector extends Vue.with(DateSelectorProp) {
     public readonly letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     public days = [31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    public selected = this.modelValue ?? new Date();
-    public year = this.selected.getFullYear();
-    public month = this.selected.getMonth() + 1;
-    public date = this.selected.getDate();
-    public columnOffset = 0;
-    public rowOffset = 0;
-    public rows = 0;
+    public selected = this.modelValue ? new Date(this.modelValue) : new Date();
+    public panelDate = new Date(this.selected);
     public isActive = false;
+    public rows = 0;
+    private columnOffset = 0;
+    private rowOffset = 0;
+
+    get selectedMonthAndDate(): string {
+        return `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}`;
+    }
+
+    get selectedDateSuffix(): string {
+        return TimeUtility.getDateSuffix(this.selected.getDate());
+    }
 
     get allowPreviousMonth(): boolean {
         const now = new Date();
 
-        return this.year > now.getFullYear() || this.month > now.getMonth() + 1;
+        return this.panelDate.getFullYear() > now.getFullYear() || this.panelDate.getMonth() > now.getMonth();
     }
 
-    get monthAndDate(): string {
-        return `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}`;
-    }
+    get panelMonthAndYear(): string {
+        const month = TimeUtility.getMonthName(this.panelDate.getMonth());
 
-    get monthAndYear(): string {
-        return `${TimeUtility.getMonthName(this.month - 1).slice(0, 3)} ${this.year}`;
-    }
-
-    get suffix(): string {
-        return TimeUtility.getDateSuffix(this.selected.getDate());
+        return `${month.slice(0, 3)} ${this.panelDate.getFullYear()}`;
     }
 
     public created(): void {
@@ -99,28 +99,26 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
             return;
         }
 
-        if (isNext && this.month === 12) {
-            this.year++;
-            this.month = 1;
+        if (isNext && this.panelDate.getMonth() === 11) {
+            this.panelDate = new Date(this.panelDate.getFullYear() + 1, 0);
         }
-        else if (!isNext && this.month === 1) {
-            this.year--;
-            this.month = 12;
+        else if (!isNext && !this.panelDate.getMonth()) {
+            this.panelDate = new Date(this.panelDate.getFullYear() - 1, 11);
         }
         else {
-            this.month += isNext ? 1 : -1;
+            const month = this.panelDate.getMonth() + (isNext ? 1 : -1);
+            this.panelDate = new Date(this.panelDate.getFullYear(), month);
         }
 
         this.setConstraints();
     }
 
     public getDayOptionClasses(row: number, column: number): { [key: string]: boolean } {
-        const now = new Date();
         const date = this.getDate(row, column);
 
         return {
             'unselectable-day': !this.isSelectable(date),
-            'today': now.toLocaleDateString() === date.toLocaleDateString(),
+            'today': new Date().toLocaleDateString() === date.toLocaleDateString(),
             'selected-day': this.selected.toLocaleDateString() === date.toLocaleDateString()
         };
     }
@@ -134,42 +132,44 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     public getDate(row: number, column: number): Date {
+        const [month, year] = [this.panelDate.getMonth(), this.panelDate.getFullYear()];
         const dayCount = (this.rowOffset + row - 1) * 7 + column;
 
         if (dayCount <= this.columnOffset) {
-            return new Date(this.year - 1, 11, dayCount - this.columnOffset + this.days.slice(-1)[0]);
+            return new Date(year - 1, 11, dayCount - this.columnOffset + this.days.slice(-1)[0]);
         }
 
-        const dayOffset = dayCount - this.getPrefixSum(this.month);
+        const dayOffset = dayCount - this.getPrefixSum(month);
 
         if (dayOffset <= 0) {
-            return new Date(this.year, this.month - 2, this.days[this.month - 2] + dayOffset);
+            return new Date(year, month - 1, this.days[month - 1] + dayOffset);
         }
-        else if (dayOffset <= this.days[this.month - 1]) {
-            return new Date(this.year, this.month - 1, dayOffset);
+        else if (dayOffset <= this.days[month]) {
+            return new Date(year, month, dayOffset);
         }
-        else if (this.month === 12) {
-            return new Date(this.year + 1, 1, dayOffset - this.days[this.month - 1]);
+        else if (month === 11) {
+            return new Date(year + 1, 0, dayOffset - this.days[month]);
         }
 
-        return new Date(this.year, this.month + 1, dayOffset - this.days[this.month - 1]);
+        return new Date(year, month + 1, dayOffset - this.days[month]);
     }
 
     private isSelectable(date: Date): boolean {
-        return this.month === date.getMonth() + 1 && date.getTime() >= Date.now();
+        return this.panelDate.getMonth() === date.getMonth() && date.getTime() >= Date.now();
     }
 
     private setConstraints(): void {
-        this.days[1] = TimeUtility.isLeapYear(this.year) ? 29 : 28;
-        this.columnOffset = new Date(this.year, 0, 1).getDay();
-        this.rowOffset = Math.floor(this.getPrefixSum(this.month) / 7);
-        this.rows = Math.floor((this.getPrefixSum(this.month + 1) - 1) / 7) - this.rowOffset + 1;
+        const [month, year] = [this.panelDate.getMonth(), this.panelDate.getFullYear()];
+        this.days[1] = TimeUtility.isLeapYear(year) ? 29 : 28;
+        this.columnOffset = new Date(year, 0, 1).getDay();
+        this.rowOffset = Math.floor(this.getPrefixSum(month) / 7);
+        this.rows = Math.floor((this.getPrefixSum(month + 1) - 1) / 7) - this.rowOffset + 1;
     }
 
     private getPrefixSum(month: number, includeOffset = true): number {
         const offset = includeOffset ? this.columnOffset : 0;
 
-        return this.days.slice(0, month - 1).reduce((total, _) => _ + total, 0) + offset;
+        return this.days.slice(0, month).reduce((total, _) => _ + total, 0) + offset;
     }
 }
 </script>
