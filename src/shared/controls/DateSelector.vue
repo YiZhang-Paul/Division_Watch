@@ -3,16 +3,21 @@
         <span>{{ name }}</span>
 
         <div class="dates">
-            <div class="dates-wrapper" :class="{ 'active-wrapper': isActive }" @click="isActive = !isActive">
-                <div class="current-date-wrapper">
+            <div class="dates-wrapper" :class="{ 'active-wrapper': isActive }">
+                <div class="current-date-wrapper" @click="isActive = !isActive">
                     <span>{{ monthAndDate }}</span>
                     <span class="date-suffix">{{ suffix }}</span>
-                    <span>, {{ year }}</span>
+                    <span>, {{ selected.getFullYear() }}</span>
                 </div>
 
                 <div v-if="isActive" class="selection-panel">
                     <div class="month-selection">
+                        <chevron-left class="page-arrow"
+                            :class="{ 'disabled-arrow': !allowPreviousMonth }"
+                            @click="moveMonth(false)" />
+
                         <span>{{ monthAndYear }}</span>
+                        <chevron-right class="page-arrow" @click="moveMonth(true)" />
                     </div>
 
                     <div class="day-headers">
@@ -38,6 +43,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { ChevronLeft, ChevronRight } from 'mdue';
 
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
@@ -47,6 +53,10 @@ class DateSelectorProp {
 }
 
 @Options({
+    components: {
+        ChevronLeft,
+        ChevronRight
+    },
     emits: ['update:modelValue']
 })
 export default class DateSelector extends Vue.with(DateSelectorProp) {
@@ -61,8 +71,14 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     public rows = 0;
     public isActive = false;
 
+    get allowPreviousMonth(): boolean {
+        const now = new Date();
+
+        return this.year >= now.getFullYear() && this.month > 0;
+    }
+
     get monthAndDate(): string {
-        return `${TimeUtility.getMonthName(this.month - 1)} ${this.date}`;
+        return `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}`;
     }
 
     get monthAndYear(): string {
@@ -70,18 +86,31 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     get suffix(): string {
-        return TimeUtility.getDateSuffix(this.date);
+        return TimeUtility.getDateSuffix(this.selected.getDate());
     }
 
     public created(): void {
         this.setConstraints();
     }
 
-    public setConstraints(): void {
-        this.days[1] = TimeUtility.isLeapYear(this.year) ? 29 : 28;
-        this.columnOffset = new Date(this.year, 0, 1).getDay();
-        this.rowOffset = Math.floor(this.getPrefixSum(this.month) / 7);
-        this.rows = Math.floor((this.getPrefixSum(this.month + 1) - 1) / 7) - this.rowOffset + 1;
+    public moveMonth(isNext: boolean): void {
+        if (!isNext && !this.allowPreviousMonth) {
+            return;
+        }
+
+        if (isNext && this.month === 12) {
+            this.year++;
+            this.month = 1;
+        }
+        else if (!isNext && this.month === 1) {
+            this.year--;
+            this.month = 12;
+        }
+        else {
+            this.month += isNext ? 1 : -1;
+        }
+
+        this.setConstraints();
     }
 
     public getDate(row: number, column: number): { date: number, month: number } {
@@ -97,6 +126,13 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         }
 
         return { date: dayOffset - this.days[this.month - 1], month: this.month + 1 };
+    }
+
+    private setConstraints(): void {
+        this.days[1] = TimeUtility.isLeapYear(this.year) ? 29 : 28;
+        this.columnOffset = new Date(this.year, 0, 1).getDay();
+        this.rowOffset = Math.floor(this.getPrefixSum(this.month) / 7);
+        this.rows = Math.floor((this.getPrefixSum(this.month + 1) - 1) / 7) - this.rowOffset + 1;
     }
 
     private getPrefixSum(month: number, includeOffset = true): number {
@@ -182,13 +218,28 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 .month-selection {
                     box-sizing: border-box;
                     display: flex;
-                    justify-content: center;
+                    justify-content: space-around;
                     align-items: center;
                     padding: 0 3%;
                     margin-bottom: 1.75%;
                     width: 100%;
                     color: rgb(225, 225, 225);
                     font-size: 0.5rem;
+
+                    .page-arrow {
+                        font-size: 0.7rem;
+                        transition: color 0.2s;
+
+                        &:hover {
+                            cursor: pointer;
+                            color: rgb(240, 123, 14);
+                        }
+
+                        &.disabled-arrow, &.disabled-arrow:hover {
+                            cursor: default;
+                            color: rgb(135, 135, 135);
+                        }
+                    }
                 }
 
                 .day-headers, .row {
