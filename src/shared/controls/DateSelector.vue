@@ -4,13 +4,13 @@
 
         <div class="dates">
             <div class="dates-wrapper">
-                <div class="current-date-wrapper" @click="isActive = !isActive">
+                <div class="current-date-wrapper" @click="toggleSelection()">
                     <span>{{ selectedMonthAndDate }}</span>
                     <span class="date-suffix">{{ selectedDateSuffix }}</span>
                     <span>, {{ selected.getFullYear() }}</span>
                 </div>
 
-                <div v-if="isActive" class="selection-panel">
+                <div v-if="isActive" :id="id" class="selection-panel">
                     <div class="month-selection">
                         <chevron-left class="page-arrow"
                             :class="{ 'disabled-arrow': !allowPreviousMonth }"
@@ -49,6 +49,8 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import { ChevronLeft, ChevronRight } from 'mdue';
+import VanillaTilt from 'vanilla-tilt';
+import * as uuid from 'uuid';
 
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
@@ -65,6 +67,7 @@ class DateSelectorProp {
     emits: ['update:modelValue']
 })
 export default class DateSelector extends Vue.with(DateSelectorProp) {
+    public readonly id = `date-selection-panel-${uuid.v4()}`;
     public readonly letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     public days = [31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     public selected = this.modelValue ? new Date(this.modelValue) : new Date();
@@ -96,6 +99,17 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
     public created(): void {
         this.setConstraints();
+    }
+
+    public toggleSelection(): void {
+        this.isActive = !this.isActive;
+
+        if (this.isActive) {
+            setTimeout(() => {
+                const panel = document.querySelector(`#${this.id}`);
+                VanillaTilt.init(panel as HTMLElement, { max: 0, glare: true, 'max-glare': 0.1 });
+            });
+        }
     }
 
     public moveMonth(isNext: boolean): void {
