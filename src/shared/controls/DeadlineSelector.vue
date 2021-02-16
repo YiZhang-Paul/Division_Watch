@@ -1,23 +1,32 @@
 <template>
     <div class="deadline-selector-container">
-        <date-selector v-if="!isRecur"
-            class="selector"
-            :name="deadlineName"
-            :modelValue="currentDeadline"
-            @update:modelValue="$emit('update:deadline', $event)">
-        </date-selector>
+        <div class="basic-selectors">
+            <date-selector v-if="!isRecur"
+                class="selector"
+                :name="deadlineName"
+                :modelValue="currentDeadline"
+                @update:modelValue="$emit('update:deadline', $event)">
+            </date-selector>
 
-        <day-selector v-if="isRecur"
-            class="selector"
-            :name="recurName"
-            :days="currentRecur"
-            :delay="100"
-            @days:select="$emit('update:recur', $event)">
-        </day-selector>
+            <day-selector v-if="isRecur"
+                class="selector"
+                :name="recurName"
+                :days="currentRecur"
+                :delay="100"
+                @days:select="$emit('update:recur', $event)">
+            </day-selector>
 
-        <menu-button v-if="allowRecur" class="toggle-button" @click="toggleSelection()">
-            {{ isRecur ? 'to deadline' : 'to recur' }}
-        </menu-button>
+            <menu-button v-if="allowRecur" class="toggle-button" @click="toggleSelection()">
+                {{ isRecur ? 'to deadline' : 'to recur' }}
+            </menu-button>
+        </div>
+
+        <time-selector v-if="showTime"
+            class="time-selector selector"
+            :name="dueTimeName"
+            :modelValue="dueTime"
+            @update:modelValue="$emit('update:time', $event)">
+        </time-selector>
     </div>
 </template>
 
@@ -27,12 +36,14 @@ import { Options, Vue, prop } from 'vue-class-component';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import DateSelector from '../../shared/controls/DateSelector.vue';
 import DaySelector from '../../shared/controls/DaySelector.vue';
+import TimeSelector from '../../shared/controls/TimeSelector.vue';
 
 class DeadlineSelectorProp {
     public deadlineName = prop<string>({ default: '' });
     public deadline = prop<Date>({ default: new Date() });
     public recurName = prop<string>({ default: '' });
     public recur = prop<boolean[]>({ default: new Array(7).fill(false) });
+    public dueTimeName = prop<string>({ default: '' });
     public dueTime = prop<string>({ default: '' });
     public allowRecur = prop<boolean>({ default: true });
 }
@@ -41,11 +52,13 @@ class DeadlineSelectorProp {
     components: {
         MenuButton,
         DateSelector,
-        DaySelector
+        DaySelector,
+        TimeSelector
     },
     emits: [
         'update:deadline',
-        'update:recur'
+        'update:recur',
+        'update:time'
     ]
 })
 export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
@@ -59,6 +72,10 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
 
     get currentRecur(): boolean[] {
         return this.recur?.slice() ?? new Array(7).fill(false);
+    }
+
+    get showTime(): boolean {
+        return this.isRecur ? this.currentRecur.some(_ => _) : Boolean(this.currentDeadline);
     }
 
     public toggleSelection(): void {
@@ -81,8 +98,29 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
 <style lang="scss" scoped>
 .deadline-selector-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    position: relative;
+
+    .basic-selectors {
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        .toggle-button {
+            position: absolute;
+            left: 25%;
+            width: 15%;
+            height: 65%;
+            background-color: rgb(240, 123, 14);
+            font-size: 0.45rem;
+
+            &:hover {
+                background-color: rgb(241, 147, 58);
+            }
+        }
+    }
 
     .selector {
         width: 100%;
@@ -91,16 +129,8 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
         animation: revealContent 0.3s ease 0.1s forwards;
     }
 
-    .toggle-button {
-        position: absolute;
-        left: 25%;
-        width: 15%;
-        background-color: rgb(240, 123, 14);
-        font-size: 0.45rem;
-
-        &:hover {
-            background-color: rgb(241, 147, 58);
-        }
+    .time-selector {
+        margin-top: 1%;
     }
 }
 </style>
