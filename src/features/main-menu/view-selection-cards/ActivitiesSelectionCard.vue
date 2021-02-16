@@ -116,7 +116,6 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     width: 100%;
     height: 100%;
     font-size: 0.6rem;
-    transition: color 0.25s;
 
     &:hover {
         color: rgba(35, 35, 35, 0.9);
@@ -189,10 +188,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             align-items: center;
             width: 100%;
             height: 100%;
-
-            .type, .count-wrapper {
-                transition: color 0.25s;
-            }
+            transition: color 0.25s;
         }
 
         .task-count, .interruption-count {

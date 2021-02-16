@@ -1,6 +1,6 @@
 <template>
     <div class="distribution-chart-container" :title="tooltip">
-        <div class="embed-content" :style="{ opacity: totalRendered === visibleGroups.length ? 1 : 0 }">
+        <div v-if="totalRendered === visibleGroups.length" class="embed-content">
             <slot></slot>
         </div>
 
@@ -74,7 +74,7 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
         width: 75%;
         height: 75%;
         opacity: 0;
-        transition: opacity 0.3s;
+        animation: revealContent 0.25s ease forwards;
     }
 
     .percentage-chart {
