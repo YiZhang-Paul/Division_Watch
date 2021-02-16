@@ -9,7 +9,7 @@
                         <span>{{ selectedMonthAndDate }}</span>
                         <span class="date-suffix">{{ selectedDateSuffix }}</span>
                         <span>, {{ selected.getFullYear() }}</span>
-                        <close-circle-outline class="clear-button" @click="$emit('update:modelValue', null)" />
+                        <close-circle-outline class="clear-button" @click.stop="$emit('update:modelValue', null)" />
                     </template>
 
                     <span v-if="!selected">N/A</span>
@@ -162,6 +162,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         const date = this.getDate(row, column);
 
         if (this.isSelectable(date)) {
+            this.isActive = false;
             this.$emit('update:modelValue', date);
         }
     }

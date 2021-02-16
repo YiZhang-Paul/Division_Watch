@@ -102,6 +102,7 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
     align-items: center;
 
     .basic-selectors {
+        z-index: 1;
         display: flex;
         align-items: center;
         position: relative;
@@ -130,6 +131,7 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
     }
 
     .time-selector {
+        z-index: 0;
         margin-top: 1%;
     }
 }
