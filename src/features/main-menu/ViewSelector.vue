@@ -106,7 +106,6 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     .planner-selection-card {
         flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
-        background-color: rgb(249, 154, 66);
         color: rgb(0, 0, 0);
         line-height: 1.3rem;
         font-size: 1.45rem;
@@ -120,12 +119,8 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
             margin-top: -18.5%;
             width: 90%;
             height: 90%;
-            background: rgb(0, 0, 0) url('../../assets/icons/sharpshooter_skull.svg') no-repeat center center/cover;
+            background: url('../../assets/images/sharpshooter_skull_hollow.png') no-repeat center center;
             transition: background-color 0.3s;
-
-            &:hover {
-                background-color: rgb(92, 24, 202);
-            }
         }
     }
 
