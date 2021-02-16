@@ -5,9 +5,14 @@
         <div class="dates">
             <div class="dates-wrapper">
                 <div class="current-date-wrapper" @click="toggleSelection()">
-                    <span>{{ selectedMonthAndDate }}</span>
-                    <span class="date-suffix">{{ selectedDateSuffix }}</span>
-                    <span>, {{ selected.getFullYear() }}</span>
+                    <template v-if="selected">
+                        <span>{{ selectedMonthAndDate }}</span>
+                        <span class="date-suffix">{{ selectedDateSuffix }}</span>
+                        <span>, {{ selected.getFullYear() }}</span>
+                        <close-circle-outline class="clear-button" @click="$emit('update:modelValue', null)" />
+                    </template>
+
+                    <span v-if="!selected">N/A</span>
                 </div>
 
                 <div v-if="isActive" :id="id" class="selection-panel" @blur="onBlur()">
@@ -48,7 +53,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { ChevronLeft, ChevronRight } from 'mdue';
+import { ChevronLeft, ChevronRight, CloseCircleOutline } from 'mdue';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 
@@ -62,7 +67,8 @@ class DateSelectorProp {
 @Options({
     components: {
         ChevronLeft,
-        ChevronRight
+        ChevronRight,
+        CloseCircleOutline
     },
     emits: ['update:modelValue']
 })
@@ -70,22 +76,22 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     public readonly id = `date-selection-panel-${uuid.v4()}`;
     public readonly letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     public days = [31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    public panelDate = new Date(this.selected);
+    public panelDate = this.selected ? new Date(this.selected) : new Date();
     public isActive = false;
     public rows = 0;
     private columnOffset = 0;
     private rowOffset = 0;
 
-    get selected(): Date {
-        return this.modelValue ? new Date(this.modelValue) : new Date();
+    get selected(): Date | null {
+        return this.modelValue ? new Date(this.modelValue) : null;
     }
 
     get selectedMonthAndDate(): string {
-        return `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}`;
+        return this.selected ? `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}` : '';
     }
 
     get selectedDateSuffix(): string {
-        return TimeUtility.getDateSuffix(this.selected.getDate());
+        return this.selected ? TimeUtility.getDateSuffix(this.selected.getDate()) : '';
     }
 
     get allowPreviousMonth(): boolean {
@@ -148,7 +154,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         return {
             'unselectable-day': !this.isSelectable(date),
             'today': new Date().toLocaleDateString() === date.toLocaleDateString(),
-            'selected-day': this.selected.toLocaleDateString() === date.toLocaleDateString()
+            'selected-day': this.selected?.toLocaleDateString() === date.toLocaleDateString()
         };
     }
 
@@ -269,10 +275,27 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                     background-color: rgba(42, 42, 48, 0.8);
                 }
 
+                span, .clear-button {
+                    opacity: 0;
+                    animation: revealContent 0.2s ease 0.1s forwards;
+                }
+
                 .date-suffix {
                     align-self: flex-start;
                     margin-left: 0.025rem;
                     font-size: 0.325rem;
+                }
+
+                .clear-button {
+                    margin-left: 0.1rem;
+                    color: rgb(230, 134, 44);
+                    font-size: 0.475rem;
+                    transition: color 0.3s;
+
+                    &:hover {
+                        cursor: pointer;
+                        color: rgb(230, 26, 60);
+                    }
                 }
             }
 
