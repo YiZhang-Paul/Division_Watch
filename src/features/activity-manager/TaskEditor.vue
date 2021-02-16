@@ -36,7 +36,9 @@
             <deadline-selector class="editor-control"
                 :deadlineName="'Deadline'"
                 :recurName="'Recur'"
-                :allowRecur="!task.isInterruption && !task.parent">
+                :allowRecur="!task.isInterruption && !task.parent"
+                :deadline="task.deadline"
+                @update:deadline="onTaskChange('deadline', $event)">
             </deadline-selector>
         </section-panel>
 

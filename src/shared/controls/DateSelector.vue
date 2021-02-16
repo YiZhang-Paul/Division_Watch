@@ -70,12 +70,15 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     public readonly id = `date-selection-panel-${uuid.v4()}`;
     public readonly letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     public days = [31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    public selected = this.modelValue ? new Date(this.modelValue) : new Date();
     public panelDate = new Date(this.selected);
     public isActive = false;
     public rows = 0;
     private columnOffset = 0;
     private rowOffset = 0;
+
+    get selected(): Date {
+        return this.modelValue ? new Date(this.modelValue) : new Date();
+    }
 
     get selectedMonthAndDate(): string {
         return `${TimeUtility.getMonthName(this.selected.getMonth())} ${this.selected.getDate()}`;
