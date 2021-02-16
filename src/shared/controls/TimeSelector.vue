@@ -10,7 +10,7 @@
                 v-model="hour"
                 @input="onTimeChange()" />
 
-            <span>:</span>
+            <span class="separator">:</span>
 
             <input type="number"
                 :id="minuteId"
@@ -18,6 +18,8 @@
                 :max="maxMinute"
                 v-model="minute"
                 @input="onTimeChange()" />
+
+            <menu-button class="reset-button" @click="reset()">reset</menu-button>
         </div>
     </div>
 </template>
@@ -26,12 +28,15 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import * as uuid from 'uuid';
 
+import MenuButton from './MenuButton.vue';
+
 class TimeSelectorProp {
     public name = prop<string>({ default: '' });
     public modelValue = prop<string>({ default: '23:59' });
 }
 
 @Options({
+    components: { MenuButton },
     watch: {
         modelValue(current: string): void {
             this.hour = this.maxHour;
@@ -105,6 +110,7 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
         width: calc(100% - #{$name-width});
 
         input {
@@ -118,10 +124,22 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
             font-family: 'Jost';
         }
 
-        span {
+        .separator {
             margin: 0 0.1rem;
             font-size: 0.5rem;
             font-weight: 600;
+        }
+
+        .reset-button {
+            position: absolute;
+            right: 2.5%;
+            width: 22.5%;
+            background-color: rgb(240, 123, 14);
+            font-size: 0.45rem;
+
+            &:hover {
+                background-color: rgb(241, 147, 58);
+            }
         }
     }
 }

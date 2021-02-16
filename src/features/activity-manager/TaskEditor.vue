@@ -40,7 +40,7 @@
                 :deadline="task.deadline"
                 :recur="task.recur"
                 :isRecur="task.recur.some(_ => _)"
-                :dueTimeName="'Finish Before'"
+                :dueTimeName="'Finish By'"
                 :dueTime="task.dueTime"
                 @update:deadline="onTaskChange('deadline', $event)"
                 @update:recur="onTaskChange('recur', $event)"

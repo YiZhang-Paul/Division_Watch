@@ -17,7 +17,7 @@
             </day-selector>
 
             <menu-button v-if="allowRecur" class="toggle-button" @click="toggleSelection()">
-                {{ isRecurMode ? 'to deadline' : 'to recur' }}
+                {{ isRecurMode ? 'switch to deadline' : 'switch to recur' }}
             </menu-button>
         </div>
 
@@ -132,8 +132,8 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
 
         .toggle-button {
             position: absolute;
-            left: 25%;
-            width: 15%;
+            left: 17.5%;
+            width: 22.5%;
             height: 65%;
             background-color: rgb(240, 123, 14);
             font-size: 0.45rem;
