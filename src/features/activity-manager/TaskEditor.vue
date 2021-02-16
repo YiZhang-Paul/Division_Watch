@@ -38,7 +38,9 @@
                 :recurName="'Recur'"
                 :allowRecur="!task.isInterruption && !task.parent"
                 :deadline="task.deadline"
-                @update:deadline="onTaskChange('deadline', $event)">
+                :recur="task.recur"
+                @update:deadline="onTaskChange('deadline', $event)"
+                @update:recur="onTaskChange('recur', $event)">
             </deadline-selector>
         </section-panel>
 
