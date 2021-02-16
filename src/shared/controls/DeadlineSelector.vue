@@ -33,6 +33,7 @@ class DeadlineSelectorProp {
     public deadline = prop<Date>({ default: new Date() });
     public recurName = prop<string>({ default: '' });
     public recur = prop<boolean[]>({ default: new Array(7).fill(false) });
+    public dueTime = prop<string>({ default: '' });
     public allowRecur = prop<boolean>({ default: true });
 }
 
@@ -86,6 +87,8 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
     .selector {
         width: 100%;
         height: 100%;
+        opacity: 0;
+        animation: revealContent 0.3s ease 0.1s forwards;
     }
 
     .toggle-button {
@@ -94,6 +97,10 @@ export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
         width: 15%;
         background-color: rgb(240, 123, 14);
         font-size: 0.45rem;
+
+        &:hover {
+            background-color: rgb(241, 147, 58);
+        }
     }
 }
 </style>

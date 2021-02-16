@@ -39,6 +39,7 @@
                 :allowRecur="!task.isInterruption && !task.parent"
                 :deadline="task.deadline"
                 :recur="task.recur"
+                :dueTime="task.dueTime"
                 @update:deadline="onTaskChange('deadline', $event)"
                 @update:recur="onTaskChange('recur', $event)">
             </deadline-selector>

@@ -90,7 +90,7 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
         align-items: center;
         padding: 0 2%;
         width: calc(100% - #{$name-width});
-        font-size: 0.45rem;
+        font-size: 0.475rem;
         font-family: 'Jost';
 
         & > div {
@@ -99,6 +99,7 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0.375%;
             width: calc(0.775rem - #{$border-width} * 2);
             height: calc(0.775rem - #{$border-width} * 2);
             border: $border-width solid rgb(195, 195, 195);
