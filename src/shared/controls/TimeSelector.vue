@@ -3,14 +3,28 @@
         <span>{{ name }}</span>
 
         <div class="time">
-            <span>{{ time[0] }}:</span>
-            <span>{{ time[1] }}</span>
+            <input type="number"
+                :id="hourId"
+                :min="minValue"
+                :max="maxHour"
+                v-model="hour"
+                @input="onTimeChange()" />
+
+            <span>:</span>
+
+            <input type="number"
+                :id="minuteId"
+                :min="minValue"
+                :max="maxMinute"
+                v-model="minute"
+                @input="onTimeChange()" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import * as uuid from 'uuid';
 
 class TimeSelectorProp {
     public name = prop<string>({ default: '' });
@@ -18,10 +32,55 @@ class TimeSelectorProp {
 }
 
 @Options({
+    watch: {
+        modelValue(current: string): void {
+            this.hour = this.maxHour;
+            this.minute = this.maxMinute;
+
+            if (current) {
+                [this.hour, this.minute] = current.split(':').map(Number);
+                this.onTimeChange(false);
+            }
+        }
+    },
     emits: ['update:modelValue']
 })
 export default class TimeSelector extends Vue.with(TimeSelectorProp) {
-    public time = this.modelValue ? this.modelValue.split(':') : [23, 59];
+    public readonly hourId = `hour-id-${uuid.v4()}`;
+    public readonly minuteId = `minute-id-${uuid.v4()}`;
+    public readonly minValue = 0;
+    public readonly maxHour = 23;
+    public readonly maxMinute = 59;
+    public hour = this.maxHour;
+    public minute = this.maxMinute;
+
+    public mounted(): void {
+        if (this.modelValue) {
+            [this.hour, this.minute] = this.modelValue.split(':').map(Number);
+            this.onTimeChange(false);
+        }
+    }
+
+    public onTimeChange(emit = true): void {
+        this.hour = Math.min(this.maxHour, Math.max(this.minValue, this.hour));
+        this.minute = Math.min(this.maxMinute, Math.max(this.minValue, this.minute));
+        this.setValue(this.hourId, this.hour);
+        this.setValue(this.minuteId, this.minute);
+
+        setTimeout(() => {
+            this.setValue(this.hourId, this.hour);
+            this.setValue(this.minuteId, this.minute);
+        });
+
+        if (emit) {
+            this.$emit('update:modelValue', `${this.hour}:${this.minute}`);
+        }
+    }
+
+    private setValue(id: string, value: number): void {
+        const input = document.querySelector(`#${id}`) as HTMLInputElement;
+        input.value = `${value < 10 ? '0' : ''}${value}`;
+    }
 }
 </script>
 
@@ -47,7 +106,23 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
         justify-content: center;
         align-items: center;
         width: calc(100% - #{$name-width});
-        font-size: 0.55rem;
+
+        input {
+            padding: 0.1% 0 0.1% 0.15rem;
+            width: 1.1rem;
+            outline: none;
+            border: none;
+            background-color: rgba(37, 34, 34, 0.3);
+            color: rgb(255, 255, 255);
+            font-size: 0.55rem;
+            font-family: 'Jost';
+        }
+
+        span {
+            margin: 0 0.1rem;
+            font-size: 0.5rem;
+            font-weight: 600;
+        }
     }
 }
 </style>
