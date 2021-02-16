@@ -194,7 +194,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     private isSelectable(date: Date): boolean {
-        return this.panelDate.getMonth() === date.getMonth() && date.getTime() >= Date.now();
+        return date.toLocaleDateString() >= new Date().toLocaleDateString();
     }
 
     private setConstraints(): void {
