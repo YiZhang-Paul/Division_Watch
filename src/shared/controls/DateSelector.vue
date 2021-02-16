@@ -1,5 +1,5 @@
 <template>
-    <div class="date-selector-container">
+    <div class="date-selector-container" ref="container">
         <span>{{ name }}</span>
 
         <div class="dates">
@@ -10,7 +10,7 @@
                     <span>, {{ selected.getFullYear() }}</span>
                 </div>
 
-                <div v-if="isActive" :id="id" class="selection-panel">
+                <div v-if="isActive" :id="id" class="selection-panel" @blur="onBlur()">
                     <div class="month-selection">
                         <chevron-left class="page-arrow"
                             :class="{ 'disabled-arrow': !allowPreviousMonth }"
@@ -104,6 +104,14 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
         this.setConstraints();
     }
 
+    public mounted(): void {
+        document.addEventListener('click', this.onClickOutside);
+    }
+
+    public beforeUnmount(): void {
+        document.removeEventListener('click', this.onClickOutside);
+    }
+
     public toggleSelection(): void {
         this.isActive = !this.isActive;
 
@@ -149,6 +157,16 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
         if (this.isSelectable(date)) {
             this.$emit('update:modelValue', date);
+        }
+    }
+
+    public onClickOutside(event: Event): void {
+        const path = event.composedPath();
+        const container = this.$refs.container as HTMLElement;
+        const target = event.target as HTMLElement;
+
+        if (path && !path.includes(container) && !container.contains(target)) {
+            this.isActive = false;
         }
     }
 
