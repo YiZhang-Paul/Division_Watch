@@ -194,7 +194,16 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     }
 
     private isSelectable(date: Date): boolean {
-        return date.toLocaleDateString() >= new Date().toLocaleDateString();
+        const [year, month] = [this.panelDate.getFullYear(), this.panelDate.getMonth()];
+
+        if (date.getFullYear() !== year || date.getMonth() !== month) {
+            return false;
+        }
+
+        const target = date.toLocaleDateString().split('/').reverse().join('/');
+        const current = new Date().toLocaleDateString().split('/').reverse().join('/');
+
+        return target >= current;
     }
 
     private setConstraints(): void {
