@@ -9,7 +9,7 @@
             @mouseover="$emit('chart:mouseover')"
             @mouseout="$emit('chart:mouseout')" />
 
-        <circle class="handle" cx="95" cy="50" :r="useSimpleView ? 1.5 : 2" :style="handleStyle" fill="rgb(255, 255, 255)" />
+        <circle class="handle" cx="95" cy="50" :r="useSimpleView ? 1 : 1.25" :style="handleStyle" fill="rgb(255, 255, 255)" />
     </svg>
 </template>
 
@@ -77,7 +77,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
         pointer-events: auto;
         opacity: 0.75;
         transform: rotate(4deg);
-        transition: opacity 0.3s;
+        transition: opacity 0.3s, stroke 0.25s;
 
         &:hover {
             opacity: 1;
@@ -94,7 +94,7 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
             fill: rgb(255, 255, 255);
         }
         10% {
-            fill: rgb(255, 50, 50);
+            fill: rgb(124, 235, 60);
         }
         20% {
             fill: rgb(255, 255, 255);

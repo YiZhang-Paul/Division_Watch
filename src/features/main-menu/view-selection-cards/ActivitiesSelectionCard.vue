@@ -1,12 +1,16 @@
 <template>
-    <div class="activities-selection-card-container">
+    <div class="activities-selection-card-container" @mouseover="isHovering = true" @mouseout="isHovering = false">
         <div class="titles">
             <span class="title">Activities</span>
             <span class="message">tasks & interruptions</span>
         </div>
 
         <div class="distribution-charts">
-            <distribution-chart class="chart" :groups="itemsDistribution" :renderDelay="chartDelay">
+            <distribution-chart class="chart"
+                :groups="itemsDistribution"
+                :renderDelay="chartDelay"
+                :isMonochrome="isHovering">
+
                 <div class="item-counts">
                     <span class="task-count">
                         <span>{{ tasks }}&nbsp;</span>
@@ -22,7 +26,8 @@
 
             <distribution-chart class="chart"
                 :groups="priorityDistribution"
-                :renderDelay="chartDelay">
+                :renderDelay="chartDelay"
+                :isMonochrome="isHovering">
             </distribution-chart>
         </div>
     </div>
@@ -46,6 +51,7 @@ class ActivitiesSelectionCardProp {
     components: { DistributionChart }
 })
 export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectionCardProp) {
+    public isHovering = false;
 
     get tasks(): number {
         return store.getters[`${taskItemKey}/incompleteParentTasks`].length;
@@ -90,6 +96,23 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     width: 100%;
     height: 100%;
     font-size: 0.8rem;
+    transition: color 0.25s;
+
+    &:hover {
+        color: rgba(35, 35, 35, 0.9);
+
+        .titles .message {
+            color: rgba(45, 45, 45, 0.8);
+        }
+
+        .distribution-charts {
+
+            .task-count span:last-of-type,
+            .interruption-count span:last-of-type {
+                color: rgba(35, 35, 35, 0.9);
+            }
+        }
+    }
 
     .titles {
         display: flex;
@@ -104,6 +127,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         .message {
             color: rgb(215, 215, 215);
+            transition: color 0.25s;
         }
     }
 
@@ -145,10 +169,12 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         .task-count span:last-of-type {
             color: rgb(246, 39, 226);
+            transition: color 0.25s;
         }
 
         .interruption-count span:last-of-type {
             color: rgb(83, 191, 252);
+            transition: color 0.25s;
         }
     }
 }

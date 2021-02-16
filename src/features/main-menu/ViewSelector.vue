@@ -69,17 +69,19 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         justify-content: space-around;
         align-items: center;
         box-sizing: border-box;
-        border: 2px solid rgba(195, 195, 195, 0.6);
-        background-color: rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(240, 240, 240, 0.7);
+        background-color: rgba(25, 25, 25, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
         color: rgb(255, 255, 255);
-        filter: brightness(0.8);
-        transition: filter 0.3s, border-color 0.3s;
+        filter: brightness(0.95);
+        transition: filter 0.25s, border 0.25s, background-color 0.25s, color 0.25s;
         animation: blinkFast 0.15s ease-in forwards 2;
 
         &:hover {
             cursor: pointer;
-            border-color: rgba(240, 240, 240, 0.7);
+            border: 1px solid rgba(25, 25, 25, 0.85);
+            background-color: rgba(236, 160, 60, 0.88);
+            color: rgba(35, 35, 35, 0.9);
             filter: brightness(1);
         }
     }
@@ -99,10 +101,6 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     .planner-selection-card, .ongoing-selection-card {
         margin-right: $horizontal-gap;
         animation-delay: 0.15s;
-    }
-
-    .login-selection-card, .settings-selection-card {
-        background-color: rgba(0, 0, 0, 0.8);
     }
 
     .planner-selection-card {
@@ -131,7 +129,6 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
 
     .ongoing-selection-card {
         height: calc(100% - #{$planner-card-height});
-        background-color: rgb(99, 80, 154);
     }
 
     .activities-selection-card {
@@ -142,11 +139,17 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         position: relative;
         height: calc((100% - #{$activities-card-height}) * 0.575);
 
+        &:hover .user-avatar {
+            border-color: rgba(35, 35, 35, 0.75);
+            background-color: transparent;
+        }
+
         .user-avatar {
             position: absolute;
             left: 7.5%;
             width: 1.8rem;
             height: 1.8rem;
+            transition: background-color 0.25s, border-color 0.25s;
         }
     }
 
