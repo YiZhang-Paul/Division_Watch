@@ -24,14 +24,6 @@
             </option-dropdown>
 
             <option-dropdown class="editor-control"
-                :name="'Deadline'"
-                :selected="task.deadline"
-                :options="taskOptions.deadlines"
-                :transform="toDisplayDate"
-                @options:select="onTaskChange('deadline', $event)">
-            </option-dropdown>
-
-            <option-dropdown class="editor-control"
                 :name="'Estimate'"
                 :selected="task.estimate"
                 :options="taskOptions.estimates"
@@ -41,13 +33,11 @@
                 @options:select="onTaskChange('estimate', $event)">
             </option-dropdown>
 
-            <day-selector v-if="!task.isInterruption && !task.parent"
-                class="editor-control"
-                :name="'Recur'"
-                :days="task.recur.slice()"
-                :isDisabled="task.parent"
-                @days:select="onTaskChange('recur', $event)">
-            </day-selector>
+            <deadline-selector class="editor-control"
+                :deadlineName="'Deadline'"
+                :recurName="'Recur'"
+                :allowRecur="!task.isInterruption && !task.parent">
+            </deadline-selector>
         </section-panel>
 
         <div class="subsections">
@@ -127,7 +117,7 @@ import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
-import DaySelector from '../../shared/controls/DaySelector.vue';
+import DeadlineSelector from '../../shared/controls/DeadlineSelector.vue';
 import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
 import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
@@ -146,7 +136,7 @@ class TaskEditorProp {
         PlaceholderPanel,
         SectionPanel,
         OptionDropdown,
-        DaySelector,
+        DeadlineSelector,
         SubtaskSummaryCard,
         ChecklistCard
     },
@@ -231,10 +221,6 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
 
     public onTaskChange(key: string, value: any, delay = 0): void {
         setTimeout(() => this.$emit('task:change', { ...this.task, [key]: value }), delay);
-    }
-
-    public toDisplayDate(raw: string): string {
-        return raw ? TimeUtility.toShortDateString(raw) : 'N/A';
     }
 
     public toDisplayEstimation(time: number): string {
