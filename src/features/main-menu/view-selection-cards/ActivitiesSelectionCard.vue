@@ -2,7 +2,7 @@
     <div class="activities-selection-card-container" @mouseover="isHovering = true" @mouseout="isHovering = false">
         <div class="titles">
             <span class="title">Activities</span>
-            <span class="message">tasks & interruptions</span>
+            <span class="message">Tasks & Interruptions</span>
         </div>
 
         <div class="distribution-charts">
@@ -13,13 +13,21 @@
 
                 <div class="item-counts">
                     <span class="task-count">
-                        <span>{{ tasks }}&nbsp;</span>
-                        <span>task{{ tasks > 1 ? 's' : '' }}</span>
+                        <span class="type">Task</span>
+
+                        <div class="count-wrapper">
+                            <span class="placeholder">{{ tasksPlaceholder }}</span>
+                            <span class="total">{{ tasks }}</span>
+                        </div>
                     </span>
 
                     <span class="interruption-count">
-                        <span>{{ interruptions }}&nbsp;</span>
-                        <span>interruption{{ interruptions > 1 ? 's' : '' }}</span>
+                        <span class="type">Interruption</span>
+
+                        <div class="count-wrapper">
+                            <span class="placeholder">{{ interruptionsPlaceholder }}</span>
+                            <span class="total">{{ interruptions }}</span>
+                        </div>
                     </span>
                 </div>
             </distribution-chart>
@@ -61,6 +69,18 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         return store.getters[`${taskItemKey}/incompleteInterruptions`].length;
     }
 
+    get tasksPlaceholder(): string {
+        const digits = String(this.tasks).length;
+
+        return '0'.repeat(Math.max(0, 3 - digits));
+    }
+
+    get interruptionsPlaceholder(): string {
+        const digits = String(this.interruptions).length;
+
+        return '0'.repeat(Math.max(0, 3 - digits));
+    }
+
     get itemsDistribution(): DistributionGroup[] {
         const childTasks = store.getters[`${taskItemKey}/incompleteChildTasks`].length;
         const parentTaskName = `parent task${this.tasks > 1 ? 's' : ''}`;
@@ -95,7 +115,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     padding: 0.75rem 0;
     width: 100%;
     height: 100%;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     transition: color 0.25s;
 
     &:hover {
@@ -105,11 +125,15 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             color: rgba(45, 45, 45, 0.8);
         }
 
-        .distribution-charts {
+        .distribution-charts .task-count,
+        .distribution-charts .interruption-count {
 
-            .task-count span:last-of-type,
-            .interruption-count span:last-of-type {
+            span {
                 color: rgba(35, 35, 35, 0.9);
+            }
+
+            .count-wrapper .placeholder {
+                color: rgba(25, 25, 25, 0.4);
             }
         }
     }
@@ -121,8 +145,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         align-items: center;
 
         .title {
-            line-height: 1.5rem;
-            font-size: 2rem;
+            line-height: 1.3rem;
+            font-size: 1.45rem;
         }
 
         .message {
@@ -165,16 +189,34 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             align-items: center;
             width: 100%;
             height: 100%;
+
+            .type, .count-wrapper {
+                transition: color 0.25s;
+            }
         }
 
-        .task-count span:last-of-type {
+        .task-count, .interruption-count {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .count-wrapper {
+                font-size: 1.5rem;
+                line-height: 1.6rem;
+
+                .placeholder {
+                    color: rgba(225, 225, 225, 0.3);
+                }
+            }
+        }
+
+        .task-count .type {
             color: rgb(246, 39, 226);
-            transition: color 0.25s;
         }
 
-        .interruption-count span:last-of-type {
+        .interruption-count .type {
             color: rgb(83, 191, 252);
-            transition: color 0.25s;
         }
     }
 }

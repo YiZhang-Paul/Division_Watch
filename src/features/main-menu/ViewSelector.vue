@@ -80,7 +80,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         &:hover {
             cursor: pointer;
             border: 1px solid rgba(25, 25, 25, 0.85);
-            background-color: rgba(236, 160, 60, 0.88);
+            background-color: rgba(240, 158, 29, 0.88);
             color: rgba(35, 35, 35, 0.9);
             filter: brightness(1);
         }
@@ -108,9 +108,11 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         height: calc(#{$planner-card-height} - #{$vertical-gap});
         background-color: rgb(249, 154, 66);
         color: rgb(0, 0, 0);
-        font-size: 2rem;
+        line-height: 1.3rem;
+        font-size: 1.45rem;
 
         span {
+            margin-top: 0.575rem;
             z-index: 1;
         }
 
