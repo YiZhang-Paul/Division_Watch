@@ -66,6 +66,12 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
         }
     }
 
+    public reset(): void {
+        this.hour = this.maxHour;
+        this.minute = this.maxMinute;
+        this.onTimeChange();
+    }
+
     public onTimeChange(emit = true): void {
         this.hour = Math.min(this.maxHour, Math.max(this.minValue, this.hour));
         this.minute = Math.min(this.maxMinute, Math.max(this.minValue, this.minute));
