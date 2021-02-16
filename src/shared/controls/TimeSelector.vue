@@ -138,14 +138,9 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
 
         .reset-button {
             position: absolute;
-            right: 2.5%;
-            width: 22.5%;
-            background-color: rgb(240, 123, 14);
+            right: 5%;
+            width: 20%;
             font-size: 0.45rem;
-
-            &:hover {
-                background-color: rgb(241, 147, 58);
-            }
         }
     }
 }
