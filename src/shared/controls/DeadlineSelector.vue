@@ -1,23 +1,23 @@
 <template>
     <div class="deadline-selector-container">
         <div class="basic-selectors">
-            <date-selector v-if="!isRecur"
+            <date-selector v-if="!isRecurMode"
                 class="selector"
                 :name="deadlineName"
-                :modelValue="currentDeadline"
-                @update:modelValue="$emit('update:deadline', $event)">
+                :modelValue="cachedDeadline"
+                @update:modelValue="onDeadlineChange($event)">
             </date-selector>
 
-            <day-selector v-if="isRecur"
+            <day-selector v-if="isRecurMode"
                 class="selector"
                 :name="recurName"
-                :days="currentRecur"
+                :days="cachedRecur"
                 :delay="100"
-                @days:select="$emit('update:recur', $event)">
+                @days:select="onRecurChange($event)">
             </day-selector>
 
             <menu-button v-if="allowRecur" class="toggle-button" @click="toggleSelection()">
-                {{ isRecur ? 'to deadline' : 'to recur' }}
+                {{ isRecurMode ? 'to deadline' : 'to recur' }}
             </menu-button>
         </div>
 
@@ -25,7 +25,7 @@
             class="time-selector selector"
             :name="dueTimeName"
             :modelValue="dueTime"
-            @update:modelValue="$emit('update:time', $event)">
+            @update:modelValue="onDueTimeChange($event)">
         </time-selector>
     </div>
 </template>
@@ -43,6 +43,7 @@ class DeadlineSelectorProp {
     public deadline = prop<Date>({ default: new Date() });
     public recurName = prop<string>({ default: '' });
     public recur = prop<boolean[]>({ default: new Array(7).fill(false) });
+    public isRecur = prop<boolean>({ default: false });
     public dueTimeName = prop<string>({ default: '' });
     public dueTime = prop<string>({ default: '' });
     public allowRecur = prop<boolean>({ default: true });
@@ -62,34 +63,54 @@ class DeadlineSelectorProp {
     ]
 })
 export default class DeadlineSelector extends Vue.with(DeadlineSelectorProp) {
-    public isRecur = false;
-    private cachedDeadline: Date | null = this.currentDeadline;
-    private cachedRecur: boolean[] = this.currentRecur;
-
-    get currentDeadline(): Date | null {
-        return this.deadline ? new Date(this.deadline) : null;
-    }
-
-    get currentRecur(): boolean[] {
-        return this.recur?.slice() ?? new Array(7).fill(false);
-    }
+    public isRecurMode = this.isRecur;
+    private cachedDeadline: Date | null = this.deadline ? new Date(this.deadline) : null;
+    private cachedRecur: boolean[] = this.recur?.slice() ?? new Array(7).fill(false);
+    private cachedDueTime: string | null = this.dueTime;
 
     get showTime(): boolean {
-        return this.isRecur ? this.currentRecur.some(_ => _) : Boolean(this.currentDeadline);
+        return this.isRecurMode ? this.cachedRecur.some(_ => _) : Boolean(this.cachedDeadline);
     }
 
     public toggleSelection(): void {
-        this.isRecur = !this.isRecur;
+        this.isRecurMode = !this.isRecurMode;
 
-        if (this.isRecur) {
-            this.cachedDeadline = this.currentDeadline;
+        if (this.isRecurMode) {
             this.$emit('update:deadline', null);
             this.$emit('update:recur', this.cachedRecur);
         }
         else {
-            this.cachedRecur = this.currentRecur;
             this.$emit('update:recur', new Array(7).fill(false));
             this.$emit('update:deadline', this.cachedDeadline);
+        }
+
+        this.adjustTime();
+    }
+
+    public onDeadlineChange(deadline: Date | null): void {
+        this.cachedDeadline = deadline;
+        this.$emit('update:deadline', deadline);
+        this.adjustTime();
+    }
+
+    public onRecurChange(recur: boolean[]): void {
+        this.cachedRecur = recur.slice();
+        this.$emit('update:recur', recur);
+        this.adjustTime();
+    }
+
+    public onDueTimeChange(time: string): void {
+        this.cachedDueTime = time;
+        this.$emit('update:time', time);
+    }
+
+    private adjustTime(): void {
+        if (this.showTime) {
+            this.$emit('update:time', this.cachedDueTime);
+        }
+        else {
+            this.cachedDueTime = this.dueTime;
+            this.$emit('update:time', null);
         }
     }
 }

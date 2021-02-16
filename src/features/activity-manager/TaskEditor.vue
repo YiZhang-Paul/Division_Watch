@@ -39,10 +39,12 @@
                 :allowRecur="!task.isInterruption && !task.parent"
                 :deadline="task.deadline"
                 :recur="task.recur"
+                :isRecur="task.recur.some(_ => _)"
                 :dueTimeName="'Finish Before'"
                 :dueTime="task.dueTime"
                 @update:deadline="onTaskChange('deadline', $event)"
-                @update:recur="onTaskChange('recur', $event)">
+                @update:recur="onTaskChange('recur', $event)"
+                @update:time="onTaskChange('dueTime', $event)">
             </deadline-selector>
         </section-panel>
 
