@@ -1,22 +1,24 @@
 <template>
-    <div :id="id" :class="containerClasses" class="view-panel-container">
+    <div :id="id" class="view-panel-container">
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
 
-        <template v-if="isExpanded">
-            <div class="header">
-                <slot name="header"></slot>
-            </div>
+        <div class="content-container" :class="contentContainerClasses">
+            <template v-if="isExpanded">
+                <div class="header">
+                    <slot name="header"></slot>
+                </div>
 
-            <div class="content">
-                <slot></slot>
-            </div>
+                <div class="content">
+                    <slot></slot>
+                </div>
 
-            <div class="footer">
-                <slot name="footer"></slot>
-            </div>
-        </template>
+                <div class="footer">
+                    <slot name="footer"></slot>
+                </div>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -37,7 +39,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         return this.stage >= 11;
     }
 
-    get containerClasses(): { [key: string]: boolean } {
+    get contentContainerClasses(): { [key: string]: boolean } {
         return { 'glass-panel-light': this.isExpanded, 'unexpanded-panel': !this.isExpanded };
     }
 
@@ -52,47 +54,58 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 <style lang="scss" scoped>
 .view-panel-container {
     $max-content-width: 95%;
-    $box-expanded-height: 82.5%;
+    $box-expanded-height: 80%;
+    $header-footer-height: calc((100% - #{$box-expanded-height}) / 2.75);
 
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
-    transition-delay: 0.15s;
 
-    &.unexpanded-panel {
-        border: 1px solid transparent;
-        background-color: transparent;
-        box-shadow: 3px 3px 3px 0 transparent;
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: calc(#{$box-expanded-height} + 4.5%);
+        transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
+        transition-delay: 0.15s;
+
+        &.unexpanded-panel {
+            border: 1px solid transparent;
+            background-color: transparent;
+            box-shadow: 3px 3px 3px 0 transparent;
+        }
     }
 
     .header, .content, .footer {
-        width: $max-content-width;
-        max-width: $max-content-width;
         opacity: 0;
         animation: revealContent 0.4s ease 0.5s forwards;
     }
 
     .header, .footer {
-        height: calc((100% - #{$box-expanded-height}) / 2.75);
-        max-height: calc((100% - #{$box-expanded-height}) / 2.75);
+        position: absolute;
+        width: 100% ;
+        max-width: 100%;
+        height: $header-footer-height;
+        max-height: $header-footer-height;
     }
 
     .header {
-        margin-bottom: calc((100% - #{$box-expanded-height}) / 20);
+        top: calc(#{$header-footer-height} * -1 - 1.75%);
     }
 
     .content {
-        margin-top: calc(#{$box-expanded-height} * 0.025);
-        margin-bottom: calc(#{$box-expanded-height} * 0.025);
-        height: calc(#{$box-expanded-height} * 0.95);
-        max-height: calc(#{$box-expanded-height} * 0.95);
+        width: $max-content-width;
+        max-width: $max-content-width;
+        height: 90%;
+        max-height: 90%;
     }
 
     .footer {
-        margin-top: calc((100% - #{$box-expanded-height}) / 20);
+        bottom: calc(#{$header-footer-height} * -1 - 0.75%);
     }
 
     .panel-box-wrapper {
