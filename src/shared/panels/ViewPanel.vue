@@ -1,10 +1,10 @@
 <template>
-    <div :id="id" class="view-panel-container">
+    <div :id="containerId" class="view-panel-container">
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
 
-        <div class="content-container" :class="contentContainerClasses">
+        <div :id="contentId" class="content-container" :class="contentContainerClasses">
             <template v-if="isExpanded">
                 <div class="header">
                     <slot name="header"></slot>
@@ -32,7 +32,8 @@ class ViewPanelProp {
 }
 
 export default class ViewPanel extends Vue.with(ViewPanelProp) {
-    public readonly id = `view-panel-container-${uuid.v4()}`;
+    public readonly containerId = `view-panel-container-${uuid.v4()}`;
+    public readonly contentId = `content-container-${uuid.v4()}`;
     private stage = 1;
 
     get isExpanded(): boolean {
@@ -44,9 +45,11 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
     }
 
     public mounted(): void {
-        const container = document.querySelector(`#${this.id}`);
+        const container = document.querySelector(`#${this.containerId}`);
+        const content = document.querySelector(`#${this.contentId}`);
         container?.addEventListener('animationend', () => this.stage++);
-        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt, glare: true, 'max-glare': 0.1 });
+        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt });
+        VanillaTilt.init(content as HTMLElement, { max: 0, glare: true, 'max-glare': 0.1 });
     }
 }
 </script>
