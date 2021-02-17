@@ -3,7 +3,7 @@
         <template v-slot:header>
             <div class="header-content">
                 <title-panel>Activities</title-panel>
-                <tab-group :options="tabs" @tab:selected="activeTab = $event"></tab-group>
+                <menu-tab-group :options="tabs" @tab:selected="activeTab = $event"></menu-tab-group>
             </div>
         </template>
 
@@ -35,7 +35,7 @@ import { ViewOption } from '../../core/enums/view-option.enum';
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
-import TabGroup from '../../shared/controls/TabGroup.vue';
+import MenuTabGroup from '../../shared/controls/MenuTabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 
 import TaskManager from './TaskManager.vue';
@@ -48,7 +48,7 @@ import CategoryManager from './CategoryManager.vue';
         Target,
         TitlePanel,
         ViewPanel,
-        TabGroup,
+        MenuTabGroup,
         MenuButton,
         TaskManager,
         CategoryManager

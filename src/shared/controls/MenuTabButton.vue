@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-button-container">
+    <div class="menu-tab-button-container">
         <div v-if="isActive" class="indicator"></div>
 
         <display-panel :class="buttonClass">
@@ -23,7 +23,7 @@ import VanillaTilt from 'vanilla-tilt';
 
 import DisplayPanel from '../panels/DisplayPanel.vue';
 
-class TabButtonProp {
+class MenuTabButtonProp {
     public isActive = prop<boolean>({ default: false });
     public icon = prop<any>({ default: null });
     public badgeValue = prop<number>({ default: 0 });
@@ -34,8 +34,8 @@ class TabButtonProp {
         DisplayPanel
     }
 })
-export default class TabButton extends Vue.with(TabButtonProp) {
-    public readonly buttonClass = 'tab-button';
+export default class MenuTabButton extends Vue.with(MenuTabButtonProp) {
+    public readonly buttonClass = 'menu-tab-button';
 
     public mounted(): void {
         const container = document.querySelector(`.${this.buttonClass}`);
@@ -45,7 +45,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
 </script>
 
 <style lang="scss" scoped>
-.tab-button-container {
+.menu-tab-button-container {
     position: relative;
 
     .indicator {
@@ -62,7 +62,7 @@ export default class TabButton extends Vue.with(TabButtonProp) {
                    expandIndicator 0.3s ease 0.1s forwards;
     }
 
-    .tab-button {
+    .menu-tab-button {
         display: flex;
         justify-content: center;
         align-items: center;

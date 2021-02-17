@@ -1,6 +1,6 @@
 <template>
     <div class="tab-group-container">
-        <tab-button class="tab-button"
+        <menu-tab-button class="menu-tab-button"
             v-for="(option, index) of options"
             :key="index"
             :isActive="activeIndex === index"
@@ -9,7 +9,7 @@
             @click="onSelect(index)">
 
             {{ option.name }}
-        </tab-button>
+        </menu-tab-button>
     </div>
 </template>
 
@@ -18,7 +18,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 // eslint-disable-next-line no-unused-vars
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
 
-import TabButton from './TabButton.vue';
+import MenuTabButton from './MenuTabButton.vue';
 
 class TabGroupProp {
     public options = prop<TabGroupOption[]>({ default: [] });
@@ -26,7 +26,7 @@ class TabGroupProp {
 
 @Options({
     components: {
-        TabButton
+        MenuTabButton
     },
     emits: ['tab:selected']
 })
@@ -48,7 +48,7 @@ export default class TabGroup extends Vue.with(TabGroupProp) {
 .tab-group-container {
     display: flex;
 
-    .tab-button:not(:nth-last-child(1)) {
+    .menu-tab-button:not(:nth-last-child(1)) {
         margin-right: 1vh;
     }
 }
