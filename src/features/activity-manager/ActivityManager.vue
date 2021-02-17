@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { markRaw } from 'vue';
-import { ExclamationThick, InboxMultiple, Target } from 'mdue';
+import { Ammunition, Biohazard, Target } from 'mdue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
@@ -47,8 +47,8 @@ import CategoryManager from './CategoryManager.vue';
 
 @Options({
     components: {
-        ExclamationThick,
-        InboxMultiple,
+        Ammunition,
+        Biohazard,
         Target,
         TitlePanel,
         ViewPanel,
@@ -63,9 +63,9 @@ export default class ActivityManager extends Vue {
 
     get tabs(): TabGroupOption[] {
         return [
-            markRaw(new TabGroupOption('Task', Target, this.tasks)),
-            markRaw(new TabGroupOption('Interruption', ExclamationThick, this.interruptions)),
-            markRaw(new TabGroupOption('Category', InboxMultiple, this.categories))
+            markRaw(new TabGroupOption('Tasks', Target, this.tasks)),
+            markRaw(new TabGroupOption('Interruptions', Biohazard, this.interruptions)),
+            markRaw(new TabGroupOption('Categories', Ammunition, this.categories))
         ]
     }
 
