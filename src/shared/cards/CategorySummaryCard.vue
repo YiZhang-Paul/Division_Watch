@@ -1,5 +1,13 @@
 <template>
     <div v-if="category" class="category-summary-card-container" :class="{ 'active-card': isActive }">
+        <div v-if="isActive" class="active-indicator">
+            <div class="triangle"></div>
+
+            <div class="square">
+                <bullseye />
+            </div>
+        </div>
+
         <div class="basic-information">
             <component v-if="categoryIcon"
                 class="icon"
@@ -21,7 +29,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, prop } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
+import { Bullseye } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
@@ -32,6 +41,11 @@ class CategorySummaryCardProp {
     public isActive = prop<boolean>({ default: false });
 }
 
+@Options({
+    components: {
+        Bullseye
+    }
+})
 export default class CategorySummaryCard extends Vue.with(CategorySummaryCardProp) {
 
     get categoryIcon(): any {
@@ -54,6 +68,7 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
 .category-summary-card-container {
     box-sizing: border-box;
     display: flex;
+    position: relative;
     background-color: rgba(36, 35, 38, 0.75);
     color: rgb(255, 255, 255);
     font-size: 0.6rem;
@@ -69,6 +84,41 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
 
         .detail-information .name {
             color: rgb(247, 174, 18);
+        }
+    }
+
+    .active-indicator {
+        $dimension: 0.7rem;
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: $dimension;
+        height: $dimension;
+        color: rgb(0, 0, 0);
+        font-size: 0.65rem;
+        opacity: 0;
+        animation: revealContent 0.25s ease 0.1s forwards;
+
+        .triangle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-top: $dimension solid transparent;
+            border-bottom: $dimension solid transparent;
+            border-right: $dimension solid rgb(255, 255, 255);
+        }
+
+        .square {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: $dimension;
+            height: $dimension;
+            background-color: rgb(255, 255, 255);
         }
     }
 

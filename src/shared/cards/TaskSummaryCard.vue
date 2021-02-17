@@ -5,6 +5,14 @@
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
+        <div v-if="isActive" class="active-indicator">
+            <div class="triangle"></div>
+
+            <div class="square">
+                <bullseye />
+            </div>
+        </div>
+
         <div class="category">
             <component v-if="categoryIcon"
                 class="icon"
@@ -38,7 +46,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Autorenew } from 'mdue';
+import { Autorenew, Bullseye } from 'mdue';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
@@ -58,6 +66,7 @@ class TaskSummaryCardProp {
 @Options({
     components: {
         Autorenew,
+        Bullseye,
         PriorityIndicator,
         EstimationSkulls
     }
@@ -86,6 +95,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+    position: relative;
     background-color: rgba(36, 35, 38, 0.75);
     color: rgb(255, 255, 255);
     font-size: 0.65rem;
@@ -106,6 +116,41 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     & > div {
         box-sizing: border-box;
+    }
+
+    .active-indicator {
+        $dimension: 0.7rem;
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: $dimension;
+        height: $dimension;
+        color: rgb(0, 0, 0);
+        font-size: 0.65rem;
+        opacity: 0;
+        animation: revealContent 0.25s ease 0.1s forwards;
+
+        .triangle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-top: $dimension solid transparent;
+            border-bottom: $dimension solid transparent;
+            border-right: $dimension solid rgb(255, 255, 255);
+        }
+
+        .square {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: $dimension;
+            height: $dimension;
+            background-color: rgb(255, 255, 255);
+        }
     }
 
     .category, .attributes, .splitter-1 {
