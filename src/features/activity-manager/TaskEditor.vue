@@ -33,7 +33,8 @@
                 @options:select="onTaskChange('estimate', $event)">
             </option-dropdown>
 
-            <deadline-selector class="editor-control"
+            <deadline-selector v-if="!task.parent"
+                class="editor-control"
                 :deadlineName="'Deadline'"
                 :recurName="'Recur'"
                 :allowRecur="!task.isInterruption && !task.parent"
