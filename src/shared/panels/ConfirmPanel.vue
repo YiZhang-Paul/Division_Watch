@@ -1,6 +1,11 @@
 <template>
     <div v-if="option" class="confirm-panel-container">
         <div :id="id" class="content glass-panel-light">
+            <div class="header">
+                <span>BEWARE:</span>
+                <alert-outline class="icon" />
+            </div>
+
             <div class="separator">
                 <div></div>
                 <div></div>
@@ -43,6 +48,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { AlertOutline } from 'mdue';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 // eslint-disable-next-line no-unused-vars
@@ -57,6 +63,7 @@ class ConfirmPanelProp {
 
 @Options({
     components: {
+        AlertOutline,
         MenuButton,
         Checkbox,
         OptionDropdown
@@ -107,16 +114,29 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
         flex-direction: column;
         align-items: center;
         min-width: 25vw;
-        min-height: 20vh;
+        min-height: 22.5vh;
         color: rgb(255, 255, 255);
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         opacity: 0;
         animation: revealContent 0.2s ease 0.1s forwards,
                    blinkFast 0.15s ease-in 0.1s forwards;
 
+        .header {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 4.5% 0 4.5%;
+            width: 100%;
+
+            .icon {
+                font-size: 0.8rem;
+            }
+        }
+
         .separator {
             position: relative;
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
             width: 0;
             height: 0.175rem;
             border-top: 1px solid rgba(200, 200, 200, 0.6);
@@ -146,17 +166,20 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             }
         }
 
+        .title, .checkbox-area, .dropdown-area {
+            opacity: 0;
+            animation: revealContent 0.2s ease 0.5s forwards;
+        }
+
         .title {
             margin-top: 0.15rem;
-            opacity: 0;
-            animation: revealContent 0.2s ease 0.3s forwards;
         }
 
         .checkbox-area, .dropdown-area {
             display: flex;
             align-self: flex-start;
             align-items: center;
-            margin-top: auto;
+            margin-top: 0.25rem;
             margin-left: 1.5rem;
             height: 1rem;
             font-size: 0.5rem;
@@ -198,7 +221,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             justify-content: flex-end;
             align-items: center;
             margin-top: auto;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             width: 100%;
             height: 1.25rem;
 
@@ -209,6 +232,8 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 
                 &:nth-child(1) {
                     background-color: rgba(215, 215, 215, 0.05);
+                    opacity: 0;
+                    animation: revealContent 0.2s ease 0.62s forwards;
 
                     &:hover {
                         background-color: rgb(215, 215, 215, 0.3);
@@ -217,6 +242,8 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
 
                 &:nth-child(2) {
                     background-color: rgba(71, 179, 170, 0.65);
+                    opacity: 0;
+                    animation: revealContent 0.2s ease 0.6s forwards;
 
                     &:hover {
                         background-color: rgb(50, 158, 149);
