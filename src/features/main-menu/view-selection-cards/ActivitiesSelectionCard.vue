@@ -132,7 +132,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             }
 
             .count-wrapper .placeholder {
-                color: rgba(25, 25, 25, 0.4);
+                color: rgba(30, 30, 30, 0.3);
             }
         }
     }
@@ -202,7 +202,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
                 line-height: 1.6rem;
 
                 .placeholder {
-                    color: rgba(225, 225, 225, 0.3);
+                    color: rgba(225, 225, 225, 0.25);
                 }
             }
         }

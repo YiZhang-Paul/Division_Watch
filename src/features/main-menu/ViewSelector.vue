@@ -2,7 +2,10 @@
     <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
         <div class="planner-selection-card selection-card">
             <span>Planner</span>
-            <div class="planner-icon"></div>
+
+            <div class="icon-wrapper">
+                <img src="../../assets/icons/sharpshooter.svg" />
+            </div>
         </div>
 
         <div class="ongoing-selection-card selection-card"></div>
@@ -106,21 +109,34 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     .planner-selection-card {
         flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
-        color: rgb(0, 0, 0);
         line-height: 1.3rem;
         font-size: 1.45rem;
+
+        &:hover .icon-wrapper img {
+            opacity: 0.8;
+            filter: invert(0%) sepia(100%) saturate(0%) hue-rotate(21deg) brightness(97%) contrast(103%);
+        }
 
         span {
             margin-top: 0.575rem;
             z-index: 1;
         }
 
-        .planner-icon {
-            margin-top: -18.5%;
-            width: 90%;
-            height: 90%;
-            background: url('../../assets/images/sharpshooter_skull_hollow.png') no-repeat center center;
-            transition: background-color 0.3s;
+        .icon-wrapper {
+            position: relative;
+            margin-bottom: 0.4rem;
+            width: 8rem;
+            height: 8rem;
+            overflow: hidden;
+
+            img {
+                position: absolute;
+                left: -49.25%;
+                height: 100%;
+                opacity: 1;
+                filter: invert(74%) sepia(18%) saturate(4544%) hue-rotate(201deg) brightness(101%) contrast(102%);
+                transition: filter 0.25s, opacity 0.25s;
+            }
         }
     }
 
