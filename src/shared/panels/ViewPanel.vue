@@ -72,7 +72,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         align-items: center;
         position: relative;
         width: 100%;
-        height: calc(#{$box-expanded-height} + 4.5%);
+        height: calc(#{$box-expanded-height} + 4%);
         transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
         transition-delay: 0.15s;
 
@@ -113,7 +113,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 
     .panel-box-wrapper {
         $box-width: 0.75vw;
-        $box-height: 0.5vh;
+        $box-height: 0.275vh;
         $blink-duration: 0.25s;
 
         position: absolute;
@@ -181,7 +181,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
                 height: 1.5vh;
             }
             100% {
-                width: calc(95% - 5px);
+                width: calc(95% - 20px);
                 height: $box-expanded-height;
             }
         }

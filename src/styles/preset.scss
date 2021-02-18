@@ -8,9 +8,10 @@
 }
 
 .glass-panel-light {
-    border: 1px solid rgba(170, 170, 170, 0.4);
-    background-color: rgba(160, 160, 160, 0.25);
-    box-shadow: 3px 3px 3px 0 rgba(120, 120, 120, 0.25);
+    border-left: 1px solid rgba(200, 200, 200, 0.4);
+    border-right: 1px solid rgba(200, 200, 200, 0.4);
+    background-color: rgba(155, 155, 155, 0.2);
+    box-shadow: 3px 3px 3px 0 rgba(100, 100, 100, 0.2);
 }
 
 .os-theme-dark {

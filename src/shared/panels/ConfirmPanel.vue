@@ -13,21 +13,23 @@
 
             <span class="title">{{ option.title }}</span>
 
-            <div v-if="option.checkboxText" class="checkbox-area">
-                <checkbox class="checkbox" v-model="isChecked" />
-                <span @click="isChecked = !isChecked">{{ option.checkboxText }}</span>
-            </div>
+            <div class="options">
+                <div v-if="option.checkboxText" class="checkbox-area">
+                    <checkbox class="checkbox" v-model="isChecked" />
+                    <span @click="isChecked = !isChecked">{{ option.checkboxText }}</span>
+                </div>
 
-            <div class="dropdown-area" v-if="option.dropdown">
-                <span>{{ option.dropdown.text }}</span>
+                <div class="dropdown-area" v-if="option.dropdown">
+                    <span>{{ option.dropdown.text }}</span>
 
-                <option-dropdown class="option-dropdown"
-                    :useSimpleView="true"
-                    :options="option.dropdown.options"
-                    :selected="selected"
-                    :transform="option.dropdown.transform"
-                    @options:select="selected = $event">
-                </option-dropdown>
+                    <option-dropdown class="option-dropdown"
+                        :useSimpleView="true"
+                        :options="option.dropdown.options"
+                        :selected="selected"
+                        :transform="option.dropdown.transform"
+                        @options:select="selected = $event">
+                    </option-dropdown>
+                </div>
             </div>
 
             <div class="actions">
@@ -166,53 +168,57 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             }
         }
 
-        .title, .checkbox-area, .dropdown-area {
+        .title {
+            margin-top: 0.15rem;
+            font-size: 0.55rem;
             opacity: 0;
             animation: revealContent 0.2s ease 0.5s forwards;
         }
 
-        .title {
-            margin-top: 0.15rem;
-        }
-
-        .checkbox-area, .dropdown-area {
+        .options {
             display: flex;
-            align-self: flex-start;
+            justify-items: center;
             align-items: center;
-            margin-top: 0.25rem;
-            margin-left: 1.5rem;
-            height: 1rem;
-            font-size: 0.5rem;
+            flex-grow: 1;
 
-            span {
-                filter: brightness(0.85);
-                transition: filter 0.2s;
-            }
-        }
+            .checkbox-area, .dropdown-area {
+                display: flex;
+                align-items: center;
+                height: 1rem;
+                font-size: 0.45rem;
+                opacity: 0;
+                animation: revealContent 0.2s ease 0.5s forwards;
 
-        .checkbox-area {
-
-            .checkbox {
-                margin-right: 0.25rem;
-                width: 0.6rem;
-                height: 0.6rem;
+                span {
+                    filter: brightness(0.85);
+                    transition: filter 0.2s;
+                }
             }
 
-            span:hover {
-                cursor: pointer;
-                filter: brightness(1);
+            .checkbox-area {
+
+                .checkbox {
+                    margin-right: 0.2rem;
+                    width: 0.525rem;
+                    height: 0.525rem;
+                }
+
+                span:hover {
+                    cursor: pointer;
+                    filter: brightness(1);
+                }
             }
-        }
 
-        .dropdown-area {
+            .dropdown-area {
 
-            span {
-                margin-right: 0.25rem;
-            }
+                span {
+                    margin-right: 0.25rem;
+                }
 
-            .option-dropdown {
-                min-width: 5rem;
-                height: 85%;
+                .option-dropdown {
+                    min-width: 5rem;
+                    height: 85%;
+                }
             }
         }
 
@@ -230,7 +236,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
                 width: 20%;
                 height: 85%;
 
-                &:nth-child(1) {
+                &:nth-last-child(2) {
                     background-color: rgba(215, 215, 215, 0.05);
                     opacity: 0;
                     animation: revealContent 0.2s ease 0.62s forwards;
@@ -240,7 +246,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
                     }
                 }
 
-                &:nth-child(2) {
+                &:nth-last-child(1) {
                     background-color: rgba(71, 179, 170, 0.65);
                     opacity: 0;
                     animation: revealContent 0.2s ease 0.6s forwards;

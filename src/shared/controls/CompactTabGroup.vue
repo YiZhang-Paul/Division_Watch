@@ -61,7 +61,7 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
         padding: 1.1% 0.6rem;
         border-left: 1px solid rgba(200, 200, 200, 0.4);
         border-right: 1px solid rgba(200, 200, 200, 0.4);
-        background-color: rgba(0, 0, 0, 0.35);
+        background-color: rgba(140, 140, 140, 0.25);
         color: rgb(255, 255, 255);
         line-height: 0.6rem;
         font-size: 0.525rem;
@@ -70,7 +70,7 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
 
         &:hover {
             cursor: pointer;
-            background-color: rgba(50, 50, 50, 0.55);
+            background-color: rgba(165, 165, 165, 0.25);
         }
 
         &.active-tab {
