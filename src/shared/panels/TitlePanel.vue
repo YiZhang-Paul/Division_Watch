@@ -41,7 +41,7 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
         .grid {
             $gap: 5%;
             $dimension: calc((100% - #{$gap} * 2) / 3);
-            $initial-halt-duration: 1s;
+            $initial-halt-duration: 0.35s;
             $intermediate-halt-duration: 0.15s;
             $move-duration: 0.25s;
 
