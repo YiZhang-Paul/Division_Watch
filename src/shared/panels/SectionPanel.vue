@@ -98,7 +98,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         margin-left: $margin-left;
         width: $content-width;
         opacity: 0;
-        animation: revealContent 0.3s ease 1s forwards;
+        animation: revealContent 0.3s ease 0.3s forwards;
         transition: color 0.3s;
 
         span, .edit-field {
@@ -142,7 +142,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         margin-left: $margin-left;
         width: $content-width;
         opacity: 0;
-        animation: revealContent 0.2s ease 1.2s forwards;
+        animation: revealContent 0.2s ease 0.4s forwards;
     }
 
     .side-guards {
@@ -150,8 +150,8 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         $gap: 1.75%;
         $horizontal-guard-height: 2px;
         $vertical-guard-start-height: calc((100% - #{$gap}) / 3);
-        $blink-duration: 0.3s;
-        $blink-repeat: 2;
+        $blink-duration: 0.15s;
+        $blink-repeat: 1;
 
         position: absolute;
         top: $top;

@@ -295,7 +295,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
             font-size: 0.625rem;
             opacity: 0;
             transition: color 0.3s;
-            animation: revealContent 0.3s ease 1.2s forwards;
+            animation: revealContent 0.3s ease 0.5s forwards;
 
             &:hover {
                 cursor: pointer;
@@ -319,7 +319,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
             margin-left: $margin-left;
             width: calc(#{$content-width} - #{$margin-left});
             opacity: 0;
-            animation: revealContent 0.3s ease 1.2s forwards;
+            animation: revealContent 0.3s ease 0.4s forwards;
         }
     }
 }

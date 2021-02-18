@@ -265,7 +265,7 @@ export default class CategoryManager extends Vue {
             margin-left: $margin-left;
             width: calc(#{$content-width} - #{$margin-left});
             opacity: 0;
-            animation: revealContent 0.3s ease 1.2s forwards;
+            animation: revealContent 0.3s ease 0.4s forwards;
         }
     }
 }
