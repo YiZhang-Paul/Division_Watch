@@ -5,36 +5,42 @@
             <span class="message">Tasks & Interruptions</span>
         </div>
 
-        <div class="distribution-charts">
-            <distribution-chart class="chart"
-                :groups="itemsDistribution"
-                :delay="chartDelay"
+        <distribution-chart class="types-chart"
+            :groups="itemsDistribution"
+            :delay="chartDelay"
+            :isMonochrome="isHovering">
+
+            <div class="item-counts">
+                <span class="task-count item-count">
+                    <span class="type">Task</span>
+
+                    <div class="count-wrapper">
+                        <span class="placeholder">{{ tasksPlaceholder }}</span>
+                        <span class="total">{{ tasks }}</span>
+                    </div>
+                </span>
+
+                <span class="interruption-count item-count">
+                    <span class="type">Interruption</span>
+
+                    <div class="count-wrapper">
+                        <span class="placeholder">{{ interruptionsPlaceholder }}</span>
+                        <span class="total">{{ interruptions }}</span>
+                    </div>
+                </span>
+            </div>
+        </distribution-chart>
+
+        <div class="minor-charts">
+            <distribution-chart class="category-chart"
+                :groups="categoryDistribution"
+                :delay="chartDelay + 200"
                 :isMonochrome="isHovering">
-
-                <div class="item-counts">
-                    <span class="task-count">
-                        <span class="type">Task</span>
-
-                        <div class="count-wrapper">
-                            <span class="placeholder">{{ tasksPlaceholder }}</span>
-                            <span class="total">{{ tasks }}</span>
-                        </div>
-                    </span>
-
-                    <span class="interruption-count">
-                        <span class="type">Interruption</span>
-
-                        <div class="count-wrapper">
-                            <span class="placeholder">{{ interruptionsPlaceholder }}</span>
-                            <span class="total">{{ interruptions }}</span>
-                        </div>
-                    </span>
-                </div>
             </distribution-chart>
 
-            <distribution-chart class="chart"
+            <distribution-chart class="priority-chart"
                 :groups="priorityDistribution"
-                :delay="chartDelay"
+                :delay="chartDelay + 200"
                 :isMonochrome="isHovering">
             </distribution-chart>
         </div>
@@ -45,7 +51,10 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../../store';
+import { categoryKey } from '../../../store/category/category.state';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
+// eslint-disable-next-line no-unused-vars
+import { Category } from '../../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { DistributionGroup } from '../../../core/data-model/generic/distribution-group';
@@ -94,6 +103,21 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         ];
     }
 
+    get categoryDistribution(): DistributionGroup[] {
+        const distribution = new Map<string, number>();
+        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
+
+        for (const item of items.filter(_ => _.categoryId)) {
+            distribution.set(item.categoryId!, (distribution.get(item.categoryId!) ?? 0) + 1);
+        }
+
+        return Array.from(distribution).sort((a, b) => b[1] - a[1]).slice(0, 3).map(_ => {
+            const category: Category = store.getters[`${categoryKey}/category`](_[0]);
+
+            return new DistributionGroup(category.name, _[1], category.color);
+        });
+    }
+
     get priorityDistribution(): DistributionGroup[] {
         const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
         const priorities = new Array(3).fill(0).map((_, i) => i);
@@ -111,7 +135,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
 <style lang="scss" scoped>
 .activities-selection-card-container {
-    padding: 0.75rem 0;
+    padding: 0.6rem 0;
     width: 100%;
     height: 100%;
     font-size: 0.6rem;
@@ -123,8 +147,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             color: rgba(45, 45, 45, 0.8);
         }
 
-        .distribution-charts .task-count,
-        .distribution-charts .interruption-count {
+        .types-chart .task-count,
+        .types-chart .interruption-count {
 
             span {
                 color: rgba(35, 35, 35, 0.9);
@@ -143,42 +167,24 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         align-items: center;
 
         .title {
-            line-height: 1.3rem;
-            font-size: 1.45rem;
+            line-height: 1.1rem;
+            font-size: 1.15rem;
         }
 
         .message {
             color: rgb(215, 215, 215);
             transition: color 0.25s;
+            font-size: 0.55rem;
         }
     }
 
-    .distribution-charts {
+    .types-chart, .priority-chart, .category-chart {
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
-        width: 29.5vh;
-        height: 29.5vh;
         opacity: 0;
         animation: revealContent 0.3s ease-in 0.35s forwards;
-
-        .chart, .item-counts {
-            transform: rotate(180deg);
-            transform-origin: 50% 50%;
-        }
-
-        .chart {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .chart:nth-child(2) {
-            width: 90%;
-            height: 90%;
-            transform: rotateX(180deg);
-        }
 
         .item-counts {
             display: flex;
@@ -190,11 +196,12 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             transition: color 0.25s;
         }
 
-        .task-count, .interruption-count {
+        .item-count {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            font-size: 0.65rem;
 
             .count-wrapper {
                 font-size: 1.5rem;
@@ -205,6 +212,11 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
                 }
             }
         }
+    }
+
+    .types-chart {
+        width: 24.25vh;
+        height: 24.25vh;
 
         .task-count .type {
             color: rgb(246, 39, 226);
@@ -213,6 +225,17 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         .interruption-count .type {
             color: rgb(83, 191, 252);
         }
+    }
+
+    .minor-charts {
+        display: flex;
+        justify-content: space-between;
+        width: 80%;
+    }
+
+    .priority-chart, .category-chart {
+        width: 11.5vh;
+        height: 11.5vh;
     }
 }
 </style>
