@@ -33,6 +33,7 @@ class PercentageChartProp {
 export default class PercentageChart extends Vue.with(PercentageChartProp) {
     public canAnimate = false;
     private readonly dasharray = 283;
+    private rendered = false;
 
     get chartStyle(): { [key: string]: number } {
         const percentage = this.dasharray / 100 * (100 - this.percentage);
@@ -50,8 +51,13 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
 
     public mounted(): void {
         setTimeout(() => this.canAnimate = true, this.delay);
-        const element = document.querySelector('.handle-1');
-        element?.addEventListener('transitionend', () => this.$emit('chart:rendered'));
+
+        document.querySelector('.handle-1')?.addEventListener('transitionend', () => {
+            if (!this.rendered) {
+                this.rendered = true;
+                this.$emit('chart:rendered');
+            }
+        });
     }
 }
 </script>
