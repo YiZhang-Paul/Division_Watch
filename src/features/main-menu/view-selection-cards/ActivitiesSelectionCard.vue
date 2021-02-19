@@ -119,8 +119,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         const interruptionName = `interruption${this.interruptions > 1 ? 's' : ''}`;
 
         return [
-            new DistributionGroup(parentTaskName, this.tasks, 'rgb(246, 39, 226)'),
-            new DistributionGroup(childTaskName, childTasks, 'rgb(206, 241, 47)'),
+            new DistributionGroup(parentTaskName, this.tasks, 'rgb(245, 114, 8)'),
+            new DistributionGroup(childTaskName, childTasks, 'rgb(222, 241, 47)'),
             new DistributionGroup(interruptionName, this.interruptions, 'rgb(83, 191, 252)')
         ];
     }
@@ -294,7 +294,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         height: 24.25vh;
 
         .task-count .type {
-            color: rgb(246, 39, 226);
+            color: rgb(245, 114, 8);
         }
 
         .interruption-count .type {
