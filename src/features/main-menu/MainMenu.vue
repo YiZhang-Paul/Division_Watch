@@ -338,8 +338,8 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             flex-direction: column;
             justify-content: space-between;
             position: absolute;
-            width: 57.5%;
-            height: 70%;
+            width: 60%;
+            height: 77.5%;
 
             .view-selector {
                 height: calc(98% - #{$close-button-height});

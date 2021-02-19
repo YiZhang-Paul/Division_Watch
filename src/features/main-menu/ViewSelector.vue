@@ -57,7 +57,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     $vertical-gap: 1.25%;
     $horizontal-gap: 1%;
     $planner-card-height: 60%;
-    $activities-card-height: 70%;
+    $activities-card-height: 80%;
 
     display: flex;
     flex-direction: column;
@@ -69,13 +69,14 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     .selection-card {
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
         align-items: center;
         box-sizing: border-box;
         border: 1px solid rgba(240, 240, 240, 0.7);
         background-color: rgba(25, 25, 25, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
         color: rgb(255, 255, 255);
+        line-height: 1.1rem;
+        font-size: 1.15rem;
         filter: brightness(0.95);
         transition: filter 0.25s, border 0.25s, background-color 0.25s, color 0.25s;
         animation: blinkFast 0.15s ease-in forwards 2;
@@ -109,8 +110,6 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     .planner-selection-card {
         flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
-        line-height: 1.3rem;
-        font-size: 1.45rem;
 
         &:hover .icon-wrapper img {
             opacity: 0.8;
@@ -160,8 +159,8 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         .user-avatar {
             position: absolute;
             left: 7.5%;
-            width: 1.8rem;
-            height: 1.8rem;
+            width: 1.5rem;
+            height: 1.5rem;
             transition: background-color 0.25s, border-color 0.25s;
         }
     }

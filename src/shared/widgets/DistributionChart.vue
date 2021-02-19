@@ -112,13 +112,13 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     .outer-placeholder {
         width: 90%;
         height: 90%;
-        border: 4px solid rgba(200, 200, 200, 0.35);
+        border: 4px solid rgba(200, 200, 200, 0.15);
     }
 
     .inner-placeholder {
         width: 86.5%;
         height: 86.5%;
-        border: 1px solid rgba(200, 200, 200, 0.45);
+        border: 1px solid rgba(200, 200, 200, 0.35);
     }
 
     .percentage-chart {
