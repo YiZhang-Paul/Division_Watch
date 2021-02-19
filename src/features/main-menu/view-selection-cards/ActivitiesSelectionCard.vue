@@ -89,7 +89,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         return [
             new DistributionGroup(parentTaskName, this.tasks, 'rgb(246, 39, 226)'),
-            new DistributionGroup(childTaskName, childTasks, 'rgba(240, 240, 240, 0.55)'),
+            new DistributionGroup(childTaskName, childTasks, 'rgb(206, 241, 47)'),
             new DistributionGroup(interruptionName, this.interruptions, 'rgb(83, 191, 252)')
         ];
     }

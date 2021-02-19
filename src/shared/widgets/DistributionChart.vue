@@ -1,8 +1,10 @@
 <template>
-    <div class="distribution-chart-container" :title="tooltip">
+    <div class="distribution-chart-container" :class="{ monochrome: isMonochrome }" :title="tooltip">
         <div v-if="totalRendered === visibleGroups.length" class="embed-content">
             <slot></slot>
         </div>
+
+        <div class="placeholder"></div>
 
         <percentage-chart class="percentage-chart"
             v-for="(group, index) of visibleGroups"
@@ -67,12 +69,27 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     height: 100%;
     pointer-events: none;
 
+    &.monochrome .placeholder {
+        border: 1px solid rgba(30, 30, 30, 0.65);
+    }
+
     .embed-content {
         position: absolute;
         width: 75%;
         height: 75%;
         opacity: 0;
         animation: revealContent 0.25s ease forwards;
+    }
+
+    .placeholder {
+        position: absolute;
+        width: 86.5%;
+        height: 86.5%;
+        border: 1px solid rgba(200, 200, 200, 0.45);
+        border-radius: 50%;
+        transition: border 0.25s;
+        opacity: 0;
+        animation: revealContent 0.2s ease 0.5s forwards;
     }
 
     .percentage-chart {
