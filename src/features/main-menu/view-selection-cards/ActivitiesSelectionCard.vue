@@ -8,7 +8,7 @@
         <div class="distribution-charts">
             <distribution-chart class="chart"
                 :groups="itemsDistribution"
-                :renderDelay="chartDelay"
+                :delay="chartDelay"
                 :isMonochrome="isHovering">
 
                 <div class="item-counts">
@@ -34,7 +34,7 @@
 
             <distribution-chart class="chart"
                 :groups="priorityDistribution"
-                :renderDelay="chartDelay"
+                :delay="chartDelay"
                 :isMonochrome="isHovering">
             </distribution-chart>
         </div>
@@ -89,7 +89,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         return [
             new DistributionGroup(parentTaskName, this.tasks, 'rgb(246, 39, 226)'),
-            new DistributionGroup(childTaskName, childTasks, 'rgb(255, 255, 255)'),
+            new DistributionGroup(childTaskName, childTasks, 'rgba(240, 240, 240, 0.55)'),
             new DistributionGroup(interruptionName, this.interruptions, 'rgb(83, 191, 252)')
         ];
     }

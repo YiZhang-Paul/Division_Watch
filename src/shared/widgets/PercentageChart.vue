@@ -9,7 +9,8 @@
             @mouseover="$emit('chart:mouseover')"
             @mouseout="$emit('chart:mouseout')" />
 
-        <circle class="handle" cx="95" cy="50" :r="useSimpleView ? 1 : 1.25" :style="handleStyle" fill="rgb(255, 255, 255)" />
+        <circle class="handle-1" cx="95" cy="50" :r="1.15" :style="handleStyle" fill="rgb(255, 255, 255)" />
+        <circle class="handle-2" cx="95" cy="50" :r="1.15" fill="rgb(255, 255, 255)" />
     </svg>
 </template>
 
@@ -17,11 +18,9 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 class PercentageChartProp {
-    public useSimpleView = prop<boolean>({ default: false });
     public color = prop<string>({ default: 'rgb(255, 255, 255)' });
     public percentage = prop<number>({ default: 100 });
-    public renderDelay = prop<number>({ default: 3200 });
-    public glowDelay = prop<number>({ default: 3000 });
+    public delay = prop<number>({ default: 1500 });
 }
 
 @Options({
@@ -36,27 +35,22 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
     private readonly dasharray = 283;
 
     get chartStyle(): { [key: string]: number } {
-        const percentage = this.dasharray / 100 * (100 - this.percentage + 8.2 / 3.6);
+        const percentage = this.dasharray / 100 * (100 - this.percentage);
 
         return {
-            'stroke-width': this.useSimpleView ? 1.25 : 2.25,
+            'stroke-width': 1.55,
             'stroke-dasharray': this.dasharray,
             'stroke-dashoffset': this.canAnimate ? percentage : this.dasharray
         };
     }
 
     get handleStyle(): { [key: string]: string | null } {
-        const degrees = 360 / 100 * this.percentage;
-
-        return {
-            'animation-delay': `${this.glowDelay / 1000}s`,
-            transform: this.canAnimate ? `rotate(${degrees}deg)` : null
-        };
+        return { transform: this.canAnimate ? `rotate(${this.percentage / 100 * 360}deg)` : null };
     }
 
     public mounted(): void {
-        setTimeout(() => this.canAnimate = true, this.renderDelay);
-        const element = document.querySelector('.handle');
+        setTimeout(() => this.canAnimate = true, this.delay);
+        const element = document.querySelector('.handle-1');
         element?.addEventListener('transitionend', () => this.$emit('chart:rendered'));
     }
 }
@@ -69,39 +63,25 @@ export default class PercentageChart extends Vue.with(PercentageChartProp) {
     pointer-events: none;
     transition: stroke-dashoffset $transition-time;
 
-    .bar, .handle {
+    .bar, .handle-1, .handle-2 {
         transform-origin: 50% 50%;
     }
 
     .bar {
         pointer-events: auto;
-        opacity: 0.75;
-        transform: rotate(4deg);
-        transition: opacity 0.3s, stroke 0.25s;
+        transition: stroke-width 0.25s;
 
         &:hover {
-            opacity: 1;
+            stroke-width: 3;
+        }
+
+        &:hover ~ .handle-1, &:hover ~ .handle-2 {
+            r: 2;
         }
     }
 
-    .handle {
-        transition: transform $transition-time;
-        animation: glow 5s ease-in-out forwards infinite;
-    }
-
-    @keyframes glow {
-        0% {
-            fill: rgb(255, 255, 255);
-        }
-        10% {
-            fill: rgb(124, 235, 60);
-        }
-        20% {
-            fill: rgb(255, 255, 255);
-        }
-        100% {
-            fill: rgb(255, 255, 255);
-        }
+    .handle-1, .handle-2 {
+        transition: transform $transition-time, stroke-width 0.25s, r 0.25s;
     }
 }
 </style>

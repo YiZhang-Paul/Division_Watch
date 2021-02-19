@@ -10,8 +10,7 @@
             :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
             :color="isMonochrome ? 'rgba(5, 5, 5, 0.95)' : group.color"
             :percentage="getPercentage(index)"
-            :renderDelay="renderDelay"
-            :glowDelay="index * 2000"
+            :delay="delay"
             @chart:rendered="totalRendered++"
             @chart:mouseover="tooltip = group.total + ' ' + group.name"
             @chart:mouseout="tooltip = ''">
@@ -28,7 +27,7 @@ import PercentageChart from './PercentageChart.vue';
 
 class DistributionChartProp {
     public groups = prop<DistributionGroup[]>({ default: [] });
-    public renderDelay = prop<number>({ default: 3200 });
+    public delay = prop<number>({ default: 3200 });
     public isMonochrome = prop<boolean>({ default: false });
 }
 
