@@ -8,7 +8,6 @@
             v-for="(group, index) of visibleGroups"
             :key="index"
             :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
-            :useSimpleView="!group.highlight"
             :color="isMonochrome ? 'rgba(5, 5, 5, 0.95)' : group.color"
             :percentage="getPercentage(index)"
             :renderDelay="renderDelay"
