@@ -4,19 +4,22 @@
             <slot></slot>
         </div>
 
-        <div class="placeholder"></div>
+        <div class="inner-placeholder"></div>
+        <div v-if="!visibleGroups.length" class="outer-placeholder"></div>
 
-        <percentage-chart class="percentage-chart"
-            v-for="(group, index) of visibleGroups"
-            :key="index"
-            :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
-            :color="isMonochrome ? getTint(index) : group.color"
-            :percentage="getPercentage(index)"
-            :delay="delay"
-            @chart:rendered="totalRendered++"
-            @chart:mouseover="tooltip = group.total + ' ' + group.name"
-            @chart:mouseout="tooltip = ''">
-        </percentage-chart>
+        <template v-if="visibleGroups.length">
+            <percentage-chart class="percentage-chart"
+                v-for="(group, index) of visibleGroups"
+                :key="index"
+                :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
+                :color="isMonochrome ? getTint(index) : group.color"
+                :percentage="getPercentage(index)"
+                :delay="delay"
+                @chart:rendered="totalRendered++"
+                @chart:mouseover="tooltip = group.total + ' ' + group.name"
+                @chart:mouseout="tooltip = ''">
+            </percentage-chart>
+        </template>
     </div>
 </template>
 
@@ -79,8 +82,15 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
     height: 100%;
     pointer-events: none;
 
-    &.monochrome .placeholder {
-        border: 1px solid rgba(30, 30, 30, 0.65);
+    &.monochrome {
+
+        .inner-placeholder {
+            border: 1px solid rgba(30, 30, 30, 0.65);
+        }
+
+        .outer-placeholder {
+            border: 4px solid rgba(30, 30, 30, 0.75);
+        }
     }
 
     .embed-content {
@@ -91,15 +101,24 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
         animation: revealContent 0.25s ease forwards;
     }
 
-    .placeholder {
+    .outer-placeholder, .inner-placeholder {
         position: absolute;
-        width: 86.5%;
-        height: 86.5%;
-        border: 1px solid rgba(200, 200, 200, 0.45);
         border-radius: 50%;
         transition: border 0.25s;
         opacity: 0;
         animation: revealContent 0.2s ease 0.5s forwards;
+    }
+
+    .outer-placeholder {
+        width: 90%;
+        height: 90%;
+        border: 4px solid rgba(200, 200, 200, 0.35);
+    }
+
+    .inner-placeholder {
+        width: 86.5%;
+        height: 86.5%;
+        border: 1px solid rgba(200, 200, 200, 0.45);
     }
 
     .percentage-chart {
