@@ -126,6 +126,10 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     }
 
     get categoryDistribution(): DistributionGroup[] {
+        if (!store.getters[`${categoryKey}/categories`].length) {
+            return [];
+        }
+
         const distribution = new Map<string, number>();
         const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
 
@@ -230,6 +234,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
         font-size: 0.575rem;
         overflow: hidden;
+        opacity: 0;
+        animation: revealContent 0.3s ease 0.5s forwards;
 
         .estimation-skulls {
             margin-left: 0.2rem;
@@ -300,6 +306,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         display: flex;
         flex-grow: 1;
         width: 100%;
+        opacity: 0;
+        animation: revealContent 0.3s ease 0.5s forwards;
 
         .chart-wrapper {
             display: flex;
