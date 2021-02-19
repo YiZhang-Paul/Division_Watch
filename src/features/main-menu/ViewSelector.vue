@@ -148,6 +148,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     }
 
     .login-selection-card {
+        justify-content: center;
         position: relative;
         height: calc((100% - #{$activities-card-height}) * 0.575);
 
@@ -166,6 +167,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     }
 
     .settings-selection-card {
+        justify-content: center;
         height: calc((100% - #{$activities-card-height}) * 0.425);
         animation-delay: 0.1s;
     }

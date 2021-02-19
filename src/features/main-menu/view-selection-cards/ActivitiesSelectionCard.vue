@@ -5,51 +5,57 @@
             <span class="message">Tasks & Interruptions</span>
         </div>
 
-        <distribution-chart class="types-chart"
-            :groups="itemsDistribution"
-            :delay="chartDelay"
-            :isMonochrome="isHovering">
+        <div class="content">
+            <distribution-chart class="types-chart"
+                :groups="itemsDistribution"
+                :delay="chartDelay"
+                :isMonochrome="isHovering">
 
-            <div class="item-counts">
-                <span class="task-count item-count">
-                    <span class="type">Task</span>
+                <div class="item-counts">
+                    <span class="task-count item-count">
+                        <span class="type">Task</span>
 
-                    <div class="count-wrapper">
-                        <span class="placeholder">{{ tasksPlaceholder }}</span>
-                        <span class="total">{{ tasks }}</span>
-                    </div>
-                </span>
+                        <div class="count-wrapper">
+                            <span class="placeholder">{{ tasksPlaceholder }}</span>
+                            <span class="total">{{ tasks }}</span>
+                        </div>
+                    </span>
 
-                <span class="interruption-count item-count">
-                    <span class="type">Interruption</span>
+                    <span class="interruption-count item-count">
+                        <span class="type">Interruption</span>
 
-                    <div class="count-wrapper">
-                        <span class="placeholder">{{ interruptionsPlaceholder }}</span>
-                        <span class="total">{{ interruptions }}</span>
-                    </div>
-                </span>
+                        <div class="count-wrapper">
+                            <span class="placeholder">{{ interruptionsPlaceholder }}</span>
+                            <span class="total">{{ interruptions }}</span>
+                        </div>
+                    </span>
+                </div>
+            </distribution-chart>
+
+            <div class="total-estimation">
+                <span>Total Estimation:</span>
+                <estimation-skulls class="estimation-skulls" :isDarkMode="isHovering"></estimation-skulls>
+                <span class="placeholder">{{ totalEstimationPlaceholder }}</span>
+                <span class="estimation">{{ totalEstimation }}</span>
             </div>
-        </distribution-chart>
 
-        <div class="total-estimation">
-            <span>Total Estimation:</span>
-            <estimation-skulls class="estimation-skulls" :isDarkMode="isHovering"></estimation-skulls>
-            <span class="placeholder">{{ totalEstimationPlaceholder }}</span>
-            <span class="estimation">{{ totalEstimation }}</span>
-        </div>
+            <div class="minor-charts">
+                <div class="chart-wrapper">
+                    <distribution-chart class="category-chart"
+                        :groups="categoryDistribution"
+                        :delay="chartDelay + 200"
+                        :isMonochrome="isHovering">
+                    </distribution-chart>
+                </div>
 
-        <div class="minor-charts">
-            <distribution-chart class="category-chart"
-                :groups="categoryDistribution"
-                :delay="chartDelay + 200"
-                :isMonochrome="isHovering">
-            </distribution-chart>
-
-            <distribution-chart class="priority-chart"
-                :groups="priorityDistribution"
-                :delay="chartDelay + 200"
-                :isMonochrome="isHovering">
-            </distribution-chart>
+                <div class="chart-wrapper">
+                    <distribution-chart class="priority-chart"
+                        :groups="priorityDistribution"
+                        :delay="chartDelay + 200"
+                        :isMonochrome="isHovering">
+                    </distribution-chart>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -151,7 +157,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
 <style lang="scss" scoped>
 .activities-selection-card-container {
-    padding: 0.6rem 0;
+    padding-top: 0.6rem;
     width: 100%;
     height: 100%;
     font-size: 0.6rem;
@@ -205,16 +211,28 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         }
     }
 
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        flex-grow: 1;
+        width: 100%;
+    }
+
     .total-estimation {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 1rem;
+        height: 1.6rem;
+        border-top: 1px solid rgba(225, 225, 225, 0.1);
+        border-bottom: 1px solid rgba(225, 225, 225, 0.1);
         font-size: 0.575rem;
         overflow: hidden;
 
         .estimation-skulls {
+            margin-left: 0.2rem;
             margin-bottom: 0.15rem;
             width: 1rem;
             height: 1.15rem;
@@ -280,8 +298,20 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
     .minor-charts {
         display: flex;
-        justify-content: space-between;
-        width: 80%;
+        flex-grow: 1;
+        width: 100%;
+
+        .chart-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            height: 100%;
+
+            &:nth-child(1) {
+                border-right: 1px solid rgba(225, 225, 225, 0.05);
+            }
+        }
     }
 
     .priority-chart, .category-chart {
