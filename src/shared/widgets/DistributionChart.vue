@@ -10,7 +10,7 @@
             v-for="(group, index) of visibleGroups"
             :key="index"
             :style="{ transform: 'rotate(' + getRotation(index) + 'deg)' }"
-            :color="isMonochrome ? 'rgba(5, 5, 5, 0.95)' : group.color"
+            :color="isMonochrome ? getTint(index) : group.color"
             :percentage="getPercentage(index)"
             :delay="delay"
             @chart:rendered="totalRendered++"
@@ -42,6 +42,16 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
 
     get visibleGroups(): DistributionGroup[] {
         return this.groups.filter(_ => _.total);
+    }
+
+    public getTint(index: number): string {
+        let tint = [5, 5, 5];
+
+        for (let i = 0; i < index; ++i) {
+            tint = tint.map(_ => (255 - _) / 5 + _);
+        }
+
+        return `rgb(${tint.join(', ')})`;
     }
 
     public getRotation(index: number): number {
