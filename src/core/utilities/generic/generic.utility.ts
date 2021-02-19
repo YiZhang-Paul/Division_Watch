@@ -18,6 +18,12 @@ export class GenericUtility {
         return [...elements.slice(0, index), ...elements.slice(index + 1)];
     }
 
+    public static getLeadingZeros(value: number, maxDigits = 3): string {
+        const digits = String(value).length;
+
+        return '0'.repeat(Math.max(0, maxDigits - digits));
+    }
+
     public static getIconNames(includeReserved = true): string[] {
         return Array.from(icons).filter(_ => includeReserved || !_[1].isReserved).map(_ => _[0]);
     }

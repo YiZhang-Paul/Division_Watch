@@ -47,6 +47,12 @@ const getters = {
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
+    totalEstimation: (_: ITaskItemState, getters: any): number => {
+        const parents: TaskItem[] = getters.incompleteParentTasks;
+        const options: TaskItemOptions = getters.taskItemOptions;
+
+        return parents.reduce((total, _) => total + _.estimate, 0) / (options.skullDuration || 1);
+    },
     activeItem: (state: ITaskItemState): TaskItem | null => state.activeItem,
     activeInterruption: (state: ITaskItemState): TaskItem | null => state.activeInterruption
 };

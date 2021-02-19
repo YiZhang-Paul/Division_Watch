@@ -31,6 +31,13 @@
             </div>
         </distribution-chart>
 
+        <div class="total-estimation">
+            <span>Total Estimation:</span>
+            <estimation-skulls class="estimation-skulls" :isDarkMode="isHovering"></estimation-skulls>
+            <span class="placeholder">{{ totalEstimationPlaceholder }}</span>
+            <span class="estimation">{{ totalEstimation }}</span>
+        </div>
+
         <div class="minor-charts">
             <distribution-chart class="category-chart"
                 :groups="categoryDistribution"
@@ -59,13 +66,18 @@ import { Category } from '../../../core/data-model/generic/category';
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { DistributionGroup } from '../../../core/data-model/generic/distribution-group';
 import DistributionChart from '../../../shared/widgets/DistributionChart.vue';
+import EstimationSkulls from '../../../shared/widgets/EstimationSkulls.vue';
+import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
 
 class ActivitiesSelectionCardProp {
     public chartDelay = prop<number>({ default: 3200 });
 }
 
 @Options({
-    components: { DistributionChart }
+    components: {
+        DistributionChart,
+        EstimationSkulls
+    }
 })
 export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectionCardProp) {
     public isHovering = false;
@@ -79,15 +91,19 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     }
 
     get tasksPlaceholder(): string {
-        const digits = String(this.tasks).length;
-
-        return '0'.repeat(Math.max(0, 3 - digits));
+        return GenericUtility.getLeadingZeros(this.tasks);
     }
 
     get interruptionsPlaceholder(): string {
-        const digits = String(this.interruptions).length;
+        return GenericUtility.getLeadingZeros(this.interruptions);
+    }
 
-        return '0'.repeat(Math.max(0, 3 - digits));
+    get totalEstimation(): number {
+        return store.getters[`${taskItemKey}/totalEstimation`];
+    }
+
+    get totalEstimationPlaceholder(): string {
+        return GenericUtility.getLeadingZeros(Math.round(this.totalEstimation));
     }
 
     get itemsDistribution(): DistributionGroup[] {
@@ -147,6 +163,17 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             color: rgba(45, 45, 45, 0.8);
         }
 
+        .total-estimation {
+
+            .estimation-skulls {
+                filter: invert(0%) sepia(1%) saturate(7%) hue-rotate(70deg) brightness(103%) contrast(100%);
+            }
+
+            .placeholder {
+                color: rgba(30, 30, 30, 0.3);
+            }
+        }
+
         .types-chart .task-count,
         .types-chart .interruption-count {
 
@@ -175,6 +202,30 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             color: rgb(215, 215, 215);
             transition: color 0.25s;
             font-size: 0.55rem;
+        }
+    }
+
+    .total-estimation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 1rem;
+        font-size: 0.575rem;
+        overflow: hidden;
+
+        .estimation-skulls {
+            margin-bottom: 0.15rem;
+            width: 1rem;
+            height: 1.15rem;
+        }
+
+        .placeholder, .estimation {
+            margin-top: 0.06rem;
+        }
+
+        .placeholder {
+            color: rgba(225, 225, 225, 0.25);
         }
     }
 
