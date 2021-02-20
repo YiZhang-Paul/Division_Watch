@@ -1,13 +1,6 @@
 <template>
     <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
-        <div class="planner-selection-card selection-card">
-            <span>Planner</span>
-
-            <div class="icon-wrapper">
-                <img src="../../assets/icons/sharpshooter.svg" />
-            </div>
-        </div>
-
+        <planner-selection-card class="planner-selection-card selection-card"></planner-selection-card>
         <div class="ongoing-selection-card selection-card"></div>
 
         <activities-selection-card class="activities-selection-card selection-card"
@@ -34,6 +27,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
+import PlannerSelectionCard from './view-selection-cards/PlannerSelectionCard.vue';
 import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionCard.vue';
 
 class ViewSelectorProp {
@@ -43,6 +37,7 @@ class ViewSelectorProp {
 @Options({
     components: {
         UserAvatar,
+        PlannerSelectionCard,
         ActivitiesSelectionCard
     },
     emits: ['view:selected']
@@ -67,10 +62,10 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     height: 100%;
 
     .selection-card {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
-        box-sizing: border-box;
         border: 1px solid rgba(240, 240, 240, 0.7);
         background-color: rgba(25, 25, 25, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
@@ -108,35 +103,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     }
 
     .planner-selection-card {
-        flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
-
-        &:hover .icon-wrapper img {
-            opacity: 0.8;
-            filter: invert(0%) sepia(100%) saturate(0%) hue-rotate(21deg) brightness(97%) contrast(103%);
-        }
-
-        span {
-            margin-top: 0.575rem;
-            z-index: 1;
-        }
-
-        .icon-wrapper {
-            position: relative;
-            margin-bottom: 0.4rem;
-            width: 8rem;
-            height: 8rem;
-            overflow: hidden;
-
-            img {
-                position: absolute;
-                left: -49.25%;
-                height: 100%;
-                opacity: 1;
-                filter: invert(74%) sepia(18%) saturate(4544%) hue-rotate(201deg) brightness(101%) contrast(102%);
-                transition: filter 0.25s, opacity 0.25s;
-            }
-        }
     }
 
     .ongoing-selection-card {
