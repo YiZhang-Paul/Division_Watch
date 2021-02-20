@@ -54,7 +54,7 @@ import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 
-import TaskEditor from './TaskEditor.vue';
+import TaskEditor from './editors/TaskEditor.vue';
 
 class TaskManagerProp {
     public isInterruption = prop<boolean>({ default: false });
