@@ -22,6 +22,7 @@
                 v-model="editedName"
                 :placeholder="placeholder"
                 :maxlength="maxLength"
+                @input="$emit('name:input', $event.target.value)"
                 @keyup.enter="onEditConfirm()"
                 @keyup.esc="isEditing = !name"
                 @blur="isEditing = !name" />
@@ -51,7 +52,10 @@ class SectionPanelProp {
         CircleEditOutline,
         Pistol
     },
-    emits: ['name:edited']
+    emits: [
+        'name:edited',
+        'name:input'
+    ]
 })
 export default class SectionPanel extends Vue.with(SectionPanelProp) {
     public editedName = this.name;
@@ -128,7 +132,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
 
         & > span {
             opacity: 0;
-            animation: revealContent 0.25s ease 0.9s forwards;
+            animation: revealContent 0.25s ease 0.8s forwards;
         }
     }
 
