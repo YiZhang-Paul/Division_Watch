@@ -51,21 +51,6 @@
                     </color-selector>
                 </section-panel>
             </div>
-
-            <actions-group v-if="!activeCategory.id"
-                class="actions-group"
-                :name="'Actions'"
-                :actions="emptyCategoryActions"
-                @action:selected="onActionSelected($event)">
-            </actions-group>
-
-            <actions-group v-if="activeCategory.id"
-                class="actions-group"
-                :name="'Danger Zone'"
-                :actions="dangerZoneActions"
-                :isWarning="true"
-                @action:selected="onActionSelected($event)">
-            </actions-group>
         </div>
     </div>
 </template>
@@ -74,24 +59,18 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
-import { dialogKey } from '../../store/dialog/dialog.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
-import { BasicAction } from '../../core/data-model/generic/basic-action';
-import { DialogOption } from '../../core/data-model/generic/dialog-option';
-import { DropdownOption } from '../../core/data-model/generic/dropdown-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import FieldTextarea from '../../shared/controls/FieldTextarea.vue';
 import IconSelector from '../../shared/controls/IconSelector.vue';
 import ColorSelector from '../../shared/controls/ColorSelector.vue';
-import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
-import { CategoryAction } from '../../core/enums/category-action.enum';
 
 @Options({
     components: {
@@ -101,13 +80,10 @@ import { CategoryAction } from '../../core/enums/category-action.enum';
         FieldTextarea,
         IconSelector,
         ColorSelector,
-        ActionsGroup,
         CategorySummaryCard
     }
 })
 export default class CategoryManager extends Vue {
-    public readonly emptyCategoryActions = [new BasicAction('Create Category', CategoryAction.Create)];
-    public readonly dangerZoneActions = [new BasicAction('Delete Category', CategoryAction.Delete, true)];
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -165,34 +141,6 @@ export default class CategoryManager extends Vue {
             store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
             this.updateDebounceTimer = null;
         }, 1000);
-    }
-
-    public async onActionSelected(action: CategoryAction): Promise<void> {
-        if (action === CategoryAction.Create) {
-            const result = await store.dispatch(`${categoryKey}/addCategory`, this.activeCategory);
-
-            if (result) {
-                this.onCategorySelected(result);
-            }
-        }
-        else if (action === CategoryAction.Delete) {
-            const title = 'This item will be permanently deleted.';
-            const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
-            const remaining = allCategories.filter(_ => _.id !== this.activeCategory?.id);
-            const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
-            const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
-            const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
-
-            option.confirmCallback = async(_: boolean, transfer: Category) => {
-                const payload = { target: this.activeCategory, transfer };
-
-                if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
-                    store.dispatch(`${taskItemKey}/loadIncompleteItems`);
-                }
-            };
-
-            store.dispatch(`${dialogKey}/openDialog`, option);
-        }
     }
 }
 </script>
@@ -256,16 +204,6 @@ export default class CategoryManager extends Vue {
                     margin-bottom: 1%;
                 }
             }
-        }
-
-        .actions-group {
-            $margin-left: 0.75rem;
-
-            margin-top: auto;
-            margin-left: $margin-left;
-            width: calc(#{$content-width} - #{$margin-left});
-            opacity: 0;
-            animation: revealContent 0.3s ease 0.4s forwards;
         }
     }
 }

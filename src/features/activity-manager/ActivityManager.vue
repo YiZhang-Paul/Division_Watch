@@ -21,6 +21,22 @@
             <div class="footer-content">
                 <menu-button class="back-button" @click="backToMain()">Back</menu-button>
                 <menu-button class="close-button" @click="closePanel()">Close</menu-button>
+
+                <div v-if="activeTab === 2 && activeCategory" class="item-actions">
+                    <menu-button v-if="!activeCategory.id"
+                        class="action-button"
+                        @click="createCategory(activeCategory)">
+
+                        Create
+                    </menu-button>
+
+                    <menu-button v-if="activeCategory.id"
+                        class="action-button warning-button"
+                        @click="deleteCategory(activeCategory)">
+
+                        Delete
+                    </menu-button>
+                </div>
             </div>
         </template>
     </view-panel>
@@ -33,14 +49,19 @@ import { Ammunition, Biohazard, Target } from 'mdue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
-import { ViewOption } from '../../core/enums/view-option.enum';
+// eslint-disable-next-line no-unused-vars
+import { Category } from '../../core/data-model/generic/category';
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import { DropdownOption } from '../../core/data-model/generic/dropdown-option';
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import { ViewOption } from '../../core/enums/view-option.enum';
 
 import TaskManager from './TaskManager.vue';
 import CategoryManager from './CategoryManager.vue';
@@ -69,6 +90,10 @@ export default class ActivityManager extends Vue {
         ]
     }
 
+    get activeCategory(): Category | null {
+        return store.getters[`${categoryKey}/activeCategory`];
+    }
+
     get tasks(): number {
         return store.getters[`${taskItemKey}/incompleteParentTasks`].length;
     }
@@ -79,6 +104,33 @@ export default class ActivityManager extends Vue {
 
     get categories(): number {
         return store.getters[`${categoryKey}/editableCategories`].length;
+    }
+
+    public async createCategory(category: Category): Promise<void> {
+        const result = await store.dispatch(`${categoryKey}/addCategory`, category);
+
+        if (result) {
+            store.dispatch(`${categoryKey}/swapActiveCategory`, result);
+        }
+    }
+
+    public async deleteCategory(category: Category): Promise<void> {
+        const title = 'This item will be permanently deleted.';
+        const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
+        const remaining = allCategories.filter(_ => _.id !== category.id);
+        const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
+        const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
+        const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
+
+        option.confirmCallback = async(_: boolean, transfer: Category) => {
+            const payload = { target: category, transfer };
+
+            if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
+                store.dispatch(`${taskItemKey}/loadIncompleteItems`);
+            }
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
     }
 
     public backToMain(): void {
@@ -128,6 +180,32 @@ export default class ActivityManager extends Vue {
 
     .close-button {
         color: rgb(240, 123, 14);
+    }
+
+    .item-actions {
+        margin-left: auto;
+    }
+
+    .action-button {
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+        height: 3.5vh;
+        background-color: rgb(59, 163, 154);
+        color: rgb(255, 255, 255);
+        opacity: 0;
+        animation: revealContent 0.25s ease 0.6s forwards;
+
+        &:hover {
+            background-color: rgb(75, 192, 182);
+        }
+
+        &.warning-button {
+            background-color: rgb(236, 33, 18);
+
+            &:hover {
+                background-color: rgb(238, 61, 49);
+            }
+        }
     }
 }
 </style>
