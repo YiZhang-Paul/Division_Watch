@@ -191,6 +191,7 @@ export default class CategoryManager extends Vue {
         height: 100%;
 
         .editor-area {
+            padding-top: 1.5vh;
             width: $content-width;
 
             .section-panel {

@@ -4,7 +4,12 @@
             <div v-for="n in 3" :key="n"></div>
         </div>
 
-        <div class="name" :class="{ editable: isEditable }" @click="onEditStart()">
+        <div v-if="showError" class="error">
+            <pistol class="error-icon" />
+            <span>{{ errorMessage }}</span>
+        </div>
+
+        <div class="name" :class="{ editable: isEditable, invalid: showError }" @click="onEditStart()">
             <template v-if="!isEditing && name">
                 <span :class="{ subsection: isSubsection }">{{ name }}</span>
                 <circle-edit-outline v-if="isEditable" class="edit-icon" />
@@ -16,6 +21,7 @@
                 class="edit-field"
                 v-model="editedName"
                 :placeholder="placeholder"
+                :maxlength="maxLength"
                 @keyup.enter="onEditConfirm()"
                 @keyup.esc="isEditing = !name"
                 @blur="isEditing = !name" />
@@ -29,24 +35,35 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { CircleEditOutline } from 'mdue';
+import { CircleEditOutline, Pistol } from 'mdue';
 
 class SectionPanelProp {
     public name = prop<string>({ default: '' });
     public placeholder = prop<string>({ default: 'type here...' });
+    public errorText = prop<string>({ default: '' });
+    public maxLength = prop<number>({ default: 40 });
     public isSubsection = prop<boolean>({ default: false });
     public isEditable = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
-        CircleEditOutline
+        CircleEditOutline,
+        Pistol
     },
     emits: ['name:edited']
 })
 export default class SectionPanel extends Vue.with(SectionPanelProp) {
     public editedName = this.name;
     public isEditing = !this.name;
+
+    get showError(): boolean {
+        return (this.isEditing || !this.name) && Boolean(this.errorMessage);
+    }
+
+    get errorMessage(): string {
+        return this.editedName?.trim() ? this.errorText : 'name must not be empty.';
+    }
 
     public mounted(): void {
         this.tryFocusInput();
@@ -91,12 +108,37 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
     font-family: 'Jost';
     font-size: var(--title-size);
 
+    .error {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        bottom: 100%;
+        left: $margin-left;
+        color: rgb(66, 250, 241);
+        font-size: calc(var(--title-size) * 0.6);
+
+        .error-icon {
+            margin-top: 0.085rem;
+            margin-right: 0.15rem;
+            font-size: calc(var(--title-size) * 0.55);
+            opacity: 0;
+            animation: revealContent 0.01s ease 0.5s forwards,
+                       blinkFast 0.2s ease 0.5s forwards 2;
+        }
+
+        & > span {
+            opacity: 0;
+            animation: revealContent 0.25s ease 0.9s forwards;
+        }
+    }
+
     .name {
         display: flex;
         align-items: center;
         align-self: flex-start;
         margin-left: $margin-left;
         width: $content-width;
+        border: 1px solid transparent;
         opacity: 0;
         animation: revealContent 0.3s ease 0.3s forwards;
         transition: color 0.3s;
@@ -124,6 +166,11 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
             color: rgb(241, 165, 78);
             font-size: 0.475rem;
             transition: color 0.3s;
+        }
+
+        &.invalid {
+            border: 1px solid rgb(66, 250, 241);
+            transition: color 0.3s, border 0.3s 0.2s;
         }
 
         &.editable:hover {

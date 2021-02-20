@@ -154,6 +154,6 @@ html, body {
 .activity-manager {
     position: absolute;
     width: 57.5%;
-    height: 85%;
+    height: 86.5%;
 }
 </style>

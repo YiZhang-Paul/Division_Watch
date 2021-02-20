@@ -204,6 +204,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding-top: 1.5vh;
         width: calc(100% - #{$list-width});
         height: 100%;
 
