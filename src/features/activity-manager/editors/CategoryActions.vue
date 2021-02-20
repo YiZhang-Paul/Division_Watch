@@ -1,11 +1,9 @@
 <template>
     <div v-if="category" class="category-actions-container">
-        <menu-button v-if="!category.id"
-            class="action-button"
-            @click="createCategory(category)">
-
-            Create
-        </menu-button>
+        <template v-if="!category.id">
+            <menu-button class="action-button cancel-button" @click="cancelCreate()">Cancel</menu-button>
+            <menu-button class="action-button" @click="createCategory(category)">Create</menu-button>
+        </template>
 
         <menu-button v-if="category.id"
             class="action-button warning-button"
@@ -46,6 +44,10 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
         if (result) {
             store.dispatch(`${categoryKey}/swapActiveCategory`, result);
         }
+    }
+
+    public cancelCreate(): void {
+        store.dispatch(`${categoryKey}/swapActiveCategory`, null);
     }
 
     public async deleteCategory(category: Category): Promise<void> {
@@ -90,6 +92,14 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
 
         &:not(:nth-child(1)) {
             margin-left: 7%;
+        }
+
+        &.cancel-button {
+            background-color: rgba(140, 140, 140, 0.25);
+
+            &:hover {
+                background-color: rgba(175, 175, 175, 0.35);
+            }
         }
 
         &.warning-button {

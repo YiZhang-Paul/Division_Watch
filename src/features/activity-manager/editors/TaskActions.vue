@@ -1,11 +1,14 @@
 <template>
     <div v-if="task" class="task-actions-container">
-        <menu-button v-if="!task.id"
-            class="action-button"
-            @click="createTaskItem(task)">
+        <template v-if="!task.id">
+            <menu-button class="action-button cancel-button"
+                @click="cancelCreate(task.isInterruption)">
 
-            Create
-        </menu-button>
+                Cancel
+            </menu-button>
+
+            <menu-button class="action-button" @click="createTaskItem(task)">Create</menu-button>
+        </template>
 
         <menu-button v-if="task.id && task.isInterruption"
             class="action-button"
@@ -59,6 +62,11 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
             const action = result.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
             store.dispatch(`${taskItemKey}/${action}`, result);
         }
+    }
+
+    public cancelCreate(isInterruption: boolean): void {
+        const action = isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+        store.dispatch(`${taskItemKey}/${action}`, null);
     }
 
     public convertToTask(item: TaskItem): void {
@@ -118,6 +126,14 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
 
         &:not(:nth-child(1)) {
             margin-left: 7%;
+        }
+
+        &.cancel-button {
+            background-color: rgba(140, 140, 140, 0.25);
+
+            &:hover {
+                background-color: rgba(175, 175, 175, 0.35);
+            }
         }
 
         &.warning-button {
