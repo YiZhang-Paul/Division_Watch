@@ -22,6 +22,36 @@
                 <menu-button class="back-button" @click="backToMain()">Back</menu-button>
                 <menu-button class="close-button" @click="closePanel()">Close</menu-button>
 
+                <div v-if="activeTab < 2 && activeTask" class="item-actions">
+                    <menu-button v-if="!activeTask.id"
+                        class="action-button"
+                        @click="createTaskItem(activeTask)">
+
+                        Create
+                    </menu-button>
+
+                    <menu-button v-if="activeTask.id && activeTask.isInterruption"
+                        class="action-button"
+                        @click="convertToTask(activeTask)">
+
+                        Convert to Task
+                    </menu-button>
+
+                    <menu-button v-if="activeTask.parent"
+                        class="action-button"
+                        @click="convertToParent(activeTask)">
+
+                        Convert to Parent
+                    </menu-button>
+
+                    <menu-button v-if="activeTask.id"
+                        class="action-button warning-button"
+                        @click="deleteTaskItem(activeTask)">
+
+                        Delete
+                    </menu-button>
+                </div>
+
                 <div v-if="activeTab === 2 && activeCategory" class="item-actions">
                     <menu-button v-if="!activeCategory.id"
                         class="action-button"
@@ -54,6 +84,8 @@ import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
+// eslint-disable-next-line no-unused-vars
+import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import { DropdownOption } from '../../core/data-model/generic/dropdown-option';
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
@@ -90,6 +122,10 @@ export default class ActivityManager extends Vue {
         ]
     }
 
+    get activeTask(): TaskItem | null {
+        return store.getters[`${taskItemKey}/${this.activeTab ? 'activeInterruption' : 'activeItem'}`];
+    }
+
     get activeCategory(): Category | null {
         return store.getters[`${categoryKey}/activeCategory`];
     }
@@ -104,6 +140,49 @@ export default class ActivityManager extends Vue {
 
     get categories(): number {
         return store.getters[`${categoryKey}/editableCategories`].length;
+    }
+
+    public async createTaskItem(item: TaskItem): Promise<void> {
+        const result: TaskItem = await store.dispatch(`${taskItemKey}/addParentTaskItem`, item);
+
+        if (result) {
+            const action = result.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+            store.dispatch(`${taskItemKey}/${action}`, result);
+        }
+    }
+
+    public convertToTask(item: TaskItem): void {
+        const title = 'This interruption will be converted to a task.';
+        const option = new DialogOption(title, 'Convert', 'Cancel');
+
+        option.confirmCallback = () => {
+            store.dispatch(`${taskItemKey}/convertInterruption`, item);
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
+    }
+
+    public convertToParent(item: TaskItem): void {
+        const title = 'This task will be converted to a parent task.';
+        const option = new DialogOption(title, 'Convert', 'Cancel');
+
+        option.confirmCallback = () => {
+            store.dispatch(`${taskItemKey}/convertChildTask`, item);
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
+    }
+
+    public deleteTaskItem(item: TaskItem): void {
+        const title = 'This item will be permanently deleted.';
+        const checkboxText = item.parent || item.isInterruption ? '' : 'do not remove child tasks';
+        const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, true);
+
+        option.confirmCallback = (keepChildren: boolean) => {
+            store.dispatch(`${taskItemKey}/deleteTaskItem`, { item, keepChildren });
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
     }
 
     public async createCategory(category: Category): Promise<void> {
@@ -183,6 +262,9 @@ export default class ActivityManager extends Vue {
     }
 
     .item-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
         margin-left: auto;
     }
 
@@ -197,6 +279,10 @@ export default class ActivityManager extends Vue {
 
         &:hover {
             background-color: rgb(75, 192, 182);
+        }
+
+        &:not(:nth-child(1)) {
+            margin-left: 7%;
         }
 
         &.warning-button {

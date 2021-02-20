@@ -265,9 +265,9 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         display: flex;
         z-index: 0;
         justify-content: space-between;
-        margin-top: 1.75%;
+        margin-top: 4%;
         width: 100%;
-        height: 45%;
+        height: 48.5%;
 
         .placeholder-panel {
             box-sizing: border-box;

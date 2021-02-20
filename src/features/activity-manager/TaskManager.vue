@@ -36,21 +36,6 @@
                 @child:open="onTaskSelected($event)"
                 @child:delete="onTaskDelete($event)">
             </task-editor>
-
-            <actions-group v-if="!activeTask.id"
-                class="actions-group"
-                :name="'Actions'"
-                :actions="emptyTaskActions"
-                @action:selected="onActionSelected($event)">
-            </actions-group>
-
-            <actions-group v-if="activeTask.id"
-                class="actions-group"
-                :name="'Danger Zone'"
-                :actions="dangerZoneActions"
-                :isWarning="true"
-                @action:selected="onActionSelected($event)">
-            </actions-group>
         </div>
     </div>
 </template>
@@ -64,13 +49,10 @@ import { dialogKey } from '../../store/dialog/dialog.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
-import { BasicAction } from '../../core/data-model/generic/basic-action';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
-import ActionsGroup from '../../shared/controls/ActionsGroup.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
-import { TaskAction } from '../../core/enums/task-action.enum';
 
 import TaskEditor from './TaskEditor.vue';
 
@@ -83,30 +65,11 @@ class TaskManagerProp {
         ArrowLeftCircle,
         ItemListPanel,
         PlaceholderPanel,
-        ActionsGroup,
         TaskSummaryCard,
         TaskEditor
     }
 })
 export default class TaskManager extends Vue.with(TaskManagerProp) {
-    public readonly emptyTaskActions = [
-        new BasicAction(`Create ${this.isInterruption ? 'Interruption' : 'Task'}`, TaskAction.Create)
-    ];
-
-    public readonly parentDangerZoneActions = [
-        new BasicAction(`Delete ${this.isInterruption ? 'Interruption' : 'Task'}`, TaskAction.Delete, true)
-    ];
-
-    public readonly interruptionDangerZoneActions = [
-        new BasicAction('Convert to Task', TaskAction.ConvertToTask),
-        ...this.parentDangerZoneActions
-    ];
-
-    public readonly childDangerZoneActions = [
-        new BasicAction('Convert to Parent', TaskAction.ConvertToParent),
-        ...this.parentDangerZoneActions
-    ];
-
     public searchText = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -137,14 +100,6 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         }
 
         return store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.activeTask.id);
-    }
-
-    get dangerZoneActions(): BasicAction<TaskAction>[] {
-        if (this.activeTask?.isInterruption) {
-            return this.interruptionDangerZoneActions;
-        }
-
-        return this.activeTask?.parent ? this.childDangerZoneActions : this.parentDangerZoneActions;
     }
 
     public beforeUnmount(): void {
@@ -190,39 +145,6 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         if (this.activeTask) {
             const payload = { parentId: this.activeTask.id, item: task };
             await store.dispatch(`${taskItemKey}/addChildTaskItem`, payload);
-        }
-    }
-
-    public async onActionSelected(action: TaskAction): Promise<void> {
-        if (action === TaskAction.Create) {
-            const result = await store.dispatch(`${taskItemKey}/addParentTaskItem`, this.activeTask);
-
-            if (result) {
-                this.onTaskSelected(result);
-            }
-        }
-        else if (action === TaskAction.ConvertToTask) {
-            const title = 'This interruption will be converted to a task.';
-            const option = new DialogOption(title, 'Convert', 'Cancel');
-
-            option.confirmCallback = () => {
-                store.dispatch(`${taskItemKey}/convertInterruption`, this.activeTask);
-            };
-
-            store.dispatch(`${dialogKey}/openDialog`, option);
-        }
-        else if (action === TaskAction.ConvertToParent) {
-            const title = 'This task will be converted to a parent task.';
-            const option = new DialogOption(title, 'Convert', 'Cancel');
-
-            option.confirmCallback = () => {
-                store.dispatch(`${taskItemKey}/convertChildTask`, this.activeTask);
-            };
-
-            store.dispatch(`${dialogKey}/openDialog`, option);
-        }
-        else if (action === TaskAction.Delete) {
-            this.onTaskDelete(this.activeTask!);
         }
     }
 
@@ -310,16 +232,6 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
 
         .task-editor {
             width: $content-width;
-        }
-
-        .actions-group {
-            $margin-left: 0.75rem;
-
-            margin-top: auto;
-            margin-left: $margin-left;
-            width: calc(#{$content-width} - #{$margin-left});
-            opacity: 0;
-            animation: revealContent 0.3s ease 0.4s forwards;
         }
     }
 }
