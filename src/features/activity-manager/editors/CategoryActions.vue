@@ -1,0 +1,104 @@
+<template>
+    <div v-if="category" class="category-actions-container">
+        <menu-button v-if="!category.id"
+            class="action-button"
+            @click="createCategory(category)">
+
+            Create
+        </menu-button>
+
+        <menu-button v-if="category.id"
+            class="action-button warning-button"
+            @click="deleteCategory(category)">
+
+            Delete
+        </menu-button>
+    </div>
+</template>
+
+<script lang="ts">
+import { Options, Vue, prop } from 'vue-class-component';
+
+import store from '../../../store';
+import { dialogKey } from '../../../store/dialog/dialog.state';
+import { categoryKey } from '../../../store/category/category.state';
+import { taskItemKey } from '../../../store/task-item/task-item.state';
+// eslint-disable-next-line no-unused-vars
+import { Category } from '../../../core/data-model/generic/category';
+import { DialogOption } from '../../../core/data-model/generic/dialog-option';
+import { DropdownOption } from '../../../core/data-model/generic/dropdown-option';
+import MenuButton from '../../../shared/controls/MenuButton.vue';
+
+class CategoryActionsProp {
+    public category = prop<Category>({ default: null });
+}
+
+@Options({
+    components: {
+        MenuButton
+    }
+})
+export default class CategoryActions extends Vue.with(CategoryActionsProp) {
+
+    public async createCategory(category: Category): Promise<void> {
+        const result = await store.dispatch(`${categoryKey}/addCategory`, category);
+
+        if (result) {
+            store.dispatch(`${categoryKey}/swapActiveCategory`, result);
+        }
+    }
+
+    public async deleteCategory(category: Category): Promise<void> {
+        const title = 'This item will be permanently deleted.';
+        const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
+        const remaining = allCategories.filter(_ => _.id !== category.id);
+        const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
+        const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
+        const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
+
+        option.confirmCallback = async(_: boolean, transfer: Category) => {
+            const payload = { target: category, transfer };
+
+            if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
+                store.dispatch(`${taskItemKey}/loadIncompleteItems`);
+            }
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
+    }
+}
+</script>
+
+<style lang="scss" scoped>
+.category-actions-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .action-button {
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+        height: 3.5vh;
+        background-color: rgb(59, 163, 154);
+        color: rgb(255, 255, 255);
+        opacity: 0;
+        animation: revealContent 0.25s ease 0.6s forwards;
+
+        &:hover {
+            background-color: rgb(75, 192, 182);
+        }
+
+        &:not(:nth-child(1)) {
+            margin-left: 7%;
+        }
+
+        &.warning-button {
+            background-color: rgb(236, 33, 18);
+
+            &:hover {
+                background-color: rgb(238, 61, 49);
+            }
+        }
+    }
+}
+</style>
