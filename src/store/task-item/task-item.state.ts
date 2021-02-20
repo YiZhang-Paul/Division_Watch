@@ -53,6 +53,19 @@ const getters = {
 
         return parents.reduce((total, _) => total + _.estimate, 0) / (options.skullDuration || 1);
     },
+    totalNearDue: (state: ITaskItemState): number => {
+        const now = Date.now();
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dates = state.incompleteItems.filter(_ => _.deadline).map(_ => new Date(_.deadline!));
+
+        return dates.filter(_ => _.getTime() >= now && _.getTime() - now < oneDay * 2).length;
+    },
+    totalPastDue: (state: ITaskItemState): number => {
+        const now = Date.now();
+        const tasks = state.incompleteItems.filter(_ => _.deadline);
+
+        return tasks.filter(_ => new Date(_.deadline!).getTime() < now).length;
+    },
     activeItem: (state: ITaskItemState): TaskItem | null => state.activeItem,
     activeInterruption: (state: ITaskItemState): TaskItem | null => state.activeInterruption
 };

@@ -118,7 +118,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         return [
             new DistributionGroup(parentTaskName, this.tasks, 'rgb(245, 114, 8)'),
-            new DistributionGroup(childTaskName, childTasks, 'rgb(222, 241, 47)'),
+            new DistributionGroup(childTaskName, childTasks, 'rgba(190, 190, 190, 0.35)'),
             new DistributionGroup(interruptionName, this.interruptions, 'rgb(83, 191, 252)')
         ];
     }
@@ -135,7 +135,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             distribution.set(item.categoryId!, (distribution.get(item.categoryId!) ?? 0) + 1);
         }
 
-        return Array.from(distribution).sort((a, b) => b[1] - a[1]).slice(0, 3).map(_ => {
+        return Array.from(distribution).sort((a, b) => b[1] - a[1]).slice(0, 5).map(_ => {
             const category: Category = store.getters[`${categoryKey}/category`](_[0]);
 
             return new DistributionGroup(category.name, _[1], category.color);
