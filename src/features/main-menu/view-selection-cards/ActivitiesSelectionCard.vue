@@ -39,9 +39,13 @@
                             :groups="categoryDistribution"
                             :delay="chartDelay + 120"
                             :isMonochrome="isHovering">
-                        </distribution-chart>
 
-                        <counter-display class="counter-display" :value="categoryDistribution.length"></counter-display>
+                            <div class="counter-wrapper">
+                                <counter-display class="counter-display"
+                                    :value="categoryDistribution.length">
+                                </counter-display>
+                            </div>
+                        </distribution-chart>
                     </div>
                 </div>
 
@@ -53,9 +57,13 @@
                             :groups="priorityDistribution"
                             :delay="chartDelay + 120"
                             :isMonochrome="isHovering">
-                        </distribution-chart>
 
-                        <counter-display class="counter-display" :value="highpriorityTargets"></counter-display>
+                            <div class="counter-wrapper">
+                                <counter-display class="counter-display"
+                                    :value="highpriorityTargets">
+                                </counter-display>
+                            </div>
+                        </distribution-chart>
                     </div>
                 </div>
             </div>
@@ -237,7 +245,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         overflow: hidden;
         transition: border 0.3s;
         opacity: 0;
-        animation: revealContent 0.3s ease 0.4s forwards;
+        animation: revealContent 0.3s ease 0.6s forwards;
 
         .estimation-skulls {
             margin-left: 0.2rem;
@@ -301,7 +309,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         flex-grow: 1;
         width: 100%;
         opacity: 0;
-        animation: revealContent 0.3s ease 0.5s forwards;
+        animation: revealContent 0.3s ease 0.4s forwards;
 
         .chart-wrapper {
             display: flex;
@@ -324,10 +332,16 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                position: relative;
+
+                .counter-wrapper {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                }
 
                 .counter-display {
-                    position: absolute;
                     font-size: 0.9rem;
                 }
 

@@ -9,7 +9,7 @@
 
             <div class="tab-name">
                 <span>{{ option.name }}:</span>
-                <counter-display class="counter-display" :value="option.badgeValue"></counter-display>
+                <counter-display class="counter-display" :value="option.badgeValue" :digits="2"></counter-display>
             </div>
         </div>
     </div>
@@ -107,6 +107,7 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
             }
 
             .counter-display {
+                margin-bottom: 0.02rem;
                 line-height: 0.475rem;
                 font-size: 0.475rem;
             }

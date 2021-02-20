@@ -18,7 +18,7 @@ class CounterDisplayProp {
 export default class CounterDisplay extends Vue.with(CounterDisplayProp) {
 
     get leadingZeros(): string {
-        return GenericUtility.getLeadingZeros(Math.round(this.value));
+        return GenericUtility.getLeadingZeros(Math.round(this.value), this.digits);
     }
 
     get isOverflow(): boolean {
