@@ -48,10 +48,10 @@ const getters = {
         return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
     totalEstimation: (_: ITaskItemState, getters: any): number => {
-        const parents: TaskItem[] = getters.incompleteParentTasks;
+        const items: TaskItem[] = [...getters.incompleteParentTasks, ...getters.incompleteInterruptions];
         const options: TaskItemOptions = getters.taskItemOptions;
 
-        return parents.reduce((total, _) => total + _.estimate, 0) / (options.skullDuration || 1);
+        return items.reduce((total, _) => total + _.estimate, 0) / (options.skullDuration || 1);
     },
     totalNearDue: (state: ITaskItemState): number => {
         const now = Date.now();
