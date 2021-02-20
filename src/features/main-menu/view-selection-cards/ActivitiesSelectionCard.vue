@@ -14,20 +14,12 @@
                 <div class="item-counts">
                     <span class="task-count item-count">
                         <span class="type">Task</span>
-
-                        <div class="count-wrapper">
-                            <span class="placeholder">{{ tasksPlaceholder }}</span>
-                            <span class="total">{{ tasks }}</span>
-                        </div>
+                        <counter-display class="counter-display" :value="tasks"></counter-display>
                     </span>
 
                     <span class="interruption-count item-count">
                         <span class="type">Interruption</span>
-
-                        <div class="count-wrapper">
-                            <span class="placeholder">{{ interruptionsPlaceholder }}</span>
-                            <span class="total">{{ interruptions }}</span>
-                        </div>
+                        <counter-display class="counter-display" :value="interruptions"></counter-display>
                     </span>
                 </div>
             </distribution-chart>
@@ -35,8 +27,7 @@
             <div class="total-estimation">
                 <span>Total Estimation:</span>
                 <estimation-skulls class="estimation-skulls" :isDarkMode="isHovering"></estimation-skulls>
-                <span class="placeholder">{{ totalEstimationPlaceholder }}</span>
-                <span class="estimation">{{ totalEstimation }}</span>
+                <counter-display class="counter-display" :value="totalEstimation"></counter-display>
             </div>
 
             <div class="minor-charts">
@@ -50,7 +41,7 @@
                             :isMonochrome="isHovering">
                         </distribution-chart>
 
-                        <span>{{ categoryDistribution.length }}</span>
+                        <counter-display class="counter-display" :value="categoryDistribution.length"></counter-display>
                     </div>
                 </div>
 
@@ -64,7 +55,7 @@
                             :isMonochrome="isHovering">
                         </distribution-chart>
 
-                        <span>{{ highpriorityTargets }}</span>
+                        <counter-display class="counter-display" :value="highpriorityTargets"></counter-display>
                     </div>
                 </div>
             </div>
@@ -85,7 +76,7 @@ import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { DistributionGroup } from '../../../core/data-model/generic/distribution-group';
 import DistributionChart from '../../../shared/widgets/DistributionChart.vue';
 import EstimationSkulls from '../../../shared/widgets/EstimationSkulls.vue';
-import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
+import CounterDisplay from '../../../shared/widgets/CounterDisplay.vue';
 
 class ActivitiesSelectionCardProp {
     public chartDelay = prop<number>({ default: 3200 });
@@ -94,7 +85,8 @@ class ActivitiesSelectionCardProp {
 @Options({
     components: {
         DistributionChart,
-        EstimationSkulls
+        EstimationSkulls,
+        CounterDisplay
     }
 })
 export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectionCardProp) {
@@ -108,20 +100,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         return store.getters[`${taskItemKey}/incompleteInterruptions`].length;
     }
 
-    get tasksPlaceholder(): string {
-        return GenericUtility.getLeadingZeros(this.tasks);
-    }
-
-    get interruptionsPlaceholder(): string {
-        return GenericUtility.getLeadingZeros(this.interruptions);
-    }
-
     get totalEstimation(): number {
         return store.getters[`${taskItemKey}/totalEstimation`];
-    }
-
-    get totalEstimationPlaceholder(): string {
-        return GenericUtility.getLeadingZeros(Math.round(this.totalEstimation));
     }
 
     get highpriorityTargets(): number {
@@ -187,8 +167,21 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     &:hover {
         color: rgba(35, 35, 35, 0.9);
 
+        .counter-display {
+            color: rgba(30, 30, 30, 0.9);
+
+            ::v-deep .placeholder {
+                color: rgba(30, 30, 30, 0.4);
+            }
+        }
+
         .titles .message {
             color: rgba(45, 45, 45, 0.8);
+        }
+
+        .types-chart .task-count span,
+        .types-chart .interruption-count span {
+            color: rgba(35, 35, 35, 0.9);
         }
 
         .total-estimation {
@@ -198,26 +191,10 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             .estimation-skulls {
                 filter: invert(0%) sepia(1%) saturate(7%) hue-rotate(70deg) brightness(103%) contrast(100%);
             }
-
-            .placeholder {
-                color: rgba(30, 30, 30, 0.3);
-            }
         }
 
         .minor-charts .chart-wrapper:nth-child(1) {
             border-right: 1px solid rgba(45, 45, 45, 0.2);
-        }
-
-        .types-chart .task-count,
-        .types-chart .interruption-count {
-
-            span {
-                color: rgba(35, 35, 35, 0.9);
-            }
-
-            .count-wrapper .placeholder {
-                color: rgba(30, 30, 30, 0.3);
-            }
         }
     }
 
@@ -269,12 +246,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             height: 1.15rem;
         }
 
-        .placeholder, .estimation {
+        .counter-display {
             margin-top: 0.06rem;
-        }
-
-        .placeholder {
-            color: rgba(225, 225, 225, 0.25);
         }
     }
 
@@ -303,13 +276,9 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             align-items: center;
             font-size: 0.6rem;
 
-            .count-wrapper {
+            .counter-display {
                 font-size: 1.4rem;
                 line-height: 1.5rem;
-
-                .placeholder {
-                    color: rgba(225, 225, 225, 0.25);
-                }
             }
         }
     }
@@ -357,14 +326,15 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
                 align-items: center;
                 position: relative;
 
-                span {
+                .counter-display {
                     position: absolute;
+                    font-size: 0.9rem;
                 }
 
                 .priority-chart, .category-chart {
                     margin-bottom: 2.5%;
-                    width: 11vh;
-                    height: 11vh;
+                    width: 10.5vh;
+                    height: 10.5vh;
                 }
             }
         }

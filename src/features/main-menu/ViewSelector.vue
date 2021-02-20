@@ -160,8 +160,8 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         .user-avatar {
             position: absolute;
             left: 7.5%;
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 1.45rem;
+            height: 1.45rem;
             transition: background-color 0.25s, border-color 0.25s;
         }
     }
