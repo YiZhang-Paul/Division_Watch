@@ -28,6 +28,7 @@ export default class MenuButton extends Vue { }
     background-color: rgba(140, 140, 140, 0.25);
     transition: background-color 0.3s;
     font-size: 0.6em;
+    white-space: nowrap;
 
     &:hover {
         cursor: pointer;
