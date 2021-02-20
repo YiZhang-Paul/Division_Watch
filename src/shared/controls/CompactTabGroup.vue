@@ -6,7 +6,11 @@
             @click="onSelect(index)">
 
             <component v-if="option.icon" class="icon" :is="option.icon"></component>
-            <span>{{ option.name }}: {{ option.badgeValue }}</span>
+
+            <div class="tab-name">
+                <span>{{ option.name }}:</span>
+                <counter-display class="counter-display" :value="option.badgeValue"></counter-display>
+            </div>
         </div>
     </div>
 </template>
@@ -16,12 +20,14 @@ import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
 // eslint-disable-next-line no-unused-vars
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
+import CounterDisplay from '../../shared/widgets/CounterDisplay.vue';
 
 class CompactTabGroupProp {
     public options = prop<TabGroupOption[]>({ default: [] });
 }
 
 @Options({
+    components: { CounterDisplay },
     emits: ['tab:selected']
 })
 export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
@@ -90,6 +96,20 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
 
         .icon {
             font-size: 0.65rem;
+        }
+
+        .tab-name {
+            display: flex;
+            align-items: flex-end;
+
+            & > span {
+                margin-right: 0.1rem;
+            }
+
+            .counter-display {
+                line-height: 0.475rem;
+                font-size: 0.475rem;
+            }
         }
     }
 }
