@@ -41,19 +41,31 @@
 
             <div class="minor-charts">
                 <div class="chart-wrapper">
-                    <distribution-chart class="category-chart"
-                        :groups="categoryDistribution"
-                        :delay="chartDelay + 200"
-                        :isMonochrome="isHovering">
-                    </distribution-chart>
+                    <span>Popular Categories</span>
+
+                    <div class="inner-wrapper">
+                        <distribution-chart class="category-chart"
+                            :groups="categoryDistribution"
+                            :delay="chartDelay + 200"
+                            :isMonochrome="isHovering">
+                        </distribution-chart>
+
+                        <span>{{ categoryDistribution.length }}</span>
+                    </div>
                 </div>
 
                 <div class="chart-wrapper">
-                    <distribution-chart class="priority-chart"
-                        :groups="priorityDistribution"
-                        :delay="chartDelay + 200"
-                        :isMonochrome="isHovering">
-                    </distribution-chart>
+                    <span>High Value Targets</span>
+
+                    <div class="inner-wrapper">
+                        <distribution-chart class="priority-chart"
+                            :groups="priorityDistribution"
+                            :delay="chartDelay + 200"
+                            :isMonochrome="isHovering">
+                        </distribution-chart>
+
+                        <span>{{ highpriorityTargets }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,6 +122,12 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
     get totalEstimationPlaceholder(): string {
         return GenericUtility.getLeadingZeros(Math.round(this.totalEstimation));
+    }
+
+    get highpriorityTargets(): number {
+        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteItems`];
+
+        return items.filter(_ => _.priority.rank === 2).length;
     }
 
     get itemsDistribution(): DistributionGroup[] {
@@ -174,6 +192,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         }
 
         .total-estimation {
+            border-top: 1px solid rgba(45, 45, 45, 0.2);
+            border-bottom: 1px solid rgba(45, 45, 45, 0.2);
 
             .estimation-skulls {
                 filter: invert(0%) sepia(1%) saturate(7%) hue-rotate(70deg) brightness(103%) contrast(100%);
@@ -182,6 +202,10 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             .placeholder {
                 color: rgba(30, 30, 30, 0.3);
             }
+        }
+
+        .minor-charts .chart-wrapper:nth-child(1) {
+            border-right: 1px solid rgba(45, 45, 45, 0.2);
         }
 
         .types-chart .task-count,
@@ -234,6 +258,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         border-bottom: 1px solid rgba(225, 225, 225, 0.1);
         font-size: 0.575rem;
         overflow: hidden;
+        transition: border 0.3s;
         opacity: 0;
         animation: revealContent 0.3s ease 0.5s forwards;
 
@@ -276,11 +301,11 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
 
             .count-wrapper {
-                font-size: 1.5rem;
-                line-height: 1.6rem;
+                font-size: 1.4rem;
+                line-height: 1.5rem;
 
                 .placeholder {
                     color: rgba(225, 225, 225, 0.25);
@@ -290,8 +315,8 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
     }
 
     .types-chart {
-        width: 24.25vh;
-        height: 24.25vh;
+        width: 23.25vh;
+        height: 23.25vh;
 
         .task-count .type {
             color: rgb(245, 114, 8);
@@ -311,20 +336,38 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
 
         .chart-wrapper {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             width: 50%;
             height: 100%;
+            transition: border 0.3s;
 
             &:nth-child(1) {
                 border-right: 1px solid rgba(225, 225, 225, 0.05);
             }
-        }
-    }
 
-    .priority-chart, .category-chart {
-        width: 11.5vh;
-        height: 11.5vh;
+            & > span {
+                font-size: 0.45rem;
+            }
+
+            .inner-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+
+                span {
+                    position: absolute;
+                }
+
+                .priority-chart, .category-chart {
+                    margin-bottom: 2.5%;
+                    width: 11vh;
+                    height: 11vh;
+                }
+            }
+        }
     }
 }
 </style>
