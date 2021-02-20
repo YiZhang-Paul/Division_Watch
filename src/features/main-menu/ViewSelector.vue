@@ -4,7 +4,7 @@
         <div class="ongoing-selection-card selection-card"></div>
 
         <activities-selection-card class="activities-selection-card selection-card"
-            :chartDelay="allowAnimation ? 3200 : 650"
+            :chartDelay="allowAnimation ? 1800 : 600"
             @click="$emit('view:selected', options.Activities)">
         </activities-selection-card>
 

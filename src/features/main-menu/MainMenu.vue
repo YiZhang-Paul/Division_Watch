@@ -138,7 +138,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
 
 <style lang="scss" scoped>
 .main-menu-container {
-    $box-expand-time: 0.3s;
+    $box-expand-time: 0.125s;
     --square-dimension: 0.25vh;
 
     display: flex;
@@ -210,8 +210,8 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     }
 
     .stage-1 {
-        $reveal-time: 0.1s;
-        $square-expand-time: 0.2s;
+        $reveal-time: 0.05s;
+        $square-expand-time: 0.15s;
 
         width: 20vh;
         height: 20vh;
@@ -243,16 +243,16 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         }
 
         .wave-circle {
-            $base-delay: calc((#{$square-expand-time} + #{$reveal-time}) / 3 * 2);
+            $base-delay: calc((#{$square-expand-time} + #{$reveal-time}) / 2);
 
             position: absolute;
             border: 1px solid rgba(205, 205, 205, 0.6);
             border-radius: 50%;
             opacity: 0;
-            animation: emitWave 0.5s ease-in-out $base-delay forwards;
+            animation: emitWave 0.25s ease-in-out $base-delay forwards;
 
             &.last-wave {
-                animation-delay: calc(#{$base-delay} + 0.15s);
+                animation-delay: calc(#{$base-delay} + 0.125s);
             }
 
             @keyframes emitWave {
@@ -290,7 +290,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             width: $initial-dimension;
             height: $initial-dimension;
             animation: expandStage2Squares $box-expand-time ease-in forwards,
-                       revealContent 0.2s ease-out 1.5s reverse forwards;
+                       revealContent 0.2s ease-out 1s reverse forwards;
 
             .square {
                 position: absolute;
@@ -313,16 +313,16 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             height: 0.5vh;
             opacity: 0;
             animation: revealContent 0.1s ease $box-expand-time forwards,
-                       blinkNormal 0.9s ease calc(#{$box-expand-time} + 0.09s) forwards,
-                       expandBoxWrapper 0.7s linear calc(#{$box-expand-time} + 0.3s) forwards,
-                       revealContent 0.2s ease-out 1.5s reverse forwards;
+                       blinkNormal 0.4s ease calc(#{$box-expand-time} + 0.05s) forwards,
+                       expandBoxWrapper 0.3s linear calc(#{$box-expand-time} + 0.15s) forwards,
+                       revealContent 0.2s ease-out 0.5s reverse forwards;
 
             .box {
                 width: 70%;
                 height: 20%;
                 opacity: 0;
-                animation: revealContent 0.1s ease calc(#{$box-expand-time} + 0.5s) forwards,
-                           expandBox 0.4s linear calc(#{$box-expand-time} + 0.7s) forwards;
+                animation: revealContent 0.1s ease calc(#{$box-expand-time} + 0.1s) forwards,
+                           expandBox 0.2s linear calc(#{$box-expand-time} + 0.3s) forwards;
             }
         }
     }
@@ -370,15 +370,15 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         .box-wrapper {
             width: 67.5%;
             height: 72.5%;
-            animation: expandBoxWrapper 0.4s linear calc(#{$box-expand-time} / 2) forwards reverse,
-                       revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.4s) forwards reverse;
+            animation: expandBoxWrapper 0.2s linear calc(#{$box-expand-time} / 2) forwards reverse,
+                       revealContent 0.3s ease calc(#{$box-expand-time} / 2 + 0.2s) forwards reverse;
 
             .box {
                 width: 90%;
                 height: 90%;
                 background-color: rgba(205, 205, 205, 0.1);
-                animation: expandBox 0.25s linear calc(#{$box-expand-time} / 2 + 0.25s) forwards reverse,
-                           revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.2s) forwards reverse;
+                animation: expandBox 0.1s linear calc(#{$box-expand-time} / 2 + 0.05s) forwards reverse,
+                           revealContent 0.3s ease calc(#{$box-expand-time} / 2 + 0.1s) forwards reverse;
             }
         }
     }

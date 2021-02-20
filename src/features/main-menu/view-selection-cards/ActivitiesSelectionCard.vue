@@ -37,7 +37,7 @@
                     <div class="inner-wrapper">
                         <distribution-chart class="category-chart"
                             :groups="categoryDistribution"
-                            :delay="chartDelay + 200"
+                            :delay="chartDelay + 120"
                             :isMonochrome="isHovering">
                         </distribution-chart>
 
@@ -51,7 +51,7 @@
                     <div class="inner-wrapper">
                         <distribution-chart class="priority-chart"
                             :groups="priorityDistribution"
-                            :delay="chartDelay + 200"
+                            :delay="chartDelay + 120"
                             :isMonochrome="isHovering">
                         </distribution-chart>
 
@@ -79,7 +79,7 @@ import EstimationSkulls from '../../../shared/widgets/EstimationSkulls.vue';
 import CounterDisplay from '../../../shared/widgets/CounterDisplay.vue';
 
 class ActivitiesSelectionCardProp {
-    public chartDelay = prop<number>({ default: 3200 });
+    public chartDelay = prop<number>({ default: 2500 });
 }
 
 @Options({
@@ -237,7 +237,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         overflow: hidden;
         transition: border 0.3s;
         opacity: 0;
-        animation: revealContent 0.3s ease 0.5s forwards;
+        animation: revealContent 0.3s ease 0.4s forwards;
 
         .estimation-skulls {
             margin-left: 0.2rem;
@@ -257,7 +257,7 @@ export default class ActivitiesSelectionCard extends Vue.with(ActivitiesSelectio
         align-items: center;
         position: relative;
         opacity: 0;
-        animation: revealContent 0.3s ease-in 0.35s forwards;
+        animation: revealContent 0.3s ease-in 0.3s forwards;
 
         .item-counts {
             display: flex;
