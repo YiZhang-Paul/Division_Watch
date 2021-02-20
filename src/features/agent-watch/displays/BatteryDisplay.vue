@@ -84,7 +84,7 @@ export default class BatteryDisplay extends Vue {
     .level {
         position: relative;
         color: rgb(255, 255, 255);
-        font-family: 'Jost';
+        font-family: 'Play';
         font-size: 0.4rem;
 
         & > span:first-of-type {

@@ -15,7 +15,7 @@
                 :style="{ color: category.color }">
             </component>
 
-            <span class="total-item">{{ totalItemsText }}</span>
+            <span class="total-item"><span>{{ totalItems }}</span> item{{ totalItems > 1 ? 's' : '' }}</span>
         </div>
 
         <div class="detail-information">
@@ -50,10 +50,6 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
 
     get categoryIcon(): any {
         return GenericUtility.getIcon(this.category?.icon ?? '');
-    }
-
-    get totalItemsText(): string {
-        return `${this.totalItems} item${this.totalItems > 1 ? 's' : ''}`;
     }
 
     get description(): string {
@@ -141,6 +137,10 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
         .total-item {
             margin-top: 0.1rem;
             font-size: 0.4rem;
+
+            span {
+                font-family: 'Play';
+            }
         }
     }
 

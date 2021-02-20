@@ -377,6 +377,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                         align-items: center;
                         width: 1rem;
                         height: 1rem;
+                        font-family: 'Play';
                         transition: background-color 0.1s, color 0.1s;
 
                         &:not(.unselectable-day):hover {

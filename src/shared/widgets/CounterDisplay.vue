@@ -39,6 +39,7 @@ export default class CounterDisplay extends Vue.with(CounterDisplayProp) {
     align-items: center;
     position: relative;
     color: rgb(255, 255, 255);
+    font-family: 'Play';
     font-size: inherit;
     transition: color 0.3s;
 

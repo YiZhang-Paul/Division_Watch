@@ -127,7 +127,7 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
             background-color: rgba(37, 34, 34, 0.3);
             color: rgb(255, 255, 255);
             font-size: 0.55rem;
-            font-family: 'Jost';
+            font-family: 'Play';
         }
 
         .separator {

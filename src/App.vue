@@ -87,6 +87,11 @@ export default class App extends Vue {
 }
 
 @font-face {
+    font-family: 'Play';
+    src: url('assets/fonts/Play-Regular.ttf');
+}
+
+@font-face {
     font-family: 'Jost';
     src: url('assets/fonts/Jost-Regular.ttf');
 }
