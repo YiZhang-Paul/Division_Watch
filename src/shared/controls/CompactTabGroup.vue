@@ -82,6 +82,14 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
         &.active-tab {
             background-color: rgb(245, 114, 8);
             color: rgb(15, 15, 15);
+
+            .tab-name .counter-display {
+                color: rgba(30, 30, 30, 0.9);
+
+                ::v-deep .placeholder {
+                    color: rgba(30, 30, 30, 0.4);
+                }
+            }
         }
 
         &:nth-child(1) {
