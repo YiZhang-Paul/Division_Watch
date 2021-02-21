@@ -11,8 +11,12 @@
 
         <div class="name" :class="nameWrapperStyle" @click="onEditStart()">
             <template v-if="!isEditing && !hasError">
-                <span :class="{ subsection: isSubsection }">{{ name }}</span>
-                <circle-edit-outline v-if="isEditable" class="edit-icon" />
+                <span class="dummy-display">placeholder</span>
+
+                <div class="name-display">
+                    <span :class="{ subsection: isSubsection }">{{ name }}</span>
+                    <circle-edit-outline v-if="isEditable && name" class="edit-icon" />
+                </div>
             </template>
 
             <input type="text"
@@ -179,12 +183,25 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         display: flex;
         align-items: center;
         align-self: flex-start;
+        position: relative;
         margin-left: $margin-left;
         width: $content-width;
         border: 1px solid transparent;
         opacity: 0;
         animation: revealContent 0.3s ease 0.3s forwards;
         transition: color 0.3s;
+
+        .dummy-display {
+            visibility: hidden;
+        }
+
+        .name-display {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
 
         span, .edit-field {
             padding: 1px 0.25rem 1px 0.2rem;
