@@ -48,6 +48,20 @@ const mutations = {
 };
 
 const actions = {
+    validateCategoryName(context: ActionContext<ICategoryState, any>, category: Category): string[] {
+        const errors: string[] = [];
+        const categories = context.state.categories.filter(_ => _.id !== category.id);
+
+        if (!category.name) {
+            errors.push('name must not be empty.');
+        }
+
+        if (categories.some(_ => _.name.trim().toLowerCase() === category.name)) {
+            errors.push('name already exists.');
+        }
+
+        return errors;
+    },
     async addCategory(context: ActionContext<ICategoryState, any>, category: Category): Promise<Category | null> {
         const added = await categoryHttpService.addCategory(category);
 

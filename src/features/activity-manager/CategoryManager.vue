@@ -124,11 +124,11 @@ export default class CategoryManager extends Vue {
             clearTimeout(this.inputDebounceTimer);
         }
 
-        this.inputDebounceTimer = setTimeout(() => {
+        this.inputDebounceTimer = setTimeout(async() => {
             const name = (input ?? '').trim().toLowerCase();
-            const categories = this.categories.filter(_ => _.id !== this.activeCategory?.id);
-            const exists = categories.some(_ => _.name?.trim()?.toLowerCase() === name);
-            this.nameErrorText = exists ? 'name already exists.' : '';
+            const category = { ...this.activeCategory, name } as Category;
+            const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
+            this.nameErrorText = errors[0] ?? '';
             this.inputDebounceTimer = null;
         }, 200);
     }
