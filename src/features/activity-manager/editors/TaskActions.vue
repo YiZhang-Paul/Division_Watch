@@ -54,19 +54,24 @@ class TaskActionsProp {
     }
 })
 export default class TaskActions extends Vue.with(TaskActionsProp) {
+    public isActionLocked = false;
 
-    public async createTaskItem(item: TaskItem): Promise<void> {
-        const result: TaskItem = await store.dispatch(`${taskItemKey}/addParentTaskItem`, item);
+    public createTaskItem(item: TaskItem): void {
+        this.execute(async() => {
+            const result: TaskItem = await store.dispatch(`${taskItemKey}/addParentTaskItem`, item);
 
-        if (result) {
-            const action = result.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
-            store.dispatch(`${taskItemKey}/${action}`, result);
-        }
+            if (result) {
+                const action = result.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+                store.dispatch(`${taskItemKey}/${action}`, result);
+            }
+        });
     }
 
     public cancelCreate(isInterruption: boolean): void {
-        const action = isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
-        store.dispatch(`${taskItemKey}/${action}`, null);
+        this.execute(() => {
+            const action = isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
+            store.dispatch(`${taskItemKey}/${action}`, null);
+        });
     }
 
     public convertToTask(item: TaskItem): void {
@@ -74,7 +79,7 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
         const option = new DialogOption(title, 'Convert', 'Cancel');
 
         option.confirmCallback = () => {
-            store.dispatch(`${taskItemKey}/convertInterruption`, item);
+            this.execute(async() => await store.dispatch(`${taskItemKey}/convertInterruption`, item));
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);
@@ -85,7 +90,7 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
         const option = new DialogOption(title, 'Convert', 'Cancel');
 
         option.confirmCallback = () => {
-            store.dispatch(`${taskItemKey}/convertChildTask`, item);
+            this.execute(async() => await store.dispatch(`${taskItemKey}/convertChildTask`, item));
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);
@@ -97,10 +102,18 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
         const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, [], true);
 
         option.confirmCallback = (keepChildren: boolean) => {
-            store.dispatch(`${taskItemKey}/deleteTaskItem`, { item, keepChildren });
+            this.execute(async() => await store.dispatch(`${taskItemKey}/deleteTaskItem`, { item, keepChildren }));
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);
+    }
+
+    private async execute(callback: (...args: any[]) => any): Promise<void> {
+        if (!this.isActionLocked) {
+            this.isActionLocked = true;
+            await callback();
+            this.isActionLocked = false;
+        }
     }
 }
 </script>
