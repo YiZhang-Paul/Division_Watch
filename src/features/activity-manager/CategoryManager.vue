@@ -88,7 +88,6 @@ import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 export default class CategoryManager extends Vue {
     public searchText = '';
     public nameErrorText = '';
-    private inputDebounceTimer: NodeJS.Timeout | null = null;
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get categories(): Category[] {
@@ -119,18 +118,11 @@ export default class CategoryManager extends Vue {
         }
     }
 
-    public onNameInput(input: string): void {
-        if (this.inputDebounceTimer) {
-            clearTimeout(this.inputDebounceTimer);
-        }
-
-        this.inputDebounceTimer = setTimeout(async() => {
-            const name = (input ?? '').trim().toLowerCase();
-            const category = { ...this.activeCategory, name } as Category;
-            const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
-            this.nameErrorText = errors[0] ?? '';
-            this.inputDebounceTimer = null;
-        }, 200);
+    public async onNameInput(input: string): Promise<void> {
+        const name = (input ?? '').trim().toLowerCase();
+        const category = { ...this.activeCategory, name } as Category;
+        const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
+        this.nameErrorText = errors[0] ?? '';
     }
 
     public openEmptyCategory(): void {
