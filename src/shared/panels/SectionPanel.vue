@@ -123,6 +123,7 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         if (this.isEditing) {
             this.isEditing = !this.name;
             this.editedName = this.name;
+            this.$emit('name:input', this.editedName);
         }
     }
 
