@@ -139,6 +139,7 @@ export default class CategoryManager extends Vue {
 
     public onCategorySelected(category: Category | null): void {
         if (!this.activeCategory || category?.id !== this.activeCategory.id) {
+            this.nameErrorText = '';
             store.dispatch(`${categoryKey}/swapActiveCategory`, category);
         }
     }
