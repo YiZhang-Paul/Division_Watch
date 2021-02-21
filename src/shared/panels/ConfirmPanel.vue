@@ -33,7 +33,7 @@
             </div>
 
             <div class="actions">
-                <menu-button class="menu-button" @click="onCancel()">
+                <menu-button v-if="option.cancelText" class="menu-button" @click="onCancel()">
                     {{ option.cancelText }}
                 </menu-button>
 
@@ -41,7 +41,7 @@
                     :class="{ warning: option.isWarning }"
                     @click="onConfirm()">
 
-                    {{ option.confirmText }}
+                    {{ option.confirmText || 'Ok' }}
                 </menu-button>
             </div>
         </div>

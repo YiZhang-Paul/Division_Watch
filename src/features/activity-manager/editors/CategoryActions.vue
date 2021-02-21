@@ -39,6 +39,15 @@ class CategoryActionsProp {
 export default class CategoryActions extends Vue.with(CategoryActionsProp) {
 
     public async createCategory(category: Category): Promise<void> {
+        const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
+
+        if (errors.length) {
+            const option = new DialogOption('Invalid data found.', 'Got it', '', '', null, true);
+            store.dispatch(`${dialogKey}/openDialog`, option);
+
+            return;
+        }
+
         const result = await store.dispatch(`${categoryKey}/addCategory`, category);
 
         if (result) {
