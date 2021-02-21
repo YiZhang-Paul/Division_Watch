@@ -58,6 +58,15 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
 
     public createTaskItem(item: TaskItem): void {
         this.execute(async() => {
+            if (!item.name?.trim()) {
+                const title = 'Invalid transmission detected:';
+                const errors = ['name must be non-empty.'];
+                const option = new DialogOption(title, 'Got it', '', '', null, errors, true);
+                store.dispatch(`${dialogKey}/openDialog`, option);
+
+                return;
+            }
+
             const result: TaskItem = await store.dispatch(`${taskItemKey}/addParentTaskItem`, item);
 
             if (result) {
