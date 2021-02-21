@@ -49,7 +49,7 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
             return;
         }
 
-        await this.execute(async() => {
+        this.execute(async() => {
             const result = await store.dispatch(`${categoryKey}/addCategory`, category);
 
             if (result) {
