@@ -37,6 +37,7 @@ class CategoryActionsProp {
     }
 })
 export default class CategoryActions extends Vue.with(CategoryActionsProp) {
+    public isActionLocked = false;
 
     public async createCategory(category: Category): Promise<void> {
         const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
@@ -48,15 +49,17 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
             return;
         }
 
-        const result = await store.dispatch(`${categoryKey}/addCategory`, category);
+        await this.execute(async() => {
+            const result = await store.dispatch(`${categoryKey}/addCategory`, category);
 
-        if (result) {
-            store.dispatch(`${categoryKey}/swapActiveCategory`, result);
-        }
+            if (result) {
+                store.dispatch(`${categoryKey}/swapActiveCategory`, result);
+            }
+        });
     }
 
     public cancelCreate(): void {
-        store.dispatch(`${categoryKey}/swapActiveCategory`, null);
+        this.execute(() => store.dispatch(`${categoryKey}/swapActiveCategory`, null));
     }
 
     public async deleteCategory(category: Category): Promise<void> {
@@ -67,15 +70,25 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
         const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
         const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, [], true);
 
-        option.confirmCallback = async(_: boolean, transfer: Category) => {
-            const payload = { target: category, transfer };
+        option.confirmCallback = (_: boolean, transfer: Category) => {
+            this.execute(async() => {
+                const payload = { target: category, transfer };
 
-            if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
-                store.dispatch(`${taskItemKey}/loadIncompleteItems`);
-            }
+                if (await store.dispatch(`${categoryKey}/deleteCategory`, payload)) {
+                    store.dispatch(`${taskItemKey}/loadIncompleteItems`);
+                }
+            });
         };
 
         store.dispatch(`${dialogKey}/openDialog`, option);
+    }
+
+    private async execute(callback: (...args: any[]) => any): Promise<void> {
+        if (!this.isActionLocked) {
+            this.isActionLocked = true;
+            await callback();
+            this.isActionLocked = false;
+        }
     }
 }
 </script>
