@@ -1,16 +1,23 @@
 <template>
     <div v-if="task" class="task-actions-container">
         <template v-if="!task.id">
-            <menu-button class="action-button cancel-button"
+            <menu-button v-if="!isActionLocked"
+                class="action-button cancel-button"
                 @click="cancelCreate(task.isInterruption)">
 
                 Cancel
             </menu-button>
 
-            <menu-button class="action-button" @click="createTaskItem(task)">Create</menu-button>
+            <menu-button class="action-button"
+                :isDisabled="isActionLocked"
+                @click="createTaskItem(task)">
+
+                Create
+            </menu-button>
         </template>
 
         <menu-button v-if="task.id && task.isInterruption"
+            :isDisabled="isActionLocked"
             class="action-button"
             @click="convertToTask(task)">
 
@@ -18,6 +25,7 @@
         </menu-button>
 
         <menu-button v-if="task.parent"
+            :isDisabled="isActionLocked"
             class="action-button"
             @click="convertToParent(task)">
 
@@ -25,6 +33,7 @@
         </menu-button>
 
         <menu-button v-if="task.id"
+            :isDisabled="isActionLocked"
             class="action-button warning-button"
             @click="deleteTaskItem(task)">
 

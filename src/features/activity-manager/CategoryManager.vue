@@ -126,7 +126,7 @@ export default class CategoryManager extends Vue {
     }
 
     public openEmptyCategory(): void {
-        store.dispatch(`${categoryKey}/swapActiveCategory`, new Category());
+        this.onCategorySelected(new Category());
     }
 
     public onCategorySelected(category: Category | null): void {

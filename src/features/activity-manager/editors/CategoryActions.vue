@@ -1,12 +1,24 @@
 <template>
     <div v-if="category" class="category-actions-container">
         <template v-if="!category.id">
-            <menu-button class="action-button cancel-button" @click="cancelCreate()">Cancel</menu-button>
-            <menu-button class="action-button" @click="createCategory(category)">Create</menu-button>
+            <menu-button v-if="!isActionLocked"
+                class="action-button cancel-button"
+                @click="cancelCreate()">
+
+                Cancel
+            </menu-button>
+
+            <menu-button class="action-button"
+                :isDisabled="isActionLocked"
+                @click="createCategory(category)">
+
+                Create
+            </menu-button>
         </template>
 
         <menu-button v-if="category.id"
             class="action-button warning-button"
+            :isDisabled="isActionLocked"
             @click="deleteCategory(category)">
 
             Delete
