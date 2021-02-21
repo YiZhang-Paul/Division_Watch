@@ -52,7 +52,7 @@ const actions = {
         const errors: string[] = [];
         const categories = context.state.categories.filter(_ => _.id !== category.id);
 
-        if (!category.name || categories.some(_ => _.name.trim().toLowerCase() === category.name)) {
+        if (!category.name || categories.some(_ => _.name.trim().toLowerCase() === category.name.toLowerCase())) {
             errors.push('name must be non-empty and unique.');
         }
 
