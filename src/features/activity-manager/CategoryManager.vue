@@ -29,7 +29,9 @@
                     :name="activeCategory.name"
                     :isEditable="true"
                     :placeholder="'enter category name here...'"
-                    @name:edited="onCategoryChange('name', $event)">
+                    :errorText="nameErrorText"
+                    @name:edited="onCategoryChange('name', $event)"
+                    @name:input="onNameInput($event)">
 
                     <field-textarea class="editor-control"
                         :name="'Description'"
@@ -85,6 +87,8 @@ import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
 })
 export default class CategoryManager extends Vue {
     public searchText = '';
+    public nameErrorText = '';
+    private inputDebounceTimer: NodeJS.Timeout | null = null;
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get categories(): Category[] {
@@ -113,6 +117,20 @@ export default class CategoryManager extends Vue {
         if (this.updateDebounceTimer) {
             store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
         }
+    }
+
+    public onNameInput(input: string): void {
+        if (this.inputDebounceTimer) {
+            clearTimeout(this.inputDebounceTimer);
+        }
+
+        this.inputDebounceTimer = setTimeout(() => {
+            const name = (input ?? '').trim().toLowerCase();
+            const categories = this.categories.filter(_ => _.id !== this.activeCategory?.id);
+            const exists = categories.some(_ => _.name?.trim()?.toLowerCase() === name);
+            this.nameErrorText = exists ? 'name already exists.' : '';
+            this.inputDebounceTimer = null;
+        }, 200);
     }
 
     public openEmptyCategory(): void {
