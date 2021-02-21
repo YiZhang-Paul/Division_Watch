@@ -4,19 +4,19 @@
             <div v-for="n in 3" :key="n"></div>
         </div>
 
-        <div v-if="showError" class="error">
+        <div v-if="hasError || hasUnsavedChange" class="error">
             <pistol class="error-icon" />
             <span>{{ errorMessage }}</span>
         </div>
 
-        <div class="name" :class="{ editable: isEditable, invalid: showError }" @click="onEditStart()">
-            <template v-if="!isEditing && name">
+        <div class="name" :class="nameWrapperStyle" @click="onEditStart()">
+            <template v-if="!isEditing && !hasError">
                 <span :class="{ subsection: isSubsection }">{{ name }}</span>
                 <circle-edit-outline v-if="isEditable" class="edit-icon" />
             </template>
 
             <input type="text"
-                v-if="isEditing || !name"
+                v-if="isEditing || hasError"
                 ref="nameInput"
                 class="edit-field"
                 v-model="editedName"
@@ -24,8 +24,8 @@
                 :maxlength="maxLength"
                 @input="$emit('name:input', $event.target.value)"
                 @keyup.enter="onEditConfirm()"
-                @keyup.esc="isEditing = !name"
-                @blur="isEditing = !name" />
+                @keyup.esc="onCancel()"
+                @blur="onEditConfirm()" />
         </div>
 
         <div class="content">
@@ -61,12 +61,32 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
     public editedName = this.name;
     public isEditing = !this.name;
 
-    get showError(): boolean {
-        return (this.isEditing || !this.name) && Boolean(this.errorMessage);
+    get hasError(): boolean {
+        return !this.editedName?.trim() || Boolean(this.errorText);
+    }
+
+    get hasUnsavedChange(): boolean {
+        return !this.name && Boolean(this.editedName?.trim());
     }
 
     get errorMessage(): string {
-        return this.editedName?.trim() ? this.errorText : 'name must not be empty.';
+        if (!this.editedName?.trim()) {
+            return 'name must not be empty.';
+        }
+
+        if (this.errorText) {
+            return this.errorText;
+        }
+
+        return this.hasUnsavedChange ? 'change unsaved.' : '';
+    }
+
+    get nameWrapperStyle(): { [key: string]: boolean } {
+        return {
+            editable: this.isEditable,
+            invalid: this.hasError || this.hasUnsavedChange,
+            unsaved: this.hasUnsavedChange && !this.hasError
+        };
     }
 
     public mounted(): void {
@@ -82,9 +102,27 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
     }
 
     public onEditConfirm(): void {
-        if (this.editedName) {
-            this.isEditing = false;
-            this.$emit('name:edited', this.editedName);
+        if (!this.isEditing) {
+            return;
+        }
+
+        const name = this.editedName?.trim();
+
+        if (!name || this.hasError) {
+            return;
+        }
+
+        this.isEditing = false;
+
+        if (name !== this.name) {
+            this.$emit('name:edited', name);
+        }
+    }
+
+    public onCancel(): void {
+        if (this.isEditing) {
+            this.isEditing = !this.name;
+            this.editedName = this.name;
         }
     }
 
@@ -126,13 +164,13 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
             margin-right: 0.15rem;
             font-size: calc(var(--title-size) * 0.55);
             opacity: 0;
-            animation: revealContent 0.01s ease 0.5s forwards,
-                       blinkFast 0.2s ease 0.5s forwards 2;
+            animation: revealContent 0.01s ease 0.4s forwards,
+                       blinkFast 0.2s ease 0.4s forwards;
         }
 
         & > span {
             opacity: 0;
-            animation: revealContent 0.25s ease 0.8s forwards;
+            animation: revealContent 0.25s ease 0.5s forwards;
         }
     }
 
@@ -175,6 +213,10 @@ export default class SectionPanel extends Vue.with(SectionPanelProp) {
         &.invalid {
             border: 1px solid rgb(66, 250, 241);
             transition: color 0.3s, border 0.3s 0.2s;
+
+            &:not(.unsaved) .edit-field {
+                color: rgb(255, 20, 51);
+            }
         }
 
         &.editable:hover {
