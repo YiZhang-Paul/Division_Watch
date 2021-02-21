@@ -94,7 +94,7 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
     public deleteTaskItem(item: TaskItem): void {
         const title = 'This item will be permanently deleted.';
         const checkboxText = item.parent || item.isInterruption ? '' : 'do not remove child tasks';
-        const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, true);
+        const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, [], true);
 
         option.confirmCallback = (keepChildren: boolean) => {
             store.dispatch(`${taskItemKey}/deleteTaskItem`, { item, keepChildren });

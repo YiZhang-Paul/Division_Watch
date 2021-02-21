@@ -6,6 +6,7 @@ export class DialogOption<T> {
     public cancelText: string;
     public checkboxText: string;
     public dropdown: DropdownOption<T> | null = null;
+    public itemList: string[] = [];
     public isWarning: boolean;
     public confirmCallback: ((checked: any, selected: T) => void) | null = null;
     public cancelCallback: (() => void) | null = null;
@@ -16,6 +17,7 @@ export class DialogOption<T> {
         cancelText = '',
         checkboxText = '',
         dropdown: DropdownOption<T> | null = null,
+        itemList: string[] = [],
         isWarning = false
     ) {
         this.title = title;
@@ -23,6 +25,7 @@ export class DialogOption<T> {
         this.cancelText = cancelText;
         this.checkboxText = checkboxText;
         this.dropdown = dropdown;
+        this.itemList = itemList;
         this.isWarning = isWarning;
     }
 }

@@ -52,12 +52,8 @@ const actions = {
         const errors: string[] = [];
         const categories = context.state.categories.filter(_ => _.id !== category.id);
 
-        if (!category.name) {
-            errors.push('name must not be empty.');
-        }
-
-        if (categories.some(_ => _.name.trim().toLowerCase() === category.name)) {
-            errors.push('name already exists.');
+        if (!category.name || categories.some(_ => _.name.trim().toLowerCase() === category.name)) {
+            errors.push('name must be non-empty and unique.');
         }
 
         return errors;

@@ -42,7 +42,7 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
         const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
 
         if (errors.length) {
-            const option = new DialogOption('Invalid data found.', 'Got it', '', '', null, true);
+            const option = new DialogOption('Invalid transmission detected:', 'Got it', '', '', null, errors, true);
             store.dispatch(`${dialogKey}/openDialog`, option);
 
             return;
@@ -65,7 +65,7 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
         const remaining = allCategories.filter(_ => _.id !== category.id);
         const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
         const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
-        const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, true);
+        const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, [], true);
 
         option.confirmCallback = async(_: boolean, transfer: Category) => {
             const payload = { target: category, transfer };

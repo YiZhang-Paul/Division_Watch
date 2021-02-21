@@ -14,12 +14,19 @@
             <span class="title">{{ option.title }}</span>
 
             <div class="options">
+                <div v-if="option.itemList" class="item-list">
+                    <div v-for="(item, index) of option.itemList" :key="index">
+                        <pistol class="icon" />
+                        <span>{{ item }}</span>
+                    </div>
+                </div>
+
                 <div v-if="option.checkboxText" class="checkbox-area">
                     <checkbox class="checkbox" v-model="isChecked" />
                     <span @click="isChecked = !isChecked">{{ option.checkboxText }}</span>
                 </div>
 
-                <div class="dropdown-area" v-if="option.dropdown">
+                <div v-if="option.dropdown" class="dropdown-area">
                     <span>{{ option.dropdown.text }}</span>
 
                     <option-dropdown class="option-dropdown"
@@ -50,7 +57,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { AlertOutline } from 'mdue';
+import { AlertOutline, Pistol } from 'mdue';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 // eslint-disable-next-line no-unused-vars
@@ -66,6 +73,7 @@ class ConfirmPanelProp {
 @Options({
     components: {
         AlertOutline,
+        Pistol,
         MenuButton,
         Checkbox,
         OptionDropdown
@@ -180,6 +188,31 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
             justify-items: center;
             align-items: center;
             flex-grow: 1;
+
+            .item-list {
+                display: flex;
+                flex-direction: column;
+                align-self: flex-start;
+                padding-top: 0.25rem;
+                font-size: 0.45rem;
+                opacity: 0;
+                animation: revealContent 0.2s ease 0.5s forwards;
+
+                & > div {
+                    display: flex;
+                    align-items: center;
+                    color: rgb(66, 250, 241);
+
+                    .icon {
+                        margin-top: 0.05rem;
+                        font-size: 0.4rem;
+                    }
+
+                    span {
+                        margin-left: 0.1rem;
+                    }
+                }
+            }
 
             .checkbox-area, .dropdown-area {
                 display: flex;
