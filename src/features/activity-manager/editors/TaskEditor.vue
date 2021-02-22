@@ -52,6 +52,7 @@
         <div class="subsections">
             <item-group-panel class="child-tasks"
                 :name="'Subtasks (' + childTasks.length + ')'"
+                :maxLength="40"
                 :isDisabled="task.isInterruption || !task.id || task.parent"
                 :placeholder="subtaskPlaceholder"
                 @item:add="onChildTaskAdded($event)">

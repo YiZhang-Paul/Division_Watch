@@ -16,6 +16,7 @@
                             v-model="itemName"
                             :placeholder="placeholder"
                             :disabled="isDisabled"
+                            :maxlength="maxLength"
                             @keyup.enter="onItemAdd"
                             @keyup.esc="itemName = ''" />
 
@@ -41,6 +42,7 @@ import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
 
 class ItemGroupPanelProp {
     public name = prop<string>({ default: '' });
+    public maxLength = prop<number>({ default: 60 });
     public isDisabled = prop<boolean>({ default: false });
     public placeholder = prop<string>({ default: 'add item here...' });
 }
