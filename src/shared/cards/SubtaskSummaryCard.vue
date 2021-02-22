@@ -42,6 +42,8 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
 
 <style lang="scss" scoped>
 .subtask-summary-card-container {
+    $skulls-width: 16.5%;
+
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -67,6 +69,10 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
 
     & > span {
         margin-left: 1%;
+        width: calc(100% - #{$skulls-width} - 1.25rem);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     .delete-button, .estimation-skulls {
@@ -88,7 +94,7 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
 
     .estimation-skulls {
         margin-left: auto;
-        width: 16.5%;
+        width: $skulls-width;
         height: 85%;
     }
 }

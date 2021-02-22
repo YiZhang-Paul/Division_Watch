@@ -84,6 +84,11 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         cursor: pointer;
         background-color: rgb(72, 66, 110);
 
+        & > span {
+            width: 73.5%;
+            max-width: 73.5%;
+        }
+
         .delete-button {
             display: initial;
         }
@@ -117,8 +122,8 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     & > span, & > input {
         padding: 3px;
         margin-left: 2.25%;
-        width: 72.5%;
-        max-width: 72.5%;
+        width: 73.5%;
+        max-width: 73.5%;
         font-size: 0.5rem;
         font-family: 'Jost';
         opacity: 0;
@@ -126,6 +131,11 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     }
 
     & > span {
+        width: calc(100% - 1.05rem);
+        max-width: calc(100% - 1.05rem);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         transition: filter 0.3s, background-color 0.3s 0.05s;
 
         &:hover {
