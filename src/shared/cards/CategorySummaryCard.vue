@@ -155,6 +155,10 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
             border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 
             .name {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 1;
+                overflow: hidden;
                 transition: color 0.3s;
             }
         }
