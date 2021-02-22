@@ -238,7 +238,9 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
     align-items: center;
     padding: 1% 3.5%;
     color: rgb(255, 255, 255);
-    background-color: rgba(52, 51, 56, 0.8);
+    background-color: rgba(52, 51, 56, 0.55);
+    border-left: 1px solid rgba(200, 200, 200, 0.4);
+    border-right: 1px solid rgba(200, 200, 200, 0.4);
     font-family: 'Jost';
 
     & > span {
@@ -265,7 +267,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
                 width: 100%;
                 height: 100%;
                 border-radius: 3px;
-                background-color: rgba(29, 29, 32, 0.8);
+                background-color: rgba(45, 45, 45, 0.7);
                 background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='30' viewBox='0 0 24 24' width='30' xmlns='http://www.w3.org/2000/svg'><path d='M5 8l6 10 6-10z' fill='rgb(228, 122, 47)' /><path d='M0 0h24v24H0z' fill='none'/></svg>");
                 background-repeat: no-repeat;
                 background-position-x: 100%;

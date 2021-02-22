@@ -75,7 +75,9 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
     align-items: center;
     padding: 1% 3.5%;
     color: rgb(255, 255, 255);
-    background-color: rgba(52, 51, 56, 0.8);
+    background-color: rgba(52, 51, 56, 0.55);
+    border-left: 1px solid rgba(200, 200, 200, 0.4);
+    border-right: 1px solid rgba(200, 200, 200, 0.4);
     font-family: 'Jost';
 
     & > span {
@@ -103,7 +105,7 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
             width: calc(0.775rem - #{$border-width} * 2);
             height: calc(0.775rem - #{$border-width} * 2);
             border: $border-width solid rgb(195, 195, 195);
-            background-color: rgba(42, 42, 46, 0.8);
+            background-color: rgba(45, 45, 45, 0.7);
             opacity: 0;
             transition: background-color 0.3s;
             animation: revealContent 0.3s ease forwards;

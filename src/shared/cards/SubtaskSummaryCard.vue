@@ -51,12 +51,12 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
     padding-left: 2%;
     padding-right: 4%;
     max-height: 7.5vh;
-    background-color: rgba(36, 35, 38, 0.8);
+    background-color: rgba(36, 35, 38, 0.6);
     transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgb(72, 66, 110);
+        background-color: rgba(60, 60, 60, 0.5);
 
         .delete-button {
             display: initial;

@@ -104,7 +104,9 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
     align-items: center;
     padding: 1% 3.5%;
     color: rgb(255, 255, 255);
-    background-color: rgba(52, 51, 56, 0.8);
+    background-color: rgba(52, 51, 56, 0.55);
+    border-left: 1px solid rgba(200, 200, 200, 0.4);
+    border-right: 1px solid rgba(200, 200, 200, 0.4);
     font-family: 'Jost';
 
     & > span {
@@ -124,7 +126,7 @@ export default class TimeSelector extends Vue.with(TimeSelectorProp) {
             width: 1.1rem;
             outline: none;
             border: none;
-            background-color: rgba(37, 34, 34, 0.3);
+            background-color: rgba(45, 45, 45, 0.4);
             color: rgb(255, 255, 255);
             font-size: 0.55rem;
             font-family: 'Play';

@@ -143,7 +143,7 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
             padding: 0 2.5% 0 5%;
             width: 100%;
             height: 91.5%;
-            background-color: rgba(46, 45, 49, 0.8);
+            background-color: rgba(40, 40, 40, 0.6);
 
             input {
                 flex-grow: 1;

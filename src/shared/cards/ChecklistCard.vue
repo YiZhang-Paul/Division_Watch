@@ -76,13 +76,13 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     padding-left: 2.75%;
     padding-right: 4%;
     max-height: 7.5vh;
-    background-color: rgba(36, 35, 38, 0.8);
+    background-color: rgba(36, 35, 38, 0.6);
     color: rgb(255, 255, 255);
     transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgb(72, 66, 110);
+        background-color: rgba(60, 60, 60, 0.5);
 
         & > span {
             width: 73.5%;
@@ -139,7 +139,7 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         transition: filter 0.3s, background-color 0.3s 0.05s;
 
         &:hover {
-            background-color: rgba(58, 56, 61, 0.8);
+            background-color: rgba(58, 56, 61, 0.5);
         }
 
         &.completed {
@@ -150,7 +150,7 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     & > input {
         outline: none;
         border: none;
-        background-color: rgba(11, 11, 12, 0.8);
+        background-color: rgba(11, 11, 12, 0.5);
         color: rgb(255, 255, 255);
     }
 

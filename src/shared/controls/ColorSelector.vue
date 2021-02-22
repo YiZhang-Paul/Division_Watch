@@ -75,7 +75,9 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
     align-items: center;
     padding: 1.5% 3.5%;
     color: rgb(255, 255, 255);
-    background-color: rgba(52, 51, 56, 0.8);
+    background-color: rgba(52, 51, 56, 0.55);
+    border-left: 1px solid rgba(200, 200, 200, 0.4);
+    border-right: 1px solid rgba(200, 200, 200, 0.4);
     font-family: 'Jost';
 
     & > span {
@@ -90,7 +92,7 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
         flex-direction: column;
         width: calc(100% - #{$name-width});
         height: 100%;
-        background-color: rgba(29, 29, 32, 0.8);
+        background-color: rgba(45, 45, 45, 0.7);
 
         .row {
             display: flex;
