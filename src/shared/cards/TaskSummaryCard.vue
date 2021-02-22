@@ -98,7 +98,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     position: relative;
     background-color: rgba(36, 35, 38, 0.75);
     color: rgb(255, 255, 255);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     transition: background-color 0.3s;
 
     &:hover {
@@ -207,8 +207,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .name {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         padding: 1.5% 4%;
         height: calc(#{$tall-row-height} - #{$splitter-thickness});
+        overflow: hidden;
         transition: color 0.3s;
     }
 
