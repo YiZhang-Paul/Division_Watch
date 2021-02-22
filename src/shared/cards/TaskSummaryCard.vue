@@ -96,14 +96,14 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     flex-direction: column;
     flex-wrap: wrap;
     position: relative;
-    background-color: rgba(36, 35, 38, 0.75);
+    background-color: rgba(36, 35, 38, 0.6);
     color: rgb(255, 255, 255);
     font-size: 0.6rem;
     transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgb(72, 66, 110);
+        background-color: rgba(60, 60, 60, 0.5);
     }
 
     &.active-card {

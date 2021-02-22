@@ -65,16 +65,14 @@ export default class CategorySummaryCard extends Vue.with(CategorySummaryCardPro
     box-sizing: border-box;
     display: flex;
     position: relative;
-    background-color: rgba(185, 185, 185, 0.25);
-    border-left: 1px solid rgba(200, 200, 200, 0.4);
-    border-right: 1px solid rgba(200, 200, 200, 0.4);
+    background-color: rgba(36, 35, 38, 0.6);
     color: rgb(255, 255, 255);
     font-size: 0.6rem;
     transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgba(225, 225, 225, 0.3);
+        background-color: rgba(60, 60, 60, 0.5);
     }
 
     &.active-card {
