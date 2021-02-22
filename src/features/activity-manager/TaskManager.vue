@@ -164,8 +164,8 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
 
 <style lang="scss" scoped>
 .task-manager-container {
-    $list-width: 29%;
-    $content-width: 92.5%;
+    $list-width: 28%;
+    $content-width: 96.5%;
 
     .item-list-panel {
         width: $list-width;
@@ -203,7 +203,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
     .content {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-end;
         padding-top: 1.5vh;
         width: calc(100% - #{$list-width});
         height: 100%;
