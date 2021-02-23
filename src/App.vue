@@ -162,7 +162,7 @@ html, body {
 
 .settings-manager {
     position: absolute;
-    width: 57.5%;
-    height: 86.5%;
+    width: 45%;
+    height: 75%;
 }
 </style>

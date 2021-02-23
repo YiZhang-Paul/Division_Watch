@@ -13,7 +13,7 @@
         </template>
 
         <div class="main-content">
-
+            <session-settings-manager v-if="activeTab === 0" class="session-settings-manager"></session-settings-manager>
         </div>
 
         <template v-slot:footer>
@@ -39,14 +39,17 @@ import MenuButton from '../../shared/controls/MenuButton.vue';
 import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
+import SessionSettingsManager from './SessionSettingsManager.vue';
+
 @Options({
     components: {
+        TimerSand,
+        VolumeHigh,
         TitlePanel,
         ViewPanel,
         MenuButton,
         CompactTabGroup,
-        TimerSand,
-        VolumeHigh
+        SessionSettingsManager
     }
 })
 export default class SettingsManager extends Vue {
@@ -70,7 +73,7 @@ export default class SettingsManager extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.header-content, .main-content, .footer-content {
+.header-content, .main-content, .session-settings-manager, .footer-content {
     display: flex;
     width: 100%;
     height: 100%;
