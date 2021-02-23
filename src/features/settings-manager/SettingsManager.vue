@@ -3,8 +3,18 @@
         <template v-slot:header>
             <div class="header-content">
                 <title-panel :activeGrid="8">Settings</title-panel>
+
+                <compact-tab-group class="compact-tab-group"
+                    :options="tabs"
+                    :showBadge="false"
+                    @tab:selected="activeTab = $event">
+                </compact-tab-group>
             </div>
         </template>
+
+        <div class="main-content">
+
+        </div>
 
         <template v-slot:footer>
             <div class="footer-content">
@@ -17,23 +27,37 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { markRaw } from 'vue';
+import { TimerSand, VolumeHigh } from 'mdue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 @Options({
     components: {
         TitlePanel,
         ViewPanel,
-        MenuButton
+        MenuButton,
+        CompactTabGroup,
+        TimerSand,
+        VolumeHigh
     }
 })
 export default class SettingsManager extends Vue {
     public activeTab = 0;
+
+    get tabs(): TabGroupOption[] {
+        return [
+            markRaw(new TabGroupOption('Session', TimerSand)),
+            markRaw(new TabGroupOption('Sound', VolumeHigh))
+        ]
+    }
 
     public backToMain(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuNoop);
@@ -58,6 +82,13 @@ export default class SettingsManager extends Vue {
     .compact-tab-group {
         margin-left: auto;
     }
+}
+
+.main-content {
+    $margin: 1.5%;
+
+    margin-left: $margin;
+    width: calc(100% - #{$margin} * 2);
 }
 
 .footer-content {
