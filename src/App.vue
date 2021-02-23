@@ -5,6 +5,7 @@
         <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
         <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
         <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
+        <settings-manager class="settings-manager" v-if="activeView === viewOption.Settings"></settings-manager>
     </div>
 
     <confirm-panel v-if="activeDialogOption"
@@ -29,6 +30,7 @@ import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
+import SettingsManager from './features/settings-manager/SettingsManager.vue';
 import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 
 @Options({
@@ -36,6 +38,7 @@ import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
         AgentWatch,
         MainMenu,
         ActivityManager,
+        SettingsManager,
         ConfirmPanel
     }
 })
@@ -152,6 +155,12 @@ html, body {
 }
 
 .activity-manager {
+    position: absolute;
+    width: 57.5%;
+    height: 86.5%;
+}
+
+.settings-manager {
     position: absolute;
     width: 57.5%;
     height: 86.5%;

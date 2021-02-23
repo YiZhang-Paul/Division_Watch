@@ -1,5 +1,5 @@
 <template>
-    <view-panel class="activity-manager-container">
+    <view-panel>
         <template v-slot:header>
             <div class="header-content">
                 <title-panel>Activities</title-panel>

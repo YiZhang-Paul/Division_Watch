@@ -55,46 +55,93 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
             &:nth-child(1) {
                 animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
                            moveGridTop $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards;
+
+                &.active-grid {
+                    animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                               moveGridTop $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3 + #{$move-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(2) {
                 animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
                            moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
                            moveGridCenterLeft $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards;
+
+                &.active-grid {
+                    animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                               moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                               moveGridCenterLeft $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2 + #{$move-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(3) {
                 animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
                            moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards;
+
+                &.active-grid {
+                    animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                               moveGridTop $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + #{$move-duration} * 2 + #{$intermediate-halt-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(4) {
                 animation: moveGridLeft $move-duration ease $initial-halt-duration forwards;
+
+                &.active-grid {
+                    animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + #{$move-duration} + 0.2s) infinite;
+                }
+            }
+
+            &:nth-child(5).active-grid {
+                animation: rotateColor 1.25s linear calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3 + #{$move-duration} + 0.2s) infinite;
             }
 
             &:nth-child(6) {
                 animation: moveGridRight $move-duration ease $initial-halt-duration forwards;
+
+                &.active-grid {
+                    animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + #{$move-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(7) {
                 animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
                            moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards;
+
+                &.active-grid {
+                    animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                               moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + #{$move-duration} * 2 + #{$intermediate-halt-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(8) {
                 animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
                            moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
                            moveGridCenterRight $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards;
+
+                &.active-grid {
+                    animation: moveGridLeft $move-duration ease $initial-halt-duration forwards,
+                               moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + #{$move-duration} + #{$intermediate-halt-duration}) forwards,
+                               moveGridCenterRight $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 2 + #{$move-duration} + 0.2s) infinite;
+                }
             }
 
             &:nth-child(9) {
                 animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
                            moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards;
-            }
 
-            &.active-grid {
-                background-color: rgb(240, 123, 14);
-                animation: rotateColor 1.25s linear 0.2s infinite;
+                &.active-grid {
+                    animation: moveGridRight $move-duration ease $initial-halt-duration forwards,
+                               moveGridBottom $move-duration ease calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3) forwards,
+                               rotateColor 1.25s linear calc(#{$initial-halt-duration} + (#{$move-duration} + #{$intermediate-halt-duration}) * 3 + #{$move-duration} + 0.2s) infinite;
+                }
             }
 
             @keyframes moveGridTop {
@@ -131,13 +178,13 @@ export default class TitlePanel extends Vue.with(TitlePanelProp) { }
 
     @keyframes rotateColor {
         0% {
-            background-color: rgb(240, 123, 14);
-        }
-        50% {
             background-color: rgb(200, 200, 200);
         }
-        100% {
+        50% {
             background-color: rgb(240, 123, 14);
+        }
+        100% {
+            background-color: rgb(200, 200, 200);
         }
     }
 }

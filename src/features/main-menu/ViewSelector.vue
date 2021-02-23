@@ -13,7 +13,7 @@
             <span>Log in</span>
         </div>
 
-        <div class="settings-selection-card selection-card">
+        <div class="settings-selection-card selection-card" @click="$emit('view:selected', options.Settings)">
             <span>Settings</span>
         </div>
 
