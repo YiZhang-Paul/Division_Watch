@@ -8,8 +8,13 @@
             <component v-if="option.icon" class="icon" :is="option.icon"></component>
 
             <div class="tab-name">
-                <span>{{ option.name }}:</span>
-                <counter-display class="counter-display" :value="option.badgeValue" :digits="2"></counter-display>
+                <span>{{ option.name }}{{ showBadge ? ':' : '' }}</span>
+
+                <counter-display v-if="showBadge"
+                    class="counter-display"
+                    :value="option.badgeValue"
+                    :digits="2">
+                </counter-display>
             </div>
         </div>
     </div>
@@ -24,6 +29,7 @@ import CounterDisplay from '../../shared/widgets/CounterDisplay.vue';
 
 class CompactTabGroupProp {
     public options = prop<TabGroupOption[]>({ default: [] });
+    public showBadge = prop<boolean>({ default: true });
 }
 
 @Options({
