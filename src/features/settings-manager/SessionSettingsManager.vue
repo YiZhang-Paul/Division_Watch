@@ -1,6 +1,6 @@
 <template>
     <div class="session-settings-manager-container">
-        <section-panel class="section-panel" :name="'Session Settings'">
+        <section-panel class="section-panel" :name="'Session Configuration'">
             <option-dropdown class="option-dropdown"
                 :name="'Session Duration'">
             </option-dropdown>
