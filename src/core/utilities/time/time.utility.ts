@@ -57,16 +57,19 @@ export class TimeUtility {
     }
 
     public static toEstimationString(total: number, options: TaskItemOptions): string {
-        const maxSkulls = options.estimates.length - 1;
+        const { estimates, skullDuration } = options;
+        const maxSkulls = estimates.length - 1;
 
-        if (total < options.skullDuration) {
-            return `~1 Skull (${Math.round(this.toMinutes(options.estimates[0]))} minutes)`;
+        if (total < skullDuration) {
+            return `~1 Skull (${Math.round(this.toMinutes(estimates[0]))} minutes)`;
         }
 
-        const skulls = Math.min(Math.round(total / options.skullDuration), maxSkulls);
-        const minutes = Math.floor(skulls * this.toMinutes(options.skullDuration));
-        const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
+        const skulls = Math.min(Math.round(total / skullDuration), maxSkulls);
+        const totalMinutes = Math.floor(skulls * this.toMinutes(skullDuration));
+        const [minutes, hours] = [totalMinutes % 60, Math.floor(totalMinutes / 60)];
+        const hourText = hours ? `${hours} hour${hours > 1 ? 's' : ''} ` : '';
+        const minuteText = minutes ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
 
-        return `${skulls} Skull${skulls > 1 ? 's' : ''} ${minuteText}`;
+        return `${skulls} Skull${skulls > 1 ? 's' : ''} (${hourText}${minuteText})`;
     }
 }
