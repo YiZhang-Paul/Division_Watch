@@ -58,12 +58,12 @@ export class TimeUtility {
 
     public static toEstimationString(total: number, options: TaskItemOptions): string {
         const maxSkulls = options.estimates.length - 1;
-        const skulls = Math.min(Math.round(total / options.skullDuration), maxSkulls);
 
-        if (skulls < 1) {
+        if (total < options.skullDuration) {
             return `~1 Skull (${Math.round(this.toMinutes(options.estimates[0]))} minutes)`;
         }
 
+        const skulls = Math.min(Math.round(total / options.skullDuration), maxSkulls);
         const minutes = Math.floor(skulls * this.toMinutes(options.skullDuration));
         const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
 
