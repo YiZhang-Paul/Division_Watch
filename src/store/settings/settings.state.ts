@@ -36,6 +36,11 @@ const actions = {
     },
     async loadSessionSettingsOptions(context: ActionContext<ISettingsState, any>): Promise<void> {
         context.commit('setSessionSettingsOptions', await appSettingsHttpService.getSessionSettingsOptions());
+    },
+    async updateSessionSettings(context: ActionContext<ISettingsState, any>, settings: SessionSettings): Promise<void> {
+        if (await appSettingsHttpService.updateSessionSettings(settings)) {
+            context.commit('setSessionSettings', settings);
+        }
     }
 };
 

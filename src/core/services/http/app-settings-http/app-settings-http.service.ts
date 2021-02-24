@@ -23,4 +23,13 @@ export class AppSettingsHttpService {
             return new SessionSettingsOptions();
         }
     }
+
+    public async updateSessionSettings(settings: SessionSettings): Promise<boolean> {
+        try {
+            return (await axios.put(`${this._api}/session`, settings)).data;
+        }
+        catch {
+            return false;
+        }
+    }
 }

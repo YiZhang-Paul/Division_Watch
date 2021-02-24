@@ -48,6 +48,12 @@ export class TimeUtility {
         return result.replace(/^\S*\s/, '').replace(/(\d)\s(\d)/, '$1, $2');
     }
 
+    public static toMinutes(milliseconds: number, decimal = 0): number {
+        const modifier = Math.pow(10, decimal);
+
+        return Math.round(milliseconds / 60 / 1000 * modifier) / modifier;
+    }
+
     public static toEstimationString(total: number, sessionDuration: number): string {
         const skulls = Math.floor(total / sessionDuration);
         const minutes = Math.ceil(total / 1000 / 60);
