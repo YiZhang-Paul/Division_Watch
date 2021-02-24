@@ -69,7 +69,8 @@ export class TimeUtility {
         const [minutes, hours] = [totalMinutes % 60, Math.floor(totalMinutes / 60)];
         const hourText = hours ? `${hours} hour${hours > 1 ? 's' : ''} ` : '';
         const minuteText = minutes ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
+        const timeText = `${hourText}${minuteText}`.trim();
 
-        return `${skulls} Skull${skulls > 1 ? 's' : ''} (${hourText}${minuteText})`;
+        return `${skulls} Skull${skulls > 1 ? 's' : ''} (${timeText})`;
     }
 }
