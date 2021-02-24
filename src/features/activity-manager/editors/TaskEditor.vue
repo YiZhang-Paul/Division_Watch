@@ -234,7 +234,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     }
 
     public toDisplayEstimation(time: number): string {
-        return TimeUtility.toEstimationString(time, this.taskOptions.skullDuration);
+        return TimeUtility.toEstimationString(time, this.taskOptions);
     }
 }
 </script>

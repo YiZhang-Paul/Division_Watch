@@ -1,3 +1,5 @@
+import { TaskItemOptions } from '../../data-model/task-item/task-item-options';
+
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const months = [
@@ -54,14 +56,16 @@ export class TimeUtility {
         return Math.round(milliseconds / 60 / 1000 * modifier) / modifier;
     }
 
-    public static toEstimationString(total: number, sessionDuration: number): string {
-        const skulls = Math.floor(total / sessionDuration);
-        const minutes = Math.ceil(total / 1000 / 60);
-        const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
+    public static toEstimationString(total: number, options: TaskItemOptions): string {
+        const maxSkulls = options.estimates.length - 1;
+        const skulls = Math.min(Math.round(total / options.skullDuration), maxSkulls);
 
         if (skulls < 1) {
-            return `~1 Skull ${minuteText}`;
+            return `~1 Skull (${Math.round(this.toMinutes(options.estimates[0]))} minutes)`;
         }
+
+        const minutes = Math.floor(skulls * this.toMinutes(options.skullDuration));
+        const minuteText = `(${minutes} minute${minutes > 1 ? 's' : ''})`;
 
         return `${skulls} Skull${skulls > 1 ? 's' : ''} ${minuteText}`;
     }
