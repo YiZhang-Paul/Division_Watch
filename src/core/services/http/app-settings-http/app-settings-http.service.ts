@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { SessionSettings } from '../../../data-model/settings/session-settings';
+import { SessionSettingsOptions } from '../../../data-model/settings/session-settings-options';
 
 export class AppSettingsHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/app-settings`;
@@ -11,6 +12,15 @@ export class AppSettingsHttpService {
         }
         catch {
             return new SessionSettings();
+        }
+    }
+
+    public async getSessionSettingsOptions(): Promise<SessionSettingsOptions> {
+        try {
+            return (await axios.get(`${this._api}/session/options`)).data;
+        }
+        catch {
+            return new SessionSettingsOptions();
         }
     }
 }
