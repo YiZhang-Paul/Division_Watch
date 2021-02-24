@@ -24,14 +24,14 @@ class EstimationSkullsProp {
 export default class EstimationSkulls extends Vue.with(EstimationSkullsProp) {
 
     get estimationText(): string {
-        const { skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
+        const { estimates, skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
         const estimation = this.estimation / skullDuration;
 
         if (!estimation) {
             return '';
         }
 
-        return estimation < 1 ? '<1' : `x${Math.floor(estimation)}`;
+        return estimation < 1 ? '<1' : `x${Math.min(Math.round(estimation), estimates.length - 1)}`;
     }
 }
 </script>
