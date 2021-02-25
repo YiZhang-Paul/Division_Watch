@@ -55,6 +55,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
     }
 })
 export default class SessionSettingsManager extends Vue {
+    private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get durationCombos(): [number, number][] {
         return this.options.durationSeries.map(_ => [_.sessionDuration, _.shortBreakDuration]);
@@ -84,6 +85,12 @@ export default class SessionSettingsManager extends Vue {
         store.dispatch(`${settingsKey}/loadSessionSettingsOptions`);
     }
 
+    public beforeUnmount(): void {
+        if (this.updateDebounceTimer) {
+            store.dispatch(`${settingsKey}/updateSessionSettings`, this.settings);
+        }
+    }
+
     public onDurationComboChange(combo: [number, number]): void {
         store.dispatch(`${settingsKey}/updateSessionSettings`, {
             ...this.settings,
@@ -95,6 +102,15 @@ export default class SessionSettingsManager extends Vue {
     public onSettingsChange(key: string, value: string): void {
         const settings = { ...this.settings, [key]: value } as SessionSettings;
         store.commit(`${settingsKey}/setSessionSettings`, settings);
+
+        if (this.updateDebounceTimer) {
+            clearTimeout(this.updateDebounceTimer);
+        }
+
+        this.updateDebounceTimer = setTimeout(() => {
+            store.dispatch(`${settingsKey}/updateSessionSettings`, settings);
+            this.updateDebounceTimer = null;
+        }, 400);
     }
 
     public toMinutes(milliseconds: number): number {
