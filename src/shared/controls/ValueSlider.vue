@@ -28,22 +28,31 @@ class ValueSliderProp {
     emits: ['change']
 })
 export default class ValueSlider extends Vue.with(ValueSliderProp) {
-    public fillerWidth = 0;
+
+    get fillerWidth(): number {
+        return this.currentStep / this.steps;
+    }
+
+    get currentStep(): number {
+        const step = (this.selected - this.min) / (this.max - this.min) * this.steps;
+
+        return Math.max(0, isNaN(step) ? 0 : step);
+    }
 
     public onSelect(event: MouseEvent, isIncrease = true): void {
+        let width = 0;
         const slider = this.$refs.slider as HTMLElement;
         const mouseX = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
-        const currentStep = (this.selected - this.min) / (this.max - this.min) * this.steps;
         const percent = Math.round(Math.max(0, Math.min(mouseX, 1)) * this.steps);
 
         if (isIncrease) {
-            this.fillerWidth = Math.min(Math.max(currentStep + 1, percent), this.steps) / this.steps;
+            width = Math.min(Math.max(this.currentStep + 1, percent), this.steps) / this.steps;
         }
         else {
-            this.fillerWidth = Math.max(0, Math.min(percent, currentStep - 1)) / this.steps;
+            width = Math.max(0, Math.min(percent, this.currentStep - 1)) / this.steps;
         }
 
-        this.$emit('change', (this.max - this.min) * this.fillerWidth + this.min);
+        this.$emit('change', (this.max - this.min) * width + this.min);
     }
 }
 </script>
