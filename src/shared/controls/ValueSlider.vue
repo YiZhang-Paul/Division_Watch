@@ -1,5 +1,5 @@
 <template>
-    <div class="value-slider-container" :style="{ '--filler-width': fillerWidth + '%' }">
+    <div class="value-slider-container" :style="{ '--filler-width': fillerWidth * 100 + '%' }">
         <span>{{ name }}</span>
 
         <div class="slider-wrapper">
@@ -32,8 +32,11 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
 
     public onSelect(event: any): void {
         const slider = this.$refs.slider as HTMLElement;
-        const percent = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
-        this.fillerWidth = Math.max(0, Math.min(percent * 100, 100));
+        const mouseX = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
+        const percent = Math.max(0, Math.min(mouseX * 100, 100));
+        const currentStep = Math.round(percent / 100 * this.steps);
+        this.fillerWidth = currentStep / this.steps;
+        this.$emit('change', (this.max - this.min) * this.fillerWidth + this.min);
     }
 }
 </script>
