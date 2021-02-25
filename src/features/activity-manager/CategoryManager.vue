@@ -151,7 +151,7 @@ export default class CategoryManager extends Vue {
         this.updateDebounceTimer = setTimeout(() => {
             store.dispatch(`${categoryKey}/updateCategory`, this.activeCategory);
             this.updateDebounceTimer = null;
-        }, 1000);
+        }, 400);
     }
 }
 </script>

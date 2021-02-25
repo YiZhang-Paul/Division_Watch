@@ -138,7 +138,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         this.updateDebounceTimer = setTimeout(() => {
             store.dispatch(`${taskItemKey}/updateTaskItem`, this.activeTask);
             this.updateDebounceTimer = null;
-        }, 1000);
+        }, 400);
     }
 
     public async addChildTask(task: TaskItem): Promise<void> {
