@@ -10,6 +10,7 @@
 
                 <div class="slider" ref="slider" @click="onSelect($event)">
                     <div class="filler" @click.stop="onSelect($event, false)"></div>
+                    <div class="handle"></div>
                 </div>
 
                 <div class="border"></div>
@@ -84,9 +85,9 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
     }
 
     .slider-wrapper {
+        box-sizing: border-box;
         display: flex;
         align-items: center;
-        box-sizing: border-box;
         padding: 0.75% 0 0.75% 1.25%;
         width: calc(100% - #{$name-width});
         height: 0.825rem;
@@ -110,6 +111,8 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
 
             .slider {
                 flex-grow: 1;
+                position: relative;
+                height: 100%;
                 background-color: rgba(45, 45, 45, 0.7);
 
                 &:hover {
@@ -119,13 +122,35 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
                     .filler {
                         background-color: rgb(240, 123, 14);
                     }
+
+                    .handle {
+                        left: calc(var(--filler-width) - 0.15rem);
+                        bottom: calc(-0.35rem + 50%);
+                        width: 0.3rem;
+                        height: 0.7rem;
+                        border-radius: 2px;
+                        background-color: rgb(243, 105, 26);
+                    }
                 }
 
                 .filler {
                     width: var(--filler-width);
                     height: 100%;
                     background-color: rgb(220, 220, 220);
-                    transition: background-color 0.3s;
+                    transition: background-color 0.2s, width 0.2s;
+                }
+
+                .handle {
+                    $width: 2px;
+                    $height: calc(#{$width} / 2 * 3);
+
+                    position: absolute;
+                    left: calc(var(--filler-width) - #{$width} / 2);
+                    bottom: calc(#{$height} * -1 - 0.025rem);
+                    width: $width;
+                    height: $height;
+                    background-color: rgb(220, 220, 220);
+                    transition: all 0.2s;
                 }
             }
         }
