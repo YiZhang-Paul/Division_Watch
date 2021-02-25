@@ -1,12 +1,12 @@
 <template>
-    <div class="value-slider-container">
+    <div class="value-slider-container" :style="{ '--filler-width': fillerWidth + '%' }">
         <span>{{ name }}</span>
 
         <div class="slider-wrapper">
             <span>{{ transform ? transform(selected) : selected }}</span>
 
-            <div class="slider">
-
+            <div class="slider" ref="slider" @click="onSelect($event)">
+                <div class="filler" @click="onSelect($event)"></div>
             </div>
         </div>
     </div>
@@ -27,11 +27,20 @@ class ValueSliderProp {
 @Options({
     emits: ['change']
 })
-export default class ValueSlider extends Vue.with(ValueSliderProp) { }
+export default class ValueSlider extends Vue.with(ValueSliderProp) {
+    public fillerWidth = 0;
+
+    public onSelect(event: any): void {
+        const slider = this.$refs.slider as HTMLElement;
+        const percent = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
+        this.fillerWidth = Math.max(0, Math.min(percent * 100, 100));
+    }
+}
 </script>
 
 <style lang="scss" scoped>
 .value-slider-container {
+    --filler-width: 0;
     $name-width: 45%;
 
     box-sizing: border-box;
@@ -69,6 +78,17 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) { }
             border-left: 2px solid rgba(200, 200, 200, 0.7);
             border-right: 2px solid rgba(200, 200, 200, 0.7);
             background-color: rgba(45, 45, 45, 0.7);
+
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(42, 42, 48, 0.8);
+            }
+
+            .filler {
+                width: var(--filler-width);
+                height: 100%;
+                background-color: rgb(240, 123, 14);
+            }
         }
     }
 }
