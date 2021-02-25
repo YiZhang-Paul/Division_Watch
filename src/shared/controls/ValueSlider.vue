@@ -6,7 +6,7 @@
             <span>{{ transform ? transform(selected) : selected }}</span>
 
             <div class="slider" ref="slider" @click="onSelect($event)">
-                <div class="filler" @click="onSelect($event)"></div>
+                <div class="filler" @click.stop="onSelect($event, false)"></div>
             </div>
         </div>
     </div>
@@ -30,12 +30,19 @@ class ValueSliderProp {
 export default class ValueSlider extends Vue.with(ValueSliderProp) {
     public fillerWidth = 0;
 
-    public onSelect(event: any): void {
+    public onSelect(event: MouseEvent, isIncrease = true): void {
         const slider = this.$refs.slider as HTMLElement;
         const mouseX = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
-        const percent = Math.max(0, Math.min(mouseX * 100, 100));
-        const currentStep = Math.round(percent / 100 * this.steps);
-        this.fillerWidth = currentStep / this.steps;
+        const currentStep = (this.selected - this.min) / (this.max - this.min) * this.steps;
+        const percent = Math.round(Math.max(0, Math.min(mouseX, 1)) * this.steps);
+
+        if (isIncrease) {
+            this.fillerWidth = Math.min(Math.max(currentStep + 1, percent), this.steps) / this.steps;
+        }
+        else {
+            this.fillerWidth = Math.max(0, Math.min(percent, currentStep - 1)) / this.steps;
+        }
+
         this.$emit('change', (this.max - this.min) * this.fillerWidth + this.min);
     }
 }
