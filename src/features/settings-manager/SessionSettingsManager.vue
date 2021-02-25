@@ -23,7 +23,7 @@
                 :name="'Daily Limit Suggestion'"
                 :min="options.dailyLimits[0]"
                 :max="options.dailyLimits[options.dailyLimits.length - 1]"
-                :steps="options.dailyLimits.length"
+                :steps="options.dailyLimits.length - 1"
                 :selected="settings.dailyLimitSuggestion"
                 :transform="toHoursText"
                 @change="onSettingsChange('dailyLimitSuggestion', $event)">
