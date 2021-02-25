@@ -108,7 +108,7 @@ export default class SessionSettingsManager extends Vue {
         }
 
         this.updateDebounceTimer = setTimeout(() => {
-            store.dispatch(`${settingsKey}/updateSessionSettings`, settings);
+            store.dispatch(`${settingsKey}/updateSessionSettings`, this.settings);
             this.updateDebounceTimer = null;
         }, 400);
     }
