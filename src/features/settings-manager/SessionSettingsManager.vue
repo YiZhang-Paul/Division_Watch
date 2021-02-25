@@ -3,19 +3,31 @@
         <section-panel class="section-panel" :name="'Session Configuration'">
             <option-dropdown class="option-dropdown"
                 :name="'Session/Short Break Duration'"
-                :selected="[settings.sessionDuration, settings.shortBreakDuration]"
+                :selected="selectedDurationCombo"
                 :options="durationCombos"
                 :transform="toDisplayDurationCombo"
                 @options:select="onDurationComboChange($event)">
             </option-dropdown>
 
-            <option-dropdown class="option-dropdown"
-                :name="'Long Break Duration'">
-            </option-dropdown>
+            <value-slider class="value-slider"
+                :name="'Long Break Duration'"
+                :min="longBreakRange.min"
+                :max="longBreakRange.max"
+                :steps="toMinutes(longBreakRange.max - longBreakRange.min)"
+                :selected="settings.longBreakDuration"
+                :transform="toMinutesText"
+                @change="onSettingsChange('longBreakDuration', $event)">
+            </value-slider>
 
-            <option-dropdown class="option-dropdown"
-                :name="'Daily Limit Suggestion'">
-            </option-dropdown>
+            <value-slider class="value-slider"
+                :name="'Daily Limit Suggestion'"
+                :min="options.dailyLimits[0]"
+                :max="options.dailyLimits[options.dailyLimits.length - 1]"
+                :steps="options.dailyLimits.length"
+                :selected="settings.dailyLimitSuggestion"
+                :transform="toHoursText"
+                @change="onSettingsChange('dailyLimitSuggestion', $event)">
+            </value-slider>
         </section-panel>
     </div>
 </template>
@@ -25,24 +37,38 @@ import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
 import { settingsKey } from '../../store/settings/settings.state';
+import { Range } from '../../core/data-model/generic/range';
 // eslint-disable-next-line no-unused-vars
 import { SessionSettings } from '../../core/data-model/settings/session-settings';
 // eslint-disable-next-line no-unused-vars
 import { SessionSettingsOptions } from '../../core/data-model/settings/session-settings-options';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
+import ValueSlider from '../../shared/controls/ValueSlider.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
     components: {
         SectionPanel,
-        OptionDropdown
+        OptionDropdown,
+        ValueSlider
     }
 })
 export default class SessionSettingsManager extends Vue {
 
     get durationCombos(): [number, number][] {
         return this.options.durationSeries.map(_ => [_.sessionDuration, _.shortBreakDuration]);
+    }
+
+    get selectedDurationCombo(): [number, number] {
+        return [this.settings.sessionDuration, this.settings.shortBreakDuration];
+    }
+
+    get longBreakRange(): Range {
+        const selected = this.toDisplayDurationCombo(this.selectedDurationCombo);
+        const index = this.durationCombos.findIndex(_ => this.toDisplayDurationCombo(_) === selected);
+
+        return index === -1 ? new Range() : this.options.durationSeries[index].longBreakRange;
     }
 
     get options(): SessionSettingsOptions {
@@ -66,6 +92,27 @@ export default class SessionSettingsManager extends Vue {
         } as SessionSettings);
     }
 
+    public onSettingsChange(key: string, value: string): void {
+        const settings = { ...this.settings, [key]: value } as SessionSettings;
+        store.commit(`${settingsKey}/setSessionSettings`, settings);
+    }
+
+    public toMinutes(milliseconds: number): number {
+        return TimeUtility.toMinutes(milliseconds);
+    }
+
+    public toMinutesText(milliseconds: number): string {
+        const minutes = TimeUtility.toMinutes(milliseconds);
+
+        return `${minutes} min${minutes > 1 ? 's' : ''}`;
+    }
+
+    public toHoursText(milliseconds: number): string {
+        const hours = TimeUtility.toMinutes(milliseconds) / 60;
+
+        return `${hours} hour${hours > 1 ? 's' : ''}`;
+    }
+
     public toDisplayDurationCombo(combo: [number, number]): string {
         const durations = combo.map(TimeUtility.toMinutes);
 
@@ -84,12 +131,12 @@ export default class SessionSettingsManager extends Vue {
     .section-panel {
         width: 95%;
 
-        .option-dropdown {
+        .option-dropdown, .value-slider {
             width: 100%;
-        }
 
-        .option-dropdown:not(:nth-last-child(1)) {
-            margin-bottom: 2.5%;
+            &:not(:nth-last-child(1)) {
+                margin-bottom: 2.5%;
+            }
         }
     }
 }
