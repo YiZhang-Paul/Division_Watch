@@ -5,8 +5,14 @@
         <div class="slider-wrapper">
             <span>{{ transform ? transform(selected) : selected }}</span>
 
-            <div class="slider" ref="slider" @click="onSelect($event)">
-                <div class="filler" @click.stop="onSelect($event, false)"></div>
+            <div class="inner-wrapper">
+                <div class="border"></div>
+
+                <div class="slider" ref="slider" @click="onSelect($event)">
+                    <div class="filler" @click.stop="onSelect($event, false)"></div>
+                </div>
+
+                <div class="border"></div>
             </div>
         </div>
     </div>
@@ -91,22 +97,36 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
             width: 17.5%;
         }
 
-        .slider {
+        .inner-wrapper {
+            display: flex;
             width: 82.5%;
             height: 37.5%;
-            border-left: 2px solid rgba(200, 200, 200, 0.7);
-            border-right: 2px solid rgba(200, 200, 200, 0.7);
-            background-color: rgba(45, 45, 45, 0.7);
 
-            &:hover {
-                cursor: pointer;
-                background-color: rgba(42, 42, 48, 0.8);
+            .border {
+                width: 2px;
+                height: 100%;
+                background-color: rgba(235, 235, 235, 0.45);
             }
 
-            .filler {
-                width: var(--filler-width);
-                height: 100%;
-                background-color: rgb(240, 123, 14);
+            .slider {
+                flex-grow: 1;
+                background-color: rgba(45, 45, 45, 0.7);
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(42, 42, 48, 0.8);
+
+                    .filler {
+                        background-color: rgb(240, 123, 14);
+                    }
+                }
+
+                .filler {
+                    width: var(--filler-width);
+                    height: 100%;
+                    background-color: rgb(220, 220, 220);
+                    transition: background-color 0.3s;
+                }
             }
         }
     }
