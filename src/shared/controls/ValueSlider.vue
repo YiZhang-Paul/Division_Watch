@@ -8,9 +8,28 @@
             <div class="inner-wrapper">
                 <div class="border"></div>
 
-                <div class="slider" ref="slider" @click="onSelect($event)">
-                    <div class="filler" @click.stop="onSelect($event, false)"></div>
-                    <div class="handle"></div>
+                <div class="drag-panel"
+                    @mouseleave="isMousedown = false"
+                    @mousemove.stop.self="onMousemove($event)">
+
+                    <div class="slider"
+                        :class="{ 'active-slider': isMousedown }"
+                        ref="slider"
+                        @mouseup="isMousedown = false"
+                        @mousedown.self="onMousedown($event)"
+                        @mousemove.self="onMousemove($event)">
+
+                        <div class="filler"
+                            @mouseup="isMousedown = false"
+                            @mousedown.stop.self="onMousedown($event, 'decrease')"
+                            @mousemove.stop.self="onMousemove($event)">
+                        </div>
+
+                        <div class="handle"
+                            @mouseup="isMousedown = false"
+                            @mousedown.stop.self="isMousedown = true">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="border"></div>
@@ -35,6 +54,7 @@ class ValueSliderProp {
     emits: ['change']
 })
 export default class ValueSlider extends Vue.with(ValueSliderProp) {
+    public isMousedown = false;
 
     get fillerWidth(): number {
         return this.currentStep / this.steps;
@@ -46,17 +66,31 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
         return Math.max(0, isNaN(step) ? 0 : step);
     }
 
-    public onSelect(event: MouseEvent, isIncrease = true): void {
+    public onMousedown(event: MouseEvent, type = 'increase'): void {
+        this.isMousedown = true;
+        this.onSelect(event, type);
+    }
+
+    public onMousemove(event: MouseEvent): void {
+        if (this.isMousedown) {
+            this.onSelect(event, 'round');
+        }
+    }
+
+    private onSelect(event: MouseEvent, type: string): void {
         let width = 0;
         const slider = this.$refs.slider as HTMLElement;
         const mouseX = (event.clientX - slider.getBoundingClientRect().left) / slider.offsetWidth;
         const percent = Math.round(Math.max(0, Math.min(mouseX, 1)) * this.steps);
 
-        if (isIncrease) {
+        if (type === 'increase') {
             width = Math.min(Math.max(this.currentStep + 1, percent), this.steps) / this.steps;
         }
-        else {
+        else if (type === 'decrease') {
             width = Math.max(0, Math.min(percent, this.currentStep - 1)) / this.steps;
+        }
+        else if (type === 'round') {
+            width = Math.min(percent, this.steps) / this.steps;
         }
 
         this.$emit('change', (this.max - this.min) * width + this.min);
@@ -100,8 +134,9 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
 
         .inner-wrapper {
             display: flex;
+            position: relative;
             width: 82.5%;
-            height: 37.5%;
+            height: 42.5%;
 
             .border {
                 width: 2px;
@@ -109,35 +144,49 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
                 background-color: rgba(235, 235, 235, 0.45);
             }
 
-            .slider {
+            .drag-panel {
+                display: flex;
                 flex-grow: 1;
+                align-items: center;
+                position: absolute;
+                left: 0;
+                bottom: -350%;
+                width: 100%;
+                height: 800%;
+            }
+
+            .slider {
                 position: relative;
-                height: 100%;
+                width: 100%;
+                height: 12.5%;
                 background-color: rgba(45, 45, 45, 0.7);
 
                 &:hover {
                     cursor: pointer;
                     background-color: rgba(42, 42, 48, 0.8);
+                }
 
-                    .filler {
-                        background-color: rgb(240, 123, 14);
-                    }
+                &:hover .filler, &.active-slider .filler {
+                    background-color: rgb(240, 123, 14);
+                }
 
-                    .handle {
-                        left: calc(var(--filler-width) - 0.15rem);
-                        bottom: calc(-0.35rem + 50%);
-                        width: 0.3rem;
-                        height: 0.7rem;
-                        border-radius: 2px;
-                        background-color: rgb(243, 105, 26);
-                    }
+                &:hover .handle, &.active-slider .handle {
+                    $width: 0.25rem;
+                    $height: 0.625rem;
+
+                    left: calc(var(--filler-width) - #{$width} / 2);
+                    bottom: calc(#{$height} / -2 + 50%);
+                    width: $width;
+                    height: $height;
+                    border-radius: 1px;
+                    background-color: rgb(243, 105, 26);
                 }
 
                 .filler {
                     width: var(--filler-width);
                     height: 100%;
                     background-color: rgb(220, 220, 220);
-                    transition: background-color 0.2s, width 0.2s;
+                    transition: background-color 0.1s, width 0.1s;
                 }
 
                 .handle {
@@ -150,7 +199,7 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
                     width: $width;
                     height: $height;
                     background-color: rgb(220, 220, 220);
-                    transition: all 0.2s;
+                    transition: all 0.1s;
                 }
             }
         }
