@@ -92,14 +92,12 @@ export default class SessionSettingsManager extends Vue {
     }
 
     public onDurationComboChange(combo: [number, number]): void {
-        store.dispatch(`${settingsKey}/updateSessionSettings`, {
-            ...this.settings,
-            sessionDuration: combo[0],
-            shortBreakDuration: combo[1]
-        } as SessionSettings);
+        this.onSettingsChange('sessionDuration', combo[0]);
+        this.onSettingsChange('shortBreakDuration', combo[1]);
+        this.onSettingsChange('longBreakDuration', this.longBreakRange.min);
     }
 
-    public onSettingsChange(key: string, value: string): void {
+    public onSettingsChange<T>(key: string, value: T): void {
         const settings = { ...this.settings, [key]: value } as SessionSettings;
         store.commit(`${settingsKey}/setSessionSettings`, settings);
 
