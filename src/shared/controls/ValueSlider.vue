@@ -7,6 +7,7 @@
 
             <div class="inner-wrapper">
                 <div class="border"></div>
+                <div class="border"></div>
 
                 <div class="drag-panel"
                     @mouseleave="isMousedown = false"
@@ -31,8 +32,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="border"></div>
             </div>
         </div>
     </div>
@@ -139,9 +138,19 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
             height: 42.5%;
 
             .border {
+                position: absolute;
+                top: 0;
                 width: 2px;
                 height: 100%;
-                background-color: rgba(235, 235, 235, 0.45);
+                background-color: rgb(255, 255, 255);
+
+                &:nth-child(1) {
+                    left: 0;
+                }
+
+                &:nth-child(2) {
+                    right: 0;
+                }
             }
 
             .drag-panel {
@@ -149,15 +158,16 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
                 flex-grow: 1;
                 align-items: center;
                 position: absolute;
-                left: 0;
+                left: -50%;
                 bottom: -350%;
-                width: 100%;
+                width: 200%;
                 height: 800%;
             }
 
             .slider {
                 position: relative;
-                width: 100%;
+                margin-left: 25%;
+                width: 50%;
                 height: 12.5%;
                 background-color: rgba(45, 45, 45, 0.7);
 
