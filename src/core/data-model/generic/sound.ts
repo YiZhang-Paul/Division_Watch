@@ -15,6 +15,7 @@ export class Sound {
 
     public play(loop: boolean): void {
         this.file.volume = this._volume;
+        this.file.currentTime = 0;
         this.file.loop = loop;
         this.file.play();
     }
