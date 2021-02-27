@@ -17,6 +17,9 @@ const state = (): ISoundState => ({
 });
 
 const getters = {
+    getAllSounds: (state: ISoundState): Sound[] => {
+        return [...state.clockSounds.sounds];
+    },
     getClockSound: (state: ISoundState) => (name: string): Sound | null => {
         return state.clockSounds.sounds.find(_ => _.name === name) ?? null;
     }
@@ -30,12 +33,19 @@ const mutations = {
         state.masterVolume = Math.max(0, Math.min(volume, 1));
     },
     addClockSound(state: ISoundState, sound: Sound): void {
-        sound.volume = state.masterVolume * state.clockSounds.volume;
+        sound.volume = state.isMuted ? 0 : state.masterVolume * state.clockSounds.volume;
         state.clockSounds.sounds = [...state.clockSounds.sounds, sound];
     }
 };
 
 const actions = {
+    mute(context: ActionContext<ISoundState, any>): void {
+        context.commit('setIsMuted', true);
+
+        for (const sound of context.getters.getAllSounds as Sound[]) {
+            sound.volume = 0;
+        }
+    },
     playSound(context: ActionContext<ISoundState, any>, option: SoundOption): void {
         const { getters, commit } = context;
         const { name, type, loop } = option;
