@@ -60,11 +60,16 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { AlertOutline, Pistol } from 'mdue';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
+
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 // eslint-disable-next-line no-unused-vars
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import MenuButton from '../controls/MenuButton.vue';
 import Checkbox from '../controls/Checkbox.vue';
 import OptionDropdown from '../controls/OptionDropdown.vue';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 class ConfirmPanelProp {
     public option = prop<DialogOption<any>>({ default: null });
@@ -91,6 +96,7 @@ export default class ConfirmPanel extends Vue.with(ConfirmPanelProp) {
     public mounted(): void {
         const container = document.querySelector(`#${this.id}`);
         VanillaTilt.init(container as HTMLElement, { max: 2, glare: true, 'max-glare': 0.1 });
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_open', SoundType.UI));
     }
 
     public onConfirm(): void {

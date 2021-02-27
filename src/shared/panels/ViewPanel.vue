@@ -27,11 +27,17 @@ import { Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
+
 class ViewPanelProp {
     public maxTilt = prop<number>({ default: 0.3 });
 }
 
 export default class ViewPanel extends Vue.with(ViewPanelProp) {
+    public readonly sound = new SoundOption('panel_open', SoundType.UI);
     public readonly containerId = `view-panel-container-${uuid.v4()}`;
     public readonly contentId = `content-container-${uuid.v4()}`;
     private stage = 1;
@@ -50,6 +56,11 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         container?.addEventListener('animationend', () => this.stage++);
         VanillaTilt.init(container as HTMLElement, { max: this.maxTilt });
         VanillaTilt.init(content as HTMLElement, { max: 0, glare: true, 'max-glare': 0.1 });
+        setTimeout(() => store.dispatch(`${soundKey}/playSound`, this.sound), 500);
+    }
+
+    public beforeUnmount(): void {
+        store.dispatch(`${soundKey}/stopSound`, this.sound);
     }
 }
 </script>
