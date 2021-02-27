@@ -1,5 +1,8 @@
 <template>
-    <display-panel class="menu-button-container" :class="{ disabled: isDisabled }">
+    <display-panel class="menu-button-container"
+        :class="{ disabled: isDisabled }"
+        @mouseenter="onMouseenter()">
+
         <slot></slot>
     </display-panel>
 </template>
@@ -7,7 +10,11 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import DisplayPanel from '../panels/DisplayPanel.vue';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 class MenuButtonProp {
     public isDisabled = prop<boolean>({ default: false });
@@ -18,7 +25,12 @@ class MenuButtonProp {
         DisplayPanel
     }
 })
-export default class MenuButton extends Vue.with(MenuButtonProp) { }
+export default class MenuButton extends Vue.with(MenuButtonProp) {
+
+    public onMouseenter(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+}
 </script>
 
 <style lang="scss" scoped>

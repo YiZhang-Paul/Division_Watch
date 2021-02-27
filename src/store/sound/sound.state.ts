@@ -7,18 +7,23 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 export interface ISoundState {
     isMuted: boolean;
     masterVolume: number;
+    uiSounds: { sounds: Sound[]; volume: number };
     clockSounds: { sounds: Sound[]; volume: number };
 }
 
 const state = (): ISoundState => ({
     isMuted: false,
     masterVolume: 0.5,
+    uiSounds: { sounds: [], volume: 1 },
     clockSounds: { sounds: [], volume: 1 }
 });
 
 const getters = {
     getAllSounds: (state: ISoundState): Sound[] => {
-        return [...state.clockSounds.sounds];
+        return [...state.uiSounds.sounds, ...state.clockSounds.sounds];
+    },
+    getUISound: (state: ISoundState) => (name: string): Sound | null => {
+        return state.uiSounds.sounds.find(_ => _.name === name) ?? null;
     },
     getClockSound: (state: ISoundState) => (name: string): Sound | null => {
         return state.clockSounds.sounds.find(_ => _.name === name) ?? null;
@@ -31,6 +36,10 @@ const mutations = {
     },
     setMasterVolume(state: ISoundState, volume: number): void {
         state.masterVolume = Math.max(0, Math.min(volume, 1));
+    },
+    addUISound(state: ISoundState, sound: Sound): void {
+        sound.volume = state.isMuted ? 0 : state.masterVolume * state.uiSounds.volume;
+        state.uiSounds.sounds = [...state.uiSounds.sounds, sound];
     },
     addClockSound(state: ISoundState, sound: Sound): void {
         sound.volume = state.isMuted ? 0 : state.masterVolume * state.clockSounds.volume;
@@ -51,14 +60,20 @@ const actions = {
         const { name, type, loop } = option;
         let sound: Sound | null = null;
 
-        if (type === SoundType.Clock) {
+        if (type === SoundType.UI) {
+            sound = getters.getUISound(name);
+        }
+        else if (type === SoundType.Clock) {
             sound = getters.getClockSound(name);
         }
 
         if (!sound) {
             sound = new Sound(name);
 
-            if (type === SoundType.Clock) {
+            if (type === SoundType.UI) {
+                commit('addUISound', sound);
+            }
+            else if (type === SoundType.Clock) {
                 commit('addClockSound', sound);
             }
         }
