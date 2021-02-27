@@ -8,6 +8,36 @@
                 :transform="_ => _.name"
                 @options:select="onClockSoundChange($event.file)">
             </option-dropdown>
+
+            <value-slider class="value-slider"
+                :name="'Master Volume'"
+                :min="options.masterVolume.min"
+                :max="options.masterVolume.max"
+                :steps="options.masterVolume.max - options.masterVolume.min"
+                :selected="settings.masterVolume"
+                :transform="_ => _ + ' %'"
+                @change="onSettingsChange('masterVolume', $event)">
+            </value-slider>
+
+            <value-slider class="value-slider"
+                :name="'UI Volume'"
+                :min="options.uiVolume.min"
+                :max="options.uiVolume.max"
+                :steps="options.uiVolume.max - options.uiVolume.min"
+                :selected="settings.uiVolume"
+                :transform="_ => _ + ' %'"
+                @change="onSettingsChange('uiVolume', $event)">
+            </value-slider>
+
+            <value-slider class="value-slider"
+                :name="'Clock Volume'"
+                :min="options.clockVolume.min"
+                :max="options.clockVolume.max"
+                :steps="options.clockVolume.max - options.clockVolume.min"
+                :selected="settings.clockVolume"
+                :transform="_ => _ + ' %'"
+                @change="onSettingsChange('clockVolume', $event)">
+            </value-slider>
         </section-panel>
     </div>
 </template>
@@ -20,11 +50,13 @@ import { soundKey } from '../../store/sound/sound.state';
 import { settingsKey } from '../../store/settings/settings.state';
 // eslint-disable-next-line no-unused-vars
 import { SoundSettings } from '../../core/data-model/settings/sound-settings';
+// eslint-disable-next-line no-unused-vars
+import { SoundSettingsOptions } from '../../core/data-model/settings/sound-settings-options';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import ValueSlider from '../../shared/controls/ValueSlider.vue';
-import { SoundType } from '@/core/enums/sound-type.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 @Options({
     components: {
@@ -41,6 +73,10 @@ export default class SoundSettingsManager extends Vue {
     ];
 
     private updateDebounceTimer: NodeJS.Timeout | null = null;
+
+    get options(): SoundSettingsOptions {
+        return store.getters[`${settingsKey}/soundSettingsOptions`];
+    }
 
     get settings(): SoundSettings {
         return store.getters[`${settingsKey}/soundSettings`];
