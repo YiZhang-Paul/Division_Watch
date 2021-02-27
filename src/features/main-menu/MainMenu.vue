@@ -60,11 +60,14 @@ import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
-import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import ViewSelector from './ViewSelector.vue';
 
@@ -90,6 +93,11 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     }
 
     public mounted(): void {
+        if (this.allowAnimation) {
+            const sound = new SoundOption('menu_open', SoundType.UI);
+            setTimeout(() => store.dispatch(`${soundKey}/playSound`, sound), 500);
+        }
+
         VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 0.3 });
         document.querySelector('.last-wave')?.addEventListener('animationend', () => this.stage++);
         // 8 animations for stage 2

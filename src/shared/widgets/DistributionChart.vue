@@ -25,8 +25,13 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 // eslint-disable-next-line no-unused-vars
 import { DistributionGroup } from '../../core/data-model/generic/distribution-group';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import PercentageChart from './PercentageChart.vue';
 
@@ -37,6 +42,16 @@ class DistributionChartProp {
 }
 
 @Options({
+    watch: {
+        visibleGroups(current: DistributionGroup[]): void {
+            if (current.length) {
+                setTimeout(() => {
+                    const sound = new SoundOption('chart_fill', SoundType.UI);
+                    store.dispatch(`${soundKey}/playSound`, sound);
+                }, this.delay);
+            }
+        }
+    },
     components: { PercentageChart }
 })
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
