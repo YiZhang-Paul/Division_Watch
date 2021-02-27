@@ -68,7 +68,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 <style lang="scss" scoped>
 .view-panel-container {
     $max-content-width: 95%;
-    $box-expanded-height: 80%;
+    $box-expanded-height: 76%;
     $header-footer-height: calc((100% - #{$box-expanded-height}) / 2.75);
 
     display: flex;
@@ -83,7 +83,7 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         align-items: center;
         position: relative;
         width: 100%;
-        height: calc(#{$box-expanded-height} + 4%);
+        height: calc(#{$box-expanded-height} + 7%);
         transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
         transition-delay: 0.15s;
 
