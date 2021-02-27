@@ -15,7 +15,7 @@
         @cancelled="closeDialog()">
     </confirm-panel>
 
-    <agent-watch class="agent-watch"></agent-watch>
+    <agent-watch v-if="isSoundSettingsLoaded" class="agent-watch"></agent-watch>
 </template>
 
 <script lang="ts">
@@ -24,6 +24,7 @@ import { Options, Vue } from 'vue-class-component';
 import store from './store';
 import { dialogKey } from './store/dialog/dialog.state';
 import { mainViewKey } from './store/main-view/main-view.state';
+import { settingsKey } from './store/settings/settings.state';
 // eslint-disable-next-line no-unused-vars
 import { DialogOption } from './core/data-model/generic/dialog-option';
 import { ViewOption } from './core/enums/view-option.enum';
@@ -44,6 +45,7 @@ import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 })
 export default class App extends Vue {
     public viewOption = ViewOption;
+    public isSoundSettingsLoaded = false;
 
     get activeDialogOption(): DialogOption<any> {
         return store.getters[`${dialogKey}/dialogOption`];
@@ -55,6 +57,11 @@ export default class App extends Vue {
 
     get showBlurLayer(): boolean {
         return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenuAnimated;
+    }
+
+    public async created(): Promise<void> {
+        await store.dispatch(`${settingsKey}/loadSoundSettings`);
+        this.isSoundSettingsLoaded = true;
     }
 
     public mounted(): void {

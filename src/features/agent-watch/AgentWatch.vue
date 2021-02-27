@@ -82,10 +82,9 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         return !this.isMenuOn && this.state === WatchState.RogueBooted;
     }
 
-    public async onBooted(): Promise<void> {
+    public onBooted(): void {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
-        await store.dispatch(`${settingsKey}/loadSoundSettings`);
         const settings = store.getters[`${settingsKey}/soundSettings`] as SoundSettings;
         const file = settings?.clockSound ?? 'clock_tick_slow';
         store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock, true));
