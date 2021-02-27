@@ -88,6 +88,19 @@ const actions = {
         }
 
         sound.play(loop);
+    },
+    stopSound(context: ActionContext<ISoundState, any>, option: SoundOption): void {
+        const { name, type } = option;
+        let sound: Sound | null = null;
+
+        if (type === SoundType.UI) {
+            sound = context.getters.getUISound(name);
+        }
+        else if (type === SoundType.Clock) {
+            sound = context.getters.getClockSound(name);
+        }
+
+        sound?.stop();
     }
 };
 
