@@ -8,6 +8,7 @@
         <img v-show="canDisplayAgentMode"
             class="logo"
             :class="{ 'no-blink': !canBlinkLogo }"
+            @mouseenter="onOptionHover()"
             @click="isMenuOn = true"
             src="../../assets/images/shd_tech.jpg"
             draggable="false" />
@@ -82,6 +83,10 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
         store.dispatch(`${soundKey}/playSound`, new SoundOption('clock_tick_slow', SoundType.Clock, true));
+    }
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public onMenuSelect(option: WatchMenuOption): void {

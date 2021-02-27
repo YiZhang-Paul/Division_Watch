@@ -7,6 +7,7 @@
 
             <button class="glass-panel-dark"
                 :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: isOptionsDisabled ? 'grey' : option.color }"
+                @mouseenter="onOptionHover()"
                 @mouseover="activeOption = option.name"
                 @mouseout="activeOption = ''"
                 @click="$emit('menu:select', option.name)">
@@ -20,9 +21,10 @@
 
             <close-circle v-if="!activeOption"
                 class="close-menu"
+                @mouseenter="onOptionHover()"
                 @mouseover="isOptionsDisabled = true"
                 @mouseout="isOptionsDisabled = false"
-                @click="$emit('menu:close')" />
+                @click="onClose()" />
         </div>
     </div>
 </template>
@@ -33,7 +35,10 @@ import { Options, Vue } from 'vue-class-component';
 import { Apps, Biohazard, CloseCircle, Cog, PowerStandby, Play } from 'mdue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 @Options({
     components: {
@@ -72,7 +77,17 @@ export default class AccessMenu extends Vue {
     }
 
     public mounted(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_menu_open', SoundType.UI));
         setTimeout(() => this.isOptionsVisible = true, 50);
+    }
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
+    public onClose(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_menu_close', SoundType.UI));
+        this.$emit('menu:close');
     }
 }
 </script>
