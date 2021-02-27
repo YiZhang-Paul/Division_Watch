@@ -1,29 +1,40 @@
 <template>
     <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
-        <planner-selection-card class="planner-selection-card selection-card"></planner-selection-card>
-        <div class="ongoing-selection-card selection-card"></div>
+        <planner-selection-card class="planner-selection-card selection-card"
+            @mouseenter="onOptionHover()">
+        </planner-selection-card>
+
+        <div class="ongoing-selection-card selection-card" @mouseenter="onOptionHover()"></div>
 
         <activities-selection-card class="activities-selection-card selection-card"
             :chartDelay="allowAnimation ? 1800 : 600"
+            @mouseenter="onOptionHover()"
             @click="$emit('view:selected', options.Activities)">
         </activities-selection-card>
 
-        <div class="login-selection-card selection-card">
+        <div class="login-selection-card selection-card" @mouseenter="onOptionHover()">
             <user-avatar class="user-avatar"></user-avatar>
             <span>Log in</span>
         </div>
 
-        <div class="settings-selection-card selection-card" @click="$emit('view:selected', options.Settings)">
+        <div class="settings-selection-card selection-card"
+            @mouseenter="onOptionHover()"
+            @click="$emit('view:selected', options.Settings)">
+
             <span>Settings</span>
         </div>
 
-        <div class="dashboard-selection-card selection-card"></div>
+        <div class="dashboard-selection-card selection-card" @mouseenter="onOptionHover()"></div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
@@ -44,6 +55,10 @@ class ViewSelectorProp {
 })
 export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     public options = ViewOption;
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
 }
 </script>
 
