@@ -90,6 +90,9 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         else if (option === WatchMenuOption.MainMenu) {
             store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuAnimated);
         }
+        else if (option === WatchMenuOption.ShutDown) {
+            (window as any).ipcRenderer?.send('watch-shutdown');
+        }
 
         this.onMenuClose();
     }

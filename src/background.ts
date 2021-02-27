@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, ipcMain, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as path from 'path';
@@ -38,6 +38,10 @@ async function createWindow() {
         // Load the index.html when not in development
         browserWindow.loadURL('app://./index.html');
     }
+
+    ipcMain.on('watch-shutdown', () => {
+        browserWindow.close();
+    });
 }
 
 // Quit when all windows are closed.
