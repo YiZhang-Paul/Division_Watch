@@ -16,7 +16,7 @@
                 :steps="options.masterVolume.max - options.masterVolume.min"
                 :selected="settings.masterVolume"
                 :transform="_ => _ + ' %'"
-                @change="onSettingsChange('masterVolume', $event)">
+                @change="onMasterVolumeChange($event)">
             </value-slider>
 
             <value-slider class="value-slider"
@@ -26,7 +26,7 @@
                 :steps="options.uiVolume.max - options.uiVolume.min"
                 :selected="settings.uiVolume"
                 :transform="_ => _ + ' %'"
-                @change="onSettingsChange('uiVolume', $event)">
+                @change="onUIVolumeChange($event)">
             </value-slider>
 
             <value-slider class="value-slider"
@@ -36,7 +36,7 @@
                 :steps="options.clockVolume.max - options.clockVolume.min"
                 :selected="settings.clockVolume"
                 :transform="_ => _ + ' %'"
-                @change="onSettingsChange('clockVolume', $event)">
+                @change="onClockVolumeChange($event)">
             </value-slider>
         </section-panel>
     </div>
@@ -106,7 +106,22 @@ export default class SoundSettingsManager extends Vue {
         this.onSettingsChange('clockSound', file);
     }
 
-    public onSettingsChange<T>(key: string, value: T): void {
+    public onMasterVolumeChange(volume: number): void {
+        this.onSettingsChange('masterVolume', volume);
+        store.dispatch(`${soundKey}/setAllVolume`, { type: SoundType.All, volume });
+    }
+
+    public onUIVolumeChange(volume: number): void {
+        this.onSettingsChange('uiVolume', volume);
+        store.dispatch(`${soundKey}/setAllVolume`, { type: SoundType.UI, volume });
+    }
+
+    public onClockVolumeChange(volume: number): void {
+        this.onSettingsChange('clockVolume', volume);
+        store.dispatch(`${soundKey}/setAllVolume`, { type: SoundType.Clock, volume });
+    }
+
+    private onSettingsChange<T>(key: string, value: T): void {
         const settings = { ...this.settings, [key]: value } as SoundSettings;
         store.commit(`${settingsKey}/setSoundSettings`, settings);
 

@@ -55,7 +55,7 @@ const actions = {
         }
 
         for (const sound of sounds as Sound[]) {
-            sound.volume = isMuted ? 0 : masterVolume / 100 * volume;
+            sound.volume = isMuted ? 0 : masterVolume / 100 * volume / 100;
         }
     },
     playSound(context: ActionContext<ISoundState, any>, option: SoundOption): void {
@@ -76,11 +76,11 @@ const actions = {
 
             if (type === SoundType.UI) {
                 commit('addUISound', sound);
-                dispatch('setAllVolume', { type, volume: uiVolume / 100 });
+                dispatch('setAllVolume', { type, volume: uiVolume });
             }
             else if (type === SoundType.Clock) {
                 commit('addClockSound', sound);
-                dispatch('setAllVolume', { type, volume: clockVolume / 100 });
+                dispatch('setAllVolume', { type, volume: clockVolume });
             }
         }
 
