@@ -14,6 +14,7 @@
 
         <div class="main-content">
             <session-settings-manager v-if="activeTab === 0" class="session-settings-manager"></session-settings-manager>
+            <sound-settings-manager v-if="activeTab === 1" class="sound-settings-manager"></sound-settings-manager>
         </div>
 
         <template v-slot:footer>
@@ -40,6 +41,7 @@ import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 import SessionSettingsManager from './SessionSettingsManager.vue';
+import SoundSettingsManager from './SoundSettingsManager.vue';
 
 @Options({
     components: {
@@ -49,7 +51,8 @@ import SessionSettingsManager from './SessionSettingsManager.vue';
         ViewPanel,
         MenuButton,
         CompactTabGroup,
-        SessionSettingsManager
+        SessionSettingsManager,
+        SoundSettingsManager
     }
 })
 export default class SettingsManager extends Vue {
@@ -73,7 +76,12 @@ export default class SettingsManager extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.header-content, .main-content, .session-settings-manager, .footer-content {
+.header-content,
+.main-content,
+.session-settings-manager,
+.sound-settings-manager,
+.footer-content {
+
     display: flex;
     width: 100%;
     height: 100%;
