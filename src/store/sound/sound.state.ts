@@ -48,10 +48,19 @@ const mutations = {
 };
 
 const actions = {
-    mute(context: ActionContext<ISoundState, any>): void {
-        context.commit('setIsMuted', true);
+    mute(context: ActionContext<ISoundState, any>, type: SoundType): void {
+        const { getters, commit, state } = context;
+        let sounds: Sound[] = [];
 
-        for (const sound of context.getters.getAllSounds as Sound[]) {
+        if (type === SoundType.Clock) {
+            sounds = state.clockSounds.sounds;
+        }
+        else {
+            sounds = getters.getAllSounds;
+            commit('setIsMuted', true);
+        }
+
+        for (const sound of sounds as Sound[]) {
             sound.volume = 0;
         }
     },

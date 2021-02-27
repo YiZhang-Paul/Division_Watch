@@ -98,12 +98,13 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         }
         else if (option === WatchMenuOption.ShutDown) {
             this.isClosing = true;
-            store.dispatch(`${soundKey}/mute`);
+            store.dispatch(`${soundKey}/mute`, SoundType.Clock);
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_close', SoundType.UI));
 
             setTimeout(() => {
                 this.state = WatchState.Closing;
-                setTimeout(() => (window as any).ipcRenderer?.send('watch-shutdown'), 500);
-            }, 700);
+                setTimeout(() => (window as any).ipcRenderer?.send('watch-shutdown'), 200);
+            }, 2500);
         }
 
         this.onMenuClose();
@@ -129,7 +130,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         .session-display,
         .logo {
             pointer-events: none;
-            animation: revealContent 0.6s ease forwards reverse;
+            animation: revealContent 1s ease forwards reverse;
         }
     }
 
