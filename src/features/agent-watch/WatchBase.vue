@@ -15,13 +15,16 @@
 import { Vue, Options, prop } from 'vue-class-component';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 // eslint-disable-next-line no-unused-vars
 import { IWatchColorOption, IAngleAnimation, IBlurAnimation, watchBaseKey } from '../../store/watch-base/watch-base.state';
-import { WatchState } from '../../core/enums/watch-state.enum';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { RingOption } from '../../core/data-model/watch-option/ring-option';
 import { ShadowOption } from '../../core/data-model/watch-option/shadow-option';
 import { AnimationService } from '../../core/services/animation/animation.service';
 import { CanvasService } from '../../core/services/canvas/canvas.service';
+import { WatchState } from '../../core/enums/watch-state.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 const animationService = new AnimationService();
 const canvasService = new CanvasService();
@@ -62,9 +65,11 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     }
 
     public mounted(): void {
-        this.renderWatchBase();
+        const sound = new SoundOption('watch_open', SoundType.UI);
+        setTimeout(() => store.dispatch(`${soundKey}/playSound`, sound), 2000);
         setTimeout(() => this.canAnimate = true, 2700);
         setTimeout(() => this.$emit('state:booted'), 3200);
+        this.renderWatchBase();
     }
 
     private renderWatchBase(): void {
@@ -222,8 +227,9 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         position: absolute;
         opacity: 0;
         border-radius: 50%;
+        background-color: rgba(71, 71, 49, 0.95);
         box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
-                    0 0 8px 12px rgba(243, 245, 108, 0.85);
+                    0 0 8px 12px rgba(68, 68, 51, 0.85);
     }
 
     .booting-outer-core {
@@ -233,9 +239,9 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         left: calc(50% - #{$dimension} / 2);
         width: $dimension;
         height: $dimension;
-        animation: loadOuterCore 0.9s linear 2.5s forwards;
+        animation: changeOuterCoreColor 0.2s ease 2s forwards,
+                   loadOuterCore 0.9s linear 2.5s forwards;
         filter: blur(8px);
-        background-color: rgba(236, 232, 132, 0.8);
     }
 
     .booting-inner-core-1 {
@@ -245,9 +251,9 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         left: calc(50% - #{$dimension} / 2);
         width: $dimension;
         height: $dimension;
-        animation: loadInnerCore2 1.8s ease 1.5s forwards;
+        animation: changeInnerCore1Color 0.2s ease 2s forwards,
+                   loadInnerCore1 1.8s ease 1.5s forwards;
         filter: blur(4px);
-        background-color: rgba(235, 232, 142, 0.95);
     }
 
     .booting-inner-core-2 {
@@ -257,12 +263,51 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         left: calc(50% - #{$dimension} / 2);
         width: $dimension;
         height: $dimension;
-        animation: blinkSlow 3s linear 0.25s forwards;
+        animation: changeInnerCore2Color 0.2s ease 2s forwards,
+                   blinkSlow 3s linear 0.25s forwards;
         filter: blur(6px);
-        background-color: rgba(253, 255, 132, 0.95);
     }
 
-    @keyframes loadInnerCore2 {
+    @keyframes changeOuterCoreColor {
+        from {
+            background-color: rgba(71, 71, 49, 0.95);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(68, 68, 51, 0.85);
+        }
+        to {
+            background-color: rgba(236, 232, 132, 0.8);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(243, 245, 108, 0.85);
+        }
+    }
+
+    @keyframes changeInnerCore1Color {
+        from {
+            background-color: rgba(71, 71, 49, 0.95);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(68, 68, 51, 0.85);
+        }
+        to {
+            background-color: rgba(235, 232, 142, 0.95);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(243, 245, 108, 0.85);
+        }
+    }
+
+    @keyframes changeInnerCore2Color {
+        from {
+            background-color: rgba(71, 71, 49, 0.95);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(68, 68, 51, 0.85);
+        }
+        to {
+            background-color: rgba(253, 255, 132, 0.95);
+            box-shadow: 0 0 2px 2px rgba(241, 235, 78, 0.25),
+                        0 0 8px 12px rgba(243, 245, 108, 0.85);
+        }
+    }
+
+    @keyframes loadInnerCore1 {
         0% {
             top: 42.5%;
             left: 42.5%;
