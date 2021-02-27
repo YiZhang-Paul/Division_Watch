@@ -104,7 +104,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         }
         else if (option === WatchMenuOption.ShutDown) {
             this.isClosing = true;
-            store.dispatch(`${soundKey}/mute`, SoundType.Clock);
+            store.dispatch(`${soundKey}/setAllVolume`, { type: SoundType.Clock, volume: 0 });
             store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_close', SoundType.UI));
 
             setTimeout(() => {
