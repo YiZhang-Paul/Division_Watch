@@ -33,7 +33,9 @@ import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { soundKey } from '../../store/sound/sound.state';
 import { watchBaseKey } from '../../store/watch-base/watch-base.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { WatchState } from '../../core/enums/watch-state.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
@@ -78,7 +80,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public onBooted(): void {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
-        store.dispatch(`${soundKey}/playSound`, 'clock_tick_normal');
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('clock_tick_slow', SoundType.Clock, true));
     }
 
     public onMenuSelect(option: WatchMenuOption): void {
