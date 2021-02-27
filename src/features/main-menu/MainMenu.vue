@@ -82,6 +82,7 @@ class MainMenuProp {
     }
 })
 export default class MainMenu extends Vue.with(MainMenuProp) {
+    public readonly sound = new SoundOption('menu_open', SoundType.UI);
     public stage = 1;
     public isClosing = false;
     private closingStage = 0;
@@ -94,8 +95,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
 
     public mounted(): void {
         if (this.allowAnimation) {
-            const sound = new SoundOption('menu_open', SoundType.UI);
-            setTimeout(() => store.dispatch(`${soundKey}/playSound`, sound), 500);
+            setTimeout(() => store.dispatch(`${soundKey}/playSound`, this.sound), 500);
         }
 
         VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 0.3 });
@@ -108,6 +108,10 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
                 store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
             }
         });
+    }
+
+    public beforeUnmount(): void {
+        store.dispatch(`${soundKey}/stopSound`, this.sound);
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
