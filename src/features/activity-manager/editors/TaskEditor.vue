@@ -112,6 +112,7 @@ import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
 import store from '../../../store';
+import { soundKey } from '../../../store/sound/sound.state';
 import { dialogKey } from '../../../store/dialog/dialog.state';
 import { categoryKey } from '../../../store/category/category.state';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
@@ -123,6 +124,7 @@ import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { TaskItemOptions } from '../../../core/data-model/task-item/task-item-options';
 import { ChecklistItem } from '../../../core/data-model/task-item/checklist-item';
 import { DialogOption } from '../../../core/data-model/generic/dialog-option';
+import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import ItemGroupPanel from '../../../shared/panels/ItemGroupPanel.vue';
 import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../../shared/panels/SectionPanel.vue';
@@ -130,6 +132,7 @@ import OptionDropdown from '../../../shared/controls/OptionDropdown.vue';
 import DeadlineSelector from '../../../shared/controls/DeadlineSelector.vue';
 import SubtaskSummaryCard from '../../../shared/cards/SubtaskSummaryCard.vue';
 import ChecklistCard from '../../../shared/cards/ChecklistCard.vue';
+import { SoundType } from '../../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../../core/utilities/time/time.utility';
 import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
 
@@ -210,6 +213,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     public onChecklistAdded(name: string): void {
         const checklist = this.task?.checklist ?? [];
         this.onTaskChange('checklist', [...checklist, new ChecklistItem(name)]);
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
     }
 
     public onChecklistChange(index: number, item: ChecklistItem): void {

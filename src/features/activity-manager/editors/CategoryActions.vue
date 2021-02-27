@@ -30,14 +30,17 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../../store';
+import { soundKey } from '../../../store/sound/sound.state';
 import { dialogKey } from '../../../store/dialog/dialog.state';
 import { categoryKey } from '../../../store/category/category.state';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../../core/data-model/generic/category';
+import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import { DropdownOption } from '../../../core/data-model/generic/dropdown-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
+import { SoundType } from '../../../core/enums/sound-type.enum';
 
 class CategoryActionsProp {
     public category = prop<Category>({ default: null });
@@ -66,6 +69,7 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
 
             if (result) {
                 store.dispatch(`${categoryKey}/swapActiveCategory`, result);
+                store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
             }
         });
     }

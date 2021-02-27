@@ -154,6 +154,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         if (this.activeTask) {
             const payload = { parentId: this.activeTask.id, item: task };
             await store.dispatch(`${taskItemKey}/addChildTaskItem`, payload);
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
         }
     }
 

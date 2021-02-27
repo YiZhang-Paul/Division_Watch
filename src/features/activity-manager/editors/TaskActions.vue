@@ -46,12 +46,15 @@
 import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../../store';
+import { soundKey } from '../../../store/sound/sound.state';
 import { dialogKey } from '../../../store/dialog/dialog.state';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
+import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
+import { SoundType } from '../../../core/enums/sound-type.enum';
 
 class TaskActionsProp {
     public task = prop<TaskItem>({ default: null });
@@ -81,6 +84,7 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
             if (result) {
                 const action = result.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
                 store.dispatch(`${taskItemKey}/${action}`, result);
+                store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
             }
         });
     }
