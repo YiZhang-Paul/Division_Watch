@@ -1,5 +1,5 @@
 <template>
-    <div class="agent-watch-container">
+    <div class="agent-watch-container" :class="{ closing: isClosing }">
         <watch-base :state="state" @state:booted="onBooted()"></watch-base>
         <battery-display v-show="canDisplay" class="battery-display"></battery-display>
         <weather-display v-show="canDisplay" class="weather-display"></weather-display>
@@ -64,6 +64,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public state = WatchState.AgentBooting;
     public canBlinkLogo = true;
     public isMenuOn = false;
+    public isClosing = false;
 
     get canDisplay(): boolean {
         return this.canDisplayAgentMode || this.canDisplayRogueMode;
@@ -91,7 +92,13 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
             store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuAnimated);
         }
         else if (option === WatchMenuOption.ShutDown) {
-            (window as any).ipcRenderer?.send('watch-shutdown');
+            this.isClosing = true;
+            store.dispatch(`${soundKey}/mute`);
+
+            setTimeout(() => {
+                this.state = WatchState.Closing;
+                setTimeout(() => (window as any).ipcRenderer?.send('watch-shutdown'), 500);
+            }, 700);
         }
 
         this.onMenuClose();
@@ -108,6 +115,18 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
 .agent-watch-container {
 
     border-radius: 50%;
+
+    &.closing {
+
+        .battery-display,
+        .weather-display,
+        .time-display,
+        .session-display,
+        .logo {
+            pointer-events: none;
+            animation: revealContent 0.6s ease forwards reverse;
+        }
+    }
 
     .battery-display, .weather-display, .time-display {
         position: absolute;
