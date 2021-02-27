@@ -27,8 +27,8 @@ const mutations = {
     setIsMuted(state: ISoundState, isMuted: boolean): void {
         state.isMuted = isMuted;
     },
-    addSound(state: ISoundState, name: string): void {
-        state.sounds = [...state.sounds, new Sound(name)];
+    addSound(state: ISoundState, sound: Sound): void {
+        state.sounds = [...state.sounds, sound];
     }
 };
 

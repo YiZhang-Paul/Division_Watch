@@ -31,6 +31,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { soundKey } from '../../store/sound/sound.state';
 import { watchBaseKey } from '../../store/watch-base/watch-base.state';
 import { WatchState } from '../../core/enums/watch-state.enum';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
@@ -77,6 +78,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public onBooted(): void {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
+        store.dispatch(`${soundKey}/playSound`, 'clock_tick_normal');
     }
 
     public onMenuSelect(option: WatchMenuOption): void {
