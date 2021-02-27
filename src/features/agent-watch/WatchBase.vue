@@ -45,6 +45,10 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         return this.state === WatchState.AgentBooting;
     }
 
+    get allowAnimate(): boolean {
+        return this.canAnimate && this.state !== WatchState.Closing;
+    }
+
     get colorOption(): IWatchColorOption {
         return store.getters[`${watchBaseKey}/colorOption`];
     }
@@ -66,13 +70,13 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     private renderWatchBase(): void {
         const now = Date.now();
 
-        if (this.canAnimate) {
+        if (this.allowAnimate) {
             this.startTime = this.startTime || now;
         }
 
-        if (!this.canAnimate || now - this.lastRender > 1000 / 45) {
-            const elapsed = this.canAnimate ? now - this.startTime : 0;
-            const backgroundBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.background, elapsed) : 0;
+        if (!this.allowAnimate || now - this.lastRender > 1000 / 45) {
+            const elapsed = this.allowAnimate ? now - this.startTime : 0;
+            const backgroundBlur = this.allowAnimate ? animationService.getBlur(this.blurAnimation.background, elapsed) : 0;
             const { background, borderRingShadow } = this.colorOption;
             this.backgroundCanvasStyle['background-color'] = background;
             this.backgroundCanvasStyle['box-shadow'] = `0 0 ${backgroundBlur}px 0px ${borderRingShadow}`;
@@ -87,16 +91,16 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
     private renderRings(): void {
         const elapsed = Date.now() - this.startTime;
         const borderRingOption = new RingOption(this.colorOption.borderRing, 0.04, 0.054, 0.067);
-        const borderRingBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.borderRing, elapsed) : 0;
+        const borderRingBlur = this.allowAnimate ? animationService.getBlur(this.blurAnimation.borderRing, elapsed) : 0;
         const borderShadowOption = new ShadowOption(this.colorOption.borderRingShadow, borderRingBlur);
         const outerRingOption = new RingOption(this.colorOption.outerRing, 0.205, 0.093, 0.095);
-        const outerRingBlur = this.canAnimate ? animationService.getBlur(this.blurAnimation.outerRing, elapsed) : 0;
+        const outerRingBlur = this.allowAnimate ? animationService.getBlur(this.blurAnimation.outerRing, elapsed) : 0;
         const outerShadowOption = new ShadowOption(this.colorOption.outerRingShadow, outerRingBlur, 0, 1);
         const innerThickRingOption = new RingOption(this.colorOption.innerRing, 0.476, 0.11, 0.095);
         const innerThinRingOption = new RingOption(this.colorOption.innerRing, 0.63, 0.016, 0.3);
-        const borderRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.borderRing, elapsed) + 1.5 : 1.5;
-        const outerRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.outerRing, elapsed) : 0;
-        const innerRingAngle = this.canAnimate ? animationService.getAngle(this.angleAnimation.innerRing, elapsed) : 0;
+        const borderRingAngle = this.allowAnimate ? animationService.getAngle(this.angleAnimation.borderRing, elapsed) + 1.5 : 1.5;
+        const outerRingAngle = this.allowAnimate ? animationService.getAngle(this.angleAnimation.outerRing, elapsed) : 0;
+        const innerRingAngle = this.allowAnimate ? animationService.getAngle(this.angleAnimation.innerRing, elapsed) : 0;
         const context = canvasService.getRenderingContext2D(this.ringsCanvasId);
         context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         this.renderRing(context, 8, borderRingOption, borderShadowOption, borderRingAngle);
@@ -136,8 +140,8 @@ export default class WatchBase extends Vue.with(WatchBaseProp) {
         const context = canvasService.getRenderingContext2D(this.backgroundCanvasId);
         const radius = context.canvas.offsetWidth / 2;
         const elapsed = Date.now() - this.startTime;
-        const scaleRotate = this.canAnimate ? animationService.getAngle(this.angleAnimation.scale, elapsed) : 0;
-        const guardRotate = this.canAnimate ? animationService.getAngle(this.angleAnimation.scaleGuard, elapsed) : 0;
+        const scaleRotate = this.allowAnimate ? animationService.getAngle(this.angleAnimation.scale, elapsed) : 0;
+        const guardRotate = this.allowAnimate ? animationService.getAngle(this.angleAnimation.scaleGuard, elapsed) : 0;
         context.strokeStyle = this.colorOption.scaleGuard;
         context.lineWidth = 1.5;
         context.beginPath();
