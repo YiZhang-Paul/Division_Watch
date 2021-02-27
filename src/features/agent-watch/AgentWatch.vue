@@ -33,11 +33,14 @@ import { Options, Vue, prop } from 'vue-class-component';
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { soundKey } from '../../store/sound/sound.state';
+import { settingsKey } from '../../store/settings/settings.state';
 import { watchBaseKey } from '../../store/watch-base/watch-base.state';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { WatchState } from '../../core/enums/watch-state.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
+// eslint-disable-next-line no-unused-vars
+import { SoundSettings } from '../../core/data-model/settings/sound-settings';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 import WatchBase from './WatchBase.vue';
@@ -79,10 +82,13 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         return !this.isMenuOn && this.state === WatchState.RogueBooted;
     }
 
-    public onBooted(): void {
+    public async onBooted(): Promise<void> {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
-        store.dispatch(`${soundKey}/playSound`, new SoundOption('clock_tick_slow', SoundType.Clock, true));
+        await store.dispatch(`${settingsKey}/loadSoundSettings`);
+        const settings = store.getters[`${settingsKey}/soundSettings`] as SoundSettings;
+        const file = settings?.clockSound ?? 'clock_tick_slow';
+        store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock, true));
     }
 
     public onOptionHover(): void {
