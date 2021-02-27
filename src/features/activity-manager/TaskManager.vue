@@ -9,6 +9,7 @@
                 :key="task.id"
                 :task="task"
                 :isActive="task.id === activeTask?.id || task.id === activeTask?.parent"
+                @mouseenter="onCardHover()"
                 @click="onTaskSelected(task)">
             </task-summary-card>
 
@@ -45,14 +46,17 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { ArrowLeftCircle } from 'mdue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { dialogKey } from '../../store/dialog/dialog.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import TaskEditor from './editors/TaskEditor.vue';
 
@@ -108,6 +112,10 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         }
     }
 
+    public onCardHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
     public async openEmptyTask(): Promise<void> {
         const task = await store.dispatch(`${taskItemKey}/getEmptyTaskItem`, this.isInterruption);
 
@@ -120,6 +128,7 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
         if (!this.activeTask || task?.id !== this.activeTask.id) {
             const action = this.isInterruption ? 'swapActiveInterruption' : 'swapActiveItem';
             store.dispatch(`${taskItemKey}/${action}`, task);
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
         }
     }
 

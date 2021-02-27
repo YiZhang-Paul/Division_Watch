@@ -10,6 +10,7 @@
                 :category="category"
                 :totalItems="categoryBreakdown.get(category.id)"
                 :isActive="category.id === activeCategory?.id"
+                @mouseenter="onCardHover()"
                 @click="onCategorySelected(category)">
             </category-summary-card>
 
@@ -61,9 +62,11 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { Category } from '../../core/data-model/generic/category';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
@@ -73,6 +76,7 @@ import FieldTextarea from '../../shared/controls/FieldTextarea.vue';
 import IconSelector from '../../shared/controls/IconSelector.vue';
 import ColorSelector from '../../shared/controls/ColorSelector.vue';
 import CategorySummaryCard from '../../shared/cards/CategorySummaryCard.vue';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 @Options({
     components: {
@@ -118,6 +122,10 @@ export default class CategoryManager extends Vue {
         }
     }
 
+    public onCardHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
     public async onNameInput(input: string): Promise<void> {
         const name = (input ?? '').trim().toLowerCase();
         const category = { ...this.activeCategory, name } as Category;
@@ -133,6 +141,7 @@ export default class CategoryManager extends Vue {
         if (!this.activeCategory || category?.id !== this.activeCategory.id) {
             this.nameErrorText = '';
             store.dispatch(`${categoryKey}/swapActiveCategory`, category);
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
         }
     }
 
