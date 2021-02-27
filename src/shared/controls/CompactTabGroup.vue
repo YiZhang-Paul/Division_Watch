@@ -64,9 +64,12 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
     }
 
     public onSelect(index: number): void {
+        if (this.activeIndex !== index) {
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
+        }
+
         this.activeIndex = index;
         this.$emit('tab:selected', index);
-        store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
     }
 }
 </script>
