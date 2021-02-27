@@ -6,7 +6,7 @@
                 :selected="selectedClockSound"
                 :options="clockSounds"
                 :transform="_ => _.name"
-                @options:select="onSettingsChange('clockSound', $event.file)">
+                @options:select="onClockSoundChange($event.file)">
             </option-dropdown>
         </section-panel>
     </div>
@@ -16,12 +16,15 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { settingsKey } from '../../store/settings/settings.state';
 // eslint-disable-next-line no-unused-vars
 import { SoundSettings } from '../../core/data-model/settings/sound-settings';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import ValueSlider from '../../shared/controls/ValueSlider.vue';
+import { SoundType } from '@/core/enums/sound-type.enum';
 
 @Options({
     components: {
@@ -56,6 +59,15 @@ export default class SoundSettingsManager extends Vue {
         if (this.updateDebounceTimer) {
             store.dispatch(`${settingsKey}/updateSoundSettings`, this.settings);
         }
+    }
+
+    public onClockSoundChange(file: string): void {
+        for (const sound of this.clockSounds) {
+            store.dispatch(`${soundKey}/stopSound`, new SoundOption(sound.file, SoundType.Clock));
+        }
+
+        store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock));
+        this.onSettingsChange('clockSound', file);
     }
 
     public onSettingsChange<T>(key: string, value: T): void {
