@@ -9,6 +9,7 @@
                     :key="m"
                     :class="{ 'selected-icon': getIconName(n, m) === selected }"
                     :is="getIcon(n, m)"
+                    @mouseenter="onOptionHover()"
                     @click="$emit('select', getIconName(n, m))">
                 </component>
             </div>
@@ -19,6 +20,10 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class IconSelectorProp {
@@ -38,6 +43,10 @@ export default class IconSelector extends Vue.with(IconSelectorProp) {
 
     get icons(): string[] {
         return GenericUtility.getIconNames(false);
+    }
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public getIconName(row: number, column: number): string {

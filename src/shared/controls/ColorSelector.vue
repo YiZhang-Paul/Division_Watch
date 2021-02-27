@@ -9,6 +9,7 @@
                     :key="m"
                     :class="{ 'selected-option': getColor(n, m) === selected }"
                     :style="{ 'background-color': getColor(n, m) }"
+                    @mouseenter="onOptionHover()"
                     @click="$emit('select', getColor(n, m))">
                 </div>
             </div>
@@ -18,6 +19,11 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 class ColorSelectorProp {
     public name = prop<string>({ default: '' });
@@ -59,6 +65,10 @@ export default class ColorSelector extends Vue.with(ColorSelectorProp) {
         'rgb(201, 203, 255)',
         'rgb(255, 255, 255)'
     ];
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
 
     public getColor(row: number, column: number): string {
         return this.colors[(row - 1) * this.columns + column - 1];
