@@ -10,6 +10,7 @@ export class Sound {
 
     set volume(value: number) {
         this._volume = Math.max(0, Math.min(value, 1));
+        this.file.volume = this._volume;
     }
 
     public play(loop: boolean): void {
