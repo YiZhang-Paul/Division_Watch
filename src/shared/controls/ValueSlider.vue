@@ -17,6 +17,7 @@
                         :class="{ 'active-slider': isMousedown }"
                         ref="slider"
                         @mouseup="isMousedown = false"
+                        @mouseenter.self="onMouseenter()"
                         @mousedown.self="onMousedown($event)"
                         @mousemove.self="onMousemove($event)">
 
@@ -39,6 +40,11 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 class ValueSliderProp {
     public name = prop<string>({ default: '' });
@@ -63,6 +69,12 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
         const step = (this.selected - this.min) / (this.max - this.min) * this.steps;
 
         return Math.max(0, isNaN(step) ? 0 : step);
+    }
+
+    public onMouseenter(): void {
+        if (!this.isMousedown) {
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+        }
     }
 
     public onMousedown(event: MouseEvent, type = 'increase'): void {
