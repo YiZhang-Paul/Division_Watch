@@ -5,6 +5,7 @@
         <div class="selections">
             <div :class="{ 'selected-day': selections.every(_ => _), 'disabled-day': isDisabled }"
                 :style="{ 'animation-delay': delay / 1000 + 4 * 0.05 + 's' }"
+                @mouseenter="onMouseenter()"
                 @click="onFullWeekToggle()">
 
                 <span>All</span>
@@ -14,6 +15,7 @@
                 :key="index"
                 :class="{ 'selected-day': selected, 'disabled-day': isDisabled }"
                 :style="{ 'animation-delay': delay / 1000 + Math.abs(3 - index) * 0.05 + 's' }"
+                @mouseenter="onMouseenter()"
                 @click="onSelect(index)">
 
                 <span>{{ letters[index] }}</span>
@@ -25,6 +27,10 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class DaySelectorProp {
@@ -42,6 +48,10 @@ export default class DaySelector extends Vue.with(DaySelectorProp) {
 
     get selections(): boolean[] {
         return this.days?.length === 7 ? this.days : this.getSelections();
+    }
+
+    public onMouseenter(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public onFullWeekToggle(): void {

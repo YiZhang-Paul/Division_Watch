@@ -57,6 +57,10 @@ import { ChevronLeft, ChevronRight, CloseCircleOutline } from 'mdue';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 class DateSelectorProp {
@@ -120,6 +124,7 @@ export default class DateSelector extends Vue.with(DateSelectorProp) {
 
     public toggleSelection(): void {
         this.isActive = !this.isActive;
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
 
         if (this.isActive) {
             setTimeout(() => {
