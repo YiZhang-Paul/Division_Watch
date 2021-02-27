@@ -44,12 +44,16 @@ class DistributionChartProp {
 @Options({
     watch: {
         visibleGroups(current: DistributionGroup[]): void {
-            if (current.length) {
-                setTimeout(() => {
+            if (!current.length) {
+                return;
+            }
+
+            setTimeout(() => {
+                if (!this.stopSound) {
                     const sound = new SoundOption('chart_fill', SoundType.UI);
                     store.dispatch(`${soundKey}/playSound`, sound);
-                }, this.delay);
-            }
+                }
+            }, this.delay * 0.9);
         }
     },
     components: { PercentageChart }
@@ -57,9 +61,14 @@ class DistributionChartProp {
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
     public tooltip = '';
     public totalRendered = 0;
+    public stopSound = false;
 
     get visibleGroups(): DistributionGroup[] {
         return this.groups.filter(_ => _.total);
+    }
+
+    public beforeUnmount(): void {
+        this.stopSound = true;
     }
 
     public getTint(index: number): string {
