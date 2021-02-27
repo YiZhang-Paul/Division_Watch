@@ -3,6 +3,7 @@
         <div :class="getButtonClasses(index)"
             v-for="(option, index) of options"
             :key="option.name"
+            @mouseenter="onTabHover()"
             @click="onSelect(index)">
 
             <component v-if="option.icon" class="icon" :is="option.icon"></component>
@@ -23,8 +24,13 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
+
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 // eslint-disable-next-line no-unused-vars
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import CounterDisplay from '../../shared/widgets/CounterDisplay.vue';
 
 class CompactTabGroupProp {
@@ -53,9 +59,14 @@ export default class CompactTabGroup extends Vue.with(CompactTabGroupProp) {
         };
     }
 
+    public onTabHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
     public onSelect(index: number): void {
         this.activeIndex = index;
         this.$emit('tab:selected', index);
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
     }
 }
 </script>
