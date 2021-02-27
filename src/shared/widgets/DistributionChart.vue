@@ -50,8 +50,7 @@ class DistributionChartProp {
 
             setTimeout(() => {
                 if (!this.stopSound) {
-                    const sound = new SoundOption('chart_fill', SoundType.UI);
-                    store.dispatch(`${soundKey}/playSound`, sound);
+                    store.dispatch(`${soundKey}/playSound`, this.sound);
                 }
             }, this.delay * 0.9);
         }
@@ -59,6 +58,7 @@ class DistributionChartProp {
     components: { PercentageChart }
 })
 export default class DistributionChart extends Vue.with(DistributionChartProp) {
+    public readonly sound = new SoundOption('chart_fill', SoundType.UI);
     public tooltip = '';
     public totalRendered = 0;
     public stopSound = false;
@@ -69,6 +69,7 @@ export default class DistributionChart extends Vue.with(DistributionChartProp) {
 
     public beforeUnmount(): void {
         this.stopSound = true;
+        store.dispatch(`${soundKey}/stopSound`, this.sound);
     }
 
     public getTint(index: number): string {
