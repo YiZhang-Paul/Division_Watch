@@ -51,10 +51,10 @@ import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        markRaw({ name: WatchMenuOption.Power, icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: WatchMenuOption.ShutDown, icon: PowerStandby, angle: 46, color: 'rgb(255, 9, 9)' }),
         markRaw({ name: WatchMenuOption.Setting, icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
-        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
-        markRaw({ name: WatchMenuOption.Ongoing, icon: Play, angle: 271, color: 'rgb(255, 9, 9)' }),
+        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(51, 233, 121)' }),
+        markRaw({ name: WatchMenuOption.Ongoing, icon: Play, angle: 271, color: 'rgb(239, 255, 9)' }),
         markRaw({ name: WatchMenuOption.Interruption, icon: Biohazard, angle: 306, color: 'rgb(33, 188, 254)' })
     ];
 

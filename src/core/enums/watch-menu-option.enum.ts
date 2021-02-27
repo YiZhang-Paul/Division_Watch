@@ -1,5 +1,5 @@
 export enum WatchMenuOption {
-    Power = 'On/Off',
+    ShutDown = 'Shut Down',
     Setting = 'Settings',
     MainMenu = 'Main Menu',
     Ongoing = 'Ongoing',
