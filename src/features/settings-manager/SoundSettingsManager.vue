@@ -118,7 +118,7 @@ export default class SoundSettingsManager extends Vue {
             store.dispatch(`${soundKey}/stopSound`, new SoundOption(sound.file, SoundType.Clock));
         }
 
-        store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock));
+        store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock, true));
         this.onSettingsChange('clockSound', file);
     }
 
