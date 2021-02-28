@@ -1,8 +1,9 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, ipcMain, BrowserWindow } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import * as path from 'path';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -19,7 +20,8 @@ async function createWindow() {
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-            nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean
+            nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+            preload: path.join(__dirname, 'preload.js')
         }
     });
 
@@ -36,6 +38,10 @@ async function createWindow() {
         // Load the index.html when not in development
         browserWindow.loadURL('app://./index.html');
     }
+
+    ipcMain.on('watch-shutdown', () => {
+        browserWindow.close();
+    });
 }
 
 // Quit when all windows are closed.
@@ -59,6 +65,19 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    const protocolName = 'division-protocol';
+
+    protocol.registerFileProtocol(protocolName, (request, callback) => {
+        const url = request.url.replace(`${protocolName}://`, '');
+
+        try {
+            return callback(decodeURIComponent(url));
+        }
+        catch (error) {
+            console.error(error);
+        }
+    });
+
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         try {

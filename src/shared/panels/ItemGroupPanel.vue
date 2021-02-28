@@ -1,28 +1,32 @@
 <template>
     <section-panel class="item-group-panel-container" :name="name" :isSubsection="true">
-        <div class="content">
-            <overlay-scrollbar-panel class="items" @created="scroll = $event" @scroll="scroll = $event">
-                <div class="items-wrapper">
-                    <slot></slot>
+        <div class="content-wrapper">
+            <div class="content">
+                <overlay-scrollbar-panel class="items" @scroll="scroll = $event">
+                    <div class="items-wrapper">
+                        <slot></slot>
+                    </div>
+                </overlay-scrollbar-panel>
+
+                <div class="add-item-panel" :class="{ 'disabled-panel': isDisabled }">
+                    <div class="panel-guard"></div>
+
+                    <display-panel class="add-item">
+                        <input type="text"
+                            v-model="itemName"
+                            :placeholder="placeholder"
+                            :disabled="isDisabled"
+                            :maxlength="maxLength"
+                            @keyup.enter="onItemAdd"
+                            @keyup.esc="itemName = ''" />
+
+                        <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
+                    </display-panel>
                 </div>
-            </overlay-scrollbar-panel>
 
-            <div class="add-item-panel">
-                <div class="panel-guard"></div>
-
-                <display-panel class="add-item">
-                    <input type="text"
-                        v-model="itemName"
-                        :placeholder="placeholder"
-                        @keyup.enter="onItemAdd"
-                        @keyup.esc="itemName = ''" />
-
-                    <plus v-if="itemName" class="add-icon" @click="onItemAdd()" />
-                </display-panel>
+                <div v-if="scroll && !scroll.isTop" class="top-scroll-indicator"></div>
+                <div v-if="scroll && !scroll.isBottom" class="bottom-scroll-indicator"></div>
             </div>
-
-            <div v-if="scroll && !scroll.isTop" class="top-scroll-indicator"></div>
-            <div v-if="scroll && !scroll.isBottom" class="bottom-scroll-indicator"></div>
         </div>
     </section-panel>
 </template>
@@ -38,6 +42,8 @@ import OverlayScrollbarPanel from '../panels/OverlayScrollbarPanel.vue';
 
 class ItemGroupPanelProp {
     public name = prop<string>({ default: '' });
+    public maxLength = prop<number>({ default: 60 });
+    public isDisabled = prop<boolean>({ default: false });
     public placeholder = prop<string>({ default: 'add item here...' });
 }
 
@@ -65,20 +71,35 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
 
 <style lang="scss" scoped>
 .item-group-panel-container {
-    $add-item-panel-height: 5.25vh;
+    $add-item-panel-height: 4.6vh;
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
 
-    .content {
+    .content-wrapper {
         position: relative;
         width: 100%;
         height: 100%;
+    }
+
+    .content {
+        $margin-left: 0.5rem;
+
+        position: absolute;
+        left: -$margin-left;
+        width: calc(100% + #{$margin-left});
+        height: 100%;
+
+        .add-item-panel, .top-scroll-indicator, .bottom-scroll-indicator {
+            margin-left: $margin-left;
+            width: calc(100% - #{$margin-left});
+        }
 
         .top-scroll-indicator, .bottom-scroll-indicator {
             position: absolute;
             left: 0;
-            width: 100%;
-            height: 7.5%;
+            height: 5%;
             pointer-events: none;
+            opacity: 0;
+            animation: revealContent 0.6s ease forwards;
         }
 
         .top-scroll-indicator {
@@ -105,13 +126,12 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
     }
 
     .add-item-panel {
-        width: 100%;
         height: $add-item-panel-height;
 
         .panel-guard {
             margin-bottom: 1%;
             width: 100%;
-            height: 7.5%;
+            height: 6.5%;
             border-radius: 2px;
             background-color: rgb(240, 123, 14);
         }
@@ -123,7 +143,7 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
             padding: 0 2.5% 0 5%;
             width: 100%;
             height: 91.5%;
-            background-color: rgba(46, 45, 49, 0.8);
+            background-color: rgba(40, 40, 40, 0.6);
 
             input {
                 flex-grow: 1;
@@ -153,6 +173,17 @@ export default class ItemGroupPanel extends Vue.with(ItemGroupPanelProp) {
                     filter: brightness(1);
                 }
             }
+        }
+    }
+
+    .disabled-panel {
+
+        .panel-guard {
+            background-color: rgb(160, 160, 160);
+        }
+
+        .add-item:hover, .add-item input:hover {
+            cursor: not-allowed;
         }
     }
 }

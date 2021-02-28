@@ -1,14 +1,14 @@
 <template>
     <div class="item-list-panel-container">
         <div class="actions">
-            <search-box class="search-box" @search="$emit('search', $event)"></search-box>
-
             <div class="button-wrapper">
-                <plus class="add-item-button" />
+                <plus class="add-item-button" @click="$emit('item:add')" />
             </div>
+
+            <search-box class="search-box" @search="$emit('item:search', $event)"></search-box>
         </div>
 
-        <overlay-scrollbar-panel class="scroll-panel" @created="scroll = $event" @scroll="scroll = $event">
+        <overlay-scrollbar-panel class="scroll-panel" @scroll="scroll = $event">
             <div class="content">
                 <slot></slot>
             </div>
@@ -33,7 +33,10 @@ import SearchBox from '../../shared/controls/SearchBox.vue';
         OverlayScrollbarPanel,
         SearchBox
     },
-    emits: ['search']
+    emits: [
+        'item:search',
+        'item:add'
+    ]
 })
 export default class ItemListPanel extends Vue {
     public scroll: ScrollPosition | null = null;
@@ -45,7 +48,7 @@ $padding-right: 10px;
 
 .item-list-panel-container {
     $scroll-indicator-color: rgba(14, 119, 240, 0.35);
-    $actions-height: 10%;
+    $actions-height: 9%;
     $content-width: calc(100% - #{$padding-right});
 
     position: relative;
@@ -57,18 +60,13 @@ $padding-right: 10px;
         width: $content-width;
         height: $actions-height;
 
-        .search-box {
-            flex-grow: 1;
-            height: 50%;
-        }
-
         .button-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-left: 2%;
-            width: 1rem;
-            height: 1rem;
+            margin-right: 3%;
+            width: 0.8rem;
+            height: 0.8rem;
             border-radius: 50%;
             background-color: rgb(216, 124, 37);
 
@@ -86,6 +84,11 @@ $padding-right: 10px;
                 transition: filter 0.3s;
             }
         }
+
+        .search-box {
+            flex-grow: 1;
+            height: 50%;
+        }
     }
 
     .scroll-panel {
@@ -99,8 +102,10 @@ $padding-right: 10px;
         position: absolute;
         left: 0;
         width: $content-width;
-        height: 7.5%;
+        height: 5%;
         pointer-events: none;
+        opacity: 0;
+        animation: revealContent 0.6s ease forwards;
     }
 
     .top-scroll-indicator {

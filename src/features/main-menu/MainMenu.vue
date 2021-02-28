@@ -60,11 +60,14 @@ import { Options, Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
-import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import ViewSelector from './ViewSelector.vue';
 
@@ -79,17 +82,22 @@ class MainMenuProp {
     }
 })
 export default class MainMenu extends Vue.with(MainMenuProp) {
+    public readonly sound = new SoundOption('menu_open', SoundType.UI);
     public stage = 1;
     public isClosing = false;
     private closingStage = 0;
 
     public created(): void {
-        store.dispatch(`${categoryKey}/loadCategories`);
+        store.dispatch(`${categoryKey}/loadCategories`, true);
         store.dispatch(`${taskItemKey}/loadTaskItemOptions`);
         store.dispatch(`${taskItemKey}/loadIncompleteItems`, true);
     }
 
     public mounted(): void {
+        if (this.allowAnimation) {
+            setTimeout(() => store.dispatch(`${soundKey}/playSound`, this.sound), 500);
+        }
+
         VanillaTilt.init(document.querySelector('.menu-area') as HTMLElement, { max: 0.3 });
         document.querySelector('.last-wave')?.addEventListener('animationend', () => this.stage++);
         // 8 animations for stage 2
@@ -100,6 +108,10 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
                 store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
             }
         });
+    }
+
+    public beforeUnmount(): void {
+        store.dispatch(`${soundKey}/stopSound`, this.sound);
     }
 
     public getSquareStyle(index: number, showAll = true): { [key: string]: string } {
@@ -138,7 +150,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
 
 <style lang="scss" scoped>
 .main-menu-container {
-    $box-expand-time: 0.3s;
+    $box-expand-time: 0.125s;
     --square-dimension: 0.25vh;
 
     display: flex;
@@ -210,8 +222,8 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     }
 
     .stage-1 {
-        $reveal-time: 0.1s;
-        $square-expand-time: 0.2s;
+        $reveal-time: 0.05s;
+        $square-expand-time: 0.15s;
 
         width: 20vh;
         height: 20vh;
@@ -243,16 +255,16 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         }
 
         .wave-circle {
-            $base-delay: calc((#{$square-expand-time} + #{$reveal-time}) / 3 * 2);
+            $base-delay: calc((#{$square-expand-time} + #{$reveal-time}) / 2);
 
             position: absolute;
             border: 1px solid rgba(205, 205, 205, 0.6);
             border-radius: 50%;
             opacity: 0;
-            animation: emitWave 0.5s ease-in-out $base-delay forwards;
+            animation: emitWave 0.25s ease-in-out $base-delay forwards;
 
             &.last-wave {
-                animation-delay: calc(#{$base-delay} + 0.15s);
+                animation-delay: calc(#{$base-delay} + 0.125s);
             }
 
             @keyframes emitWave {
@@ -290,7 +302,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             width: $initial-dimension;
             height: $initial-dimension;
             animation: expandStage2Squares $box-expand-time ease-in forwards,
-                       revealContent 0.2s ease-out 1.5s reverse forwards;
+                       revealContent 0.2s ease-out 1s reverse forwards;
 
             .square {
                 position: absolute;
@@ -313,16 +325,16 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
             height: 0.5vh;
             opacity: 0;
             animation: revealContent 0.1s ease $box-expand-time forwards,
-                       blinkNormal 0.9s ease calc(#{$box-expand-time} + 0.09s) forwards,
-                       expandBoxWrapper 0.7s linear calc(#{$box-expand-time} + 0.3s) forwards,
-                       revealContent 0.2s ease-out 1.5s reverse forwards;
+                       blinkNormal 0.4s ease calc(#{$box-expand-time} + 0.05s) forwards,
+                       expandBoxWrapper 0.3s linear calc(#{$box-expand-time} + 0.15s) forwards,
+                       revealContent 0.2s ease-out 0.5s reverse forwards;
 
             .box {
                 width: 70%;
                 height: 20%;
                 opacity: 0;
-                animation: revealContent 0.1s ease calc(#{$box-expand-time} + 0.5s) forwards,
-                           expandBox 0.4s linear calc(#{$box-expand-time} + 0.7s) forwards;
+                animation: revealContent 0.1s ease calc(#{$box-expand-time} + 0.1s) forwards,
+                           expandBox 0.2s linear calc(#{$box-expand-time} + 0.3s) forwards;
             }
         }
     }
@@ -332,21 +344,21 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         height: 100%;
 
         .menu-area {
-            $close-button-height: 3.75vh;
+            $close-button-height: 3.5vh;
 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: absolute;
-            width: 57.5%;
-            height: 70%;
+            width: 60%;
+            height: 77.5%;
 
             .view-selector {
                 height: calc(98% - #{$close-button-height});
             }
 
             .close-button {
-                width: 5vw;
+                width: 4.75vw;
                 height: $close-button-height;
                 color: rgb(240, 123, 14);
                 animation: blinkFast 0.15s ease-in forwards 2;
@@ -370,15 +382,15 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
         .box-wrapper {
             width: 67.5%;
             height: 72.5%;
-            animation: expandBoxWrapper 0.4s linear calc(#{$box-expand-time} / 2) forwards reverse,
-                       revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.4s) forwards reverse;
+            animation: expandBoxWrapper 0.2s linear calc(#{$box-expand-time} / 2) forwards reverse,
+                       revealContent 0.3s ease calc(#{$box-expand-time} / 2 + 0.2s) forwards reverse;
 
             .box {
                 width: 90%;
                 height: 90%;
                 background-color: rgba(205, 205, 205, 0.1);
-                animation: expandBox 0.25s linear calc(#{$box-expand-time} / 2 + 0.25s) forwards reverse,
-                           revealContent 0.5s ease calc(#{$box-expand-time} / 2 + 0.2s) forwards reverse;
+                animation: expandBox 0.1s linear calc(#{$box-expand-time} / 2 + 0.05s) forwards reverse,
+                           revealContent 0.3s ease calc(#{$box-expand-time} / 2 + 0.1s) forwards reverse;
             }
         }
     }

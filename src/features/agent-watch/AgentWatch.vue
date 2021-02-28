@@ -1,5 +1,5 @@
 <template>
-    <div class="agent-watch-container">
+    <div class="agent-watch-container" :class="{ closing: isClosing }">
         <watch-base :state="state" @state:booted="onBooted()"></watch-base>
         <battery-display v-show="canDisplay" class="battery-display"></battery-display>
         <weather-display v-show="canDisplay" class="weather-display"></weather-display>
@@ -8,6 +8,7 @@
         <img v-show="canDisplayAgentMode"
             class="logo"
             :class="{ 'no-blink': !canBlinkLogo }"
+            @mouseenter="onOptionHover()"
             @click="isMenuOn = true"
             src="../../assets/images/shd_tech.jpg"
             draggable="false" />
@@ -31,9 +32,15 @@ import { Options, Vue, prop } from 'vue-class-component';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { soundKey } from '../../store/sound/sound.state';
+import { settingsKey } from '../../store/settings/settings.state';
 import { watchBaseKey } from '../../store/watch-base/watch-base.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { WatchState } from '../../core/enums/watch-state.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
+// eslint-disable-next-line no-unused-vars
+import { SoundSettings } from '../../core/data-model/settings/sound-settings';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 import WatchBase from './WatchBase.vue';
@@ -61,6 +68,7 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public state = WatchState.AgentBooting;
     public canBlinkLogo = true;
     public isMenuOn = false;
+    public isClosing = false;
 
     get canDisplay(): boolean {
         return this.canDisplayAgentMode || this.canDisplayRogueMode;
@@ -77,6 +85,13 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
     public onBooted(): void {
         this.state = this.isRogue ? WatchState.RogueBooted : WatchState.AgentBooted;
         store.dispatch(`${watchBaseKey}/set${this.isRogue ? 'Rogue' : 'Agent'}ColorScheme`);
+        const settings = store.getters[`${settingsKey}/soundSettings`] as SoundSettings;
+        const file = settings?.clockSound ?? 'clock_tick_slow';
+        store.dispatch(`${soundKey}/playSound`, new SoundOption(file, SoundType.Clock, true));
+    }
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public onMenuSelect(option: WatchMenuOption): void {
@@ -85,6 +100,16 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
         }
         else if (option === WatchMenuOption.MainMenu) {
             store.commit(`${mainViewKey}/setActiveView`, ViewOption.MainMenuAnimated);
+        }
+        else if (option === WatchMenuOption.ShutDown) {
+            this.isClosing = true;
+            store.dispatch(`${soundKey}/setAllVolume`, { type: SoundType.Clock, volume: 0 });
+            store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_close', SoundType.UI));
+
+            setTimeout(() => {
+                this.state = WatchState.Closing;
+                setTimeout(() => (window as any).ipcRenderer?.send('watch-shutdown'), 200);
+            }, 2500);
         }
 
         this.onMenuClose();
@@ -101,6 +126,18 @@ export default class AgentWatch extends Vue.with(AgentWatchProp) {
 .agent-watch-container {
 
     border-radius: 50%;
+
+    &.closing {
+
+        .battery-display,
+        .weather-display,
+        .time-display,
+        .session-display,
+        .logo {
+            pointer-events: none;
+            animation: revealContent 1s ease forwards reverse;
+        }
+    }
 
     .battery-display, .weather-display, .time-display {
         position: absolute;

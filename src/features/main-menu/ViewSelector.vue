@@ -1,36 +1,44 @@
 <template>
     <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
-        <div class="planner-selection-card selection-card">
-            <span>Planner</span>
-            <div class="planner-icon"></div>
-        </div>
+        <planner-selection-card class="planner-selection-card selection-card"
+            @mouseenter="onOptionHover()">
+        </planner-selection-card>
 
-        <div class="ongoing-selection-card selection-card"></div>
+        <div class="ongoing-selection-card selection-card" @mouseenter="onOptionHover()"></div>
 
         <activities-selection-card class="activities-selection-card selection-card"
-            :chartDelay="allowAnimation ? 3200 : 650"
+            :chartDelay="allowAnimation ? 1800 : 600"
+            @mouseenter="onOptionHover()"
             @click="$emit('view:selected', options.Activities)">
         </activities-selection-card>
 
-        <div class="login-selection-card selection-card">
+        <div class="login-selection-card selection-card" @mouseenter="onOptionHover()">
             <user-avatar class="user-avatar"></user-avatar>
             <span>Log in</span>
         </div>
 
-        <div class="settings-selection-card selection-card">
+        <div class="settings-selection-card selection-card"
+            @mouseenter="onOptionHover()"
+            @click="$emit('view:selected', options.Settings)">
+
             <span>Settings</span>
         </div>
 
-        <div class="dashboard-selection-card selection-card"></div>
+        <div class="dashboard-selection-card selection-card" @mouseenter="onOptionHover()"></div>
     </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import UserAvatar from '../../shared/widgets/UserAvatar.vue';
 
+import PlannerSelectionCard from './view-selection-cards/PlannerSelectionCard.vue';
 import ActivitiesSelectionCard from './view-selection-cards/ActivitiesSelectionCard.vue';
 
 class ViewSelectorProp {
@@ -40,12 +48,17 @@ class ViewSelectorProp {
 @Options({
     components: {
         UserAvatar,
+        PlannerSelectionCard,
         ActivitiesSelectionCard
     },
     emits: ['view:selected']
 })
 export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     public options = ViewOption;
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
 }
 </script>
 
@@ -54,7 +67,7 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     $vertical-gap: 1.25%;
     $horizontal-gap: 1%;
     $planner-card-height: 60%;
-    $activities-card-height: 70%;
+    $activities-card-height: 80%;
 
     display: flex;
     flex-direction: column;
@@ -64,22 +77,25 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     height: 100%;
 
     .selection-card {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
         align-items: center;
-        box-sizing: border-box;
-        border: 2px solid rgba(195, 195, 195, 0.6);
-        background-color: rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(240, 240, 240, 0.7);
+        background-color: rgba(25, 25, 25, 0.45);
         box-shadow: 3px 3px 3px rgba(121, 121, 121, 0.25);
         color: rgb(255, 255, 255);
-        filter: brightness(0.8);
-        transition: filter 0.3s, border-color 0.3s;
+        line-height: 1.1rem;
+        font-size: 1.15rem;
+        filter: brightness(0.95);
+        transition: filter 0.25s, border 0.25s, background-color 0.25s, color 0.25s;
         animation: blinkFast 0.15s ease-in forwards 2;
 
         &:hover {
             cursor: pointer;
-            border-color: rgba(240, 240, 240, 0.7);
+            border: 1px solid rgba(25, 25, 25, 0.85);
+            background-color: rgba(240, 158, 29, 0.88);
+            color: rgba(35, 35, 35, 0.9);
             filter: brightness(1);
         }
     }
@@ -101,37 +117,12 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
         animation-delay: 0.15s;
     }
 
-    .login-selection-card, .settings-selection-card {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-
     .planner-selection-card {
-        flex-direction: column;
         height: calc(#{$planner-card-height} - #{$vertical-gap});
-        background-color: rgb(249, 154, 66);
-        color: rgb(0, 0, 0);
-        font-size: 2rem;
-
-        span {
-            z-index: 1;
-        }
-
-        .planner-icon {
-            margin-top: -18.5%;
-            width: 90%;
-            height: 90%;
-            background: rgb(0, 0, 0) url('../../assets/icons/sharpshooter_skull.svg') no-repeat center center/cover;
-            transition: background-color 0.3s;
-
-            &:hover {
-                background-color: rgb(92, 24, 202);
-            }
-        }
     }
 
     .ongoing-selection-card {
         height: calc(100% - #{$planner-card-height});
-        background-color: rgb(99, 80, 154);
     }
 
     .activities-selection-card {
@@ -139,18 +130,26 @@ export default class ViewSelector extends Vue.with(ViewSelectorProp) {
     }
 
     .login-selection-card {
+        justify-content: center;
         position: relative;
         height: calc((100% - #{$activities-card-height}) * 0.575);
+
+        &:hover .user-avatar {
+            border-color: rgba(35, 35, 35, 0.75);
+            background-color: transparent;
+        }
 
         .user-avatar {
             position: absolute;
             left: 7.5%;
-            width: 1.8rem;
-            height: 1.8rem;
+            width: 1.45rem;
+            height: 1.45rem;
+            transition: background-color 0.25s, border-color 0.25s;
         }
     }
 
     .settings-selection-card {
+        justify-content: center;
         height: calc((100% - #{$activities-card-height}) * 0.425);
         animation-delay: 0.1s;
     }

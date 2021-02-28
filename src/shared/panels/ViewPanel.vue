@@ -1,22 +1,24 @@
 <template>
-    <div :id="id" class="view-panel-container" :class="{ 'expanded-panel': isExpanded }">
+    <div :id="containerId" class="view-panel-container">
         <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
 
-        <template v-if="isExpanded">
-            <div class="header">
-                <slot name="header"></slot>
-            </div>
+        <div :id="contentId" class="content-container" :class="contentContainerClasses">
+            <template v-if="showContent">
+                <div class="header">
+                    <slot name="header"></slot>
+                </div>
 
-            <div class="content">
-                <slot></slot>
-            </div>
+                <div class="content">
+                    <slot></slot>
+                </div>
 
-            <div class="footer">
-                <slot name="footer"></slot>
-            </div>
-        </template>
+                <div class="footer">
+                    <slot name="footer"></slot>
+                </div>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -25,22 +27,40 @@ import { Vue, prop } from 'vue-class-component';
 import VanillaTilt from 'vanilla-tilt';
 import * as uuid from 'uuid';
 
+import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { SoundType } from '../../core/enums/sound-type.enum';
+
 class ViewPanelProp {
     public maxTilt = prop<number>({ default: 0.3 });
 }
 
 export default class ViewPanel extends Vue.with(ViewPanelProp) {
-    public readonly id = `view-panel-container-${uuid.v4()}`;
+    public readonly sound = new SoundOption('panel_open', SoundType.UI);
+    public readonly containerId = `view-panel-container-${uuid.v4()}`;
+    public readonly contentId = `content-container-${uuid.v4()}`;
     private stage = 1;
 
-    get isExpanded(): boolean {
-        return this.stage >= 11;
+    get showContent(): boolean {
+        return this.stage >= 6;
+    }
+
+    get contentContainerClasses(): { [key: string]: boolean } {
+        return { 'glass-panel-light': this.showContent, 'unexpanded-panel': !this.showContent };
     }
 
     public mounted(): void {
-        const container = document.querySelector(`#${this.id}`);
+        const container = document.querySelector(`#${this.containerId}`);
+        const content = document.querySelector(`#${this.contentId}`);
         container?.addEventListener('animationend', () => this.stage++);
-        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt, glare: true, 'max-glare': 0.1 });
+        VanillaTilt.init(container as HTMLElement, { max: this.maxTilt });
+        VanillaTilt.init(content as HTMLElement, { max: 0, glare: true, 'max-glare': 0.1 });
+        setTimeout(() => store.dispatch(`${soundKey}/playSound`, this.sound), 500);
+    }
+
+    public beforeUnmount(): void {
+        store.dispatch(`${soundKey}/stopSound`, this.sound);
     }
 }
 </script>
@@ -48,56 +68,65 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 <style lang="scss" scoped>
 .view-panel-container {
     $max-content-width: 95%;
-    $box-expanded-height: 82.5%;
+    $box-expanded-height: 76%;
+    $header-footer-height: calc((100% - #{$box-expanded-height}) / 2.75);
 
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    border: 1px solid transparent;
-    background-color: transparent;
-    box-shadow: 3px 3px 3px 0 transparent;
-    transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
-    transition-delay: 0.15s;
 
-    &.expanded-panel {
-        border-color: rgba(170, 170, 170, 0.4);
-        background-color: rgba(160, 160, 160, 0.25);
-        box-shadow: 3px 3px 3px 0 rgba(120, 120, 120, 0.25);
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: calc(#{$box-expanded-height} + 7%);
+        transition: border 0.15s, background-color 0.15s, box-shadow 0.15s;
+        transition-delay: 0.15s;
+
+        &.unexpanded-panel {
+            border: 1px solid transparent;
+            background-color: transparent;
+            box-shadow: 3px 3px 3px 0 transparent;
+        }
     }
 
     .header, .content, .footer {
-        width: $max-content-width;
-        max-width: $max-content-width;
         opacity: 0;
-        animation: revealContent 0.4s ease 0.5s forwards;
+        animation: revealContent 0.1s ease forwards;
     }
 
     .header, .footer {
-        height: calc((100% - #{$box-expanded-height}) / 2.75);
-        max-height: calc((100% - #{$box-expanded-height}) / 2.75);
+        position: absolute;
+        width: 100% ;
+        max-width: 100%;
+        height: $header-footer-height;
+        max-height: $header-footer-height;
     }
 
     .header {
-        margin-bottom: calc((100% - #{$box-expanded-height}) / 20);
+        top: calc(#{$header-footer-height} * -1 - 1.75%);
     }
 
     .content {
-        margin-top: calc(#{$box-expanded-height} * 0.025);
-        margin-bottom: calc(#{$box-expanded-height} * 0.025);
-        height: calc(#{$box-expanded-height} * 0.95);
-        max-height: calc(#{$box-expanded-height} * 0.95);
+        width: $max-content-width;
+        max-width: $max-content-width;
+        height: 90%;
+        max-height: 90%;
     }
 
     .footer {
-        margin-top: calc((100% - #{$box-expanded-height}) / 20);
+        bottom: calc(#{$header-footer-height} * -1 - 0.75%);
     }
 
     .panel-box-wrapper {
         $box-width: 0.75vw;
-        $box-height: 0.5vh;
-        $blink-duration: 0.25s;
+        $box-height: 0.275vh;
+        $expand-duration: 0.5s;
+        $expand-delay: 0.25s;
 
         position: absolute;
         width: $box-width;
@@ -105,12 +134,13 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         border-top: 1px solid rgba(200, 200, 200, 0.6);
         border-bottom: 1px solid rgba(200, 200, 200, 0.6);
         background-color: transparent;
-        animation: blinkFast $blink-duration ease-in forwards,
-                   expandPanelBox 1s ease 0.5s forwards;
+        animation: blinkFast $expand-delay ease forwards,
+                   expandPanelBoxStage1 calc(#{$expand-duration} * 0.4) ease $expand-delay forwards,
+                   expandPanelBoxStage2 calc(#{$expand-duration} * 0.6) ease calc(#{$expand-duration} * 0.4 + #{$expand-delay}) forwards;
 
         .panel-box {
             $box-move-duration: 0.2s;
-            $box-move-delay: calc(#{$blink-duration} + 0.2s);
+            $box-move-delay: calc(#{$expand-duration} * 0.75 + #{$expand-delay});
 
             position: absolute;
             width: $box-width;
@@ -146,25 +176,24 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
             }
         }
 
-        @keyframes expandPanelBox {
+        @keyframes expandPanelBoxStage1 {
             0% {
                 width: $box-width;
                 height: $box-height;
             }
-            20% {
-                width: 25%;
-                height: 1.5vh;
-            }
-            40% {
+            100% {
                 width: 75%;
-                height: 1.5vh;
+                height: $box-height;
             }
-            65% {
+        }
+
+        @keyframes expandPanelBoxStage2 {
+            0% {
                 width: 75%;
-                height: 1.5vh;
+                height: $box-height;
             }
             100% {
-                width: calc(95% - 5px);
+                width: calc(95% - 20px);
                 height: $box-expanded-height;
             }
         }

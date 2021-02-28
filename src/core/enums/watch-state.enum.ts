@@ -1,5 +1,6 @@
 export enum WatchState {
     AgentBooting,
     AgentBooted,
-    RogueBooted
+    RogueBooted,
+    Closing
 }

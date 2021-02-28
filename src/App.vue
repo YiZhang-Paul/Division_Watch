@@ -1,19 +1,12 @@
 <template>
     <div v-if="showBlurLayer" class="global-blur-layer"></div>
 
-    <main-menu v-show="!activeDialogOption"
-        v-if="activeView === viewOption.MainMenuAnimated">
-    </main-menu>
-
-    <main-menu v-show="!activeDialogOption"
-        v-if="activeView === viewOption.MainMenuNoop"
-        :allowAnimation="false">
-    </main-menu>
-
-    <activity-manager class="activity-manager"
-        v-show="!activeDialogOption"
-        v-if="activeView === viewOption.Activities">
-    </activity-manager>
+    <div class="app-views" :class="{ invisible: activeDialogOption }">
+        <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
+        <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
+        <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
+        <settings-manager class="settings-manager" v-if="activeView === viewOption.Settings"></settings-manager>
+    </div>
 
     <confirm-panel v-if="activeDialogOption"
         class="confirm-panel"
@@ -22,7 +15,7 @@
         @cancelled="closeDialog()">
     </confirm-panel>
 
-    <agent-watch class="agent-watch"></agent-watch>
+    <agent-watch v-if="isSoundSettingsLoaded" class="agent-watch"></agent-watch>
 </template>
 
 <script lang="ts">
@@ -31,12 +24,14 @@ import { Options, Vue } from 'vue-class-component';
 import store from './store';
 import { dialogKey } from './store/dialog/dialog.state';
 import { mainViewKey } from './store/main-view/main-view.state';
+import { settingsKey } from './store/settings/settings.state';
 // eslint-disable-next-line no-unused-vars
 import { DialogOption } from './core/data-model/generic/dialog-option';
 import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
+import SettingsManager from './features/settings-manager/SettingsManager.vue';
 import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 
 @Options({
@@ -44,13 +39,15 @@ import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
         AgentWatch,
         MainMenu,
         ActivityManager,
+        SettingsManager,
         ConfirmPanel
     }
 })
 export default class App extends Vue {
     public viewOption = ViewOption;
+    public isSoundSettingsLoaded = false;
 
-    get activeDialogOption(): DialogOption {
+    get activeDialogOption(): DialogOption<any> {
         return store.getters[`${dialogKey}/dialogOption`];
     }
 
@@ -60,6 +57,11 @@ export default class App extends Vue {
 
     get showBlurLayer(): boolean {
         return this.activeView !== ViewOption.Inactive && this.activeView !== ViewOption.MainMenuAnimated;
+    }
+
+    public async created(): Promise<void> {
+        await store.dispatch(`${settingsKey}/loadSoundSettings`);
+        this.isSoundSettingsLoaded = true;
     }
 
     public mounted(): void {
@@ -95,11 +97,16 @@ export default class App extends Vue {
 }
 
 @font-face {
+    font-family: 'Play';
+    src: url('assets/fonts/Play-Regular.ttf');
+}
+
+@font-face {
     font-family: 'Jost';
     src: url('assets/fonts/Jost-Regular.ttf');
 }
 
-html, body, #app {
+html, body, #app, .app-views {
     width: 100%;
     height: 100%;
     background-color: transparent;
@@ -112,12 +119,23 @@ html, body {
     padding: 0;
 }
 
-#app {
+#app, .app-views {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+}
+
+#app {
     background: rgb(0, 0, 0) url('assets/images/background.jpg') center center/cover no-repeat;
+}
+
+.app-views {
+    position: relative;
+    transition: opacity 0.2s;
+
+    &.invisible {
+        opacity: 0;
+    }
 }
 
 .global-blur-layer, .confirm-panel {
@@ -133,11 +151,6 @@ html, body {
     backdrop-filter: blur(5px);
 }
 
-.confirm-panel {
-    width: 25vw;
-    height: 20vh;
-}
-
 .agent-watch {
     $dimension: 30vh;
 
@@ -150,7 +163,13 @@ html, body {
 
 .activity-manager {
     position: absolute;
-    width: 60%;
-    height: 87.5%;
+    width: 57.5%;
+    height: 86.5%;
+}
+
+.settings-manager {
+    position: absolute;
+    width: 45%;
+    height: 75%;
 }
 </style>

@@ -5,8 +5,20 @@
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
+        <div v-if="isActive" class="active-indicator">
+            <div class="triangle"></div>
+
+            <div class="square">
+                <bullseye />
+            </div>
+        </div>
+
         <div class="category">
-            <component v-if="categoryIcon" :is="categoryIcon" :style="{ color: category.color }"></component>
+            <component v-if="categoryIcon"
+                class="icon"
+                :is="categoryIcon"
+                :style="{ color: category.color }">
+            </component>
         </div>
 
         <div class="splitter-1"></div>
@@ -34,7 +46,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Autorenew } from 'mdue';
+import { Autorenew, Bullseye } from 'mdue';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
@@ -54,6 +66,7 @@ class TaskSummaryCardProp {
 @Options({
     components: {
         Autorenew,
+        Bullseye,
         PriorityIndicator,
         EstimationSkulls
     }
@@ -82,14 +95,15 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    background-color: rgba(36, 35, 38, 0.75);
+    position: relative;
+    background-color: rgba(36, 35, 38, 0.6);
     color: rgb(255, 255, 255);
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     transition: background-color 0.3s;
 
     &:hover {
         cursor: pointer;
-        background-color: rgb(72, 66, 110);
+        background-color: rgba(60, 60, 60, 0.5);
     }
 
     &.active-card {
@@ -102,6 +116,41 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
 
     & > div {
         box-sizing: border-box;
+    }
+
+    .active-indicator {
+        $dimension: 0.7rem;
+
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: $dimension;
+        height: $dimension;
+        color: rgb(0, 0, 0);
+        font-size: 0.65rem;
+        opacity: 0;
+        animation: revealContent 0.25s ease 0.1s forwards;
+
+        .triangle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-top: $dimension solid transparent;
+            border-bottom: $dimension solid transparent;
+            border-right: $dimension solid rgb(255, 255, 255);
+        }
+
+        .square {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: $dimension;
+            height: $dimension;
+            background-color: rgb(255, 255, 255);
+        }
     }
 
     .category, .attributes, .splitter-1 {
@@ -121,7 +170,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         justify-content: center;
         align-items: center;
         height: calc(100% - #{$attribute-row-height} - #{$splitter-thickness});
-        font-size: 1rem;
+        font-size: 0.85rem;
+
+        .icon {
+            opacity: 0;
+            animation: revealContent 0.3s ease forwards;
+        }
     }
 
     .splitter-1 {
@@ -134,10 +188,11 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         justify-content: center;
         align-items: center;
         height: $attribute-row-height;
-        font-size: 1rem;
+        font-size: 0.85rem;
 
         .recur-indicator {
             color: $inactive-color;
+            transition: color 0.3s;
             transform: rotate(90deg) rotateY(180deg);
 
             &.recur-active {
@@ -152,8 +207,12 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
     }
 
     .name {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
         padding: 1.5% 4%;
         height: calc(#{$tall-row-height} - #{$splitter-thickness});
+        overflow: hidden;
         transition: color 0.3s;
     }
 
@@ -170,8 +229,8 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         font-size: 0.6rem;
 
         .progress {
-            width: 67.5%;
-            height: 0.9vh;
+            width: 65%;
+            height: 0.85vh;
             border-radius: 1px;
             background-color: rgb(185, 185, 185);
         }
@@ -181,7 +240,7 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         }
 
         .estimation-skulls {
-            width: 22.5%;
+            width: 21.5%;
             height: 100%;
         }
     }

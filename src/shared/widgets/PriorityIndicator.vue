@@ -43,7 +43,7 @@ export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
 <style lang="scss" scoped>
 .priority-indicator-container {
     $dimension: 1rem;
-    $font-size: 1.35rem;
+    $font-size: 1.275rem;
     $inactive-color: rgba(170, 170, 170, 0.45);
 
     position: relative;
@@ -54,7 +54,7 @@ export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
     font-size: $font-size;
 
     .arrow-icon {
-        $distance: 0.275rem;
+        $distance: 0.265rem;
         $margin: calc((#{$dimension} - #{$font-size}) / 2);
 
         position: absolute;

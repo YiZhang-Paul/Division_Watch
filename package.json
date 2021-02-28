@@ -1,6 +1,6 @@
 {
     "name": "division_watch",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
@@ -23,6 +23,7 @@
         "vanilla-tilt": "^1.7.0",
         "vue": "^3.0.5",
         "vue-class-component": "^8.0.0-0",
+        "vuedraggable": "^4.0.1",
         "vuex": "^4.0.0-0"
     },
     "devDependencies": {

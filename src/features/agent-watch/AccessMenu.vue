@@ -1,12 +1,13 @@
 <template>
-    <div class="access-menu-container glass-panel" :style="colorOption">
+    <div class="access-menu-container glass-panel-dark" :style="colorOption">
         <div v-for="option of options"
             class="option-button"
             :style="{ transform: 'rotate(' + (isOptionsVisible ? option.angle : 0) + 'deg)' }"
             :key="option.name">
 
-            <button class="glass-panel"
+            <button class="glass-panel-dark"
                 :style="{ transform: 'rotate(' + -option.angle + 'deg)', color: isOptionsDisabled ? 'grey' : option.color }"
+                @mouseenter="onOptionHover()"
                 @mouseover="activeOption = option.name"
                 @mouseout="activeOption = ''"
                 @click="$emit('menu:select', option.name)">
@@ -15,14 +16,15 @@
             </button>
         </div>
 
-        <div class="option-name glass-panel">
+        <div class="option-name glass-panel-dark">
             <span v-if="activeOption">{{ activeOption }}</span>
 
             <close-circle v-if="!activeOption"
                 class="close-menu"
+                @mouseenter="onOptionHover()"
                 @mouseover="isOptionsDisabled = true"
                 @mouseout="isOptionsDisabled = false"
-                @click="$emit('menu:close')" />
+                @click="onClose()" />
         </div>
     </div>
 </template>
@@ -30,19 +32,22 @@
 <script lang="ts">
 import { markRaw } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-import { Apps, CloseCircle, Cog, ExclamationThick, PowerStandby, Timer } from 'mdue';
+import { Apps, Biohazard, CloseCircle, Cog, PowerStandby, Play } from 'mdue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 @Options({
     components: {
         Apps,
+        Biohazard,
         CloseCircle,
         Cog,
-        ExclamationThick,
         PowerStandby,
-        Timer
+        Play
     },
     emits: [
         'menu:select',
@@ -51,11 +56,11 @@ import { WatchMenuOption } from '../../core/enums/watch-menu-option.enum';
 })
 export default class AccessMenu extends Vue {
     public options = [
-        markRaw({ name: WatchMenuOption.Power, icon: PowerStandby, angle: 46, color: 'rgb(24, 238, 20)' }),
+        markRaw({ name: WatchMenuOption.ShutDown, icon: PowerStandby, angle: 46, color: 'rgb(255, 9, 9)' }),
         markRaw({ name: WatchMenuOption.Setting, icon: Cog, angle: 136, color: 'rgb(255, 255, 255)' }),
-        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(246, 149, 78)' }),
-        markRaw({ name: WatchMenuOption.Ongoing, icon: Timer, angle: 271, color: 'rgb(255, 9, 9)' }),
-        markRaw({ name: WatchMenuOption.Interruption, icon: ExclamationThick, angle: 306, color: 'rgb(33, 188, 254)' })
+        markRaw({ name: WatchMenuOption.MainMenu, icon: Apps, angle: 236, color: 'rgb(51, 233, 121)' }),
+        markRaw({ name: WatchMenuOption.Ongoing, icon: Play, angle: 271, color: 'rgb(239, 255, 9)' }),
+        markRaw({ name: WatchMenuOption.Interruption, icon: Biohazard, angle: 306, color: 'rgb(33, 188, 254)' })
     ];
 
     public activeOption = '';
@@ -72,7 +77,17 @@ export default class AccessMenu extends Vue {
     }
 
     public mounted(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_menu_open', SoundType.UI));
         setTimeout(() => this.isOptionsVisible = true, 50);
+    }
+
+    public onOptionHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
+    public onClose(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('watch_menu_close', SoundType.UI));
+        this.$emit('menu:close');
     }
 }
 </script>

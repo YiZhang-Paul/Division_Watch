@@ -7,7 +7,8 @@ export class TaskItem {
     public categoryId: string | null = null;
     public priority!: RankItem;
     public estimate = 0;
-    public deadline!: string;
+    public deadline!: string | null;
+    public dueTime!: string | null;
     public recur: boolean[] = [];
     public checklist: ChecklistItem[] = [];
     public parent: string | null = null;

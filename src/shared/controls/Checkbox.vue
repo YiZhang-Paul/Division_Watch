@@ -1,5 +1,8 @@
 <template>
-    <display-panel class="checkbox-container" :class="{ checked }" @click="onToggle()"></display-panel>
+    <display-panel class="checkbox-container"
+        :class="{ checked: modelValue }"
+        @click="$emit('update:modelValue', !modelValue)">
+    </display-panel>
 </template>
 
 <script lang="ts">
@@ -8,23 +11,16 @@ import { Options, Vue, prop } from 'vue-class-component';
 import DisplayPanel from '../panels/DisplayPanel.vue';
 
 class CheckboxProp {
-    public isChecked = prop<boolean>({ default: false });
+    public modelValue = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
         DisplayPanel
     },
-    emits: ['change']
+    emits: ['update:modelValue']
 })
-export default class Checkbox extends Vue.with(CheckboxProp) {
-    public checked = this.isChecked;
-
-    public onToggle(): void {
-        this.checked = !this.checked;
-        this.$emit('change', this.checked);
-    }
-}
+export default class Checkbox extends Vue.with(CheckboxProp) { }
 </script>
 
 <style lang="scss" scoped>

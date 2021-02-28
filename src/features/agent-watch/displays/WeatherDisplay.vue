@@ -51,7 +51,7 @@ export default class WeatherDisplay extends Vue {
     span {
         margin-top: -17.5%;
         color: rgb(255, 255, 255);
-        font-family: 'Jost';
+        font-family: 'Play';
         font-size: 0.4rem;
     }
 }

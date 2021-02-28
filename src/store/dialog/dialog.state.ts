@@ -3,7 +3,7 @@ import { ActionContext } from 'vuex';
 import { DialogOption } from '../../core/data-model/generic/dialog-option';
 
 export interface IDialogState {
-    dialogOption: DialogOption | null;
+    dialogOption: DialogOption<any> | null;
 }
 
 const state = (): IDialogState => ({
@@ -11,17 +11,17 @@ const state = (): IDialogState => ({
 });
 
 const getters = {
-    dialogOption: (state: IDialogState): DialogOption | null => state.dialogOption
+    dialogOption: (state: IDialogState): DialogOption<any> | null => state.dialogOption
 };
 
 const mutations = {
-    setDialogOption(state: IDialogState, option: DialogOption | null): void {
+    setDialogOption(state: IDialogState, option: DialogOption<any> | null): void {
         state.dialogOption = option;
     }
 };
 
 const actions = {
-    openDialog(context: ActionContext<IDialogState, any>, option: DialogOption): void {
+    openDialog(context: ActionContext<IDialogState, any>, option: DialogOption<any>): void {
         context.commit('setDialogOption', option);
     },
     closeDialog(context: ActionContext<IDialogState, any>): void {

@@ -32,7 +32,7 @@ export default class SearchBox extends Vue {
     justify-content: space-between;
     align-items: center;
     padding: 0 1.5%;
-    background-color: rgba(36, 35, 38, 0.75);
+    background-color: rgba(36, 35, 38, 0.6);
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.75rem;
 
