@@ -38,6 +38,16 @@
                     </placeholder-panel>
                 </item-list-panel>
             </div>
+
+            <div class="content">
+                <div class="plan-details">
+                    <section-panel class="section-panel" :name="date">
+                        <option-dropdown class="control-item"
+                            :name="'Goal'">
+                        </option-dropdown>
+                    </section-panel>
+                </div>
+            </div>
         </div>
 
         <template v-slot:footer>
@@ -64,10 +74,13 @@ import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
+import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
     components: {
@@ -76,8 +89,10 @@ import { SoundType } from '../../core/enums/sound-type.enum';
         ViewPanel,
         ItemListPanel,
         PlaceholderPanel,
+        SectionPanel,
         MenuButton,
-        Checkbox
+        Checkbox,
+        OptionDropdown
     }
 })
 export default class DailyPlanner extends Vue {
@@ -103,6 +118,10 @@ export default class DailyPlanner extends Vue {
         }
 
         return items.filter(_ => _.name.toLowerCase().includes(this.searchText));
+    }
+
+    get date(): string {
+        return TimeUtility.toLongDateString(new Date());
     }
 
     public onCardHover(): void {
@@ -133,6 +152,7 @@ export default class DailyPlanner extends Vue {
 .main-content {
     $margin: 1.5%;
     $list-width: 28%;
+    $content-width: 96.5%;
 
     margin-left: $margin;
     width: calc(100% - #{$margin} * 2);
@@ -185,6 +205,32 @@ export default class DailyPlanner extends Vue {
             .placeholder-panel {
                 margin-left: 2.5%;
                 width: 95%;
+            }
+        }
+    }
+
+    .content {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        width: calc((100% - #{$list-width}));
+        height: 100%;
+
+        .plan-details {
+            padding-top: 1.5vh;
+            width: $content-width;
+
+            .section-panel {
+                width: 100%;
+
+                .control-item {
+                    width: 100%;
+                }
+
+                .control-item:not(:nth-last-child(1)) {
+                    margin-bottom: 1%;
+                }
             }
         }
     }

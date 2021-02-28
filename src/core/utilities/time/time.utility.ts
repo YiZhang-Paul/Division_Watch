@@ -50,6 +50,12 @@ export class TimeUtility {
         return result.replace(/^\S*\s/, '').replace(/(\d)\s(\d)/, '$1, $2');
     }
 
+    public static toLongDateString(date: Date): string {
+        const [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+
+        return `${this.getMonthName(month)} ${day}${this.getDateSuffix(day)}, ${year}`;
+    }
+
     public static toMinutes(milliseconds: number, decimal = 0): number {
         const modifier = Math.pow(10, decimal);
 
