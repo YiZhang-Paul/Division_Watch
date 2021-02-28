@@ -15,6 +15,7 @@
                     v-for="candidate of candidates"
                     :key="candidate.id"
                     :task="candidate"
+                    :isUrgent="candidate.isInterruption"
                     @mouseenter="onCardHover()">
                 </task-summary-card>
 
