@@ -58,6 +58,15 @@ const actions = {
             sound.volume = isMuted ? 0 : masterVolume / 100 * volume / 100;
         }
     },
+    mute(context: ActionContext<ISoundState, any>): void {
+        context.dispatch('setAllVolume', { type: SoundType.All, volume: 0 });
+    },
+    unmute(context: ActionContext<ISoundState, any>): void {
+        const { dispatch, rootGetters } = context;
+        const { uiVolume, clockVolume } = rootGetters[`${settingsKey}/soundSettings`] as SoundSettings;
+        dispatch('setAllVolume', { type: SoundType.UI, volume: uiVolume });
+        dispatch('setAllVolume', { type: SoundType.Clock, volume: clockVolume });
+    },
     playSound(context: ActionContext<ISoundState, any>, option: SoundOption): void {
         const { getters, commit, dispatch, rootGetters } = context;
         const { name, type, loop } = option;

@@ -1,6 +1,15 @@
 <template>
     <div class="sound-settings-manager-container">
         <section-panel class="section-panel" :name="'Sound Configuration'">
+            <div class="mute-toggle">
+                <checkbox class="checkbox"
+                    :modelValue="settings.isMuted"
+                    @update:modelValue="onMuteToggle($event)">
+                </checkbox>
+
+                <span>Mute Sound</span>
+            </div>
+
             <option-dropdown class="option-dropdown"
                 :name="'Tick Sound'"
                 :selected="selectedClockSound"
@@ -54,6 +63,7 @@ import { SoundSettings } from '../../core/data-model/settings/sound-settings';
 import { SoundSettingsOptions } from '../../core/data-model/settings/sound-settings-options';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
+import Checkbox from '../../shared/controls/Checkbox.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import ValueSlider from '../../shared/controls/ValueSlider.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
@@ -61,6 +71,7 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 @Options({
     components: {
         SectionPanel,
+        Checkbox,
         OptionDropdown,
         ValueSlider
     }
@@ -95,6 +106,11 @@ export default class SoundSettingsManager extends Vue {
         if (this.updateDebounceTimer) {
             store.dispatch(`${settingsKey}/updateSoundSettings`, this.settings);
         }
+    }
+
+    public onMuteToggle(isMuted: boolean): void {
+        this.onSettingsChange('isMuted', isMuted);
+        store.dispatch(`${soundKey}/${isMuted ? 'mute' : 'unmute'}`);
     }
 
     public onClockSoundChange(file: string): void {
@@ -146,6 +162,22 @@ export default class SoundSettingsManager extends Vue {
 
     .section-panel {
         width: 95%;
+
+        .mute-toggle {
+            display: flex;
+            align-items: center;
+            align-self: flex-end;
+            margin-right: 0.15rem;
+            margin-bottom: 0.3rem;
+            height: 1rem;
+            font-size: 0.45rem;
+
+            .checkbox {
+                margin-right: 0.225rem;
+                width: 0.525rem;
+                height: 0.525rem;
+            }
+        }
 
         .option-dropdown, .value-slider {
             width: 100%;
