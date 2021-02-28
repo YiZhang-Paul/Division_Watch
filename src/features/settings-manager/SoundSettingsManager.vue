@@ -1,24 +1,26 @@
 <template>
     <div class="sound-settings-manager-container">
         <section-panel class="section-panel" :name="'Sound Configuration'">
-            <div class="mute-toggle">
-                <checkbox class="checkbox"
-                    :modelValue="settings.isMuted"
-                    @update:modelValue="onMuteToggle($event)">
-                </checkbox>
+            <div class="master-slider">
+                <div class="mute-toggle">
+                    <checkbox class="checkbox"
+                        :modelValue="settings.isMuted"
+                        @update:modelValue="onMuteToggle($event)">
+                    </checkbox>
 
-                <span>{{ settings.isMuted ? 'Unmute Sound' : 'Mute Sound' }}</span>
+                    <span>{{ settings.isMuted ? 'Unmute Sound' : 'Mute Sound' }}</span>
+                </div>
+
+                <value-slider class="slider"
+                    :name="'Master Volume'"
+                    :min="options.masterVolume.min"
+                    :max="options.masterVolume.max"
+                    :steps="options.masterVolume.max - options.masterVolume.min"
+                    :selected="settings.masterVolume"
+                    :transform="_ => _ + ' %'"
+                    @change="onMasterVolumeChange($event)">
+                </value-slider>
             </div>
-
-            <value-slider class="value-slider"
-                :name="'Master Volume'"
-                :min="options.masterVolume.min"
-                :max="options.masterVolume.max"
-                :steps="options.masterVolume.max - options.masterVolume.min"
-                :selected="settings.masterVolume"
-                :transform="_ => _ + ' %'"
-                @change="onMasterVolumeChange($event)">
-            </value-slider>
 
             <value-slider class="value-slider"
                 :name="'UI Volume'"
@@ -165,23 +167,32 @@ export default class SoundSettingsManager extends Vue {
     .section-panel {
         width: 95%;
 
-        .mute-toggle {
-            display: flex;
-            align-items: center;
-            align-self: flex-end;
-            margin-right: 0.15rem;
-            margin-bottom: 0.3rem;
-            height: 1rem;
-            font-size: 0.45rem;
+        .master-slider {
+            position: relative;
 
-            .checkbox {
-                margin-right: 0.175rem;
-                width: 0.525rem;
-                height: 0.525rem;
+            .mute-toggle {
+                display: flex;
+                align-items: center;
+                align-self: flex-end;
+                position: absolute;
+                top: 0.125rem;
+                left: 25%;
+                height: 1rem;
+                font-size: 0.4rem;
+
+                .checkbox {
+                    margin-right: 0.175rem;
+                    width: 0.525rem;
+                    height: 0.525rem;
+                }
+            }
+
+            .slider {
+                width: 100%;
             }
         }
 
-        .option-dropdown, .value-slider {
+        .master-slider, .value-slider, .option-dropdown {
             width: 100%;
 
             &:not(:nth-last-child(1)) {
