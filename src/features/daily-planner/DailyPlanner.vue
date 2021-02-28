@@ -64,10 +64,9 @@ export default class DailyPlanner extends Vue {
     public searchText = '';
 
     get candidates(): TaskItem[] {
-        const tasks: TaskItem[] = store.getters[`${taskItemKey}/incompleteParentTasks`];
-        const interruptions: TaskItem[] = store.getters[`${taskItemKey}/incompleteInterruptions`];
+        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteParentTasksAndInterruptions`];
 
-        return [...tasks, ...interruptions].filter(_ => _.name.toLowerCase().includes(this.searchText));
+        return items.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
     public onCardHover(): void {
