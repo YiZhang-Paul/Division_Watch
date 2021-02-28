@@ -10,14 +10,6 @@
                 <span>{{ settings.isMuted ? 'Unmute Sound' : 'Mute Sound' }}</span>
             </div>
 
-            <option-dropdown class="option-dropdown"
-                :name="'Tick Sound'"
-                :selected="selectedClockSound"
-                :options="clockSounds"
-                :transform="_ => _.name"
-                @options:select="onClockSoundChange($event.file)">
-            </option-dropdown>
-
             <value-slider class="value-slider"
                 :name="'Master Volume'"
                 :min="options.masterVolume.min"
@@ -47,6 +39,14 @@
                 :transform="_ => _ + ' %'"
                 @change="onClockVolumeChange($event)">
             </value-slider>
+
+            <option-dropdown class="option-dropdown"
+                :name="'Tick Sound'"
+                :selected="selectedClockSound"
+                :options="clockSounds"
+                :transform="_ => _.name"
+                @options:select="onClockSoundChange($event.file)">
+            </option-dropdown>
         </section-panel>
     </div>
 </template>
@@ -78,9 +78,11 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 })
 export default class SoundSettingsManager extends Vue {
     public readonly clockSounds = [
-        { name: 'Vintage', file: 'clock_tick_slow' },
-        { name: 'Kitchen', file: 'clock_tick_normal' },
-        { name: 'Mechanical', file: 'clock_tick_fast' }
+        { name: 'Bedroom', file: 'clock_tick_bedroom' },
+        { name: 'Wrist Watch', file: 'clock_tick_wrist_watch' },
+        { name: 'Vintage', file: 'clock_tick_vintage' },
+        { name: 'Kitchen', file: 'clock_tick_kitchen' },
+        { name: 'Mechanical', file: 'clock_tick_mechanical' }
     ];
 
     private updateDebounceTimer: NodeJS.Timeout | null = null;
