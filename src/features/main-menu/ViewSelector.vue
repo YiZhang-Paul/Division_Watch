@@ -1,7 +1,8 @@
 <template>
     <div class="view-selector-container" :class="{ 'no-op': !allowAnimation }">
         <planner-selection-card class="planner-selection-card selection-card"
-            @mouseenter="onOptionHover()">
+            @mouseenter="onOptionHover()"
+            @click="$emit('view:selected', options.Planner)">
         </planner-selection-card>
 
         <div class="ongoing-selection-card selection-card" @mouseenter="onOptionHover()"></div>

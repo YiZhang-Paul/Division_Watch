@@ -3,5 +3,6 @@ export enum ViewOption {
     MainMenuNoop,
     MainMenuAnimated,
     Activities,
+    Planner,
     Settings
 }
