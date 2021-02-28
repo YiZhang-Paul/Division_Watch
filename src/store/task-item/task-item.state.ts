@@ -17,7 +17,16 @@ export interface ITaskItemState {
 }
 
 function sortByPriority(tasks: TaskItem[]): TaskItem[] {
-    return tasks.sort((a, b) => b.priority.rank - a.priority.rank);
+    return tasks.sort((a, b) => {
+        const bothInterruption = a.isInterruption && b.isInterruption;
+        const neitherInterruption = !a.isInterruption && !b.isInterruption;
+
+        if (a.priority.rank !== b.priority.rank || bothInterruption || neitherInterruption) {
+            return b.priority.rank - a.priority.rank;
+        }
+
+        return a.isInterruption ? -1 : 1;
+    });
 }
 
 const state = (): ITaskItemState => ({
@@ -47,11 +56,11 @@ const getters = {
     incompleteInterruptions: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => _.isInterruption));
     },
-    incompleteParentTasksAndInterruptions: (_: ITaskItemState, getters: any): TaskItem[] => {
+    incompleteInterruptionsAndParentTasks: (_: ITaskItemState, getters: any): TaskItem[] => {
         return sortByPriority([...getters.incompleteParentTasks, ...getters.incompleteInterruptions]);
     },
     totalEstimation: (_: ITaskItemState, getters: any): number => {
-        const items: TaskItem[] = getters.incompleteParentTasksAndInterruptions;
+        const items: TaskItem[] = getters.incompleteInterruptionsAndParentTasks;
         const options: TaskItemOptions = getters.taskItemOptions;
 
         return items.reduce((total, _) => total + _.estimate, 0) / (options.skullDuration || 1);
