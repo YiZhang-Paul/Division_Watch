@@ -7,7 +7,7 @@
                     @update:modelValue="onMuteToggle($event)">
                 </checkbox>
 
-                <span>Mute Sound</span>
+                <span>{{ settings.isMuted ? 'Unmute Sound' : 'Mute Sound' }}</span>
             </div>
 
             <option-dropdown class="option-dropdown"
@@ -173,7 +173,7 @@ export default class SoundSettingsManager extends Vue {
             font-size: 0.45rem;
 
             .checkbox {
-                margin-right: 0.225rem;
+                margin-right: 0.175rem;
                 width: 0.525rem;
                 height: 0.525rem;
             }

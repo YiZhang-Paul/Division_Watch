@@ -51,6 +51,7 @@ class ValueSliderProp {
     public min = prop<number>({ default: 0 });
     public max = prop<number>({ default: 100 });
     public steps = prop<number>({ default: 100 });
+    public decimal = prop<number>({ default: 0 });
     public selected = prop<number>({ default: 0 });
     public transform = prop<(_: number) => string>({ default: null });
 }
@@ -104,7 +105,9 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
             width = Math.min(percent, this.steps) / this.steps;
         }
 
-        this.$emit('change', (this.max - this.min) * width + this.min);
+        const selected = (this.max - this.min) * width + this.min;
+        const modifier = Math.pow(10, this.decimal);
+        this.$emit('change', Math.round(selected * modifier) / modifier);
     }
 }
 </script>
