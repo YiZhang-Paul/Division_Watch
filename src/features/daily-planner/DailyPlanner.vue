@@ -7,7 +7,10 @@
         </template>
 
         <div class="main-content">
-            <item-list-panel class="item-list-panel" @item:search="searchText = $event">
+            <item-list-panel class="item-list-panel"
+                :allowAdd="false"
+                @item:search="searchText = $event">
+
                 <task-summary-card class="summary-card"
                     v-for="candidate of candidates"
                     :key="candidate.id"
