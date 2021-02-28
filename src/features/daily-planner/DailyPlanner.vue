@@ -7,23 +7,37 @@
         </template>
 
         <div class="main-content">
-            <item-list-panel class="item-list-panel"
-                :allowAdd="false"
-                @item:search="searchText = $event">
+            <div class="list-wrapper">
+                <div class="filters">
+                    <div class="filter">
+                        <checkbox class="checkbox" v-model="showTask"></checkbox>
+                        <span>Show Task</span>
+                    </div>
 
-                <task-summary-card class="summary-card"
-                    v-for="candidate of candidates"
-                    :key="candidate.id"
-                    :task="candidate"
-                    :isUrgent="candidate.isInterruption"
-                    @mouseenter="onCardHover()">
-                </task-summary-card>
+                    <div class="filter">
+                        <checkbox class="checkbox" v-model="showInterruption"></checkbox>
+                        <span>Show Interruption</span>
+                    </div>
+                </div>
 
-                <placeholder-panel v-if="!candidates.length"
-                    class="placeholder-panel"
-                    :text="searchText ? 'no matching entry found.' : 'no entry available.'">
-                </placeholder-panel>
-            </item-list-panel>
+                <item-list-panel class="item-list-panel"
+                    :allowAdd="false"
+                    @item:search="searchText = $event">
+
+                    <task-summary-card class="summary-card"
+                        v-for="candidate of candidates"
+                        :key="candidate.id"
+                        :task="candidate"
+                        :isUrgent="candidate.isInterruption"
+                        @mouseenter="onCardHover()">
+                    </task-summary-card>
+
+                    <placeholder-panel v-if="!candidates.length"
+                        class="placeholder-panel"
+                        :text="searchText ? 'no matching entry found.' : 'no entry available.'">
+                    </placeholder-panel>
+                </item-list-panel>
+            </div>
         </div>
 
         <template v-slot:footer>
@@ -51,6 +65,7 @@ import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import Checkbox from '../../shared/controls/Checkbox.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
 
@@ -61,14 +76,31 @@ import { SoundType } from '../../core/enums/sound-type.enum';
         ViewPanel,
         ItemListPanel,
         PlaceholderPanel,
-        MenuButton
+        MenuButton,
+        Checkbox
     }
 })
 export default class DailyPlanner extends Vue {
+    public showTask = true;
+    public showInterruption = true;
     public searchText = '';
 
     get candidates(): TaskItem[] {
-        const items: TaskItem[] = store.getters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
+        if (!this.showTask && !this.showInterruption) {
+            return [];
+        }
+
+        let items: TaskItem[];
+
+        if (this.showTask && this.showInterruption) {
+            items = store.getters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
+        }
+        else if (this.showTask) {
+            items = store.getters[`${taskItemKey}/incompleteParentTasks`];
+        }
+        else {
+            items = store.getters[`${taskItemKey}/incompleteInterruptions`];
+        }
 
         return items.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
@@ -105,24 +137,55 @@ export default class DailyPlanner extends Vue {
     margin-left: $margin;
     width: calc(100% - #{$margin} * 2);
 
-    .item-list-panel {
+    .list-wrapper {
+        display: flex;
+        flex-direction: column;
         width: $list-width;
         height: 97.5%;
 
-        .summary-card {
+        .filters {
+            display: flex;
+            align-items: flex-end;
             width: 100%;
-            height: 10.5vh;
-            opacity: 0;
-            animation: revealContent 0.3s ease 0.1s forwards;
+            height: 1rem;
 
-            &:not(:nth-last-child(1)) {
-                margin-bottom: 0.9vh;
+            .filter {
+                display: flex;
+                align-items: center;
+                color: rgb(255, 255, 255);
+                font-size: 0.475rem;
+
+                &:nth-child(1) {
+                    margin-right: 0.75rem;
+                }
+
+                .checkbox {
+                    margin-right: 0.275rem;
+                    width: 0.425rem;
+                    height: 0.425rem;
+                }
             }
         }
 
-        .placeholder-panel {
-            margin-left: 2.5%;
-            width: 95%;
+        .item-list-panel {
+            width: 100%;
+            height: calc(100% - 1rem);
+
+            .summary-card {
+                width: 100%;
+                height: 10.5vh;
+                opacity: 0;
+                animation: revealContent 0.3s ease 0.1s forwards;
+
+                &:not(:nth-last-child(1)) {
+                    margin-bottom: 0.9vh;
+                }
+            }
+
+            .placeholder-panel {
+                margin-left: 2.5%;
+                width: 95%;
+            }
         }
     }
 }
