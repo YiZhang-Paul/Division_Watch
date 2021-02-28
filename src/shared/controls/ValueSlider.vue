@@ -10,6 +10,7 @@
                 <div class="border"></div>
 
                 <div class="drag-panel"
+                    @mouseup="isMousedown = false"
                     @mouseleave="isMousedown = false"
                     @mousemove.stop.self="onMousemove($event)">
 
