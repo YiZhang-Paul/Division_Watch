@@ -49,7 +49,7 @@
                             :steps="goalOptions.length - 1"
                             :selected="plan.goal.sessions"
                             :transform="_ => _ + ' session' + (_ > 1 ? 's' : '')"
-                            @change="onGoalChange($event, plan.goal.sessionDuration)">
+                            @change="onGoalChange($event, goalOptions[0].sessionDuration)">
                         </value-slider>
                     </section-panel>
                 </div>
