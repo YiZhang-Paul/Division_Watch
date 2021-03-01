@@ -39,12 +39,18 @@
                 </item-list-panel>
             </div>
 
-            <div class="content">
+            <div v-if="plan" class="content">
                 <div class="plan-details">
                     <section-panel class="section-panel" :name="date">
-                        <option-dropdown class="control-item"
-                            :name="'Goal'">
-                        </option-dropdown>
+                        <value-slider class="control-item"
+                            :name="'Goal'"
+                            :min="goalOptions[0].sessions"
+                            :max="goalOptions[goalOptions.length - 1].sessions"
+                            :steps="goalOptions.length - 1"
+                            :selected="plan.goal.sessions"
+                            :transform="null"
+                            @change="onGoalChange($event, plan.goal.sessionDuration)">
+                        </value-slider>
                     </section-panel>
                 </div>
             </div>
@@ -65,7 +71,12 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
+// eslint-disable-next-line no-unused-vars
+import { Goal } from '../../core/data-model/generic/goal';
+// eslint-disable-next-line no-unused-vars
+import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
@@ -77,7 +88,7 @@ import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
-import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
+import ValueSlider from '../../shared/controls/ValueSlider.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
@@ -92,13 +103,14 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         SectionPanel,
         MenuButton,
         Checkbox,
-        OptionDropdown
+        ValueSlider
     }
 })
 export default class DailyPlanner extends Vue {
     public showTask = true;
     public showInterruption = true;
     public searchText = '';
+    private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get candidates(): TaskItem[] {
         if (!this.showTask && !this.showInterruption) {
@@ -124,6 +136,25 @@ export default class DailyPlanner extends Vue {
         return TimeUtility.toLongDateString(new Date());
     }
 
+    get goalOptions(): Goal[] {
+        return store.getters[`${dailyPlanKey}/goalOptions`];
+    }
+
+    get plan(): DailyPlan | null {
+        return store.getters[`${dailyPlanKey}/currentPlan`];
+    }
+
+    public created(): void {
+        store.dispatch(`${dailyPlanKey}/loadGoalOptions`);
+        store.dispatch(`${dailyPlanKey}/loadCurrentPlan`);
+    }
+
+    public beforeUnmount(): void {
+        if (this.updateDebounceTimer) {
+            store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
+        }
+    }
+
     public onCardHover(): void {
         store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
@@ -134,6 +165,24 @@ export default class DailyPlanner extends Vue {
 
     public closePanel(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    }
+
+    public onGoalChange(sessions: number, duration: number): void {
+        this.onPlanChange('goal', { sessions, sessionDuration: duration } as Goal);
+    }
+
+    private onPlanChange<T>(key: string, value: T): void {
+        const plan = { ...this.plan, [key]: value } as DailyPlan;
+        store.commit(`${dailyPlanKey}/setCurrentPlan`, plan);
+
+        if (this.updateDebounceTimer) {
+            clearTimeout(this.updateDebounceTimer);
+        }
+
+        this.updateDebounceTimer = setTimeout(() => {
+            store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
+            this.updateDebounceTimer = null;
+        }, 400);
     }
 }
 </script>

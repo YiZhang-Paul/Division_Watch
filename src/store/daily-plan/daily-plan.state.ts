@@ -44,6 +44,13 @@ const actions = {
     async loadCurrentPlan(context: ActionContext<IDailyPlanState, any>): Promise<void> {
         context.commit('setCurrentPlan', await dailyPlanHttpService.getDailyPlan(new Date()));
     },
+    async upsertDailyPlan(context: ActionContext<IDailyPlanState, any>, plan: DailyPlan): Promise<void> {
+        const updated = await dailyPlanHttpService.upsertDailyPlan(plan);
+
+        if (updated) {
+            context.commit('setCurrentPlan', updated);
+        }
+    },
     swapActiveItem(context: ActionContext<IDailyPlanState, any>, item: TaskItem): void {
         context.commit('setActiveItem', null);
         setTimeout(() => context.commit('setActiveItem', item));
