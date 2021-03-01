@@ -48,7 +48,7 @@
                             :max="goalOptions[goalOptions.length - 1].sessions"
                             :steps="goalOptions.length - 1"
                             :selected="plan.goal.sessions"
-                            :transform="null"
+                            :transform="_ => _ + ' session' + (_ > 1 ? 's' : '')"
                             @change="onGoalChange($event, plan.goal.sessionDuration)">
                         </value-slider>
                     </section-panel>

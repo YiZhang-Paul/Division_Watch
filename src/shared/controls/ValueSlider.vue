@@ -144,13 +144,14 @@ export default class ValueSlider extends Vue.with(ValueSliderProp) {
         font-size: 0.4rem;
 
         & > span {
-            width: 17.5%;
+            margin-right: 0.5rem;
+            min-width: 17.5%;
         }
 
         .inner-wrapper {
             display: flex;
+            flex-grow: 1;
             position: relative;
-            width: 82.5%;
             height: 42.5%;
 
             .border {
