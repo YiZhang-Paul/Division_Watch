@@ -1,32 +1,32 @@
 import { ActionContext } from 'vuex';
 
-import { Goal } from '../../core/data-model/generic/goal';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 import { DailyPlanHttpService } from '../../core/services/http/daily-plan-http/daily-plan-http.service';
 
 const dailyPlanHttpService = new DailyPlanHttpService();
 
 export interface IDailyPlanState {
-    goalOptions: Goal[];
+    goalOptions: GoalOptions;
     activeItem: TaskItem | null;
     currentPlan: DailyPlan | null;
 }
 
 const state = (): IDailyPlanState => ({
-    goalOptions: [],
+    goalOptions: new GoalOptions(),
     activeItem: null,
     currentPlan: null
 });
 
 const getters = {
-    goalOptions: (state: IDailyPlanState): Goal[] => state.goalOptions,
+    goalOptions: (state: IDailyPlanState): GoalOptions => state.goalOptions,
     activeItem: (state: IDailyPlanState): TaskItem | null => state.activeItem,
     currentPlan: (state: IDailyPlanState): DailyPlan | null => state.currentPlan
 };
 
 const mutations = {
-    setGoalOptions(state: IDailyPlanState, options: Goal[]): void {
+    setGoalOptions(state: IDailyPlanState, options: GoalOptions): void {
         state.goalOptions = options;
     },
     setActiveItem(state: IDailyPlanState, item: TaskItem | null): void {

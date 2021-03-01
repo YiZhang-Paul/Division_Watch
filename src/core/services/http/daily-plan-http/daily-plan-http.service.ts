@@ -1,19 +1,19 @@
 import axios from 'axios';
 
-import { Goal } from '../../../data-model/generic/goal';
 import { DailyPlan } from '../../../data-model/generic/daily-plan';
+import { GoalOptions } from '../../../data-model/generic/goal-options';
 
 export class DailyPlanHttpService {
     private readonly _api = `${process.env.VUE_APP_BASE_API_URL}/daily-plan`;
 
-    public async getGoalOptions(): Promise<Goal[]> {
+    public async getGoalOptions(): Promise<GoalOptions> {
         try {
             const endpoint = `${this._api}/goals`;
 
             return (await axios.get(endpoint)).data;
         }
         catch {
-            return [];
+            return new GoalOptions();
         }
     }
 

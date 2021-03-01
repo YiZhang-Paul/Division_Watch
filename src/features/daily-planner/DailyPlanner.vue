@@ -44,12 +44,12 @@
                     <section-panel class="section-panel" :name="date">
                         <value-slider class="control-item"
                             :name="'Goal'"
-                            :min="goalOptions[0].sessions"
-                            :max="goalOptions[goalOptions.length - 1].sessions"
-                            :steps="goalOptions.length - 1"
+                            :min="goalOptions.sessions.min"
+                            :max="goalOptions.sessions.max"
+                            :steps="goalOptions.sessions.max - goalOptions.sessions.min"
                             :selected="plan.goal.sessions"
                             :transform="_ => _ + ' session' + (_ > 1 ? 's' : '')"
-                            @change="onGoalChange($event, goalOptions[0].sessionDuration)">
+                            @change="onGoalChange($event, goalOptions.sessionDuration)">
                         </value-slider>
                     </section-panel>
                 </div>
@@ -75,6 +75,8 @@ import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Goal } from '../../core/data-model/generic/goal';
+// eslint-disable-next-line no-unused-vars
+import { GoalOptions } from '../../core/data-model/generic/goal-options';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
@@ -136,7 +138,7 @@ export default class DailyPlanner extends Vue {
         return TimeUtility.toLongDateString(new Date());
     }
 
-    get goalOptions(): Goal[] {
+    get goalOptions(): GoalOptions {
         return store.getters[`${dailyPlanKey}/goalOptions`];
     }
 
