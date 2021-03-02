@@ -156,9 +156,18 @@ export default class DailyPlanner extends Vue {
         return store.getters[`${dailyPlanKey}/currentPlan`];
     }
 
-    public created(): void {
-        store.dispatch(`${dailyPlanKey}/loadGoalOptions`);
-        store.dispatch(`${dailyPlanKey}/loadCurrentPlan`);
+    public async created(): Promise<void> {
+        await Promise.allSettled([
+            store.dispatch(`${dailyPlanKey}/loadGoalOptions`),
+            store.dispatch(`${dailyPlanKey}/loadCurrentPlan`)
+        ]);
+
+        if (this.plan) {
+            const total = this.plan.goal.sessions * this.plan.goal.sessionDuration;
+            const sessions = Math.round(total / this.goalOptions.sessionDuration);
+            const adjusted = Math.min(sessions, this.goalOptions.sessions.max);
+            this.onGoalChange(adjusted, this.goalOptions.sessionDuration);
+        }
     }
 
     public beforeUnmount(): void {
