@@ -3,12 +3,17 @@
         <span>{{ name }}</span>
 
         <div class="content">
-            <div class="difference">
+            <div class="values">
                 <span>{{ valueTransform ? valueTransform(current) : current }}</span>
 
-                <span v-if="difference">
-                    {{ differenceTransform ? differenceTransform(difference) : difference }}
-                </span>
+                <div v-if="difference"
+                    class="difference"
+                    :class="{ positive: current > target, negative: current < target }">
+
+                    <arrow-up-bold v-if="current > target" class="arrow" />
+                    <arrow-down-bold v-if="current < target" class="arrow" />
+                    <span>{{ differenceTransform ? differenceTransform(difference) : difference }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -16,6 +21,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { ArrowUpBold, ArrowDownBold } from 'mdue';
 
 class ValueDifferenceProp {
     public name = prop<string>({ default: '' });
@@ -26,7 +32,10 @@ class ValueDifferenceProp {
 }
 
 @Options({
-
+    components: {
+        ArrowUpBold,
+        ArrowDownBold
+    }
 })
 export default class ValueDifference extends Vue.with(ValueDifferenceProp) {
 
@@ -57,16 +66,35 @@ export default class ValueDifference extends Vue.with(ValueDifferenceProp) {
 
     .content {
         display: flex;
-        justify-content: center;
         width: calc(100% - #{$name-width});
 
-        .difference {
+        .values {
+            display: flex;
+            align-items: center;
             padding: 1.35% 5.5%;
             width: 100%;
             height: 100%;
             border-radius: 3px;
             background-color: rgba(45, 45, 45, 0.7);
             font-size: 0.4rem;
+
+            .difference {
+                display: flex;
+                align-items: center;
+                margin-left: 0.175rem;
+
+                &.positive {
+                    color: rgb(81, 204, 70);
+                }
+
+                &.negative {
+                    color: rgb(255, 45, 56);
+                }
+
+                .arrow {
+                    font-size: 0.55rem;
+                }
+            }
         }
     }
 }
