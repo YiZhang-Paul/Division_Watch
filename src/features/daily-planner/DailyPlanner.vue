@@ -44,9 +44,45 @@
                     <goal-selector class="goal-selector"
                         :goal="plan.goal"
                         :options="goalOptions"
-                        :estimation="plannedDuration"
+                        :estimation="currentEstimation"
                         @select="onPlanChange('goal', $event)">
                     </goal-selector>
+
+                    <div class="selected-items">
+                        <item-group-panel class="planned-items"
+                            :name="'Planned (' + plannedItems.length + ')'"
+                            :isDisabled="true"
+                            :placeholder="'drag items to this list.'">
+
+                            <subtask-summary-card class="subtask-summary-card"
+                                v-for="item of plannedItems"
+                                :key="item.id"
+                                :task="item">
+                            </subtask-summary-card>
+
+                            <placeholder-panel v-if="!plannedItems.length"
+                                class="placeholder-panel"
+                                :text="'no entry selected yet.'">
+                            </placeholder-panel>
+                        </item-group-panel>
+
+                        <item-group-panel class="potential-items"
+                            :name="'Potential (' + potentialItems.length + ')'"
+                            :isDisabled="true"
+                            :placeholder="'drag items to this list.'">
+
+                            <subtask-summary-card class="subtask-summary-card"
+                                v-for="item of potentialItems"
+                                :key="item.id"
+                                :task="item">
+                            </subtask-summary-card>
+
+                            <placeholder-panel v-if="!potentialItems.length"
+                                class="placeholder-panel"
+                                :text="'no entry selected yet.'">
+                            </placeholder-panel>
+                        </item-group-panel>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,10 +113,12 @@ import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
+import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
@@ -91,10 +129,12 @@ import GoalSelector from './GoalSelector.vue';
 @Options({
     components: {
         TaskSummaryCard,
+        SubtaskSummaryCard,
         TitlePanel,
         ViewPanel,
         ItemListPanel,
         PlaceholderPanel,
+        ItemGroupPanel,
         MenuButton,
         Checkbox,
         GoalSelector
@@ -113,8 +153,16 @@ export default class DailyPlanner extends Vue {
         return candidates.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
-    get plannedDuration(): number {
-        return store.getters[`${dailyPlanKey}/plannedDuration`];
+    get plannedItems(): TaskItem[] {
+        return store.getters[`${dailyPlanKey}/plannedItems`];
+    }
+
+    get potentialItems(): TaskItem[] {
+        return store.getters[`${dailyPlanKey}/potentialItems`];
+    }
+
+    get currentEstimation(): number {
+        return store.getters[`${dailyPlanKey}/currentEstimation`];
     }
 
     get goalOptions(): GoalOptions {
@@ -256,9 +304,32 @@ export default class DailyPlanner extends Vue {
         .plan-details {
             padding-top: 1.5vh;
             width: $content-width;
+            height: 100%;
 
             .goal-selector {
                 width: 100%;
+            }
+
+            .selected-items {
+                $margin-left: 0.5rem;
+
+                display: flex;
+                justify-content: space-between;
+                margin-top: 3.5%;
+                width: 100%;
+                height: 70%;
+
+                .placeholder-panel {
+                    box-sizing: border-box;
+                    margin-left: $margin-left;
+                    width: calc(95% - #{$margin-left});
+                    height: 100%;
+                }
+
+                .planned-items, .potential-items {
+                    width: 48.75%;
+                    height: 100%;
+                }
             }
         }
     }
