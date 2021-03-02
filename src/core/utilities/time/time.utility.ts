@@ -64,19 +64,19 @@ export class TimeUtility {
 
     public static toEstimationString(total: number, options: TaskItemOptions): string {
         const { estimates, skullDuration } = options;
-        const maxSkulls = estimates.length - 1;
+        const maxSessions = estimates.length - 1;
 
         if (total < skullDuration) {
-            return `~1 Skull (${Math.round(this.toMinutes(estimates[0]))} minutes)`;
+            return `~1 Session (${Math.round(this.toMinutes(estimates[0]))} minutes)`;
         }
 
-        const skulls = Math.min(Math.round(total / skullDuration), maxSkulls);
-        const totalMinutes = Math.floor(skulls * this.toMinutes(skullDuration));
+        const sessions = Math.min(Math.round(total / skullDuration), maxSessions);
+        const totalMinutes = Math.floor(sessions * this.toMinutes(skullDuration));
         const [minutes, hours] = [totalMinutes % 60, Math.floor(totalMinutes / 60)];
         const hourText = hours ? `${hours} hour${hours > 1 ? 's' : ''} ` : '';
         const minuteText = minutes ? `${minutes} minute${minutes > 1 ? 's' : ''}` : '';
         const timeText = `${hourText}${minuteText}`.trim();
 
-        return `${skulls} Skull${skulls > 1 ? 's' : ''} (${timeText})`;
+        return `${sessions} Session${sessions > 1 ? 's' : ''} (${timeText})`;
     }
 }
