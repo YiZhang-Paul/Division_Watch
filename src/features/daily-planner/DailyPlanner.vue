@@ -48,9 +48,17 @@
                             :max="goalOptions.sessions.max"
                             :steps="goalOptions.sessions.max - goalOptions.sessions.min"
                             :selected="plan.goal.sessions"
-                            :transform="_ => _ + ' session' + (_ > 1 ? 's' : '')"
+                            :transform="getSessionTotalText"
                             @change="onGoalChange($event, goalOptions.sessionDuration)">
                         </value-slider>
+
+                        <value-difference class="control-item"
+                            :name="'Total'"
+                            :current="0"
+                            :target="plan.goal.sessions * plan.goal.sessionDuration"
+                            :valueTransform="getSessionDifferenceText"
+                            :differenceTransform="getSessionDifferenceText">
+                        </value-difference>
                     </section-panel>
                 </div>
             </div>
@@ -91,6 +99,7 @@ import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
 import ValueSlider from '../../shared/controls/ValueSlider.vue';
+import ValueDifference from '../../shared/controls/ValueDifference.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
@@ -105,7 +114,8 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         SectionPanel,
         MenuButton,
         Checkbox,
-        ValueSlider
+        ValueSlider,
+        ValueDifference
     }
 })
 export default class DailyPlanner extends Vue {
@@ -167,6 +177,18 @@ export default class DailyPlanner extends Vue {
 
     public closePanel(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    }
+
+    public getSessionDifferenceText(time: number): string {
+        const sessions = time / this.plan!.goal.sessionDuration;
+        const hours = TimeUtility.toMinutes(time) / 60;
+        const hourText = `${hours ? hours.toFixed(1) : '0'} hour${hours > 1 ? 's' : ''}`;
+
+        return `${this.getSessionTotalText(sessions)}/${hourText}`;
+    }
+
+    public getSessionTotalText(total: number): string {
+        return `${total} session${total > 1 ? 's' : ''}`;
     }
 
     public onGoalChange(sessions: number, duration: number): void {
