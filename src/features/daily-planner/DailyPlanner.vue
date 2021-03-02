@@ -41,25 +41,11 @@
 
             <div v-if="plan" class="content">
                 <div class="plan-details">
-                    <section-panel class="section-panel" :name="date">
-                        <value-slider class="control-item"
-                            :name="'Goal'"
-                            :min="goalOptions.sessions.min"
-                            :max="goalOptions.sessions.max"
-                            :steps="goalOptions.sessions.max - goalOptions.sessions.min"
-                            :selected="plan.goal.sessions"
-                            :transform="getSessionTotalText"
-                            @change="onGoalChange($event, goalOptions.sessionDuration)">
-                        </value-slider>
-
-                        <value-difference class="control-item"
-                            :name="'Total'"
-                            :current="0"
-                            :target="plan.goal.sessions * plan.goal.sessionDuration"
-                            :valueTransform="getSessionDifferenceText"
-                            :differenceTransform="getSessionDifferenceText">
-                        </value-difference>
-                    </section-panel>
+                    <goal-selector class="goal-selector"
+                        :goal="plan.goal"
+                        :options="goalOptions"
+                        @select="onPlanChange('goal', $event)">
+                    </goal-selector>
                 </div>
             </div>
         </div>
@@ -95,14 +81,12 @@ import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
-import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
-import ValueSlider from '../../shared/controls/ValueSlider.vue';
-import ValueDifference from '../../shared/controls/ValueDifference.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
-import { TimeUtility } from '../../core/utilities/time/time.utility';
+
+import GoalSelector from './GoalSelector.vue';
 
 @Options({
     components: {
@@ -111,11 +95,9 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
         ViewPanel,
         ItemListPanel,
         PlaceholderPanel,
-        SectionPanel,
         MenuButton,
         Checkbox,
-        ValueSlider,
-        ValueDifference
+        GoalSelector
     }
 })
 export default class DailyPlanner extends Vue {
@@ -144,10 +126,6 @@ export default class DailyPlanner extends Vue {
         return items.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
-    get date(): string {
-        return TimeUtility.toLongDateString(new Date());
-    }
-
     get goalOptions(): GoalOptions {
         return store.getters[`${dailyPlanKey}/goalOptions`];
     }
@@ -166,7 +144,8 @@ export default class DailyPlanner extends Vue {
             const total = this.plan.goal.sessions * this.plan.goal.sessionDuration;
             const sessions = Math.round(total / this.goalOptions.sessionDuration);
             const adjusted = Math.min(sessions, this.goalOptions.sessions.max);
-            this.onGoalChange(adjusted, this.goalOptions.sessionDuration);
+            const goal = { sessions: adjusted, sessionDuration: this.goalOptions.sessionDuration } as Goal;
+            this.onPlanChange('goal', goal);
         }
     }
 
@@ -188,23 +167,7 @@ export default class DailyPlanner extends Vue {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 
-    public getSessionDifferenceText(time: number): string {
-        const sessions = time / this.plan!.goal.sessionDuration;
-        const hours = TimeUtility.toMinutes(time) / 60;
-        const hourText = `${hours ? hours.toFixed(1) : '0'} hour${hours > 1 ? 's' : ''}`;
-
-        return `${this.getSessionTotalText(sessions)}/${hourText}`;
-    }
-
-    public getSessionTotalText(total: number): string {
-        return `${total} session${total > 1 ? 's' : ''}`;
-    }
-
-    public onGoalChange(sessions: number, duration: number): void {
-        this.onPlanChange('goal', { sessions, sessionDuration: duration } as Goal);
-    }
-
-    private onPlanChange<T>(key: string, value: T): void {
+    public onPlanChange<T>(key: string, value: T): void {
         const plan = { ...this.plan, [key]: value } as DailyPlan;
         store.commit(`${dailyPlanKey}/setCurrentPlan`, plan);
 
@@ -303,16 +266,8 @@ export default class DailyPlanner extends Vue {
             padding-top: 1.5vh;
             width: $content-width;
 
-            .section-panel {
+            .goal-selector {
                 width: 100%;
-
-                .control-item {
-                    width: 100%;
-                }
-
-                .control-item:not(:nth-last-child(1)) {
-                    margin-bottom: 1%;
-                }
             }
         }
     }
