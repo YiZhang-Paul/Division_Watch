@@ -24,16 +24,30 @@ const getters = {
     goalOptions: (state: IDailyPlanState): GoalOptions => state.goalOptions,
     activeItem: (state: IDailyPlanState): TaskItem | null => state.activeItem,
     currentPlan: (state: IDailyPlanState): DailyPlan | null => state.currentPlan,
-    plannedDuration: (state: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any): number => {
+    plannedItems: (state: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any): TaskItem[] => {
         if (!state.currentPlan) {
-            return 0;
+            return [];
         }
 
-        const { planned, potential } = state.currentPlan;
-        const ids = new Set([...planned, ...potential]);
+        const ids = new Set(state.currentPlan.planned);
         const items = rootGetters[`${taskItemKey}/incompleteItems`] as TaskItem[];
 
-        return items.filter(_ => ids.has(_.id ?? '')).reduce((total, _) => total + _.estimate, 0);
+        return items.filter(_ => ids.has(_.id ?? ''));
+    },
+    potentialItems: (state: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any): TaskItem[] => {
+        if (!state.currentPlan) {
+            return [];
+        }
+
+        const ids = new Set(state.currentPlan.potential);
+        const items = rootGetters[`${taskItemKey}/incompleteItems`] as TaskItem[];
+
+        return items.filter(_ => ids.has(_.id ?? ''));
+    },
+    currentEstimation: (_: IDailyPlanState, getters: any): number => {
+        const items = [...getters.plannedItems, ...getters.potentialItems] as TaskItem[];
+
+        return items.reduce((total, _) => total + _.estimate, 0);
     },
     candidates: (_: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
         const { showTask, showInterruption } = payload;
