@@ -1,5 +1,6 @@
 import { ActionContext } from 'vuex';
 
+import { taskItemKey } from '../task-item/task-item.state';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
@@ -22,7 +23,34 @@ const state = (): IDailyPlanState => ({
 const getters = {
     goalOptions: (state: IDailyPlanState): GoalOptions => state.goalOptions,
     activeItem: (state: IDailyPlanState): TaskItem | null => state.activeItem,
-    currentPlan: (state: IDailyPlanState): DailyPlan | null => state.currentPlan
+    currentPlan: (state: IDailyPlanState): DailyPlan | null => state.currentPlan,
+    plannedDuration: (state: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any): number => {
+        if (!state.currentPlan) {
+            return 0;
+        }
+
+        const { planned, potential } = state.currentPlan;
+        const ids = new Set([...planned, ...potential]);
+        const items = rootGetters[`${taskItemKey}/incompleteItems`] as TaskItem[];
+
+        return items.filter(_ => ids.has(_.id ?? '')).reduce((total, _) => total + _.estimate, 0);
+    },
+    candidates: (_: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
+        const { showTask, showInterruption } = payload;
+
+        if (!showTask && !showInterruption) {
+            return [];
+        }
+
+        if (showTask && showInterruption) {
+            return rootGetters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
+        }
+        else if (showTask) {
+            return rootGetters[`${taskItemKey}/incompleteParentTasks`];
+        }
+
+        return rootGetters[`${taskItemKey}/incompleteInterruptions`];
+    }
 };
 
 const mutations = {

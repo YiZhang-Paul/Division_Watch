@@ -13,7 +13,7 @@
 
             <value-difference class="control-item"
                 :name="'Total'"
-                :current="0"
+                :current="estimation"
                 :target="goal.sessions * goal.sessionDuration"
                 :valueTransform="getSessionDifferenceText"
                 :differenceTransform="getSessionDifferenceText">
@@ -36,6 +36,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
 class GoalSelectorProp {
     public goal = prop<Goal>({ default: null });
     public options = prop<GoalOptions>({ default: null });
+    public estimation = prop<number>({ default: 0 });
 }
 
 @Options({

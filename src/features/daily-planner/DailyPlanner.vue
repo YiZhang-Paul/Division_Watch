@@ -44,6 +44,7 @@
                     <goal-selector class="goal-selector"
                         :goal="plan.goal"
                         :options="goalOptions"
+                        :estimation="plannedDuration"
                         @select="onPlanChange('goal', $event)">
                     </goal-selector>
                 </div>
@@ -66,7 +67,6 @@ import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
-import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Goal } from '../../core/data-model/generic/goal';
 // eslint-disable-next-line no-unused-vars
@@ -107,23 +107,14 @@ export default class DailyPlanner extends Vue {
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get candidates(): TaskItem[] {
-        if (!this.showTask && !this.showInterruption) {
-            return [];
-        }
+        const payload = { showTask: this.showTask, showInterruption: this.showInterruption };
+        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
 
-        let items: TaskItem[];
+        return candidates.filter(_ => _.name.toLowerCase().includes(this.searchText));
+    }
 
-        if (this.showTask && this.showInterruption) {
-            items = store.getters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
-        }
-        else if (this.showTask) {
-            items = store.getters[`${taskItemKey}/incompleteParentTasks`];
-        }
-        else {
-            items = store.getters[`${taskItemKey}/incompleteInterruptions`];
-        }
-
-        return items.filter(_ => _.name.toLowerCase().includes(this.searchText));
+    get plannedDuration(): number {
+        return store.getters[`${dailyPlanKey}/plannedDuration`];
     }
 
     get goalOptions(): GoalOptions {
