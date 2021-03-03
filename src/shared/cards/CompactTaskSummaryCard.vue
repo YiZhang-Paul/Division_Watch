@@ -1,6 +1,6 @@
 <template>
     <div v-if="task"
-        class="subtask-summary-card-container"
+        class="compact-task-summary-card-container"
         @mouseover="isMouseover = true"
         @mouseout="isMouseover = false">
 
@@ -24,7 +24,7 @@ import { TaskItem } from '../../core/data-model/task-item/task-item';
 import PriorityIndicator from '../../shared/widgets/PriorityIndicator.vue';
 import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
 
-class SubtaskSummaryCardProp {
+class CompactTaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
     public useCancelEvent = prop<boolean>({ default: false });
 }
@@ -41,13 +41,13 @@ class SubtaskSummaryCardProp {
         'cancel'
     ]
 })
-export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp) {
+export default class CompactTaskSummaryCard extends Vue.with(CompactTaskSummaryCardProp) {
     public isMouseover = false;
 }
 </script>
 
 <style lang="scss" scoped>
-.subtask-summary-card-container {
+.compact-task-summary-card-container {
     $skulls-width: 16.5%;
 
     box-sizing: border-box;

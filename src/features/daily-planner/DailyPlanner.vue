@@ -67,11 +67,11 @@
                                 item-key="id">
 
                                 <template #item="{ element }">
-                                    <subtask-summary-card class="subtask-summary-card"
+                                    <compact-task-summary-card class="compact-task-summary-card"
                                         :task="element"
                                         :useCancelEvent="true"
                                         @cancel="onPlannedItemRemove(element)">
-                                    </subtask-summary-card>
+                                    </compact-task-summary-card>
                                 </template>
                             </draggable>
 
@@ -93,11 +93,11 @@
                                 item-key="id">
 
                                 <template #item="{ element }">
-                                    <subtask-summary-card class="subtask-summary-card"
+                                    <compact-task-summary-card class="compact-task-summary-card"
                                         :task="element"
                                         :useCancelEvent="true"
                                         @cancel="onPotentialItemRemove(element)">
-                                    </subtask-summary-card>
+                                    </compact-task-summary-card>
                                 </template>
                             </draggable>
 
@@ -138,7 +138,7 @@ import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
-import SubtaskSummaryCard from '../../shared/cards/SubtaskSummaryCard.vue';
+import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
@@ -155,7 +155,7 @@ import GoalSelector from './GoalSelector.vue';
     components: {
         Draggable,
         TaskSummaryCard,
-        SubtaskSummaryCard,
+        CompactTaskSummaryCard,
         TitlePanel,
         ViewPanel,
         ItemListPanel,
@@ -376,7 +376,7 @@ export default class DailyPlanner extends Vue {
                     .drag-wrapper {
                         width: 100%;
 
-                        .subtask-summary-card {
+                        .compact-task-summary-card {
                             margin-left: $margin-left;
                             width: calc(100% - #{$margin-left});
                             height: 4.5vh;
