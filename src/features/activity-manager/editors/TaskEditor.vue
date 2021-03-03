@@ -79,8 +79,6 @@
                 <draggable class="drag-wrapper"
                     v-model="task.checklist"
                     handle=".list-handle"
-                    @start="drag = true"
-                    @end="drag = false"
                     @change="onTaskChange('checklist', task.checklist)"
                     item-key="description">
 
