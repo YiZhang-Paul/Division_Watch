@@ -58,7 +58,7 @@
                         <item-group-panel class="planned-items"
                             :name="'Planned (' + plannedItems.length + ')'"
                             :isDisabled="true"
-                            :placeholder="'drag items to this list.'">
+                            :placeholder="'cannot add items now.'">
 
                             <draggable class="drag-wrapper"
                                 v-model="plannedItems"
@@ -77,14 +77,14 @@
 
                             <placeholder-panel v-if="!plannedItems.length"
                                 class="placeholder-panel"
-                                :text="'no entry selected yet.'">
+                                :text="'drag and drop items here.'">
                             </placeholder-panel>
                         </item-group-panel>
 
                         <item-group-panel class="potential-items"
                             :name="'Potential (' + potentialItems.length + ')'"
                             :isDisabled="true"
-                            :placeholder="'drag items to this list.'">
+                            :placeholder="'cannot add items now.'">
 
                             <draggable class="drag-wrapper"
                                 v-model="potentialItems"
@@ -103,7 +103,7 @@
 
                             <placeholder-panel v-if="!potentialItems.length"
                                 class="placeholder-panel"
-                                :text="'no entry selected yet.'">
+                                :text="'drag and drop items here.'">
                             </placeholder-panel>
                         </item-group-panel>
                     </div>
@@ -175,8 +175,9 @@ export default class DailyPlanner extends Vue {
     get candidates(): TaskItem[] {
         const payload = { showTask: this.showTask, showInterruption: this.showInterruption };
         const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
+        const exclude = new Set([...this.plan?.planned ?? [], ...this.plan?.potential ?? []]);
 
-        return candidates.filter(_ => _.name.toLowerCase().includes(this.searchText));
+        return candidates.filter(_ => !exclude.has(_.id ?? '') && _.name.toLowerCase().includes(this.searchText));
     }
 
     get plannedItems(): TaskItem[] {
