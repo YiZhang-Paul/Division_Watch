@@ -24,13 +24,19 @@
                     :allowAdd="false"
                     @item:search="searchText = $event">
 
-                    <task-summary-card class="summary-card"
-                        v-for="candidate of candidates"
-                        :key="candidate.id"
-                        :task="candidate"
-                        :isUrgent="candidate.isInterruption"
-                        @mouseenter="onCardHover()">
-                    </task-summary-card>
+                    <draggable v-model="candidates"
+                        :sort="false"
+                        :group="{ name: 'items', pull: 'clone', put: false }"
+                        item-key="id">
+
+                        <template #item="{ element }">
+                            <task-summary-card class="summary-card"
+                                :task="element"
+                                :isUrgent="element.isInterruption"
+                                @mouseenter="onCardHover()">
+                            </task-summary-card>
+                        </template>
+                    </draggable>
 
                     <placeholder-panel v-if="!candidates.length"
                         class="placeholder-panel"
