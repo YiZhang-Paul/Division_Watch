@@ -60,11 +60,18 @@
                             :isDisabled="true"
                             :placeholder="'drag items to this list.'">
 
-                            <subtask-summary-card class="subtask-summary-card"
-                                v-for="item of plannedItems"
-                                :key="item.id"
-                                :task="item">
-                            </subtask-summary-card>
+                            <draggable class="drag-wrapper"
+                                v-model="plannedItems"
+                                :emptyInsertThreshold="100"
+                                :group="{ name: 'items', pull: true, put: true }"
+                                item-key="id">
+
+                                <template #item="{ element }">
+                                    <subtask-summary-card class="subtask-summary-card"
+                                        :task="element">
+                                    </subtask-summary-card>
+                                </template>
+                            </draggable>
 
                             <placeholder-panel v-if="!plannedItems.length"
                                 class="placeholder-panel"
@@ -77,11 +84,18 @@
                             :isDisabled="true"
                             :placeholder="'drag items to this list.'">
 
-                            <subtask-summary-card class="subtask-summary-card"
-                                v-for="item of potentialItems"
-                                :key="item.id"
-                                :task="item">
-                            </subtask-summary-card>
+                            <draggable class="drag-wrapper"
+                                v-model="potentialItems"
+                                :emptyInsertThreshold="100"
+                                :group="{ name: 'items', pull: true, put: true }"
+                                item-key="id">
+
+                                <template #item="{ element }">
+                                    <subtask-summary-card class="subtask-summary-card"
+                                        :task="element">
+                                    </subtask-summary-card>
+                                </template>
+                            </draggable>
 
                             <placeholder-panel v-if="!potentialItems.length"
                                 class="placeholder-panel"
@@ -104,6 +118,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import Draggable from 'vuedraggable';
 
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
@@ -134,6 +149,7 @@ import GoalSelector from './GoalSelector.vue';
 
 @Options({
     components: {
+        Draggable,
         TaskSummaryCard,
         SubtaskSummaryCard,
         TitlePanel,
@@ -163,8 +179,16 @@ export default class DailyPlanner extends Vue {
         return store.getters[`${dailyPlanKey}/plannedItems`];
     }
 
+    set plannedItems(value: TaskItem[]) {
+        this.onPlanChange('planned', value.map(_ => _.id));
+    }
+
     get potentialItems(): TaskItem[] {
         return store.getters[`${dailyPlanKey}/potentialItems`];
+    }
+
+    set potentialItems(value: TaskItem[]) {
+        this.onPlanChange('potential', value.map(_ => _.id));
     }
 
     get currentEstimation(): number {
@@ -335,6 +359,22 @@ export default class DailyPlanner extends Vue {
                 .planned-items, .potential-items {
                     width: 48.75%;
                     height: 100%;
+
+                    .drag-wrapper {
+                        width: 100%;
+
+                        .subtask-summary-card {
+                            margin-left: $margin-left;
+                            width: calc(100% - #{$margin-left});
+                            height: 4.5vh;
+                            opacity: 0;
+                            animation: revealContent 0.3s ease 0.1s forwards;
+
+                            &:not(:nth-last-child(1)) {
+                                margin-bottom: 1%;
+                            }
+                        }
+                    }
                 }
             }
         }
