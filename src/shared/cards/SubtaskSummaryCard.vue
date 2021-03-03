@@ -6,7 +6,8 @@
 
         <priority-indicator class="priority-indicator" :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
         <span>{{ task.name }}</span>
-        <delete class="delete-button" @click.stop="$emit('delete')" />
+        <delete v-if="!useCancelEvent" class="delete-button" @click.stop="$emit('delete')" />
+        <close-box v-if="useCancelEvent" class="cancel-button" @click.stop="$emit('cancel')" />
 
         <estimation-skulls v-if="!isMouseover"
             class="estimation-skulls"
@@ -17,7 +18,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Delete } from 'mdue';
+import { CloseBox, Delete } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import PriorityIndicator from '../../shared/widgets/PriorityIndicator.vue';
@@ -25,15 +26,20 @@ import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
 
 class SubtaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
+    public useCancelEvent = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
+        CloseBox,
         Delete,
         PriorityIndicator,
         EstimationSkulls
     },
-    emits: ['delete']
+    emits: [
+        'delete',
+        'cancel'
+    ]
 })
 export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp) {
     public isMouseover = false;
@@ -58,7 +64,7 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
         cursor: pointer;
         background-color: rgba(60, 60, 60, 0.5);
 
-        .delete-button {
+        .delete-button, .cancel-button {
             display: initial;
         }
     }
@@ -75,12 +81,12 @@ export default class SubtaskSummaryCard extends Vue.with(SubtaskSummaryCardProp)
         text-overflow: ellipsis;
     }
 
-    .delete-button, .estimation-skulls {
+    .delete-button, .cancel-button, .estimation-skulls {
         opacity: 0;
         animation: revealContent 0.35s ease 0.1s forwards;
     }
 
-    .delete-button {
+    .delete-button, .cancel-button {
         display: none;
         position: absolute;
         right: 4%;
