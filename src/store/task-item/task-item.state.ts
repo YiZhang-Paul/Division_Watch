@@ -42,6 +42,11 @@ const getters = {
         return id ? state.incompleteItems.find(_ => _.id === id) ?? null : null;
     },
     incompleteItems: (state: ITaskItemState): TaskItem[] => state.incompleteItems,
+    incompleteItemsByIds: (state: ITaskItemState) => (ids: string[]): TaskItem[] => {
+        const lookup = new Map(state.incompleteItems.map(_ => [_.id, _]));
+
+        return ids.map(_ => lookup.get(_)!).filter(Boolean);
+    },
     incompleteParentTasks: (state: ITaskItemState): TaskItem[] => {
         return sortByPriority(state.incompleteItems.filter(_ => !_.isInterruption && !_.parent));
     },
