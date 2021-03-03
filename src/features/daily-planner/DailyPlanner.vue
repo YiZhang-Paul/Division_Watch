@@ -68,7 +68,9 @@
 
                                 <template #item="{ element }">
                                     <subtask-summary-card class="subtask-summary-card"
-                                        :task="element">
+                                        :task="element"
+                                        :useCancelEvent="true"
+                                        @cancel="onPlannedItemRemove(element)">
                                     </subtask-summary-card>
                                 </template>
                             </draggable>
@@ -92,7 +94,9 @@
 
                                 <template #item="{ element }">
                                     <subtask-summary-card class="subtask-summary-card"
-                                        :task="element">
+                                        :task="element"
+                                        :useCancelEvent="true"
+                                        @cancel="onPotentialItemRemove(element)">
                                     </subtask-summary-card>
                                 </template>
                             </draggable>
@@ -226,6 +230,14 @@ export default class DailyPlanner extends Vue {
 
     public onCardHover(): void {
         store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
+    public onPlannedItemRemove(item: TaskItem): void {
+        this.onPlanChange('planned', this.plan!.planned.filter(_ => _ !== item.id));
+    }
+
+    public onPotentialItemRemove(item: TaskItem): void {
+        this.onPlanChange('potential', this.plan!.potential.filter(_ => _ !== item.id));
     }
 
     public backToMain(): void {
