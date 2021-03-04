@@ -7,45 +7,11 @@
         </template>
 
         <div class="main-content">
-            <div class="list-wrapper">
-                <div class="filters">
-                    <div class="filter">
-                        <checkbox class="checkbox" v-model="showTask"></checkbox>
-                        <span>Show Task</span>
-                    </div>
-
-                    <div class="filter">
-                        <checkbox class="checkbox" v-model="showInterruption"></checkbox>
-                        <span>Show Interruption</span>
-                    </div>
-                </div>
-
-                <item-list-panel class="item-list-panel"
-                    :allowAdd="false"
-                    @item:search="searchText = $event">
-
-                    <draggable v-model="candidates"
-                        item-key="id"
-                        :sort="false"
-                        :group="{ name: 'items', pull: 'clone', put: false }"
-                        :move="_ => dragTarget = _.to.className"
-                        @end="dragTarget = ''">
-
-                        <template #item="{ element }">
-                            <task-summary-card class="summary-card"
-                                :task="element"
-                                :isUrgent="element.isInterruption"
-                                @mouseenter="onCardHover()">
-                            </task-summary-card>
-                        </template>
-                    </draggable>
-
-                    <placeholder-panel v-if="!candidates.length"
-                        class="placeholder-panel"
-                        :text="searchText ? 'no matching entry found.' : 'no entry available.'">
-                    </placeholder-panel>
-                </item-list-panel>
-            </div>
+            <planner-item-list class="planner-item-list"
+                :plan="plan"
+                :groupName="'items'"
+                @group:move="dragTarget = $event">
+            </planner-item-list>
 
             <div v-if="plan" class="content">
                 <div class="plan-details">
@@ -147,14 +113,13 @@ import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
-import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
-import Checkbox from '../../shared/controls/Checkbox.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 import { SoundType } from '../../core/enums/sound-type.enum';
 
+import PlannerItemList from './PlannerItemList.vue';
 import GoalSelector from './GoalSelector.vue';
 
 @Options({
@@ -164,28 +129,16 @@ import GoalSelector from './GoalSelector.vue';
         CompactTaskSummaryCard,
         TitlePanel,
         ViewPanel,
-        ItemListPanel,
         PlaceholderPanel,
         ItemGroupPanel,
         MenuButton,
-        Checkbox,
+        PlannerItemList,
         GoalSelector
     }
 })
 export default class DailyPlanner extends Vue {
-    public showTask = true;
-    public showInterruption = true;
-    public searchText = '';
     public dragTarget = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
-
-    get candidates(): TaskItem[] {
-        const payload = { showTask: this.showTask, showInterruption: this.showInterruption };
-        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
-        const exclude = new Set([...this.plan?.planned ?? [], ...this.plan?.potential ?? []]);
-
-        return candidates.filter(_ => !exclude.has(_.id ?? '') && _.name.toLowerCase().includes(this.searchText));
-    }
 
     get plannedItems(): TaskItem[] {
         return store.getters[`${dailyPlanKey}/plannedItems`];
@@ -291,56 +244,9 @@ export default class DailyPlanner extends Vue {
     margin-left: $margin;
     width: calc(100% - #{$margin} * 2);
 
-    .list-wrapper {
-        display: flex;
-        flex-direction: column;
+    .planner-item-list {
         width: $list-width;
         height: 97.5%;
-
-        .filters {
-            display: flex;
-            align-items: flex-end;
-            width: 100%;
-            height: 1rem;
-
-            .filter {
-                display: flex;
-                align-items: center;
-                color: rgb(255, 255, 255);
-                font-size: 0.475rem;
-
-                &:nth-child(1) {
-                    margin-right: 0.75rem;
-                }
-
-                .checkbox {
-                    margin-right: 0.275rem;
-                    width: 0.425rem;
-                    height: 0.425rem;
-                }
-            }
-        }
-
-        .item-list-panel {
-            width: 100%;
-            height: calc(100% - 1rem);
-
-            .summary-card {
-                width: 100%;
-                height: 10.5vh;
-                opacity: 0;
-                animation: revealContent 0.3s ease 0.1s forwards;
-
-                &:not(:nth-last-child(1)) {
-                    margin-bottom: 0.9vh;
-                }
-            }
-
-            .placeholder-panel {
-                margin-left: 2.5%;
-                width: 95%;
-            }
-        }
     }
 
     .content {
