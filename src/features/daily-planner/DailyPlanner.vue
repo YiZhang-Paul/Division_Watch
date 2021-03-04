@@ -25,9 +25,11 @@
                     @item:search="searchText = $event">
 
                     <draggable v-model="candidates"
+                        item-key="id"
                         :sort="false"
                         :group="{ name: 'items', pull: 'clone', put: false }"
-                        item-key="id">
+                        :move="_ => dragTarget = _.to.className"
+                        @end="dragTarget = ''">
 
                         <template #item="{ element }">
                             <task-summary-card class="summary-card"
@@ -60,11 +62,13 @@
                             :isDisabled="true"
                             :placeholder="'cannot add items now.'">
 
-                            <draggable class="drag-wrapper"
+                            <draggable class="planned-drag-wrapper"
                                 v-model="plannedItems"
-                                :emptyInsertThreshold="100"
+                                item-key="id"
+                                :emptyInsertThreshold="30"
                                 :group="{ name: 'items', pull: true, put: true }"
-                                item-key="id">
+                                :move="_ => dragTarget = _.to.className"
+                                @end="dragTarget = ''">
 
                                 <template #item="{ element }">
                                     <compact-task-summary-card class="compact-task-summary-card"
@@ -75,7 +79,7 @@
                                 </template>
                             </draggable>
 
-                            <placeholder-panel v-if="!plannedItems.length"
+                            <placeholder-panel v-if="!plannedItems.length && dragTarget !== 'planned-drag-wrapper'"
                                 class="placeholder-panel"
                                 :text="'drag and drop items here.'">
                             </placeholder-panel>
@@ -86,11 +90,13 @@
                             :isDisabled="true"
                             :placeholder="'cannot add items now.'">
 
-                            <draggable class="drag-wrapper"
+                            <draggable class="potential-drag-wrapper"
                                 v-model="potentialItems"
-                                :emptyInsertThreshold="100"
+                                item-key="id"
+                                :emptyInsertThreshold="30"
                                 :group="{ name: 'items', pull: true, put: true }"
-                                item-key="id">
+                                :move="_ => dragTarget = _.to.className"
+                                @end="dragTarget = ''">
 
                                 <template #item="{ element }">
                                     <compact-task-summary-card class="compact-task-summary-card"
@@ -101,7 +107,7 @@
                                 </template>
                             </draggable>
 
-                            <placeholder-panel v-if="!potentialItems.length"
+                            <placeholder-panel v-if="!potentialItems.length && dragTarget !== 'potential-drag-wrapper'"
                                 class="placeholder-panel"
                                 :text="'drag and drop items here.'">
                             </placeholder-panel>
@@ -170,6 +176,7 @@ export default class DailyPlanner extends Vue {
     public showTask = true;
     public showInterruption = true;
     public searchText = '';
+    public dragTarget = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get candidates(): TaskItem[] {
@@ -373,7 +380,7 @@ export default class DailyPlanner extends Vue {
                     width: 48.75%;
                     height: 100%;
 
-                    .drag-wrapper {
+                    .planned-drag-wrapper, .potential-drag-wrapper {
                         width: 100%;
 
                         .compact-task-summary-card {
