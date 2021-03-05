@@ -45,15 +45,18 @@ import { Options, Vue, prop } from 'vue-class-component';
 import Draggable from 'vuedraggable';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import Checkbox from '../../shared/controls/Checkbox.vue';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 class PlannerItemListProp {
     public plan = prop<DailyPlan>({ default: null });
@@ -81,6 +84,10 @@ export default class PlannerItemList extends Vue.with(PlannerItemListProp) {
         const exclude = new Set([...this.plan?.planned ?? [], ...this.plan?.potential ?? []]);
 
         return candidates.filter(_ => !exclude.has(_.id ?? '') && _.name.toLowerCase().includes(this.searchText));
+    }
+
+    public onCardHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 }
 </script>
