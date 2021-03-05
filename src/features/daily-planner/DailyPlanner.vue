@@ -3,7 +3,9 @@
         <item-inspector v-if="activeItem"
             class="item-inspector"
             :item="activeItem"
-            @item:close="onItemSelect(null)">
+            @register:planned="addToPlanned(activeItem)"
+            @register:potential="addToPotential(activeItem)"
+            @item:cancel="onItemSelect(null)">
         </item-inspector>
 
         <view-panel class="view-panel" @click="onItemSelect(null)">
@@ -141,6 +143,16 @@ export default class DailyPlanner extends Vue {
         }
     }
 
+    public addToPlanned(item: TaskItem): void {
+        this.onPlanChange('planned', [...this.plan?.planned ?? [], item.id]);
+        this.onItemSelect(null);
+    }
+
+    public addToPotential(item: TaskItem): void {
+        this.onPlanChange('potential', [...this.plan?.potential ?? [], item.id]);
+        this.onItemSelect(null);
+    }
+
     public onPlanChange<T>(key: string, value: T): void {
         const plan = { ...this.plan, [key]: value } as DailyPlan;
         store.commit(`${dailyPlanKey}/setCurrentPlan`, plan);
@@ -175,10 +187,10 @@ export default class DailyPlanner extends Vue {
 
     .item-inspector {
         position: absolute;
-        top: 10%;
+        top: 17.5%;
         left: 1.75%;
         width: 25%;
-        height: 80%;
+        height: 65%;
     }
 
     .view-panel {
