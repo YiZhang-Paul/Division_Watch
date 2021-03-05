@@ -60,7 +60,7 @@ export default class GoalSelector extends Vue.with(GoalSelectorProp) {
     public getSessionDifferenceText(time: number): string {
         const sessions = time / this.goal.sessionDuration;
         const hours = TimeUtility.toMinutes(time) / 60;
-        const hourText = `${hours ? hours.toFixed(1) : '0'} hour${hours > 1 ? 's' : ''}`;
+        const hourText = `${hours ? hours.toFixed(1) : '0'} hr${hours > 1 ? 's' : ''}`;
 
         return `${this.getSessionTotalText(sessions)}/${hourText}`;
     }
