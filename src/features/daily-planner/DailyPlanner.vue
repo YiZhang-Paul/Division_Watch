@@ -9,7 +9,7 @@
         <div class="main-content">
             <planner-item-list class="planner-item-list"
                 :plan="plan"
-                :groupName="'items'"
+                :groupName="groupName"
                 @group:move="dragTarget = $event">
             </planner-item-list>
 
@@ -22,63 +22,14 @@
                         @select="onPlanChange('goal', $event)">
                     </goal-selector>
 
-                    <div class="selected-items">
-                        <item-group-panel class="planned-items"
-                            :name="'Planned (' + plannedItems.length + ')'"
-                            :isDisabled="true"
-                            :placeholder="'cannot add items now.'">
-
-                            <draggable class="planned-drag-wrapper"
-                                v-model="plannedItems"
-                                item-key="id"
-                                :emptyInsertThreshold="30"
-                                :group="{ name: 'items', pull: true, put: true }"
-                                :move="_ => dragTarget = _.to.className"
-                                @end="dragTarget = ''">
-
-                                <template #item="{ element }">
-                                    <compact-task-summary-card class="compact-task-summary-card"
-                                        :task="element"
-                                        :useCancelEvent="true"
-                                        @cancel="onPlannedItemRemove(element)">
-                                    </compact-task-summary-card>
-                                </template>
-                            </draggable>
-
-                            <placeholder-panel v-if="!plannedItems.length && dragTarget !== 'planned-drag-wrapper'"
-                                class="placeholder-panel"
-                                :text="'drag and drop items here.'">
-                            </placeholder-panel>
-                        </item-group-panel>
-
-                        <item-group-panel class="potential-items"
-                            :name="'Potential (' + potentialItems.length + ')'"
-                            :isDisabled="true"
-                            :placeholder="'cannot add items now.'">
-
-                            <draggable class="potential-drag-wrapper"
-                                v-model="potentialItems"
-                                item-key="id"
-                                :emptyInsertThreshold="30"
-                                :group="{ name: 'items', pull: true, put: true }"
-                                :move="_ => dragTarget = _.to.className"
-                                @end="dragTarget = ''">
-
-                                <template #item="{ element }">
-                                    <compact-task-summary-card class="compact-task-summary-card"
-                                        :task="element"
-                                        :useCancelEvent="true"
-                                        @cancel="onPotentialItemRemove(element)">
-                                    </compact-task-summary-card>
-                                </template>
-                            </draggable>
-
-                            <placeholder-panel v-if="!potentialItems.length && dragTarget !== 'potential-drag-wrapper'"
-                                class="placeholder-panel"
-                                :text="'drag and drop items here.'">
-                            </placeholder-panel>
-                        </item-group-panel>
-                    </div>
+                    <planner-target-list class="planner-target-list"
+                        :plan="plan"
+                        :groupName="groupName"
+                        :dragTarget="dragTarget"
+                        @planned:change="onPlanChange('planned', $event)"
+                        @potential:change="onPlanChange('potential', $event)"
+                        @group:move="dragTarget = $event">
+                    </planner-target-list>
                 </div>
             </div>
         </div>
@@ -94,10 +45,8 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Draggable from 'vuedraggable';
 
 import store from '../../store';
-import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
 // eslint-disable-next-line no-unused-vars
@@ -106,55 +55,29 @@ import { Goal } from '../../core/data-model/generic/goal';
 import { GoalOptions } from '../../core/data-model/generic/goal-options';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
-// eslint-disable-next-line no-unused-vars
-import { TaskItem } from '../../core/data-model/task-item/task-item';
-import { SoundOption } from '../../core/data-model/generic/sound-option';
-import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
-import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
-import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
-import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
-import { SoundType } from '../../core/enums/sound-type.enum';
 
 import PlannerItemList from './PlannerItemList.vue';
 import GoalSelector from './GoalSelector.vue';
+import PlannerTargetList from './PlannerTargetList.vue';
 
 @Options({
     components: {
-        Draggable,
-        TaskSummaryCard,
-        CompactTaskSummaryCard,
         TitlePanel,
         ViewPanel,
-        PlaceholderPanel,
-        ItemGroupPanel,
         MenuButton,
         PlannerItemList,
-        GoalSelector
+        GoalSelector,
+        PlannerTargetList
     }
 })
 export default class DailyPlanner extends Vue {
+    public readonly groupName = 'items';
     public dragTarget = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
-
-    get plannedItems(): TaskItem[] {
-        return store.getters[`${dailyPlanKey}/plannedItems`];
-    }
-
-    set plannedItems(value: TaskItem[]) {
-        this.onPlanChange('planned', value.map(_ => _.id));
-    }
-
-    get potentialItems(): TaskItem[] {
-        return store.getters[`${dailyPlanKey}/potentialItems`];
-    }
-
-    set potentialItems(value: TaskItem[]) {
-        this.onPlanChange('potential', value.map(_ => _.id));
-    }
 
     get currentEstimation(): number {
         return store.getters[`${dailyPlanKey}/currentEstimation`];
@@ -187,18 +110,6 @@ export default class DailyPlanner extends Vue {
         if (this.updateDebounceTimer) {
             store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
         }
-    }
-
-    public onCardHover(): void {
-        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
-    }
-
-    public onPlannedItemRemove(item: TaskItem): void {
-        this.onPlanChange('planned', this.plan!.planned.filter(_ => _ !== item.id));
-    }
-
-    public onPotentialItemRemove(item: TaskItem): void {
-        this.onPlanChange('potential', this.plan!.potential.filter(_ => _ !== item.id));
     }
 
     public backToMain(): void {
@@ -266,42 +177,10 @@ export default class DailyPlanner extends Vue {
                 width: 100%;
             }
 
-            .selected-items {
-                $margin-left: 0.5rem;
-
-                display: flex;
-                justify-content: space-between;
+            .planner-target-list {
                 margin-top: 3.5%;
                 width: 100%;
                 height: 70%;
-
-                .placeholder-panel {
-                    box-sizing: border-box;
-                    margin-left: $margin-left;
-                    width: calc(95% - #{$margin-left});
-                    height: 100%;
-                }
-
-                .planned-items, .potential-items {
-                    width: 48.75%;
-                    height: 100%;
-
-                    .planned-drag-wrapper, .potential-drag-wrapper {
-                        width: 100%;
-
-                        .compact-task-summary-card {
-                            margin-left: $margin-left;
-                            width: calc(100% - #{$margin-left});
-                            height: 4.5vh;
-                            opacity: 0;
-                            animation: revealContent 0.3s ease 0.1s forwards;
-
-                            &:not(:nth-last-child(1)) {
-                                margin-bottom: 1%;
-                            }
-                        }
-                    }
-                }
             }
         }
     }
