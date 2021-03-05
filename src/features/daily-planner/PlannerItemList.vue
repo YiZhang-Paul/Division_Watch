@@ -16,21 +16,13 @@
             :allowAdd="false"
             @item:search="searchText = $event">
 
-            <draggable v-model="candidates"
-                item-key="id"
-                :sort="false"
-                :group="{ name: groupName, pull: 'clone', put: false }"
-                :move="_ => $emit('group:move', _.to.className)"
-                @end="$emit('group:move', '')">
-
-                <template #item="{ element }">
-                    <task-summary-card class="summary-card"
-                        :task="element"
-                        :isUrgent="element.isInterruption"
-                        @mouseenter="onCardHover()">
-                    </task-summary-card>
-                </template>
-            </draggable>
+            <task-summary-card class="summary-card"
+                v-for="candidate of candidates"
+                :key="candidate.id"
+                :task="candidate"
+                :isUrgent="candidate.isInterruption"
+                @mouseenter="onCardHover()">
+            </task-summary-card>
 
             <placeholder-panel v-if="!candidates.length"
                 class="placeholder-panel"
@@ -42,7 +34,6 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import Draggable from 'vuedraggable';
 
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
@@ -60,18 +51,15 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 
 class PlannerItemListProp {
     public plan = prop<DailyPlan>({ default: null });
-    public groupName = prop<string>({ default: 'group' });
 }
 
 @Options({
     components: {
-        Draggable,
         TaskSummaryCard,
         Checkbox,
         ItemListPanel,
         PlaceholderPanel
-    },
-    emits: ['group:move']
+    }
 })
 export default class PlannerItemList extends Vue.with(PlannerItemListProp) {
     public searchText = '';

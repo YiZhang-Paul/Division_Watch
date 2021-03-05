@@ -7,11 +7,7 @@
         </template>
 
         <div class="main-content">
-            <planner-item-list class="planner-item-list"
-                :plan="plan"
-                :groupName="groupName"
-                @group:move="dragTarget = $event">
-            </planner-item-list>
+            <planner-item-list class="planner-item-list" :plan="plan"></planner-item-list>
 
             <div v-if="plan" class="content">
                 <div class="plan-details">
