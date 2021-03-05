@@ -1,44 +1,46 @@
 <template>
-    <view-panel>
-        <template v-slot:header>
-            <div class="header-content">
-                <title-panel :activeGrid="1">Planner</title-panel>
-            </div>
-        </template>
+    <div :class="{ 'inspect-mode': activeItem }">
+        <view-panel class="view-panel" @click="onItemSelect(null)">
+            <template v-slot:header>
+                <div class="header-content">
+                    <title-panel :activeGrid="1">Planner</title-panel>
+                </div>
+            </template>
 
-        <div class="main-content">
-            <planner-item-list class="planner-item-list"
-                :plan="plan"
-                :selected="activeItem"
-                @item:select="onItemSelect($event)">
-            </planner-item-list>
+            <div class="main-content">
+                <planner-item-list class="planner-item-list"
+                    :plan="plan"
+                    :selected="activeItem"
+                    @item:select="onItemSelect($event)">
+                </planner-item-list>
 
-            <div v-if="plan" class="content">
-                <div class="plan-details">
-                    <goal-selector class="goal-selector"
-                        :goal="plan.goal"
-                        :options="goalOptions"
-                        :estimation="currentEstimation"
-                        @select="onPlanChange('goal', $event)">
-                    </goal-selector>
+                <div v-if="plan" class="content">
+                    <div class="plan-details">
+                        <goal-selector class="goal-selector"
+                            :goal="plan.goal"
+                            :options="goalOptions"
+                            :estimation="currentEstimation"
+                            @select="onPlanChange('goal', $event)">
+                        </goal-selector>
 
-                    <planner-target-list class="planner-target-list"
-                        :plan="plan"
-                        :isDisabled="isDragDisabled"
-                        @planned:change="onPlanChange('planned', $event)"
-                        @potential:change="onPlanChange('potential', $event)">
-                    </planner-target-list>
+                        <planner-target-list class="planner-target-list"
+                            :plan="plan"
+                            :isDisabled="isDragDisabled"
+                            @planned:change="onPlanChange('planned', $event)"
+                            @potential:change="onPlanChange('potential', $event)">
+                        </planner-target-list>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <template v-slot:footer>
-            <div class="footer-content">
-                <menu-button class="back-button" @click="backToMain()">Back</menu-button>
-                <menu-button class="close-button" @click="closePanel()">Close</menu-button>
-            </div>
-        </template>
-    </view-panel>
+            <template v-slot:footer>
+                <div class="footer-content">
+                    <menu-button class="back-button" @click="backToMain()">Back</menu-button>
+                    <menu-button class="close-button" @click="closePanel()">Close</menu-button>
+                </div>
+            </template>
+        </view-panel>
+    </div>
 </template>
 
 <script lang="ts">
@@ -95,6 +97,8 @@ export default class DailyPlanner extends Vue {
     }
 
     public async created(): Promise<void> {
+        this.onItemSelect(null);
+
         await Promise.allSettled([
             store.dispatch(`${dailyPlanKey}/loadGoalOptions`),
             store.dispatch(`${dailyPlanKey}/loadCurrentPlan`)
@@ -123,8 +127,8 @@ export default class DailyPlanner extends Vue {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 
-    public onItemSelect(item: TaskItem): void {
-        if (item.id !== this.activeItem?.id) {
+    public onItemSelect(item: TaskItem | null): void {
+        if (!item || item.id !== this.activeItem?.id) {
             store.commit(`${dailyPlanKey}/setActiveItem`, item);
         }
     }
@@ -148,6 +152,24 @@ export default class DailyPlanner extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.view-panel {
+    position: absolute;
+    top: 0;
+    right: 7.5%;
+    width: 85%;
+    height: 100%;
+    transform: perspective(1000px) rotateY(0);
+}
+
+.inspect-mode {
+    position: relative;
+    overflow: hidden;
+
+    .view-panel {
+        animation: shiftPanel 0.1s ease forwards;
+    }
+}
+
 .header-content, .main-content, .footer-content {
     display: flex;
     width: 100%;
@@ -212,6 +234,17 @@ export default class DailyPlanner extends Vue {
 
     .close-button {
         color: rgb(240, 123, 14);
+    }
+}
+
+@keyframes shiftPanel {
+    0% {
+        right: 7.5%;
+        transform: perspective(8500px) rotateY(0);
+    }
+    100% {
+        right: -5%;
+        transform: perspective(8500px) rotateY(-35deg);
     }
 }
 </style>

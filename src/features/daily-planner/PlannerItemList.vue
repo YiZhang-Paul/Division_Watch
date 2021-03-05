@@ -22,7 +22,7 @@
                 :task="candidate"
                 :isActive="candidate.id === selected?.id"
                 :isUrgent="candidate.isInterruption"
-                @click="$emit('item:select', candidate)"
+                @click.stop="$emit('item:select', candidate)"
                 @mouseenter="onCardHover()">
             </task-summary-card>
 

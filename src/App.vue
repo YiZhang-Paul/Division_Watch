@@ -172,7 +172,7 @@ html, body {
 
 .daily-planner {
     position: absolute;
-    width: 57.5%;
+    width: 66.5%;
     height: 90%;
 }
 
