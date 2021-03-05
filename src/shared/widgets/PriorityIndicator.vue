@@ -33,7 +33,7 @@ export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
     public getArrowStyle(index: number): { [key: string]: string | null } {
         const color = index <= this.priority ? this.priorityColor : null;
 
-        return { '--priority-color': color, color };
+        return { '--priority-indicator-color': color, color };
     }
 }
 </script>
@@ -74,13 +74,13 @@ export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
 
     @keyframes glowArrow {
         0% {
-            color: var(--priority-color);
+            color: var(--priority-indicator-color);
         }
         50% {
             color: $inactive-color;
         }
         100% {
-            color: var(--priority-color);
+            color: var(--priority-indicator-color);
         }
     }
 }
