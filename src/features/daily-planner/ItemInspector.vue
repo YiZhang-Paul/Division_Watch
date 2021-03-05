@@ -46,7 +46,8 @@
                     class="summary-card"
                     :key="task.id"
                     :task="task"
-                    :isReadonly="true">
+                    :isReadonly="true"
+                    @click="$emit('item:select', task.id)">
                 </compact-task-summary-card>
 
                 <placeholder-panel v-if="!childTasks.length"
@@ -71,9 +72,21 @@
         </div>
 
         <div class="footer-content">
-            <menu-button class="register-button" @click="$emit('register:planned')">Mark Planned</menu-button>
-            <menu-button class="register-button" @click="$emit('register:potential')">Mark Potential</menu-button>
-            <menu-button class="cancel-button" @click="$emit('item:cancel')">Cancel</menu-button>
+            <div class="row-1">
+                <menu-button class="register-button" @click="$emit('register:planned')">Mark Planned</menu-button>
+                <menu-button class="register-button" @click="$emit('register:potential')">Mark Potential</menu-button>
+            </div>
+
+            <div class="row-2">
+                <menu-button v-if="item.parent"
+                    class="back-button"
+                    @click="$emit('item:select', item.parent)">
+
+                    Back
+                </menu-button>
+
+                <menu-button class="cancel-button" @click="$emit('item:cancel')">Cancel</menu-button>
+            </div>
         </div>
     </div>
 </template>
@@ -116,6 +129,7 @@ class ItemInspectorProp {
     emits: [
         'register:planned',
         'register:potential',
+        'item:select',
         'item:cancel'
     ]
 })
@@ -141,11 +155,21 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
     }
 
     get category(): Category | null {
-        return store.getters[`${categoryKey}/category`](this.item.categoryId);
+        const id = this.parent ? this.parent.categoryId : this.item.categoryId;
+
+        return store.getters[`${categoryKey}/category`](id);
     }
 
     get categoryIcon(): any {
         return GenericUtility.getIcon(this.category?.icon ?? '');
+    }
+
+    get parent(): TaskItem | null {
+        if (!this.item.parent) {
+            return null;
+        }
+
+        return store.getters[`${taskItemKey}/incompleteItem`](this.item.parent);
     }
 
     get deadline(): string {
@@ -315,16 +339,20 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
     }
 
     .footer-content {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        height: 2rem;
+        display: flex;
+        flex-direction: column;
         opacity: 0;
         animation: revealContent 0.3s ease 0.5s forwards;
 
-        .register-button, .cancel-button {
-            margin-top: 1.5vh;
+        .row-1, .row-2 {
+            display: flex;
+            margin-top: 1.25vh;
+            width: 100%;
             height: 3.5vh;
+        }
+
+        .row-1 {
+            justify-content: space-between;
         }
 
         .register-button {
@@ -332,9 +360,13 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             color: rgb(240, 123, 14);
         }
 
-        .cancel-button {
+        .back-button, .cancel-button {
             width: 4.75vw;
             color: rgb(255, 255, 255);
+        }
+
+        .back-button {
+            margin-right: calc(100% - 8vw * 2);
         }
     }
 }

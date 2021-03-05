@@ -5,6 +5,7 @@
             :item="activeItem"
             @register:planned="addToPlanned(activeItem)"
             @register:potential="addToPotential(activeItem)"
+            @item:select="onItemSelectById($event)"
             @item:cancel="onItemSelect(null)">
         </item-inspector>
 
@@ -41,7 +42,7 @@
                 </div>
             </div>
 
-            <template v-slot:footer>
+            <template v-if="!activeItem" v-slot:footer>
                 <div class="footer-content">
                     <menu-button class="back-button" @click="backToMain()">Back</menu-button>
                     <menu-button class="close-button" @click="closePanel()">Close</menu-button>
@@ -57,6 +58,7 @@ import { Options, Vue } from 'vue-class-component';
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
+import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Goal } from '../../core/data-model/generic/goal';
 // eslint-disable-next-line no-unused-vars
@@ -135,6 +137,10 @@ export default class DailyPlanner extends Vue {
 
     public closePanel(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    }
+
+    public onItemSelectById(id: string): void {
+        this.onItemSelect(store.getters[`${taskItemKey}/incompleteItem`](id));
     }
 
     public onItemSelect(item: TaskItem | null): void {
