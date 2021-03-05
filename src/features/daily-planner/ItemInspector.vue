@@ -41,20 +41,32 @@
 
             <div class="progression"></div>
 
-            <div v-if="childTasks.length" class="subtasks">
+            <div class="subtasks">
                 <compact-task-summary-card v-for="task of childTasks"
                     class="summary-card"
                     :key="task.id"
-                    :task="task">
+                    :task="task"
+                    :isReadonly="true">
                 </compact-task-summary-card>
+
+                <placeholder-panel v-if="!childTasks.length"
+                    class="placeholder-panel"
+                    :text="'no subtask available.'">
+                </placeholder-panel>
             </div>
 
             <div v-if="item.checklist.length" class="checklist">
                 <checklist-card v-for="(checklist, index) of item.checklist"
                     class="checklist-card"
                     :key="index"
-                    :item="checklist">
+                    :item="checklist"
+                    :isReadonly="true">
                 </checklist-card>
+
+                <placeholder-panel v-if="!item.checklist.length"
+                    class="placeholder-panel"
+                    :text="'no checklist available.'">
+                </placeholder-panel>
             </div>
         </div>
 
@@ -82,6 +94,7 @@ import { TaskItemOptions } from '../../core/data-model/task-item/task-item-optio
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
 import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
+import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import CounterDisplay from '../../shared/widgets/CounterDisplay.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
@@ -96,6 +109,7 @@ class ItemInspectorProp {
     components: {
         CompactTaskSummaryCard,
         ChecklistCard,
+        PlaceholderPanel,
         MenuButton,
         CounterDisplay
     },
@@ -292,6 +306,10 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
                 &:not(:nth-last-child(1)) {
                     margin-bottom: 1%;
                 }
+            }
+
+            .placeholder-panel {
+                width: 85%;
             }
         }
     }
