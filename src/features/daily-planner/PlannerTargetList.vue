@@ -7,6 +7,7 @@
 
             <draggable v-model="plannedItems"
                 item-key="id"
+                handle=".list-handle"
                 :class="plannedItemsClass"
                 :emptyInsertThreshold="30"
                 :sort="!isDisabled"
@@ -15,11 +16,15 @@
                 @end="$emit('group:move', '')">
 
                 <template #item="{ element }">
-                    <compact-task-summary-card class="compact-task-summary-card"
-                        :task="element"
-                        :useCancelEvent="true"
-                        @cancel="onPlannedItemRemove(element)">
-                    </compact-task-summary-card>
+                    <div class="sortable-card">
+                        <drag-vertical class="list-handle" />
+
+                        <compact-task-summary-card class="compact-task-summary-card"
+                            :task="element"
+                            :useCancelEvent="true"
+                            @cancel="onPlannedItemRemove(element)">
+                        </compact-task-summary-card>
+                    </div>
                 </template>
             </draggable>
 
@@ -36,6 +41,7 @@
 
             <draggable v-model="potentialItems"
                 item-key="id"
+                handle=".list-handle"
                 :class="potentialItemsClass"
                 :emptyInsertThreshold="30"
                 :sort="!isDisabled"
@@ -44,11 +50,15 @@
                 @end="$emit('group:move', '')">
 
                 <template #item="{ element }">
-                    <compact-task-summary-card class="compact-task-summary-card"
-                        :task="element"
-                        :useCancelEvent="true"
-                        @cancel="onPotentialItemRemove(element)">
-                    </compact-task-summary-card>
+                    <div class="sortable-card">
+                        <drag-vertical class="list-handle" />
+
+                        <compact-task-summary-card class="compact-task-summary-card"
+                            :task="element"
+                            :useCancelEvent="true"
+                            @cancel="onPotentialItemRemove(element)">
+                        </compact-task-summary-card>
+                    </div>
                 </template>
             </draggable>
 
@@ -62,6 +72,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
 import store from '../../store';
@@ -83,6 +94,7 @@ class PlannerTargetListProp {
 
 @Options({
     components: {
+        DragVertical,
         Draggable,
         CompactTaskSummaryCard,
         ItemGroupPanel,
@@ -145,7 +157,7 @@ export default class PlannerTargetList extends Vue.with(PlannerTargetListProp) {
         .planned-drag-wrapper, .potential-drag-wrapper {
             width: 100%;
 
-            .compact-task-summary-card {
+            .sortable-card {
                 margin-left: $margin-left;
                 width: calc(100% - #{$margin-left});
                 height: 4.5vh;
@@ -154,6 +166,37 @@ export default class PlannerTargetList extends Vue.with(PlannerTargetListProp) {
 
                 &:not(:nth-last-child(1)) {
                     margin-bottom: 1%;
+                }
+            }
+
+            .sortable-card {
+                display: flex;
+                align-items: center;
+                position: relative;
+
+                &:hover .list-handle {
+                    opacity: 1;
+                }
+
+                .list-handle {
+                    position: absolute;
+                    left: -0.7rem;
+                    font-size: 0.9rem;
+                    opacity: 0;
+                    transition: all 0.3s;
+
+                    &:hover {
+                        cursor: grab;
+                    }
+
+                    &:active {
+                        cursor: grabbing;
+                    }
+                }
+
+                .compact-task-summary-card {
+                    width: 100%;
+                    height: 100%;
                 }
             }
         }
