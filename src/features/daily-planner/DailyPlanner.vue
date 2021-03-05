@@ -20,12 +20,9 @@
 
                     <planner-target-list class="planner-target-list"
                         :plan="plan"
-                        :groupName="groupName"
-                        :dragTarget="dragTarget"
                         :isDisabled="isDragDisabled"
                         @planned:change="onPlanChange('planned', $event)"
-                        @potential:change="onPlanChange('potential', $event)"
-                        @group:move="dragTarget = $event">
+                        @potential:change="onPlanChange('potential', $event)">
                     </planner-target-list>
                 </div>
             </div>
@@ -72,9 +69,7 @@ import PlannerTargetList from './PlannerTargetList.vue';
     }
 })
 export default class DailyPlanner extends Vue {
-    public readonly groupName = 'items';
     public isDragDisabled = false;
-    public dragTarget = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
     get currentEstimation(): number {

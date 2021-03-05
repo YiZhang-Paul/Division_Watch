@@ -11,9 +11,9 @@
                 :class="plannedItemsClass"
                 :emptyInsertThreshold="30"
                 :sort="!isDisabled"
-                :group="{ name: groupName, pull: !isDisabled, put: !isDisabled }"
-                :move="_ => $emit('group:move', _.to.className)"
-                @end="$emit('group:move', '')">
+                :group="{ name: 'items', pull: !isDisabled, put: !isDisabled }"
+                :move="_ => targetList = _.to.className"
+                @end="targetList = ''">
 
                 <template #item="{ element }">
                     <div class="sortable-card">
@@ -28,7 +28,7 @@
                 </template>
             </draggable>
 
-            <placeholder-panel v-if="!plannedItems.length && dragTarget !== plannedItemsClass"
+            <placeholder-panel v-if="!plannedItems.length && targetList !== plannedItemsClass"
                 class="placeholder-panel"
                 :text="'drag and drop items here.'">
             </placeholder-panel>
@@ -45,9 +45,9 @@
                 :class="potentialItemsClass"
                 :emptyInsertThreshold="30"
                 :sort="!isDisabled"
-                :group="{ name: groupName, pull: !isDisabled, put: !isDisabled }"
-                :move="_ => $emit('group:move', _.to.className)"
-                @end="$emit('group:move', '')">
+                :group="{ name: 'items', pull: !isDisabled, put: !isDisabled }"
+                :move="_ => targetList = _.to.className"
+                @end="targetList = ''">
 
                 <template #item="{ element }">
                     <div class="sortable-card">
@@ -62,7 +62,7 @@
                 </template>
             </draggable>
 
-            <placeholder-panel v-if="!potentialItems.length && dragTarget !== potentialItemsClass"
+            <placeholder-panel v-if="!potentialItems.length && targetList !== potentialItemsClass"
                 class="placeholder-panel"
                 :text="'drag and drop items here.'">
             </placeholder-panel>
@@ -87,8 +87,6 @@ import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 
 class PlannerTargetListProp {
     public plan = prop<DailyPlan>({ default: null });
-    public groupName = prop<string>({ default: 'group' });
-    public dragTarget = prop<string>({ default: '' });
     public isDisabled = prop<boolean>({ default: false });
 }
 
@@ -102,13 +100,13 @@ class PlannerTargetListProp {
     },
     emits: [
         'planned:change',
-        'potential:change',
-        'group:move'
+        'potential:change'
     ]
 })
 export default class PlannerTargetList extends Vue.with(PlannerTargetListProp) {
     public readonly plannedItemsClass = 'planned-drag-wrapper';
     public readonly potentialItemsClass = 'potential-drag-wrapper';
+    public targetList = '';
 
     get plannedItems(): TaskItem[] {
         return store.getters[`${dailyPlanKey}/plannedItems`];
