@@ -6,10 +6,13 @@
 
         <priority-indicator class="priority-indicator" :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
         <span>{{ task.name }}</span>
-        <delete v-if="!useCancelEvent" class="delete-button" @click.stop="$emit('delete')" />
-        <close-box v-if="useCancelEvent" class="cancel-button" @click.stop="$emit('cancel')" />
 
-        <estimation-skulls v-if="!isMouseover"
+        <template v-if="!isReadonly">
+            <delete v-if="!useCancelEvent" class="delete-button" @click.stop="$emit('delete')" />
+            <close-box v-if="useCancelEvent" class="cancel-button" @click.stop="$emit('cancel')" />
+        </template>
+
+        <estimation-skulls v-if="isReadonly || !isMouseover"
             class="estimation-skulls"
             :estimation="task.estimate">
         </estimation-skulls>
@@ -26,6 +29,7 @@ import EstimationSkulls from '../../shared/widgets/EstimationSkulls.vue';
 
 class CompactTaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
+    public isReadonly = prop<boolean>({ default: false });
     public useCancelEvent = prop<boolean>({ default: false });
 }
 
