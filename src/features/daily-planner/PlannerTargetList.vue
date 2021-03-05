@@ -9,7 +9,8 @@
                 item-key="id"
                 :class="plannedItemsClass"
                 :emptyInsertThreshold="30"
-                :group="{ name: groupName, pull: true, put: true }"
+                :sort="!isDisabled"
+                :group="{ name: groupName, pull: !isDisabled, put: !isDisabled }"
                 :move="_ => $emit('group:move', _.to.className)"
                 @end="$emit('group:move', '')">
 
@@ -37,7 +38,8 @@
                 item-key="id"
                 :class="potentialItemsClass"
                 :emptyInsertThreshold="30"
-                :group="{ name: groupName, pull: true, put: true }"
+                :sort="!isDisabled"
+                :group="{ name: groupName, pull: !isDisabled, put: !isDisabled }"
                 :move="_ => $emit('group:move', _.to.className)"
                 @end="$emit('group:move', '')">
 
@@ -76,6 +78,7 @@ class PlannerTargetListProp {
     public plan = prop<DailyPlan>({ default: null });
     public groupName = prop<string>({ default: 'group' });
     public dragTarget = prop<string>({ default: '' });
+    public isDisabled = prop<boolean>({ default: false });
 }
 
 @Options({

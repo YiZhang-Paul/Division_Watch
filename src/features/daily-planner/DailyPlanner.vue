@@ -26,6 +26,7 @@
                         :plan="plan"
                         :groupName="groupName"
                         :dragTarget="dragTarget"
+                        :isDisabled="isDragDisabled"
                         @planned:change="onPlanChange('planned', $event)"
                         @potential:change="onPlanChange('potential', $event)"
                         @group:move="dragTarget = $event">
@@ -76,6 +77,7 @@ import PlannerTargetList from './PlannerTargetList.vue';
 })
 export default class DailyPlanner extends Vue {
     public readonly groupName = 'items';
+    public isDragDisabled = false;
     public dragTarget = '';
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -128,8 +130,10 @@ export default class DailyPlanner extends Vue {
             clearTimeout(this.updateDebounceTimer);
         }
 
-        this.updateDebounceTimer = setTimeout(() => {
-            store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
+        this.updateDebounceTimer = setTimeout(async() => {
+            this.isDragDisabled = true;
+            await store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
+            this.isDragDisabled = false;
             this.updateDebounceTimer = null;
         }, 400);
     }
