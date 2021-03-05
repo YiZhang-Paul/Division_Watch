@@ -58,6 +58,7 @@ export default class CompactTaskSummaryCard extends Vue.with(CompactTaskSummaryC
     padding-right: 4%;
     max-height: 7.5vh;
     background-color: rgba(36, 35, 38, 0.6);
+    color: rgb(255, 255, 255);
     transition: background-color 0.3s;
 
     &:hover {
@@ -79,6 +80,8 @@ export default class CompactTaskSummaryCard extends Vue.with(CompactTaskSummaryC
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        font-size: 0.5rem;
+        font-family: 'Jost';
     }
 
     .delete-button, .cancel-button, .estimation-skulls {
