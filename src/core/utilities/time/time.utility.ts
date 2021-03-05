@@ -26,6 +26,10 @@ export class TimeUtility {
     public static getDateSuffix(date: number): string {
         const lastDigit = String(date).slice(-1)[0];
 
+        if (date > 10 && date < 14) {
+            return 'th';
+        }
+
         if (lastDigit === '1') {
             return 'st';
         }
