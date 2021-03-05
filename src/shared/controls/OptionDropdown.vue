@@ -5,11 +5,11 @@
         <select :disabled="isDisabled"
             :class="{ 'disabled-dropdown': isDisabled }"
             @click="onClick()"
-            @change="$emit('options:select', options[$event.target.value])">
+            @change="onChange(options[$event.target.value])">
 
             <option v-if="isDisabled">{{ disableText }}</option>
 
-            <template v-if="!isDisabled">
+            <template v-if="!isDisabled && showOptions">
                 <option v-for="(option, index) of options"
                     :key="index"
                     :value="index"
@@ -32,7 +32,7 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 
 class OptionDropdownProp {
     public name = prop<string>({ default: '' });
-    public options = prop<string[]>({ default: [] });
+    public options = prop<any[]>({ default: [] });
     public selected = prop<any>({ default: null });
     public useSimpleView = prop<boolean>({ default: false });
     public isDisabled = prop<boolean>({ default: false });
@@ -44,9 +44,16 @@ class OptionDropdownProp {
     emits: ['options:select']
 })
 export default class OptionDropdown extends Vue.with(OptionDropdownProp) {
+    public showOptions = true;
 
     public onClick(): void {
         store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
+    }
+
+    public onChange(option: any): void {
+        this.showOptions = false;
+        this.$emit('options:select', option);
+        setTimeout(() => this.showOptions = true);
     }
 
     public isSelected(option: any): boolean {

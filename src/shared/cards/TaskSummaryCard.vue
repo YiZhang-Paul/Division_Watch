@@ -32,6 +32,7 @@
 
         <div class="name">
             <span>{{ task.name }}</span>
+            <exclamation v-if="isUrgent" class="urgent-sign" />
         </div>
 
         <div class="splitter-3"></div>
@@ -46,7 +47,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Autorenew, Bullseye } from 'mdue';
+import { Autorenew, Bullseye, Exclamation } from 'mdue';
 
 import store from '../../store';
 import { categoryKey } from '../../store/category/category.state';
@@ -61,12 +62,14 @@ import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 class TaskSummaryCardProp {
     public task = prop<TaskItem>({ default: null });
     public isActive = prop<boolean>({ default: false });
+    public isUrgent = prop<boolean>({ default: false });
 }
 
 @Options({
     components: {
         Autorenew,
         Bullseye,
+        Exclamation,
         PriorityIndicator,
         EstimationSkulls
     }
@@ -210,10 +213,19 @@ export default class TaskSummaryCard extends Vue.with(TaskSummaryCardProp) {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        position: relative;
         padding: 1.5% 4%;
         height: calc(#{$tall-row-height} - #{$splitter-thickness});
         overflow: hidden;
         transition: color 0.3s;
+
+        .urgent-sign {
+            position: absolute;
+            top: 0.1rem;
+            right: -0.275rem;
+            color: rgb(216, 124, 37);
+            font-size: 1.5rem;
+        }
     }
 
     .splitter-3 {

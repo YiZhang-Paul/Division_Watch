@@ -57,13 +57,13 @@
                 :placeholder="subtaskPlaceholder"
                 @item:add="onChildTaskAdded($event)">
 
-                <subtask-summary-card class="subtask-summary-card"
+                <compact-task-summary-card class="compact-task-summary-card"
                     v-for="task of childTasks"
                     :key="task.id"
                     :task="task"
                     @click="$emit('child:open', task)"
                     @delete="$emit('child:delete', task)">
-                </subtask-summary-card>
+                </compact-task-summary-card>
 
                 <placeholder-panel v-if="!childTasks.length"
                     class="placeholder-panel"
@@ -79,8 +79,6 @@
                 <draggable class="drag-wrapper"
                     v-model="task.checklist"
                     handle=".list-handle"
-                    @start="drag = true"
-                    @end="drag = false"
                     @change="onTaskChange('checklist', task.checklist)"
                     item-key="description">
 
@@ -130,7 +128,7 @@ import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../../shared/controls/OptionDropdown.vue';
 import DeadlineSelector from '../../../shared/controls/DeadlineSelector.vue';
-import SubtaskSummaryCard from '../../../shared/cards/SubtaskSummaryCard.vue';
+import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
 import ChecklistCard from '../../../shared/cards/ChecklistCard.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../../core/utilities/time/time.utility';
@@ -150,7 +148,7 @@ class TaskEditorProp {
         SectionPanel,
         OptionDropdown,
         DeadlineSelector,
-        SubtaskSummaryCard,
+        CompactTaskSummaryCard,
         ChecklistCard
     },
     emits: [
@@ -272,7 +270,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         justify-content: space-between;
         margin-top: 3.5%;
         width: 100%;
-        height: 48.5%;
+        height: 46%;
 
         .placeholder-panel {
             box-sizing: border-box;
@@ -290,7 +288,7 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
             width: 100%;
         }
 
-        .subtask-summary-card, .sortable-card {
+        .compact-task-summary-card, .sortable-card {
             margin-left: $margin-left;
             width: calc(100% - #{$margin-left});
             height: 4.5vh;

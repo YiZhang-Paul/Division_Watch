@@ -12,6 +12,8 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { ChevronUp } from 'mdue';
 
+import { GenericUtility } from '../../core/utilities/generic/generic.utility';
+
 class PriorityIndicatorProp {
     public priority = prop<number>({ default: 0 });
     public isGlowing = prop<boolean>({ default: false });
@@ -25,17 +27,13 @@ class PriorityIndicatorProp {
 export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
 
     get priorityColor(): string {
-        if (!this.priority) {
-            return 'rgb(40, 212, 57)';
-        }
-
-        return `rgb(${this.priority === 1 ? '238, 171, 70' : '231, 72, 72'})`;
+        return GenericUtility.getPriorityColor(this.priority);
     }
 
     public getArrowStyle(index: number): { [key: string]: string | null } {
         const color = index <= this.priority ? this.priorityColor : null;
 
-        return { '--priority-color': color, color };
+        return { '--priority-indicator-color': color, color };
     }
 }
 </script>
@@ -76,13 +74,13 @@ export default class PriorityIndicator extends Vue.with(PriorityIndicatorProp) {
 
     @keyframes glowArrow {
         0% {
-            color: var(--priority-color);
+            color: var(--priority-indicator-color);
         }
         50% {
             color: $inactive-color;
         }
         100% {
-            color: var(--priority-color);
+            color: var(--priority-indicator-color);
         }
     }
 }

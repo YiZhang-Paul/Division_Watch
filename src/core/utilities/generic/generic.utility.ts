@@ -31,4 +31,12 @@ export class GenericUtility {
     public static getIcon(name: string): any {
         return icons.get(name)?.icon ?? null;
     }
+
+    public static getPriorityColor(priority: number, alpha = 1): string {
+        if (!priority) {
+            return `rgba(40, 212, 57, ${alpha})`;
+        }
+
+        return `rgba(${priority === 1 ? '238, 171, 70' : '231, 72, 72'}, ${alpha})`;
+    }
 }

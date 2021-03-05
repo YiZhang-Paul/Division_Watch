@@ -1,7 +1,7 @@
 <template>
     <div v-if="item" class="checklist-card-container">
         <div class="status-toggle"
-            :class="{ 'glowing-toggle': isGlowing }"
+            :class="{ 'glowing-toggle': !isReadonly && isGlowing }"
             @click="onCheckedChange()"
             @mouseover="isGlowing = true"
             @mouseout="isGlowing = false">
@@ -10,7 +10,10 @@
             <check v-if="item.isCompleted" class="complete-icon" />
         </div>
 
-        <span v-if="!isEditing" :class="{ completed: item.isCompleted }" @click="onEditStart()">
+        <span v-if="!isEditing"
+            :class="{ completed: item.isCompleted, 'readonly-text': isReadonly }"
+            @click="onEditStart()">
+
             {{ item.description }}
         </span>
 
@@ -22,7 +25,7 @@
             @keyup.esc="isEditing = false"
             @blur="isEditing = false" />
 
-        <delete class="delete-button" @click="$emit('delete')" />
+        <delete v-if="!isReadonly" class="delete-button" @click="$emit('delete')" />
     </div>
 </template>
 
@@ -34,6 +37,7 @@ import { ChecklistItem } from '../../core/data-model/task-item/checklist-item';
 
 class ChecklistCardProp {
     public item = prop<ChecklistItem>({ default: null });
+    public isReadonly = prop<boolean>({ default: false });
 }
 
 @Options({
@@ -53,8 +57,10 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     public isEditing = false;
 
     public onEditStart(): void {
-        this.isEditing = true;
-        setTimeout(() => (this.$refs.descriptionInput as any).focus());
+        if (!this.isReadonly) {
+            this.isEditing = true;
+            setTimeout(() => (this.$refs.descriptionInput as any).focus());
+        }
     }
 
     public onEditConfirm(): void {
@@ -63,7 +69,9 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
     }
 
     public onCheckedChange(): void {
-        this.$emit('change', { ...this.item, isCompleted: !this.item.isCompleted });
+        if (!this.isReadonly) {
+            this.$emit('change', { ...this.item, isCompleted: !this.item.isCompleted });
+        }
     }
 }
 </script>
@@ -138,7 +146,7 @@ export default class ChecklistCard extends Vue.with(ChecklistCardProp) {
         text-overflow: ellipsis;
         transition: filter 0.3s, background-color 0.3s 0.05s;
 
-        &:hover {
+        &:not(.readonly-text):hover {
             background-color: rgba(58, 56, 61, 0.5);
         }
 

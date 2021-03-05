@@ -5,6 +5,7 @@
         <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
         <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
         <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
+        <daily-planner class="daily-planner" v-if="activeView === viewOption.Planner"></daily-planner>
         <settings-manager class="settings-manager" v-if="activeView === viewOption.Settings"></settings-manager>
     </div>
 
@@ -31,6 +32,7 @@ import { ViewOption } from './core/enums/view-option.enum';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
+import DailyPlanner from './features/daily-planner/DailyPlanner.vue';
 import SettingsManager from './features/settings-manager/SettingsManager.vue';
 import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 
@@ -39,6 +41,7 @@ import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
         AgentWatch,
         MainMenu,
         ActivityManager,
+        DailyPlanner,
         SettingsManager,
         ConfirmPanel
     }
@@ -165,6 +168,12 @@ html, body {
     position: absolute;
     width: 57.5%;
     height: 86.5%;
+}
+
+.daily-planner {
+    position: absolute;
+    width: 66.5%;
+    height: 90%;
 }
 
 .settings-manager {

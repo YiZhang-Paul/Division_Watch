@@ -1,7 +1,7 @@
 <template>
     <div class="item-list-panel-container">
         <div class="actions">
-            <div class="button-wrapper">
+            <div v-if="allowAdd" class="button-wrapper">
                 <plus class="add-item-button" @click="$emit('item:add')" />
             </div>
 
@@ -20,12 +20,16 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import { Options, Vue, prop } from 'vue-class-component';
 import { Plus } from 'mdue';
 // eslint-disable-next-line no-unused-vars
 import { ScrollPosition } from '../../core/data-model/generic/scroll-position';
 import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
 import SearchBox from '../../shared/controls/SearchBox.vue';
+
+class ItemListPanelProp {
+    public allowAdd = prop<boolean>({ default: true });
+}
 
 @Options({
     components: {
@@ -38,7 +42,7 @@ import SearchBox from '../../shared/controls/SearchBox.vue';
         'item:add'
     ]
 })
-export default class ItemListPanel extends Vue {
+export default class ItemListPanel extends Vue.with(ItemListPanelProp) {
     public scroll: ScrollPosition | null = null;
 }
 </script>

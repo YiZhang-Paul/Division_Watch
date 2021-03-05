@@ -36,8 +36,10 @@
 import { Options, Vue } from 'vue-class-component';
 
 import store from '../../store';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { settingsKey } from '../../store/settings/settings.state';
 import { Range } from '../../core/data-model/generic/range';
+import { DialogOption } from '../../core/data-model/generic/dialog-option';
 // eslint-disable-next-line no-unused-vars
 import { SessionSettings } from '../../core/data-model/settings/session-settings';
 // eslint-disable-next-line no-unused-vars
@@ -92,9 +94,16 @@ export default class SessionSettingsManager extends Vue {
     }
 
     public onDurationComboChange(combo: [number, number]): void {
-        this.onSettingsChange('sessionDuration', combo[0]);
-        this.onSettingsChange('shortBreakDuration', combo[1]);
-        this.onSettingsChange('longBreakDuration', this.longBreakRange.min);
+        const title = 'Session time will be rounded/truncated if necessary.';
+        const option = new DialogOption(title, 'Proceed', 'Cancel', '', null, [], true);
+
+        option.confirmCallback = () => {
+            this.onSettingsChange('sessionDuration', combo[0]);
+            this.onSettingsChange('shortBreakDuration', combo[1]);
+            this.onSettingsChange('longBreakDuration', this.longBreakRange.min);
+        };
+
+        store.dispatch(`${dialogKey}/openDialog`, option);
     }
 
     public onSettingsChange<T>(key: string, value: T): void {
