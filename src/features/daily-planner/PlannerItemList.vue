@@ -20,7 +20,7 @@
                 v-for="candidate of candidates"
                 :key="candidate.id"
                 :task="candidate"
-                :isActive="candidate.id === selected?.id"
+                :isActive="candidate.id === selected?.id || candidate.id === selected?.parent"
                 :isUrgent="candidate.isInterruption"
                 @click.stop="$emit('item:select', candidate)"
                 @mouseenter="onCardHover()">
