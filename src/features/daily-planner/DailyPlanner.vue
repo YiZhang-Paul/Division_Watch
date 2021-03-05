@@ -7,7 +7,11 @@
         </template>
 
         <div class="main-content">
-            <planner-item-list class="planner-item-list" :plan="plan"></planner-item-list>
+            <planner-item-list class="planner-item-list"
+                :plan="plan"
+                :selected="activeItem"
+                @item:select="onItemSelect($event)">
+            </planner-item-list>
 
             <div v-if="plan" class="content">
                 <div class="plan-details">
@@ -49,6 +53,8 @@ import { Goal } from '../../core/data-model/generic/goal';
 import { GoalOptions } from '../../core/data-model/generic/goal-options';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
+// eslint-disable-next-line no-unused-vars
+import { TaskItem } from '../../core/data-model/task-item/task-item';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
@@ -84,6 +90,10 @@ export default class DailyPlanner extends Vue {
         return store.getters[`${dailyPlanKey}/currentPlan`];
     }
 
+    get activeItem(): TaskItem | null {
+        return store.getters[`${dailyPlanKey}/activeItem`];
+    }
+
     public async created(): Promise<void> {
         await Promise.allSettled([
             store.dispatch(`${dailyPlanKey}/loadGoalOptions`),
@@ -111,6 +121,12 @@ export default class DailyPlanner extends Vue {
 
     public closePanel(): void {
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
+    }
+
+    public onItemSelect(item: TaskItem): void {
+        if (item.id !== this.activeItem?.id) {
+            store.commit(`${dailyPlanKey}/setActiveItem`, item);
+        }
     }
 
     public onPlanChange<T>(key: string, value: T): void {

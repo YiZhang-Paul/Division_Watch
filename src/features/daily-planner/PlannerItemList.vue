@@ -20,7 +20,9 @@
                 v-for="candidate of candidates"
                 :key="candidate.id"
                 :task="candidate"
+                :isActive="candidate.id === selected?.id"
                 :isUrgent="candidate.isInterruption"
+                @click="$emit('item:select', candidate)"
                 @mouseenter="onCardHover()">
             </task-summary-card>
 
@@ -51,6 +53,7 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 
 class PlannerItemListProp {
     public plan = prop<DailyPlan>({ default: null });
+    public selected = prop<TaskItem>({ default: null });
 }
 
 @Options({
@@ -59,7 +62,8 @@ class PlannerItemListProp {
         Checkbox,
         ItemListPanel,
         PlaceholderPanel
-    }
+    },
+    emits: ['item:select']
 })
 export default class PlannerItemList extends Vue.with(PlannerItemListProp) {
     public searchText = '';
