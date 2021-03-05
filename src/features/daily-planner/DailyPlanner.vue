@@ -1,5 +1,12 @@
 <template>
     <div :class="{ 'inspect-mode': activeItem }">
+        <item-inspector v-if="activeItem"
+            class="item-inspector"
+            :item="activeItem"
+            :keepPanelBox="false"
+            @item:close="onItemSelect(null)">
+        </item-inspector>
+
         <view-panel class="view-panel" @click="onItemSelect(null)">
             <template v-slot:header>
                 <div class="header-content">
@@ -62,6 +69,7 @@ import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
+import ItemInspector from './ItemInspector.vue';
 import PlannerItemList from './PlannerItemList.vue';
 import GoalSelector from './GoalSelector.vue';
 import PlannerTargetList from './PlannerTargetList.vue';
@@ -71,6 +79,7 @@ import PlannerTargetList from './PlannerTargetList.vue';
         TitlePanel,
         ViewPanel,
         MenuButton,
+        ItemInspector,
         PlannerItemList,
         GoalSelector,
         PlannerTargetList
@@ -164,6 +173,14 @@ export default class DailyPlanner extends Vue {
 .inspect-mode {
     position: relative;
     overflow: hidden;
+
+    .item-inspector {
+        position: absolute;
+        top: 10%;
+        left: 1.75%;
+        width: 25%;
+        height: 80%;
+    }
 
     .view-panel {
         animation: shiftPanel 0.1s ease forwards;
