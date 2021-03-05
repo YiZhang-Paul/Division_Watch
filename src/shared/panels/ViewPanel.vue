@@ -1,6 +1,6 @@
 <template>
     <div :id="containerId" class="view-panel-container">
-        <div class="panel-box-wrapper" :class="{ 'invisible-box': !showPanelBox }">
+        <div class="panel-box-wrapper">
             <div class="panel-box" v-for="n in 4" :key="n"></div>
         </div>
 
@@ -34,7 +34,6 @@ import { SoundType } from '../../core/enums/sound-type.enum';
 
 class ViewPanelProp {
     public maxTilt = prop<number>({ default: 0.3 });
-    public keepPanelBox = prop<boolean>({ default: true });
 }
 
 export default class ViewPanel extends Vue.with(ViewPanelProp) {
@@ -45,10 +44,6 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
 
     get showContent(): boolean {
         return this.stage >= 6;
-    }
-
-    get showPanelBox(): boolean {
-        return !this.showContent ? true : this.keepPanelBox;
     }
 
     get contentContainerClasses(): { [key: string]: boolean } {
@@ -139,18 +134,9 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
         border-top: 1px solid rgba(200, 200, 200, 0.6);
         border-bottom: 1px solid rgba(200, 200, 200, 0.6);
         background-color: transparent;
-        transition: border-color 0.3s 0.3s;
         animation: blinkFast $expand-delay ease forwards,
                    expandPanelBoxStage1 calc(#{$expand-duration} * 0.4) ease $expand-delay forwards,
                    expandPanelBoxStage2 calc(#{$expand-duration} * 0.6) ease calc(#{$expand-duration} * 0.4 + #{$expand-delay}) forwards;
-
-        &.invisible-box {
-            border-color: transparent;
-
-            .panel-box {
-                opacity: 0;
-            }
-        }
 
         .panel-box {
             $box-move-duration: 0.2s;
@@ -160,7 +146,6 @@ export default class ViewPanel extends Vue.with(ViewPanelProp) {
             width: $box-width;
             height: $box-height;
             background-color: rgb(200, 200, 200);
-            transition: opacity 0.3s 0.3s;
 
             &:nth-child(1) {
                 top: 0;

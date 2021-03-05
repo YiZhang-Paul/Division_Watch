@@ -3,7 +3,6 @@
         <item-inspector v-if="activeItem"
             class="item-inspector"
             :item="activeItem"
-            :keepPanelBox="false"
             @item:close="onItemSelect(null)">
         </item-inspector>
 
