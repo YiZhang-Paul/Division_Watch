@@ -196,7 +196,7 @@ export default class DailyPlanner extends Vue {
         top: 17.5%;
         left: 1.75%;
         width: 25%;
-        height: 65%;
+        height: 70%;
     }
 
     .view-panel {

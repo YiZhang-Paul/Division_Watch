@@ -41,33 +41,61 @@
 
             <div class="progression"></div>
 
-            <div class="subtasks">
-                <compact-task-summary-card v-for="task of childTasks"
-                    class="summary-card"
-                    :key="task.id"
-                    :task="task"
-                    :isReadonly="true"
-                    @click="$emit('item:select', task.id)">
-                </compact-task-summary-card>
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <menu-button class="tab-button"
+                        :class="{ 'active-tab': activeTab === 0 }"
+                        @click="activeTab = 0">
 
-                <placeholder-panel v-if="!childTasks.length"
-                    class="placeholder-panel"
-                    :text="'no subtask available.'">
-                </placeholder-panel>
-            </div>
+                        Subtasks
+                    </menu-button>
 
-            <div v-if="item.checklist.length" class="checklist">
-                <checklist-card v-for="(checklist, index) of item.checklist"
-                    class="checklist-card"
-                    :key="index"
-                    :item="checklist"
-                    :isReadonly="true">
-                </checklist-card>
+                    <menu-button class="tab-button"
+                        :class="{ 'active-tab': activeTab === 1 }"
+                        @click="activeTab = 1">
 
-                <placeholder-panel v-if="!item.checklist.length"
-                    class="placeholder-panel"
-                    :text="'no checklist available.'">
-                </placeholder-panel>
+                        Checklist
+                    </menu-button>
+
+                    <sitemap class="icon" />
+                </div>
+
+                <div v-if="activeTab === 0" class="subtasks">
+                    <overlay-scrollbar-panel v-if="childTasks.length" class="overlay-scrollbar-panel">
+                        <div class="list-wrapper">
+                            <compact-task-summary-card v-for="task of childTasks"
+                                class="summary-card"
+                                :key="task.id"
+                                :task="task"
+                                :isReadonly="true"
+                                @click="$emit('item:select', task.id)">
+                            </compact-task-summary-card>
+                        </div>
+                    </overlay-scrollbar-panel>
+
+                    <placeholder-panel v-if="!childTasks.length"
+                        class="placeholder-panel"
+                        :text="'no subtask available.'">
+                    </placeholder-panel>
+                </div>
+
+                <div v-if="activeTab === 1" class="checklist">
+                    <overlay-scrollbar-panel v-if="item.checklist.length" class="overlay-scrollbar-panel">
+                        <div class="list-wrapper">
+                            <checklist-card v-for="(checklist, index) of item.checklist"
+                                class="checklist-card"
+                                :key="index"
+                                :item="checklist"
+                                :isReadonly="true">
+                            </checklist-card>
+                        </div>
+                    </overlay-scrollbar-panel>
+
+                    <placeholder-panel v-if="!item.checklist.length"
+                        class="placeholder-panel"
+                        :text="'no checklist available.'">
+                    </placeholder-panel>
+                </div>
             </div>
         </div>
 
@@ -93,6 +121,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { Sitemap } from 'mdue';
 
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
@@ -108,6 +137,7 @@ import { SoundOption } from '../../core/data-model/generic/sound-option';
 import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
 import ChecklistCard from '../../shared/cards/ChecklistCard.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import OverlayScrollbarPanel from '../../shared/panels/OverlayScrollbarPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import CounterDisplay from '../../shared/widgets/CounterDisplay.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
@@ -120,9 +150,11 @@ class ItemInspectorProp {
 
 @Options({
     components: {
+        Sitemap,
         CompactTaskSummaryCard,
         ChecklistCard,
         PlaceholderPanel,
+        OverlayScrollbarPanel,
         MenuButton,
         CounterDisplay
     },
@@ -134,6 +166,7 @@ class ItemInspectorProp {
     ]
 })
 export default class ItemInspector extends Vue.with(ItemInspectorProp) {
+    public activeTab = 0;
 
     get priorityText(): string {
         if (!this.item.priority.rank) {
@@ -236,7 +269,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
         .title {
             display: flex;
             width: 100%;
-            height: 15%;
+            height: 12.5%;
             background: linear-gradient(to right, var(--priority-color-alpha) 0.1%, transparent 70%);
             border-bottom: 1px solid rgba(225, 225, 225, 0.2);
 
@@ -289,7 +322,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             display: flex;
             align-items: center;
             padding: 2% 3.5%;
-            height: 9%;
+            height: 7.5%;
             color: rgb(255, 255, 255);
             font-size: 0.6rem;
 
@@ -301,11 +334,12 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
 
         .deadline {
             display: flex;
-            align-items: baseline;
-            padding: 0 5%;
-            height: 4.5%;
+            align-items: flex-start;
+            padding: 0 4.5%;
+            height: 3.75%;
             color: rgb(255, 255, 255);
             font-size: 0.425rem;
+            line-height: 0.425rem;
         }
 
         .progression {
@@ -314,26 +348,76 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             border-top: 1px solid rgba(225, 225, 225, 0.2);
         }
 
-        .subtasks, .checklist {
+        .tabs {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             width: 100%;
-            height: 70%;
+            height: 55%;
             border-top: 1px solid rgba(225, 225, 225, 0.2);
 
-            .summary-card, .checklist-card {
-                width: 90%;
-                height: 4.5vh;
+            .tab-buttons {
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                padding: 0 5%;
+                width: 100%;
+                height: 4.25vh;
 
-                &:not(:nth-last-child(1)) {
-                    margin-bottom: 1%;
+                .tab-button {
+                    margin-top: 2.5%;
+                    width: 3.5vw;
+                    height: 2vh;
+                    color: rgb(255, 255, 255);
+                    font-size: 0.4rem;
+
+                    &:nth-last-child(1) {
+                        margin-left: 1.5%;
+                    }
+
+                    &.active-tab {
+                        background-color: rgb(240, 123, 14);
+                    }
+                }
+
+                .icon {
+                    align-self: flex-end;
+                    margin-left: auto;
+                    color: rgb(255, 255, 255);
                 }
             }
 
-            .placeholder-panel {
-                width: 85%;
+            .subtasks, .checklist {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: calc(100% - 4.25vh);
+
+                .overlay-scrollbar-panel {
+                    width: 85%;
+                    height: 87.5%;
+
+                    .list-wrapper {
+                        width: 100%;
+                        height: 100%;
+
+                        .summary-card, .checklist-card {
+                            width: 100%;
+                            height: 4.5vh;
+                            opacity: 0;
+                            animation: revealContent 0.3s ease forwards;
+
+                            &:not(:nth-last-child(1)) {
+                                margin-bottom: 1.5%;
+                            }
+                        }
+                    }
+                }
+
+                .placeholder-panel {
+                    width: 85%;
+                }
             }
         }
     }
