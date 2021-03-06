@@ -4,7 +4,7 @@
             <img src="../../assets/images/rogue_skull.png" />
         </div>
 
-        <span>{{ estimationText }}</span>
+        <span v-if="showCounter">{{ estimationText }}</span>
     </div>
 </template>
 
@@ -19,6 +19,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 class EstimationSkullsProp {
     public estimation = prop<number>({ default: 0 });
+    public showCounter = prop<boolean>({ default: true });
     public isDarkMode = prop<boolean>({ default: false });
 }
 

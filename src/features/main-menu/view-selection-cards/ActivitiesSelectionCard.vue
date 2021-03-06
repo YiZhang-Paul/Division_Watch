@@ -26,7 +26,7 @@
 
             <div class="total-estimation">
                 <span>Total Estimation:</span>
-                <estimation-skulls class="estimation-skulls" :isDarkMode="isHovering"></estimation-skulls>
+                <estimation-skulls class="estimation-skulls" :showCounter="false" :isDarkMode="isHovering"></estimation-skulls>
                 <counter-display class="counter-display" :value="totalEstimation"></counter-display>
             </div>
 
