@@ -124,7 +124,12 @@ export default class DailyPlanner extends Vue {
 
         this.updateDebounceTimer = setTimeout(async() => {
             this.isDragDisabled = true;
-            await store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan);
+
+            await Promise.allSettled([
+                store.dispatch(`${dailyPlanKey}/upsertDailyPlan`, this.plan),
+                store.dispatch(`${dailyPlanKey}/syncSessionTime`)
+            ]);
+
             this.isDragDisabled = false;
             this.updateDebounceTimer = null;
         }, 400);

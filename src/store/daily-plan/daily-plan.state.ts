@@ -3,9 +3,12 @@ import { ActionContext } from 'vuex';
 import { taskItemKey } from '../task-item/task-item.state';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { GoalOptions } from '../../core/data-model/generic/goal-options';
+import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
+import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import { DailyPlanHttpService } from '../../core/services/http/daily-plan-http/daily-plan-http.service';
 
+const taskItemHttpService = new TaskItemHttpService();
 const dailyPlanHttpService = new DailyPlanHttpService();
 
 export interface IDailyPlanState {
@@ -81,6 +84,33 @@ const actions = {
 
         if (updated) {
             context.commit('setCurrentPlan', updated);
+        }
+    },
+    async syncSessionTime(context: ActionContext<IDailyPlanState, any>): Promise<void> {
+        const { commit, getters, rootGetters } = context;
+        const { estimates, skullDuration } = rootGetters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
+        const items = [...getters.plannedItems, ...getters.potentialItems] as TaskItem[];
+
+        const toUpdate = items.reduce((targets, _) => {
+            const sessions = _.estimate / skullDuration;
+
+            if (sessions < 1) {
+                return targets;
+            }
+
+            const duration = Math.min(Math.round(sessions), estimates.length - 1) * skullDuration;
+
+            return duration === _.estimate ? targets : [...targets, { ..._, estimate: duration }];
+        }, [] as TaskItem[]);
+
+        const result = await taskItemHttpService.updateTaskItems(toUpdate);
+
+        if (!result) {
+            return;
+        }
+
+        for (const item of [...result.parents, ...result.targets]) {
+            commit(`${taskItemKey}/setIncompleteItem`, item, { root: true });
         }
     },
     swapActiveItem(context: ActionContext<IDailyPlanState, any>, item: TaskItem): void {
