@@ -42,7 +42,7 @@ import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 import PlanViewer from './plan-viewer/PlanViewer.vue';
-import ItemInspector from './ItemInspector.vue';
+import ItemInspector from './item-inspector/ItemInspector.vue';
 
 @Options({
     components: {
