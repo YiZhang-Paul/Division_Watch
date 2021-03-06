@@ -2,21 +2,7 @@
     <div v-if="item" class="item-inspector-container" :class="{ 'loaded': isLoaded }">
         <div class="main-content glass-panel-light">
             <item-inspector-title class="item-inspector-title" :item="item"></item-inspector-title>
-
-            <div class="category">
-                <component v-if="categoryIcon" class="icon" :is="categoryIcon"></component>
-                <span>{{ category.name }}</span>
-            </div>
-
-            <div class="deadline">
-                <template v-if="item.deadline || item.recur.some(_ => _)">
-                    <span v-if="item.deadline">Due on {{ deadline }}</span>
-                    <span v-if="!item.deadline">Occurs {{ recur }}</span>
-                    <span v-if="item.dueTime">&nbsp;by {{ dueTime }}</span>
-                </template>
-
-                <span v-if="!item.deadline && item.recur.every(_ => !_)">No deadline/recur specified.</span>
-            </div>
+            <item-inspector-additional-info class="additional-info" :item="item"></item-inspector-additional-info>
 
             <div class="progression"></div>
 
@@ -106,9 +92,6 @@ import { OrderBoolAscendingVariant, Sitemap } from 'mdue';
 import store from '../../../store';
 import { soundKey } from '../../../store/sound/sound.state';
 import { taskItemKey } from '../../../store/task-item/task-item.state';
-import { categoryKey } from '../../../store/category/category.state';
-// eslint-disable-next-line no-unused-vars
-import { Category } from '../../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
@@ -120,10 +103,9 @@ import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
 import OverlayScrollbarPanel from '../../../shared/panels/OverlayScrollbarPanel.vue';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
-import { TimeUtility } from '../../../core/utilities/time/time.utility';
-import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
 
 import ItemInspectorTitle from './ItemInspectorTitle.vue';
+import ItemInspectorAdditionalInfo from './ItemInspectorAdditionalInfo.vue';
 
 class ItemInspectorProp {
     public plan = prop<DailyPlan>({ default: null });
@@ -139,7 +121,8 @@ class ItemInspectorProp {
         PlaceholderPanel,
         OverlayScrollbarPanel,
         MenuButton,
-        ItemInspectorTitle
+        ItemInspectorTitle,
+        ItemInspectorAdditionalInfo
     },
     watch: {
         item(): void { this.activeTab = 0; }
@@ -154,53 +137,6 @@ class ItemInspectorProp {
 export default class ItemInspector extends Vue.with(ItemInspectorProp) {
     public isLoaded = false;
     public activeTab = 0;
-
-    get category(): Category | null {
-        const id = this.parent ? this.parent.categoryId : this.item.categoryId;
-
-        return store.getters[`${categoryKey}/category`](id);
-    }
-
-    get categoryIcon(): any {
-        return GenericUtility.getIcon(this.category?.icon ?? '');
-    }
-
-    get parent(): TaskItem | null {
-        if (!this.item.parent) {
-            return null;
-        }
-
-        return store.getters[`${taskItemKey}/incompleteItem`](this.item.parent);
-    }
-
-    get deadline(): string {
-        return this.item.deadline ? TimeUtility.toLongDateString(new Date(this.item.deadline)) : '';
-    }
-
-    get recur(): string {
-        const include = this.item.recur.map((_, i) => _ ? i : -1).filter(_ => _ !== -1);
-
-        if (include.length === 7) {
-            return 'everyday';
-        }
-        else if (include.length === 1) {
-            return `on ${TimeUtility.getDayOfWeek(include[0])}`;
-        }
-
-        const includeText = `on ${include.map(_ => TimeUtility.getDayOfWeek(_).slice(0, 3)).join(', ')}`;
-        const exclude = this.item.recur.map((_, i) => _ ? -1 : i).filter(_ => _ !== -1);
-        const excludeText = `everyday except ${exclude.map(_ => TimeUtility.getDayOfWeek(_).slice(0, 3)).join(', ')}`;
-
-        return includeText.length <= excludeText.length ? includeText : excludeText;
-    }
-
-    get dueTime(): string {
-        if (!this.item.dueTime) {
-            return '';
-        }
-
-        return this.item.dueTime.split(':').map(_ => TimeUtility.prependZero(Number(_))).join(':');
-    }
 
     get childTasks(): TaskItem[] {
         if (this.item.isInterruption) {
@@ -251,29 +187,8 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             border-bottom: 1px solid rgba(225, 225, 225, 0.2);
         }
 
-        .category {
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            padding: 2% 3.5%;
-            height: 7%;
-            color: rgb(255, 255, 255);
-            font-size: 0.6rem;
-
-            .icon {
-                margin-right: 2.5%;
-                font-size: 0.85rem;
-            }
-        }
-
-        .deadline {
-            display: flex;
-            align-items: flex-start;
-            padding: 0 4.5%;
-            height: 3.5%;
-            color: rgb(255, 255, 255);
-            font-size: 0.425rem;
-            line-height: 0.425rem;
+        .additional-info {
+            height: 10.5%;
         }
 
         .progression {
