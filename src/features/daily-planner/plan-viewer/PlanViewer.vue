@@ -1,5 +1,5 @@
 <template>
-    <view-panel @click="$emit('item:select', null)">
+    <view-panel @click="deselect()">
         <template v-slot:header>
             <div class="header-content">
                 <title-panel :activeGrid="1">Planner</title-panel>
@@ -93,6 +93,12 @@ export default class PlanViewer extends Vue.with(PlanViewerProp) {
     public beforeUnmount(): void {
         if (this.updateDebounceTimer) {
             this.$emit('plan:change', this.plan);
+        }
+    }
+
+    public deselect(): void {
+        if (this.selectedItem) {
+            this.$emit('item:select', null);
         }
     }
 
