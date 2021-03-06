@@ -107,13 +107,13 @@ export default class DailyPlanner extends Vue {
     }
 
     public addToPlanned(item: TaskItem): void {
+        this.selectPreviousItem(item);
         this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
-        this.onItemSelect(null);
     }
 
     public addToPotential(item: TaskItem): void {
+        this.selectPreviousItem(item);
         this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
-        this.onItemSelect(null);
     }
 
     public onPlanChange(plan: DailyPlan): void {
@@ -134,6 +134,26 @@ export default class DailyPlanner extends Vue {
             this.isDragDisabled = false;
             this.updateDebounceTimer = null;
         }, 400);
+    }
+
+    private selectPreviousItem(item: TaskItem): void {
+        if (item.parent) {
+            this.onItemSelectById(item.parent);
+
+            return;
+        }
+
+        const payload = { showTask: true, showInterruption: true };
+        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
+        const index = candidates.findIndex(_ => _.id === item.id);
+        const others = candidates.filter(_ => _.id !== item.id);
+
+        if (index === -1 || !others.length) {
+            this.onItemSelect(null);
+        }
+        else {
+            this.onItemSelect(others[Math.min(index, others.length - 1)]);
+        }
     }
 }
 </script>
