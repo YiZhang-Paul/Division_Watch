@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'inspect-mode': activeItem }">
+    <div :class="{ 'inspect-mode': activeItem, 'planner-mode': !activeItem }">
         <item-inspector v-if="activeItem"
             class="item-inspector"
             :plan="plan"
@@ -11,6 +11,7 @@
         </item-inspector>
 
         <plan-viewer class="plan-viewer"
+            :class="{ 'restoring-viewer': isClosingInspector }"
             :plan="plan"
             :goalOptions="goalOptions"
             :selectedItem="activeItem"
@@ -50,6 +51,7 @@ import ItemInspector from './ItemInspector.vue';
     }
 })
 export default class DailyPlanner extends Vue {
+    public isClosingInspector = false;
     public isDragDisabled = false;
     private updateDebounceTimer: NodeJS.Timeout | null = null;
 
@@ -72,7 +74,7 @@ export default class DailyPlanner extends Vue {
     }
 
     public async created(): Promise<void> {
-        this.onItemSelect(null);
+        store.commit(`${dailyPlanKey}/setActiveItem`, null);
 
         await Promise.allSettled([
             store.dispatch(`${dailyPlanKey}/loadGoalOptions`),
@@ -107,6 +109,11 @@ export default class DailyPlanner extends Vue {
     }
 
     public onItemSelect(item: TaskItem | null): void {
+        if (!item) {
+            this.isClosingInspector = true;
+            setTimeout(() => this.isClosingInspector = false, 300);
+        }
+
         if (!item || item.id !== this.activeItem?.id) {
             store.commit(`${dailyPlanKey}/setActiveItem`, item);
         }
@@ -197,6 +204,12 @@ export default class DailyPlanner extends Vue {
     }
 }
 
+.planner-mode .plan-viewer.restoring-viewer {
+    right: 1.5%;
+    transform: perspective(3000px) rotateY(-10deg);
+    animation: shiftBackPanel 0.25s ease forwards;
+}
+
 @keyframes shiftPanel {
     0% {
         right: 7.5%;
@@ -213,6 +226,25 @@ export default class DailyPlanner extends Vue {
     100% {
         right: 1.5%;
         transform: perspective(3000px) rotateY(-10deg);
+    }
+}
+
+@keyframes shiftBackPanel {
+    0% {
+        right: 1.5%;
+        transform: perspective(3000px) rotateY(-10deg);
+    }
+    40% {
+        right: 7.5%;
+        transform: perspective(3000px) rotateY(-10deg);
+    }
+    50% {
+        right: 7.5%;
+        transform: perspective(3000px) rotateY(-10deg);
+    }
+    100% {
+        right: 7.5%;
+        transform: perspective(1000px) rotateY(0);
     }
 }
 </style>
