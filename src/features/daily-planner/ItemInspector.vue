@@ -186,14 +186,9 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
     }
 
     get sessions(): number {
-        const { estimates, skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
-        const estimation = this.item.estimate / skullDuration;
+        const options = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
 
-        if (!estimation || estimation < 1) {
-            return 0;
-        }
-
-        return Math.min(Math.round(estimation), estimates.length - 1);
+        return TimeUtility.getTotalSessions(this.item.estimate, options);
     }
 
     get category(): Category | null {

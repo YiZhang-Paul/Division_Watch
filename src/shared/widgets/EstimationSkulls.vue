@@ -15,6 +15,7 @@ import store from '../../store';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 class EstimationSkullsProp {
     public estimation = prop<number>({ default: 0 });
@@ -24,14 +25,10 @@ class EstimationSkullsProp {
 export default class EstimationSkulls extends Vue.with(EstimationSkullsProp) {
 
     get estimationText(): string {
-        const { estimates, skullDuration } = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
-        const estimation = this.estimation / skullDuration;
+        const options = store.getters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
+        const sessions = TimeUtility.getTotalSessions(this.estimation, options);
 
-        if (!estimation) {
-            return '';
-        }
-
-        return estimation < 1 ? '<1' : `x${Math.min(Math.round(estimation), estimates.length - 1)}`;
+        return sessions < 1 ? '<1' : `x${sessions}`;
     }
 }
 </script>

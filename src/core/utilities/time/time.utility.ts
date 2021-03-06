@@ -66,15 +66,21 @@ export class TimeUtility {
         return Math.round(milliseconds / 60 / 1000 * modifier) / modifier;
     }
 
+    public static getTotalSessions(estimation: number, options: TaskItemOptions): number {
+        const { estimates, skullDuration } = options;
+        const sessions = estimation / skullDuration;
+
+        return sessions < 1 ? 0 : Math.min(Math.round(sessions), estimates.length - 1);
+    }
+
     public static toEstimationString(total: number, options: TaskItemOptions): string {
         const { estimates, skullDuration } = options;
-        const maxSessions = estimates.length - 1;
+        const sessions = this.getTotalSessions(total, options);
 
-        if (total < skullDuration) {
+        if (sessions < 1) {
             return `~1 Session (${Math.round(this.toMinutes(estimates[0]))} minutes)`;
         }
 
-        const sessions = Math.min(Math.round(total / skullDuration), maxSessions);
         const totalMinutes = Math.floor(sessions * this.toMinutes(skullDuration));
         const [minutes, hours] = [totalMinutes % 60, Math.floor(totalMinutes / 60)];
         const hourText = hours ? `${hours} hour${hours > 1 ? 's' : ''} ` : '';

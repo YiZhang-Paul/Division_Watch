@@ -6,6 +6,7 @@ import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 import { DailyPlanHttpService } from '../../core/services/http/daily-plan-http/daily-plan-http.service';
+import { TimeUtility } from '@/core/utilities/time/time.utility';
 
 const dailyPlanHttpService = new DailyPlanHttpService();
 
@@ -86,22 +87,19 @@ const actions = {
     },
     async syncSessionTime(context: ActionContext<IDailyPlanState, any>): Promise<void> {
         const { dispatch, getters, rootGetters } = context;
-        const { estimates, skullDuration } = rootGetters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
+        const options = rootGetters[`${taskItemKey}/taskItemOptions`] as TaskItemOptions;
         const items = [...getters.plannedItems, ...getters.potentialItems] as TaskItem[];
 
         const toUpdate = items.reduce((targets, _) => {
-            const sessions = _.estimate / skullDuration;
+            const sessions = TimeUtility.getTotalSessions(_.estimate, options);
+            const duration = sessions < 1 ? options.estimates[0] : sessions * options.skullDuration;
 
-            if (sessions < 1) {
-                return targets;
-            }
-
-            const duration = Math.min(Math.round(sessions), estimates.length - 1) * skullDuration;
-
-            return duration === _.estimate ? targets : [...targets, { ..._, estimate: duration }];
+            return _.estimate === duration ? targets : [...targets, { ..._, estimate: duration }];
         }, [] as TaskItem[]);
 
-        await dispatch(`${taskItemKey}/updateTaskItems`, toUpdate, { root: true });
+        if (toUpdate.length) {
+            await dispatch(`${taskItemKey}/updateTaskItems`, toUpdate, { root: true });
+        }
     },
     swapActiveItem(context: ActionContext<IDailyPlanState, any>, item: TaskItem): void {
         context.commit('setActiveItem', null);
