@@ -1,8 +1,5 @@
 <template>
-    <div v-if="item"
-        class="item-inspector-container"
-        :style="{ '--priority-color': getPriorityColor(), '--priority-color-alpha': getPriorityColor(0.45) }">
-
+    <div v-if="item" class="item-inspector-container" :style="containerStyle">
         <div class="main-content glass-panel-light">
             <div class="title">
                 <div class="priority-indicator"></div>
@@ -168,6 +165,16 @@ class ItemInspectorProp {
 export default class ItemInspector extends Vue.with(ItemInspectorProp) {
     public activeTab = 0;
 
+    get containerStyle(): { [key: string]: string } {
+        const { rank } = this.item.priority;
+
+        return {
+            '--priority-color': GenericUtility.getPriorityColor(rank),
+            '--priority-color-alpha': GenericUtility.getPriorityColor(rank, 0.45),
+            '--priority-label-color': rank === 2 ? 'rgb(253, 162, 162)' : GenericUtility.getPriorityColor(rank)
+        };
+    }
+
     get priorityText(): string {
         if (!this.item.priority.rank) {
             return 'Non-critical Item';
@@ -242,10 +249,6 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
         return store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.item.id);
     }
 
-    public getPriorityColor(alpha = 1): string {
-        return GenericUtility.getPriorityColor(this.item.priority.rank, alpha);
-    }
-
     public mounted(): void {
         store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
     }
@@ -293,7 +296,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
                 font-size: 0.55rem;
 
                 .priority-text {
-                    color: var(--priority-color);
+                    color: var(--priority-label-color);
                 }
 
                 .sessions {
