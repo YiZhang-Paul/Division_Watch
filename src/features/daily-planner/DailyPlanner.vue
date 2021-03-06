@@ -1,6 +1,6 @@
 <template>
-    <div :class="{ 'inspect-mode': activeItem, 'planner-mode': !activeItem }">
-        <item-inspector v-if="activeItem"
+    <div :class="{ 'inspect-mode': isInspectorOn, 'planner-mode': !isInspectorOn }">
+        <item-inspector v-if="isInspectorOn"
             class="item-inspector"
             :plan="plan"
             :item="activeItem"
@@ -51,6 +51,7 @@ import ItemInspector from './ItemInspector.vue';
     }
 })
 export default class DailyPlanner extends Vue {
+    public isInspectorOn = false;
     public isClosingInspector = false;
     public isDragDisabled = false;
     private updateDebounceTimer: NodeJS.Timeout | null = null;
@@ -115,8 +116,10 @@ export default class DailyPlanner extends Vue {
         }
 
         if (!item || item.id !== this.activeItem?.id) {
-            store.commit(`${dailyPlanKey}/setActiveItem`, item);
+            store.dispatch(`${dailyPlanKey}/swapActiveItem`, item);
         }
+
+        this.isInspectorOn = Boolean(item);
     }
 
     public addToPlanned(item: TaskItem): void {
