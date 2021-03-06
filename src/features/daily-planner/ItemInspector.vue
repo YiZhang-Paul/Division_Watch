@@ -160,6 +160,9 @@ class ItemInspectorProp {
         MenuButton,
         CounterDisplay
     },
+    watch: {
+        item(): void { this.activeTab = 0; }
+    },
     emits: [
         'register:planned',
         'register:potential',
