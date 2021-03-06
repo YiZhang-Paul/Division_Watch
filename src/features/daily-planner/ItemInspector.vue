@@ -54,7 +54,8 @@
                         Checklist
                     </menu-button>
 
-                    <sitemap class="icon" />
+                    <sitemap v-if="activeTab === 0" class="icon" />
+                    <order-bool-ascending-variant v-if="activeTab === 1" class="icon" />
                 </div>
 
                 <div v-if="activeTab === 0" class="subtasks">
@@ -98,8 +99,8 @@
 
         <div class="footer-content">
             <div class="row-1">
-                <menu-button class="register-button" @click="$emit('register:planned')">Mark Planned</menu-button>
-                <menu-button class="register-button" @click="$emit('register:potential')">Mark Potential</menu-button>
+                <menu-button class="register-button" @click="$emit('register:planned')">Mark as Planned</menu-button>
+                <menu-button class="register-button" @click="$emit('register:potential')">Mark as Potential</menu-button>
             </div>
 
             <div class="row-2">
@@ -118,7 +119,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
-import { Sitemap } from 'mdue';
+import { OrderBoolAscendingVariant, Sitemap } from 'mdue';
 
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
@@ -147,6 +148,7 @@ class ItemInspectorProp {
 
 @Options({
     components: {
+        OrderBoolAscendingVariant,
         Sitemap,
         CompactTaskSummaryCard,
         ChecklistCard,
@@ -386,6 +388,8 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
                     align-self: flex-end;
                     margin-left: auto;
                     color: rgb(255, 255, 255);
+                    opacity: 0;
+                    animation: revealContent 0.3s ease forwards;
                 }
             }
 
@@ -438,22 +442,22 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             height: 2.5vh;
         }
 
+        .row-1 {
+            justify-content: space-between;
+        }
+
         .back-button, .cancel-button, .register-button {
             color: rgb(255, 255, 255);
             font-size: 0.5rem;
         }
 
         .register-button {
-            width: 6.5vw;
+            width: 8vw;
             background-color: rgb(50, 158, 149);
-
-            &:nth-child(1) {
-                margin-right: 1vh;
-            }
         }
 
         .back-button {
-            margin-right: 1vh;
+            margin-right: calc(100% - 8vw * 2);
             width: 8.5vw;
             color: rgb(240, 123, 14);
             opacity: 0;
