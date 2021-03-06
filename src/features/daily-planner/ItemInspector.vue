@@ -110,7 +110,7 @@
                     class="back-button"
                     @click="$emit('item:select', item.parent)">
 
-                    Back
+                    Back to Parent Task
                 </menu-button>
 
                 <menu-button class="cancel-button" @click="$emit('item:cancel')">Cancel</menu-button>
@@ -269,7 +269,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
         .title {
             display: flex;
             width: 100%;
-            height: 12.5%;
+            height: 11.5%;
             background: linear-gradient(to right, var(--priority-color-alpha) 0.1%, transparent 70%);
             border-bottom: 1px solid rgba(225, 225, 225, 0.2);
 
@@ -322,7 +322,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             display: flex;
             align-items: center;
             padding: 2% 3.5%;
-            height: 7.5%;
+            height: 7%;
             color: rgb(255, 255, 255);
             font-size: 0.6rem;
 
@@ -336,7 +336,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             display: flex;
             align-items: flex-start;
             padding: 0 4.5%;
-            height: 3.75%;
+            height: 3.5%;
             color: rgb(255, 255, 255);
             font-size: 0.425rem;
             line-height: 0.425rem;
@@ -352,7 +352,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 55%;
+            height: 45%;
             border-top: 1px solid rgba(225, 225, 225, 0.2);
 
             .tab-buttons {
@@ -370,8 +370,8 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
                     color: rgb(255, 255, 255);
                     font-size: 0.4rem;
 
-                    &:nth-last-child(1) {
-                        margin-left: 1.5%;
+                    &:nth-child(1) {
+                        margin-right: 1.5%;
                     }
 
                     &.active-tab {
@@ -430,27 +430,35 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
 
         .row-1, .row-2 {
             display: flex;
-            margin-top: 1.25vh;
+            margin-top: 1vh;
             width: 100%;
-            height: 3.5vh;
+            height: 2.5vh;
         }
 
-        .row-1 {
-            justify-content: space-between;
+        .back-button, .cancel-button, .register-button {
+            color: rgb(255, 255, 255);
+            font-size: 0.5rem;
         }
 
         .register-button {
-            width: 8vw;
-            color: rgb(240, 123, 14);
-        }
+            width: 6.5vw;
+            background-color: rgb(50, 158, 149);
 
-        .back-button, .cancel-button {
-            width: 4.75vw;
-            color: rgb(255, 255, 255);
+            &:nth-child(1) {
+                margin-right: 1vh;
+            }
         }
 
         .back-button {
-            margin-right: calc(100% - 8vw * 2);
+            margin-right: 1vh;
+            width: 8.5vw;
+            color: rgb(240, 123, 14);
+            opacity: 0;
+            animation: revealContent 0.3s ease 0.1s forwards;
+        }
+
+        .cancel-button {
+            width: 4.5vw;
         }
     }
 }

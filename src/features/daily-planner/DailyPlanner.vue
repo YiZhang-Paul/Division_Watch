@@ -193,10 +193,10 @@ export default class DailyPlanner extends Vue {
 
     .item-inspector {
         position: absolute;
-        top: 17.5%;
+        top: 12.5%;
         left: 1.75%;
         width: 25%;
-        height: 70%;
+        height: 75%;
     }
 
     .view-panel {

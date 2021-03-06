@@ -30,7 +30,7 @@
 
             <placeholder-panel v-if="!plannedItems.length && targetList !== plannedItemsClass"
                 class="placeholder-panel"
-                :text="'drag and drop items here.'">
+                :text="'nothing selected yet.'">
             </placeholder-panel>
         </item-group-panel>
 
@@ -64,7 +64,7 @@
 
             <placeholder-panel v-if="!potentialItems.length && targetList !== potentialItemsClass"
                 class="placeholder-panel"
-                :text="'drag and drop items here.'">
+                :text="'nothing selected yet.'">
             </placeholder-panel>
         </item-group-panel>
     </div>
