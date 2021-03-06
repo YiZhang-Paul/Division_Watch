@@ -2,6 +2,7 @@
     <div :class="{ 'inspect-mode': activeItem }">
         <item-inspector v-if="activeItem"
             class="item-inspector"
+            :plan="plan"
             :item="activeItem"
             @register:planned="addToPlanned(activeItem)"
             @register:potential="addToPotential(activeItem)"

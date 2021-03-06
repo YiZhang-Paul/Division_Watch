@@ -128,6 +128,8 @@ import { categoryKey } from '../../store/category/category.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../core/data-model/generic/category';
 // eslint-disable-next-line no-unused-vars
+import { DailyPlan } from '../../core/data-model/generic/daily-plan';
+// eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
@@ -143,6 +145,7 @@ import { TimeUtility } from '../../core/utilities/time/time.utility';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
 
 class ItemInspectorProp {
+    public plan = prop<DailyPlan>({ default: null });
     public item = prop<TaskItem>({ default: null });
 }
 
@@ -243,7 +246,10 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
             return [];
         }
 
-        return store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.item.id);
+        const children = store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.item.id) as TaskItem[];
+        const ids = new Set([...this.plan.planned, ...this.plan.potential]);
+
+        return children.filter(_ => !ids.has(_.id ?? ''));
     }
 
     public mounted(): void {
