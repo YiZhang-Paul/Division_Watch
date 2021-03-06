@@ -3,6 +3,7 @@ import { ActionContext } from 'vuex';
 import { TaskItem } from '../../core/data-model/task-item/task-item';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { UpdateTaskResult } from '../../core/data-model/task-item/update-task-result';
+import { UpdateTasksResult } from '../../core/data-model/task-item/update-tasks-result';
 import { DeleteTaskResult } from '../../core/data-model/task-item/delete-task-result';
 import { TaskItemHttpService } from '../../core/services/http/task-item-http/task-item-http.service';
 import { GenericUtility } from '../../core/utilities/generic/generic.utility';
@@ -176,6 +177,19 @@ const actions = {
 
         if (result.parent) {
             context.commit('setIncompleteItem', result.parent);
+        }
+
+        return result;
+    },
+    async updateTaskItems(context: ActionContext<ITaskItemState, any>, items: TaskItem[]): Promise<UpdateTasksResult | null> {
+        const result = await taskItemHttpService.updateTaskItems(items);
+
+        if (!result) {
+            return null;
+        }
+
+        for (const item of [...result.parents, ...result.targets]) {
+            context.commit('setIncompleteItem', item);
         }
 
         return result;
