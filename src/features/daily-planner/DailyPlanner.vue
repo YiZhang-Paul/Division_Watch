@@ -65,6 +65,12 @@ export default class DailyPlanner extends Vue {
         return store.getters[`${dailyPlanKey}/activeItem`];
     }
 
+    get candidates(): TaskItem[] {
+        const payload = { showTask: true, showInterruption: true };
+
+        return store.getters[`${dailyPlanKey}/unselectedCandidates`](payload);
+    }
+
     public async created(): Promise<void> {
         this.onItemSelect(null);
 
@@ -107,13 +113,27 @@ export default class DailyPlanner extends Vue {
     }
 
     public addToPlanned(item: TaskItem): void {
-        this.selectPreviousItem(item);
+        if (!item.parent) {
+            this.selectPreviousItem(item);
+        }
+
         this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
+
+        if (item.parent) {
+            this.onItemSelect(this.candidates.find(_ => _.id === item.parent) ?? null);
+        }
     }
 
     public addToPotential(item: TaskItem): void {
-        this.selectPreviousItem(item);
+        if (!item.parent) {
+            this.selectPreviousItem(item);
+        }
+
         this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
+
+        if (item.parent) {
+            this.onItemSelect(this.candidates.find(_ => _.id === item.parent) ?? null);
+        }
     }
 
     public onPlanChange(plan: DailyPlan): void {
@@ -137,16 +157,8 @@ export default class DailyPlanner extends Vue {
     }
 
     private selectPreviousItem(item: TaskItem): void {
-        if (item.parent) {
-            this.onItemSelectById(item.parent);
-
-            return;
-        }
-
-        const payload = { showTask: true, showInterruption: true };
-        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/unselectedCandidates`](payload);
-        const index = candidates.findIndex(_ => _.id === item.id);
-        const others = candidates.filter(_ => _.id !== item.id);
+        const index = this.candidates.findIndex(_ => _.id === item.id);
+        const others = this.candidates.filter(_ => _.id !== item.id);
 
         if (index === -1 || !others.length) {
             this.onItemSelect(null);
