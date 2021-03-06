@@ -1,5 +1,5 @@
 <template>
-    <div v-if="item" class="item-inspector-container" :style="containerStyle">
+    <div v-if="item" class="item-inspector-container" :class="{ 'loaded': isLoaded }" :style="containerStyle">
         <div class="main-content glass-panel-light">
             <div class="title">
                 <div class="priority-indicator"></div>
@@ -171,6 +171,7 @@ class ItemInspectorProp {
     ]
 })
 export default class ItemInspector extends Vue.with(ItemInspectorProp) {
+    public isLoaded = false;
     public activeTab = 0;
 
     get containerStyle(): { [key: string]: string } {
@@ -257,6 +258,7 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
 
     public mounted(): void {
         store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
+        setTimeout(() => this.isLoaded = true, 500);
     }
 }
 </script>
@@ -264,7 +266,18 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
 <style lang="scss" scoped>
 .item-inspector-container {
     opacity: 0;
-    animation: revealContent 0.2s ease 0.3s forwards;
+    animation: revealContent ease forwards;
+    animation-duration: 0.2s;
+    animation-delay: 0.3s;
+
+    &.loaded {
+        animation-duration: 0.05s;
+        animation-delay: 0.1s;
+
+        .footer-content {
+            animation-delay: 0.1s;
+        }
+    }
 
     .main-content, .footer-content {
         display: flex;
@@ -437,11 +450,11 @@ export default class ItemInspector extends Vue.with(ItemInspectorProp) {
         display: flex;
         flex-direction: column;
         opacity: 0;
-        animation: revealContent 0.3s ease 0.5s forwards;
+        animation: revealContent 0.3s ease 0.4s forwards;
 
         .row-1, .row-2 {
             display: flex;
-            margin-top: 1vh;
+            margin-top: 1.25vh;
             width: 100%;
             height: 2.5vh;
         }
