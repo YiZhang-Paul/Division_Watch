@@ -41,28 +41,48 @@ const getters = {
 
         return items.reduce((total, _) => total + _.estimate, 0);
     },
-    candidates: (_: IDailyPlanState, getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
+    allCandidates: (_: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
         const { showTask, showInterruption } = payload;
 
         if (!showTask && !showInterruption) {
             return [];
         }
 
-        let candidates: TaskItem[];
-        const plan = getters.currentPlan;
-        const exclude = new Set([...plan?.planned ?? [], ...plan?.potential ?? []]);
-
         if (showTask && showInterruption) {
-            candidates = rootGetters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
-        }
-        else if (showTask) {
-            candidates = rootGetters[`${taskItemKey}/incompleteParentTasks`];
-        }
-        else {
-            candidates = rootGetters[`${taskItemKey}/incompleteInterruptions`];
+            return rootGetters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
         }
 
-        return candidates.filter(_ => !exclude.has(_.id ?? ''));
+        if (showTask) {
+            return rootGetters[`${taskItemKey}/incompleteParentTasks`];
+        }
+
+        return rootGetters[`${taskItemKey}/incompleteInterruptions`];
+    },
+    unselectedCandidates: (_: IDailyPlanState, getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
+        const candidates: TaskItem[] = getters.allCandidates(payload);
+        const items = [...getters.plannedItems, ...getters.potentialItems] as TaskItem[];
+        const exclude = new Set(items.map(_ => _.id));
+        const parents = new Map<string, number>();
+
+        for (const id of items.map(_ => _.parent).filter(Boolean)) {
+            parents.set(id!, (parents.get(id!) ?? 0) + 1);
+        }
+
+        return candidates.filter(_ => {
+            const id = _.id ?? '';
+
+            if (exclude.has(id)) {
+                return false;
+            }
+
+            if (!parents.has(id)) {
+                return true;
+            }
+
+            const children = rootGetters[`${taskItemKey}/incompleteChildTasksByParentId`](id) as TaskItem[];
+
+            return parents.get(id) !== children.length;
+        });
     }
 };
 

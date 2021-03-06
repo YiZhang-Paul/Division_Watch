@@ -72,7 +72,7 @@ export default class PlannerItemList extends Vue.with(PlannerItemListProp) {
 
     get candidates(): TaskItem[] {
         const payload = { showTask: this.showTask, showInterruption: this.showInterruption };
-        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
+        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/unselectedCandidates`](payload);
 
         return candidates.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }

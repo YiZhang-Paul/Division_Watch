@@ -144,7 +144,7 @@ export default class DailyPlanner extends Vue {
         }
 
         const payload = { showTask: true, showInterruption: true };
-        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
+        const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/unselectedCandidates`](payload);
         const index = candidates.findIndex(_ => _.id === item.id);
         const others = candidates.filter(_ => _.id !== item.id);
 
