@@ -75,15 +75,15 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
-import store from '../../store';
-import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
+import store from '../../../store';
+import { dailyPlanKey } from '../../../store/daily-plan/daily-plan.state';
 // eslint-disable-next-line no-unused-vars
-import { DailyPlan } from '../../core/data-model/generic/daily-plan';
+import { DailyPlan } from '../../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
-import { TaskItem } from '../../core/data-model/task-item/task-item';
-import CompactTaskSummaryCard from '../../shared/cards/CompactTaskSummaryCard.vue';
-import ItemGroupPanel from '../../shared/panels/ItemGroupPanel.vue';
-import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
+import { TaskItem } from '../../../core/data-model/task-item/task-item';
+import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
+import ItemGroupPanel from '../../../shared/panels/ItemGroupPanel.vue';
+import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
 
 class PlannerTargetListProp {
     public plan = prop<DailyPlan>({ default: null });

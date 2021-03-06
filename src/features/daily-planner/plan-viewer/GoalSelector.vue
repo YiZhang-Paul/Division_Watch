@@ -25,13 +25,13 @@
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
 // eslint-disable-next-line no-unused-vars
-import { Goal } from '../../core/data-model/generic/goal';
+import { Goal } from '../../../core/data-model/generic/goal';
 // eslint-disable-next-line no-unused-vars
-import { GoalOptions } from '../../core/data-model/generic/goal-options';
-import SectionPanel from '../../shared/panels/SectionPanel.vue';
-import ValueSlider from '../../shared/controls/ValueSlider.vue';
-import ValueDifference from '../../shared/controls/ValueDifference.vue';
-import { TimeUtility } from '../../core/utilities/time/time.utility';
+import { GoalOptions } from '../../../core/data-model/generic/goal-options';
+import SectionPanel from '../../../shared/panels/SectionPanel.vue';
+import ValueSlider from '../../../shared/controls/ValueSlider.vue';
+import ValueDifference from '../../../shared/controls/ValueDifference.vue';
+import { TimeUtility } from '../../../core/utilities/time/time.utility';
 
 class GoalSelectorProp {
     public goal = prop<Goal>({ default: null });

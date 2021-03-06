@@ -9,46 +9,16 @@
             @item:cancel="onItemSelect(null)">
         </item-inspector>
 
-        <view-panel class="view-panel" @click="onItemSelect(null)">
-            <template v-slot:header>
-                <div class="header-content">
-                    <title-panel :activeGrid="1">Planner</title-panel>
-                </div>
-            </template>
-
-            <div class="main-content">
-                <planner-item-list class="planner-item-list"
-                    :plan="plan"
-                    :selected="activeItem"
-                    @item:select="onItemSelect($event)">
-                </planner-item-list>
-
-                <div v-if="plan" class="content">
-                    <div class="plan-details">
-                        <goal-selector class="goal-selector"
-                            :goal="plan.goal"
-                            :options="goalOptions"
-                            :estimation="currentEstimation"
-                            @select="onPlanChange('goal', $event)">
-                        </goal-selector>
-
-                        <planner-target-list class="planner-target-list"
-                            :plan="plan"
-                            :isDisabled="isDragDisabled"
-                            @planned:change="onPlanChange('planned', $event)"
-                            @potential:change="onPlanChange('potential', $event)">
-                        </planner-target-list>
-                    </div>
-                </div>
-            </div>
-
-            <template v-if="!activeItem" v-slot:footer>
-                <div class="footer-content">
-                    <menu-button class="back-button" @click="backToMain()">Back</menu-button>
-                    <menu-button class="close-button" @click="closePanel()">Close</menu-button>
-                </div>
-            </template>
-        </view-panel>
+        <plan-viewer class="plan-viewer"
+            :plan="plan"
+            :goalOptions="goalOptions"
+            :selectedItem="activeItem"
+            :isDragDisabled="isDragDisabled"
+            @plan:change="onPlanChange($event)"
+            @item:select="onItemSelect($event)"
+            @view:back="backToMain()"
+            @view:close="closePanel()">
+        </plan-viewer>
     </div>
 </template>
 
@@ -67,34 +37,20 @@ import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
-import TitlePanel from '../../shared/panels/TitlePanel.vue';
-import ViewPanel from '../../shared/panels/ViewPanel.vue';
-import MenuButton from '../../shared/controls/MenuButton.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
+import PlanViewer from './plan-viewer/PlanViewer.vue';
 import ItemInspector from './ItemInspector.vue';
-import PlannerItemList from './PlannerItemList.vue';
-import GoalSelector from './GoalSelector.vue';
-import PlannerTargetList from './PlannerTargetList.vue';
 
 @Options({
     components: {
-        TitlePanel,
-        ViewPanel,
-        MenuButton,
-        ItemInspector,
-        PlannerItemList,
-        GoalSelector,
-        PlannerTargetList
+        PlanViewer,
+        ItemInspector
     }
 })
 export default class DailyPlanner extends Vue {
     public isDragDisabled = false;
     private updateDebounceTimer: NodeJS.Timeout | null = null;
-
-    get currentEstimation(): number {
-        return store.getters[`${dailyPlanKey}/currentEstimation`];
-    }
 
     get goalOptions(): GoalOptions {
         return store.getters[`${dailyPlanKey}/goalOptions`];
@@ -121,7 +77,7 @@ export default class DailyPlanner extends Vue {
             const sessions = Math.round(total / this.goalOptions.sessionDuration);
             const adjusted = Math.min(sessions, this.goalOptions.sessions.max);
             const goal = { sessions: adjusted, sessionDuration: this.goalOptions.sessionDuration } as Goal;
-            this.onPlanChange('goal', goal);
+            this.onPlanChange({ ...this.plan, goal });
         }
     }
 
@@ -150,17 +106,16 @@ export default class DailyPlanner extends Vue {
     }
 
     public addToPlanned(item: TaskItem): void {
-        this.onPlanChange('planned', [...this.plan?.planned ?? [], item.id]);
+        this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
         this.onItemSelect(null);
     }
 
     public addToPotential(item: TaskItem): void {
-        this.onPlanChange('potential', [...this.plan?.potential ?? [], item.id]);
+        this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
         this.onItemSelect(null);
     }
 
-    public onPlanChange<T>(key: string, value: T): void {
-        const plan = { ...this.plan, [key]: value } as DailyPlan;
+    public onPlanChange(plan: DailyPlan): void {
         store.commit(`${dailyPlanKey}/setCurrentPlan`, plan);
 
         if (this.updateDebounceTimer) {
@@ -178,7 +133,7 @@ export default class DailyPlanner extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.view-panel {
+.plan-viewer {
     position: absolute;
     top: 0;
     right: 7.5%;
@@ -199,75 +154,8 @@ export default class DailyPlanner extends Vue {
         height: 75%;
     }
 
-    .view-panel {
+    .plan-viewer {
         animation: shiftPanel 0.1s ease forwards;
-    }
-}
-
-.header-content, .main-content, .footer-content {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
-.header-content {
-    align-items: flex-end;
-}
-
-.main-content {
-    $margin: 1.5%;
-    $list-width: 28%;
-    $content-width: 96.5%;
-
-    margin-left: $margin;
-    width: calc(100% - #{$margin} * 2);
-
-    .planner-item-list {
-        width: $list-width;
-        height: 97.5%;
-    }
-
-    .content {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        width: calc((100% - #{$list-width}));
-        height: 100%;
-
-        .plan-details {
-            padding-top: 1.5vh;
-            width: $content-width;
-            height: 100%;
-
-            .goal-selector {
-                width: 100%;
-            }
-
-            .planner-target-list {
-                margin-top: 3.5%;
-                width: 100%;
-                height: 70%;
-            }
-        }
-    }
-}
-
-.footer-content {
-    align-items: center;
-
-    .back-button, .close-button {
-        width: 4.75vw;
-        height: 3.5vh;
-    }
-
-    .back-button {
-        margin-right: 1.5%;
-        color: rgb(255, 255, 255);
-    }
-
-    .close-button {
-        color: rgb(240, 123, 14);
     }
 }
 
