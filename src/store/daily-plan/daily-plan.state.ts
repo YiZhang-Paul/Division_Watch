@@ -41,21 +41,28 @@ const getters = {
 
         return items.reduce((total, _) => total + _.estimate, 0);
     },
-    candidates: (_: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
+    candidates: (_: IDailyPlanState, getters: any, _rootState: any, rootGetters: any) => (payload: { showTask: boolean; showInterruption: boolean }): TaskItem[] => {
         const { showTask, showInterruption } = payload;
 
         if (!showTask && !showInterruption) {
             return [];
         }
 
+        let candidates: TaskItem[];
+        const plan = getters.currentPlan;
+        const exclude = new Set([...plan?.planned ?? [], ...plan?.potential ?? []]);
+
         if (showTask && showInterruption) {
-            return rootGetters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
+            candidates = rootGetters[`${taskItemKey}/incompleteInterruptionsAndParentTasks`];
         }
         else if (showTask) {
-            return rootGetters[`${taskItemKey}/incompleteParentTasks`];
+            candidates = rootGetters[`${taskItemKey}/incompleteParentTasks`];
+        }
+        else {
+            candidates = rootGetters[`${taskItemKey}/incompleteInterruptions`];
         }
 
-        return rootGetters[`${taskItemKey}/incompleteInterruptions`];
+        return candidates.filter(_ => !exclude.has(_.id ?? ''));
     }
 };
 

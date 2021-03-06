@@ -73,9 +73,8 @@ export default class PlannerItemList extends Vue.with(PlannerItemListProp) {
     get candidates(): TaskItem[] {
         const payload = { showTask: this.showTask, showInterruption: this.showInterruption };
         const candidates: TaskItem[] = store.getters[`${dailyPlanKey}/candidates`](payload);
-        const exclude = new Set([...this.plan?.planned ?? [], ...this.plan?.potential ?? []]);
 
-        return candidates.filter(_ => !exclude.has(_.id ?? '') && _.name.toLowerCase().includes(this.searchText));
+        return candidates.filter(_ => _.name.toLowerCase().includes(this.searchText));
     }
 
     public onCardHover(): void {
