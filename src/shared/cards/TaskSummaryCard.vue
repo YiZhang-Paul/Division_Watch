@@ -24,7 +24,7 @@
         <div class="splitter-1"></div>
 
         <div class="attributes">
-            <priority-indicator :priority="task.priority.rank" :isGlowing="isMouseover"></priority-indicator>
+            <priority-indicator :priority="task.priority.rank" :isGlowing="isMouseover || isActive"></priority-indicator>
             <autorenew class="recur-indicator" :class="{ 'recur-active': task.recur.some(_ => _) }" />
         </div>
 
