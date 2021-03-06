@@ -175,7 +175,7 @@ export default class DailyPlanner extends Vue {
     position: absolute;
     top: 0;
     right: 7.5%;
-    width: 85%;
+    width: 75%;
     height: 100%;
     transform: perspective(1000px) rotateY(0);
 }
@@ -187,24 +187,32 @@ export default class DailyPlanner extends Vue {
     .item-inspector {
         position: absolute;
         top: 12.5%;
-        left: 1.75%;
-        width: 25%;
+        left: 1.25%;
+        width: 22.5%;
         height: 75%;
     }
 
     .plan-viewer {
-        animation: shiftPanel 0.1s ease forwards;
+        animation: shiftPanel 0.2s ease forwards;
     }
 }
 
 @keyframes shiftPanel {
     0% {
         right: 7.5%;
-        transform: perspective(8500px) rotateY(0);
+        transform: perspective(1000px) rotateY(0);
+    }
+    50% {
+        right: 7.5%;
+        transform: perspective(3000px) rotateY(-10deg);
+    }
+    60% {
+        right: 7.5%;
+        transform: perspective(3000px) rotateY(-10deg);
     }
     100% {
-        right: -5%;
-        transform: perspective(8500px) rotateY(-35deg);
+        right: 1.5%;
+        transform: perspective(3000px) rotateY(-10deg);
     }
 }
 </style>

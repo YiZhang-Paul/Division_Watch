@@ -171,8 +171,9 @@ html, body {
 }
 
 .daily-planner {
-    position: absolute;
-    width: 66.5%;
+    position: relative;
+    margin-right: 7.5%;
+    width: 75%;
     height: 90%;
 }
 
