@@ -13,14 +13,11 @@
         <span class="title">{{ title }}</span>
 
         <div class="actions">
-            <menu-button v-if="cancelText" class="menu-button" @click="$emit('cancel')">
+            <menu-button v-if="cancelText" class="menu-button" @click="onCancel()">
                 {{ cancelText }}
             </menu-button>
 
-            <menu-button class="menu-button"
-                :class="{ warning: isWarning }"
-                @click="$emit('confirm')">
-
+            <menu-button class="menu-button" :class="{ warning: isWarning }" @click="onConfirm()">
                 {{ confirmText || 'Proceed' }}
             </menu-button>
         </div>
@@ -35,6 +32,7 @@ import * as uuid from 'uuid';
 
 import store from '../../store';
 import { soundKey } from '../../store/sound/sound.state';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
 import MenuButton from '../controls/MenuButton.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
@@ -44,6 +42,7 @@ class DialogPanelProp {
     public confirmText = prop<string>({ default: 'Proceed' });
     public cancelText = prop<string>({ default: 'Cancel' });
     public isWarning = prop<boolean>({ default: false });
+    public confirmHook = prop<(...args: any[]) => void>({ default: null });
 }
 
 @Options({
@@ -51,11 +50,7 @@ class DialogPanelProp {
         AlertOutline,
         Pistol,
         MenuButton
-    },
-    emits: [
-        'confirm',
-        'cancel'
-    ]
+    }
 })
 export default class DialogPanel extends Vue.with(DialogPanelProp) {
     public readonly id = `dialog-panel-${uuid.v4()}`;
@@ -64,6 +59,18 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
         const container = document.querySelector(`#${this.id}`);
         VanillaTilt.init(container as HTMLElement, { max: 2, glare: true, 'max-glare': 0.1 });
         store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_open', SoundType.UI));
+    }
+
+    public onCancel(): void {
+        store.dispatch(`${dialogKey}/close`);
+    }
+
+    public onConfirm(): void {
+        if (this.confirmHook) {
+            this.confirmHook();
+        }
+
+        store.dispatch(`${dialogKey}/close`);
     }
 }
 </script>
