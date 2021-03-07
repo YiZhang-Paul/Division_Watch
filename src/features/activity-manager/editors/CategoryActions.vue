@@ -38,12 +38,13 @@ import { taskItemKey } from '../../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { Category } from '../../../core/data-model/generic/category';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
-import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { DropdownOption } from '../../../core/data-model/generic/dropdown-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import ValidationErrorDialog from '../../../shared/widgets/ValidationErrorDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
+
+import DeleteCategoryDialog from './DeleteCategoryDialog.vue';
 
 class CategoryActionsProp {
     public category = prop<Category>({ default: null });
@@ -82,14 +83,7 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
     }
 
     public async deleteCategory(category: Category): Promise<void> {
-        const title = 'This item will be permanently deleted.';
-        const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
-        const remaining = allCategories.filter(_ => _.id !== category.id);
-        const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
-        const dropdown = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
-        const option = new DialogOption(title, 'Delete', 'Cancel', '', dropdown, [], true);
-
-        option.confirmCallback = (_: boolean, transfer: Category) => {
+        const confirmHook = (transfer: Category) => {
             this.execute(async() => {
                 const payload = { target: category, transfer };
 
@@ -99,7 +93,12 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
             });
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const allCategories: Category[] = store.getters[`${categoryKey}/categories`];
+        const remaining = allCategories.filter(_ => _.id !== category.id);
+        const selected = remaining.find(_ => !_.isEditable && _.name === 'Default');
+        const option = new DropdownOption('move items to', remaining, selected, (_: Category) => _.name);
+        const payload = new DialogPayload(markRaw(DeleteCategoryDialog), option, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     private async execute(callback: (...args: any[]) => any): Promise<void> {
