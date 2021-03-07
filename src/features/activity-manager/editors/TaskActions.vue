@@ -58,6 +58,7 @@ import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 
+import ConvertToTaskDialog from '../dialogs/ConvertToTaskDialog.vue';
 import ConvertToParentDialog from '../dialogs/ConvertToParentDialog.vue';
 
 class TaskActionsProp {
@@ -101,14 +102,12 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
     }
 
     public convertToTask(item: TaskItem): void {
-        const title = 'This interruption will be converted to a task.';
-        const option = new DialogOption(title, 'Convert', 'Cancel');
-
-        option.confirmCallback = () => {
+        const confirmHook = () => {
             this.execute(async() => await store.dispatch(`${taskItemKey}/convertInterruption`, item));
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const payload = new DialogPayload(markRaw(ConvertToTaskDialog), item, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     public convertToParent(item: TaskItem): void {
