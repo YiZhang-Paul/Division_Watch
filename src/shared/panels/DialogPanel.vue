@@ -12,6 +12,10 @@
 
         <span class="title">{{ title }}</span>
 
+        <div class="content">
+            <slot></slot>
+        </div>
+
         <div class="actions">
             <menu-button v-if="cancelText" class="menu-button" @click="onCancel()">
                 {{ cancelText }}
@@ -138,6 +142,13 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
         font-size: 0.55rem;
         opacity: 0;
         animation: revealContent 0.2s ease 0.5s forwards;
+    }
+
+    .content {
+        display: flex;
+        justify-items: center;
+        align-items: center;
+        flex-grow: 1;
     }
 
     .actions {
