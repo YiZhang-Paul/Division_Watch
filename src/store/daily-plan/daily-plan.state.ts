@@ -6,7 +6,7 @@ import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { TaskItemOptions } from '../../core/data-model/task-item/task-item-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 import { DailyPlanHttpService } from '../../core/services/http/daily-plan-http/daily-plan-http.service';
-import { TimeUtility } from '@/core/utilities/time/time.utility';
+import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 const dailyPlanHttpService = new DailyPlanHttpService();
 
@@ -83,6 +83,12 @@ const getters = {
 
             return parents.get(id) !== children.length;
         });
+    },
+    unselectedChildTasks: (state: IDailyPlanState, _getters: any, _rootState: any, rootGetters: any) => (id: string): TaskItem[] => {
+        const children = rootGetters[`${taskItemKey}/incompleteChildTasksByParentId`](id) as TaskItem[];
+        const ids = new Set([...state.currentPlan?.planned ?? [], ...state.currentPlan?.potential ?? []]);
+
+        return children.filter(_ => !ids.has(_.id ?? ''));
     }
 };
 

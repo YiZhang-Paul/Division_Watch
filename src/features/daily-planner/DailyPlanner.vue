@@ -4,8 +4,8 @@
             class="item-inspector"
             :plan="plan"
             :item="activeItem"
-            @register:planned="addToPlanned(activeItem)"
-            @register:potential="addToPotential(activeItem)"
+            @register:planned="register(activeItem)"
+            @register:potential="register(activeItem, false)"
             @item:select="onItemSelectById($event)"
             @item:cancel="onItemSelect(null)">
         </item-inspector>
@@ -122,24 +122,17 @@ export default class DailyPlanner extends Vue {
         this.isInspectorOn = Boolean(item);
     }
 
-    public addToPlanned(item: TaskItem): void {
+    public register(item: TaskItem, isPlanned = true): void {
         if (!item.parent) {
             this.selectPreviousItem(item);
         }
 
-        this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
-
-        if (item.parent) {
-            this.onItemSelect(this.candidates.find(_ => _.id === item.parent) ?? null);
+        if (isPlanned) {
+            this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
         }
-    }
-
-    public addToPotential(item: TaskItem): void {
-        if (!item.parent) {
-            this.selectPreviousItem(item);
+        else {
+            this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
         }
-
-        this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
 
         if (item.parent) {
             this.onItemSelect(this.candidates.find(_ => _.id === item.parent) ?? null);

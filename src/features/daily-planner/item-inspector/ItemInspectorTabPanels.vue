@@ -63,7 +63,7 @@ import { Options, Vue, prop } from 'vue-class-component';
 import { OrderBoolAscendingVariant, Sitemap } from 'mdue';
 
 import store from '../../../store';
-import { taskItemKey } from '../../../store/task-item/task-item.state';
+import { dailyPlanKey } from '../../../store/daily-plan/daily-plan.state';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
@@ -98,14 +98,7 @@ class ItemInspectorTabPanelsProp {
 export default class ItemInspectorTabPanels extends Vue.with(ItemInspectorTabPanelsProp) {
 
     get childTasks(): TaskItem[] {
-        if (this.item.isInterruption) {
-            return [];
-        }
-
-        const children = store.getters[`${taskItemKey}/incompleteChildTasksByParentId`](this.item.id) as TaskItem[];
-        const ids = new Set([...this.plan.planned, ...this.plan.potential]);
-
-        return children.filter(_ => !ids.has(_.id ?? ''));
+        return store.getters[`${dailyPlanKey}/unselectedChildTasks`](this.item.id);
     }
 }
 </script>
