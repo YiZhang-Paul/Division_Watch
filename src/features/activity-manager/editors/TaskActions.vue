@@ -44,6 +44,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { markRaw } from 'vue';
 
 import store from '../../../store';
 import { soundKey } from '../../../store/sound/sound.state';
@@ -52,9 +53,12 @@ import { taskItemKey } from '../../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
+import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
+
+import ConvertToParentDialog from '../dialogs/ConvertToParentDialog.vue';
 
 class TaskActionsProp {
     public task = prop<TaskItem>({ default: null });
@@ -108,14 +112,12 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
     }
 
     public convertToParent(item: TaskItem): void {
-        const title = 'This task will be converted to a parent task.';
-        const option = new DialogOption(title, 'Convert', 'Cancel');
-
-        option.confirmCallback = () => {
+        const confirmHook = () => {
             this.execute(async() => await store.dispatch(`${taskItemKey}/convertChildTask`, item));
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const payload = new DialogPayload(markRaw(ConvertToParentDialog), item, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     public deleteTaskItem(item: TaskItem): void {
