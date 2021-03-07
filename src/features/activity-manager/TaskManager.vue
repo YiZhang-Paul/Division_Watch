@@ -43,6 +43,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { markRaw } from 'vue';
 import { ArrowLeftCircle } from 'mdue';
 
 import store from '../../store';
@@ -51,14 +52,15 @@ import { dialogKey } from '../../store/dialog/dialog.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
-import { DialogOption } from '../../core/data-model/generic/dialog-option';
 import { SoundOption } from '../../core/data-model/generic/sound-option';
+import { DialogPayload } from '../../core/data-model/generic/dialog-payload';
 import ItemListPanel from '../../shared/panels/ItemListPanel.vue';
 import PlaceholderPanel from '../../shared/panels/PlaceholderPanel.vue';
 import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
 
 import TaskEditor from './editors/TaskEditor.vue';
+import DeleteTaskDialog from './dialogs/DeleteTaskDialog.vue';
 
 class TaskManagerProp {
     public isInterruption = prop<boolean>({ default: false });
@@ -159,15 +161,12 @@ export default class TaskManager extends Vue.with(TaskManagerProp) {
     }
 
     public onTaskDelete(task: TaskItem): void {
-        const title = 'This item will be permanently deleted.';
-        const checkboxText = task.parent || task.isInterruption ? '' : 'do not remove child tasks';
-        const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, [], true);
-
-        option.confirmCallback = (keepChildren: boolean) => {
+        const confirmHook = (keepChildren: boolean) => {
             store.dispatch(`${taskItemKey}/deleteTaskItem`, { item: task, keepChildren });
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const payload = new DialogPayload(markRaw(DeleteTaskDialog), task, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 }
 </script>

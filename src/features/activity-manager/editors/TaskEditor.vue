@@ -106,6 +106,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { markRaw } from 'vue';
 import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
@@ -121,7 +122,7 @@ import { TaskItem } from '../../../core/data-model/task-item/task-item';
 // eslint-disable-next-line no-unused-vars
 import { TaskItemOptions } from '../../../core/data-model/task-item/task-item-options';
 import { ChecklistItem } from '../../../core/data-model/task-item/checklist-item';
-import { DialogOption } from '../../../core/data-model/generic/dialog-option';
+import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import ItemGroupPanel from '../../../shared/panels/ItemGroupPanel.vue';
 import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
@@ -130,6 +131,7 @@ import OptionDropdown from '../../../shared/controls/OptionDropdown.vue';
 import DeadlineSelector from '../../../shared/controls/DeadlineSelector.vue';
 import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
 import ChecklistCard from '../../../shared/cards/ChecklistCard.vue';
+import DeleteChecklistDialog from '../dialogs/DeleteChecklistDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../../core/utilities/time/time.utility';
 import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
@@ -220,15 +222,13 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     }
 
     public onChecklistDelete(index: number): void {
-        const title = 'This item will be permanently deleted.';
-        const option = new DialogOption(title, 'Delete', 'Cancel', '', null, [], true);
-
-        option.confirmCallback = () => {
+        const confirmHook = () => {
             const checklist = this.task?.checklist ?? [];
             this.onTaskChange('checklist', GenericUtility.removeAt(checklist, index), 200);
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const payload = new DialogPayload(markRaw(DeleteChecklistDialog), null, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     public onTaskChange(key: string, value: any, delay = 0): void {
