@@ -26,9 +26,11 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { markRaw } from 'vue';
 
 import store from '../../store';
 import { mainViewKey } from '../../store/main-view/main-view.state';
+import { dialogKey } from '../../store/dialog/dialog.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
 // eslint-disable-next-line no-unused-vars
@@ -39,10 +41,12 @@ import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import { DialogPayload } from '../../core/data-model/generic/dialog-payload';
 import { ViewOption } from '../../core/enums/view-option.enum';
 
 import PlanViewer from './plan-viewer/PlanViewer.vue';
 import ItemInspector from './item-inspector/ItemInspector.vue';
+import RegisterParentDialog from './RegisterParentDialog.vue';
 
 @Options({
     components: {
@@ -123,20 +127,17 @@ export default class DailyPlanner extends Vue {
     }
 
     public register(item: TaskItem, isPlanned = true): void {
-        if (!item.parent) {
-            this.selectPreviousItem(item);
+        const children = store.getters[`${dailyPlanKey}/unselectedChildTasks`](item.id) as TaskItem[];
+
+        if (!children.length) {
+            this.completeRegister(item, [item.id ?? ''], isPlanned);
+
+            return;
         }
 
-        if (isPlanned) {
-            this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, item.id] } as DailyPlan);
-        }
-        else {
-            this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, item.id] } as DailyPlan);
-        }
-
-        if (item.parent) {
-            this.onItemSelect(this.candidates.find(_ => _.id === item.parent) ?? null);
-        }
+        const confirmHook = () => this.completeRegister(item, children.map(_ => _.id ?? ''), isPlanned);
+        const payload = new DialogPayload(markRaw(RegisterParentDialog), children, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     public onPlanChange(plan: DailyPlan): void {
@@ -157,6 +158,23 @@ export default class DailyPlanner extends Vue {
             this.isDragDisabled = false;
             this.updateDebounceTimer = null;
         }, 400);
+    }
+
+    private completeRegister(source: TaskItem, targets: string[], isPlanned: boolean): void {
+        if (!source.parent) {
+            this.selectPreviousItem(source);
+        }
+
+        if (isPlanned) {
+            this.onPlanChange({ ...this.plan, planned: [...this.plan!.planned, ...targets] } as DailyPlan);
+        }
+        else {
+            this.onPlanChange({ ...this.plan, potential: [...this.plan!.potential, ...targets] } as DailyPlan);
+        }
+
+        if (source.parent) {
+            this.onItemSelect(this.candidates.find(_ => _.id === source.parent) ?? null);
+        }
     }
 
     private selectPreviousItem(item: TaskItem): void {

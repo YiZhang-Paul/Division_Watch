@@ -146,9 +146,10 @@ export default class DialogPanel extends Vue.with(DialogPanelProp) {
 
     .content {
         display: flex;
+        flex-grow: 1;
         justify-items: center;
         align-items: center;
-        flex-grow: 1;
+        width: 100%;
     }
 
     .actions {
