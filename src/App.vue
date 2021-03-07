@@ -1,7 +1,7 @@
 <template>
     <div v-if="showBlurLayer" class="global-blur-layer"></div>
 
-    <div class="app-views" :class="{ invisible: activeDialogOption }">
+    <div class="app-views" :class="{ invisible: activePayload }">
         <main-menu v-if="activeView === viewOption.MainMenuAnimated"></main-menu>
         <main-menu v-if="activeView === viewOption.MainMenuNoop" :allowAnimation="false"></main-menu>
         <activity-manager class="activity-manager" v-if="activeView === viewOption.Activities"></activity-manager>
@@ -9,13 +9,7 @@
         <settings-manager class="settings-manager" v-if="activeView === viewOption.Settings"></settings-manager>
     </div>
 
-    <confirm-panel v-if="activeDialogOption"
-        class="confirm-panel"
-        :option="activeDialogOption"
-        @confirmed="closeDialog()"
-        @cancelled="closeDialog()">
-    </confirm-panel>
-
+    <component v-if="activePayload" :is="activePayload.component" v-bind="activePayload.data"></component>
     <agent-watch v-if="isSoundSettingsLoaded" class="agent-watch"></agent-watch>
 </template>
 
@@ -27,14 +21,14 @@ import { dialogKey } from './store/dialog/dialog.state';
 import { mainViewKey } from './store/main-view/main-view.state';
 import { settingsKey } from './store/settings/settings.state';
 // eslint-disable-next-line no-unused-vars
-import { DialogOption } from './core/data-model/generic/dialog-option';
-import { ViewOption } from './core/enums/view-option.enum';
+import { DialogPayload } from './core/data-model/generic/dialog-payload';
 import AgentWatch from './features/agent-watch/AgentWatch.vue';
 import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
 import DailyPlanner from './features/daily-planner/DailyPlanner.vue';
 import SettingsManager from './features/settings-manager/SettingsManager.vue';
 import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
+import { ViewOption } from './core/enums/view-option.enum';
 
 @Options({
     components: {
@@ -50,8 +44,8 @@ export default class App extends Vue {
     public viewOption = ViewOption;
     public isSoundSettingsLoaded = false;
 
-    get activeDialogOption(): DialogOption<any> {
-        return store.getters[`${dialogKey}/dialogOption`];
+    get activePayload(): DialogPayload<any> | null {
+        return store.getters[`${dialogKey}/activePayload`];
     }
 
     get activeView(): ViewOption {
@@ -141,15 +135,12 @@ html, body {
     }
 }
 
-.global-blur-layer, .confirm-panel {
+.global-blur-layer {
     position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-}
-
-.global-blur-layer {
     background-color: rgba(227, 227, 227, 0.05);
     backdrop-filter: blur(5px);
 }
