@@ -33,7 +33,6 @@ import MainMenu from './features/main-menu/MainMenu.vue';
 import ActivityManager from './features/activity-manager/ActivityManager.vue';
 import DailyPlanner from './features/daily-planner/DailyPlanner.vue';
 import SettingsManager from './features/settings-manager/SettingsManager.vue';
-import ConfirmPanel from './shared/panels/ConfirmPanel.vue';
 import { ViewOption } from './core/enums/view-option.enum';
 
 @Options({
@@ -42,8 +41,7 @@ import { ViewOption } from './core/enums/view-option.enum';
         MainMenu,
         ActivityManager,
         DailyPlanner,
-        SettingsManager,
-        ConfirmPanel
+        SettingsManager
     }
 })
 export default class App extends Vue {

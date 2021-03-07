@@ -54,13 +54,12 @@ import { taskItemKey } from '../../../store/task-item/task-item.state';
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
-import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
-
 import ValidationErrorDialog from '../dialogs/ValidationErrorDialog.vue';
 import ConvertToTaskDialog from '../dialogs/ConvertToTaskDialog.vue';
 import ConvertToParentDialog from '../dialogs/ConvertToParentDialog.vue';
+import DeleteTaskDialog from '../dialogs/DeleteTaskDialog.vue';
 
 class TaskActionsProp {
     public task = prop<TaskItem>({ default: null });
@@ -119,15 +118,12 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
     }
 
     public deleteTaskItem(item: TaskItem): void {
-        const title = 'This item will be permanently deleted.';
-        const checkboxText = item.parent || item.isInterruption ? '' : 'do not remove child tasks';
-        const option = new DialogOption(title, 'Delete', 'Cancel', checkboxText, null, [], true);
-
-        option.confirmCallback = (keepChildren: boolean) => {
+        const confirmHook = (keepChildren: boolean) => {
             this.execute(async() => await store.dispatch(`${taskItemKey}/deleteTaskItem`, { item, keepChildren }));
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const payload = new DialogPayload(markRaw(DeleteTaskDialog), item, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     private async execute(callback: (...args: any[]) => any): Promise<void> {
