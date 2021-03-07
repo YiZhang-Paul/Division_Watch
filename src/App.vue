@@ -12,7 +12,8 @@
     <component v-if="activePayload"
         class="dialog-panel"
         :is="activePayload.component"
-        :data="activePayload.data">
+        :data="activePayload.data"
+        :confirmHook="activePayload.confirmHook">
     </component>
 
     <agent-watch v-if="isSoundSettingsLoaded" class="agent-watch"></agent-watch>
