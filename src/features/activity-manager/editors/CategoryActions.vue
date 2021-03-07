@@ -28,6 +28,7 @@
 
 <script lang="ts">
 import { Options, Vue, prop } from 'vue-class-component';
+import { markRaw } from 'vue';
 
 import store from '../../../store';
 import { soundKey } from '../../../store/sound/sound.state';
@@ -38,8 +39,10 @@ import { taskItemKey } from '../../../store/task-item/task-item.state';
 import { Category } from '../../../core/data-model/generic/category';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import { DialogOption } from '../../../core/data-model/generic/dialog-option';
+import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { DropdownOption } from '../../../core/data-model/generic/dropdown-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
+import ValidationErrorDialog from '../../../shared/widgets/ValidationErrorDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 
 class CategoryActionsProp {
@@ -58,8 +61,8 @@ export default class CategoryActions extends Vue.with(CategoryActionsProp) {
         const errors = await store.dispatch(`${categoryKey}/validateCategoryName`, category);
 
         if (errors.length) {
-            const option = new DialogOption('Invalid transmission detected:', 'Got it', '', '', null, errors, true);
-            store.dispatch(`${dialogKey}/openDialog`, option);
+            const payload = new DialogPayload(markRaw(ValidationErrorDialog), errors);
+            store.dispatch(`${dialogKey}/open`, payload);
 
             return;
         }

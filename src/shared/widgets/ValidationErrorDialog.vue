@@ -18,7 +18,7 @@
 import { Options, Vue, prop } from 'vue-class-component';
 import { Pistol } from 'mdue';
 
-import DialogPanel from '../../../shared/panels/DialogPanel.vue';
+import DialogPanel from '../panels/DialogPanel.vue';
 
 class ValidationErrorDialogProp {
     public data = prop<string[]>({ default: [] });

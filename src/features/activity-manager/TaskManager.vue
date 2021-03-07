@@ -60,7 +60,7 @@ import TaskSummaryCard from '../../shared/cards/TaskSummaryCard.vue';
 import { SoundType } from '../../core/enums/sound-type.enum';
 
 import TaskEditor from './editors/TaskEditor.vue';
-import DeleteTaskDialog from './dialogs/DeleteTaskDialog.vue';
+import DeleteTaskDialog from './editors/DeleteTaskDialog.vue';
 
 class TaskManagerProp {
     public isInterruption = prop<boolean>({ default: false });

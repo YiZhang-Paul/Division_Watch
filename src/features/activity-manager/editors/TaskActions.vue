@@ -57,9 +57,10 @@ import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { ConfirmDialogOption } from '../../../core/data-model/generic/confirm-dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import ConfirmDialog from '../../../shared/widgets/ConfirmDialog.vue';
+import ValidationErrorDialog from '../../../shared/widgets/ValidationErrorDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
-import ValidationErrorDialog from '../dialogs/ValidationErrorDialog.vue';
-import DeleteTaskDialog from '../dialogs/DeleteTaskDialog.vue';
+
+import DeleteTaskDialog from './DeleteTaskDialog.vue';
 
 class TaskActionsProp {
     public task = prop<TaskItem>({ default: null });
