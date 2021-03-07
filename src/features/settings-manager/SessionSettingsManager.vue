@@ -34,12 +34,14 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { markRaw } from 'vue';
 
 import store from '../../store';
 import { dialogKey } from '../../store/dialog/dialog.state';
 import { settingsKey } from '../../store/settings/settings.state';
 import { Range } from '../../core/data-model/generic/range';
-import { DialogOption } from '../../core/data-model/generic/dialog-option';
+import { DialogPayload } from '../../core/data-model/generic/dialog-payload';
+import { ConfirmDialogOption } from '../../core/data-model/generic/confirm-dialog-option';
 // eslint-disable-next-line no-unused-vars
 import { SessionSettings } from '../../core/data-model/settings/session-settings';
 // eslint-disable-next-line no-unused-vars
@@ -47,6 +49,7 @@ import { SessionSettingsOptions } from '../../core/data-model/settings/session-s
 import SectionPanel from '../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../shared/controls/OptionDropdown.vue';
 import ValueSlider from '../../shared/controls/ValueSlider.vue';
+import ConfirmDialog from '../../shared/widgets/ConfirmDialog.vue';
 import { TimeUtility } from '../../core/utilities/time/time.utility';
 
 @Options({
@@ -94,16 +97,16 @@ export default class SessionSettingsManager extends Vue {
     }
 
     public onDurationComboChange(combo: [number, number]): void {
-        const title = 'Session time will be rounded/truncated if necessary.';
-        const option = new DialogOption(title, 'Proceed', 'Cancel', '', null, [], true);
-
-        option.confirmCallback = () => {
+        const confirmHook = () => {
             this.onSettingsChange('sessionDuration', combo[0]);
             this.onSettingsChange('shortBreakDuration', combo[1]);
             this.onSettingsChange('longBreakDuration', this.longBreakRange.min);
         };
 
-        store.dispatch(`${dialogKey}/openDialog`, option);
+        const title = 'Session time will be rounded/truncated if necessary.';
+        const option = new ConfirmDialogOption(title, 'Proceed', true);
+        const payload = new DialogPayload(markRaw(ConfirmDialog), option, confirmHook);
+        store.dispatch(`${dialogKey}/open`, payload);
     }
 
     public onSettingsChange<T>(key: string, value: T): void {

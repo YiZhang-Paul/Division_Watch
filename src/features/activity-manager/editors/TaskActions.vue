@@ -54,11 +54,11 @@ import { taskItemKey } from '../../../store/task-item/task-item.state';
 import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
 import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
+import { ConfirmDialogOption } from '../../../core/data-model/generic/confirm-dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
+import ConfirmDialog from '../../../shared/widgets/ConfirmDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 import ValidationErrorDialog from '../dialogs/ValidationErrorDialog.vue';
-import ConvertToTaskDialog from '../dialogs/ConvertToTaskDialog.vue';
-import ConvertToParentDialog from '../dialogs/ConvertToParentDialog.vue';
 import DeleteTaskDialog from '../dialogs/DeleteTaskDialog.vue';
 
 class TaskActionsProp {
@@ -104,7 +104,9 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
             this.execute(async() => await store.dispatch(`${taskItemKey}/convertInterruption`, item));
         };
 
-        const payload = new DialogPayload(markRaw(ConvertToTaskDialog), item, confirmHook);
+        const title = 'This interruption will be converted to a task.';
+        const option = new ConfirmDialogOption(title, 'Convert');
+        const payload = new DialogPayload(markRaw(ConfirmDialog), option, confirmHook);
         store.dispatch(`${dialogKey}/open`, payload);
     }
 
@@ -113,7 +115,9 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
             this.execute(async() => await store.dispatch(`${taskItemKey}/convertChildTask`, item));
         };
 
-        const payload = new DialogPayload(markRaw(ConvertToParentDialog), item, confirmHook);
+        const title = 'This task will be converted to a parent task.';
+        const option = new ConfirmDialogOption(title, 'Convert');
+        const payload = new DialogPayload(markRaw(ConfirmDialog), option, confirmHook);
         store.dispatch(`${dialogKey}/open`, payload);
     }
 

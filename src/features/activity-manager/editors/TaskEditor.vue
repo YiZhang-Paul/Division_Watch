@@ -124,14 +124,15 @@ import { TaskItemOptions } from '../../../core/data-model/task-item/task-item-op
 import { ChecklistItem } from '../../../core/data-model/task-item/checklist-item';
 import { DialogPayload } from '../../../core/data-model/generic/dialog-payload';
 import { SoundOption } from '../../../core/data-model/generic/sound-option';
+import { ConfirmDialogOption } from '../../../core/data-model/generic/confirm-dialog-option';
+import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
+import ChecklistCard from '../../../shared/cards/ChecklistCard.vue';
 import ItemGroupPanel from '../../../shared/panels/ItemGroupPanel.vue';
 import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
 import SectionPanel from '../../../shared/panels/SectionPanel.vue';
 import OptionDropdown from '../../../shared/controls/OptionDropdown.vue';
 import DeadlineSelector from '../../../shared/controls/DeadlineSelector.vue';
-import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
-import ChecklistCard from '../../../shared/cards/ChecklistCard.vue';
-import DeleteChecklistDialog from '../dialogs/DeleteChecklistDialog.vue';
+import ConfirmDialog from '../../../shared/widgets/ConfirmDialog.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 import { TimeUtility } from '../../../core/utilities/time/time.utility';
 import { GenericUtility } from '../../../core/utilities/generic/generic.utility';
@@ -227,7 +228,9 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
             this.onTaskChange('checklist', GenericUtility.removeAt(checklist, index), 200);
         };
 
-        const payload = new DialogPayload(markRaw(DeleteChecklistDialog), null, confirmHook);
+        const title = 'This item will be permanently deleted.';
+        const option = new ConfirmDialogOption(title, 'Delete', true);
+        const payload = new DialogPayload(markRaw(ConfirmDialog), option, confirmHook);
         store.dispatch(`${dialogKey}/open`, payload);
     }
 
