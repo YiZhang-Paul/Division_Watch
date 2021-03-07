@@ -58,6 +58,7 @@ import { DialogOption } from '../../../core/data-model/generic/dialog-option';
 import MenuButton from '../../../shared/controls/MenuButton.vue';
 import { SoundType } from '../../../core/enums/sound-type.enum';
 
+import ValidationErrorDialog from '../dialogs/ValidationErrorDialog.vue';
 import ConvertToTaskDialog from '../dialogs/ConvertToTaskDialog.vue';
 import ConvertToParentDialog from '../dialogs/ConvertToParentDialog.vue';
 
@@ -76,10 +77,8 @@ export default class TaskActions extends Vue.with(TaskActionsProp) {
     public createTaskItem(item: TaskItem): void {
         this.execute(async() => {
             if (!item.name?.trim()) {
-                const title = 'Invalid transmission detected:';
-                const errors = ['name must be non-empty.'];
-                const option = new DialogOption(title, 'Got it', '', '', null, errors, true);
-                store.dispatch(`${dialogKey}/openDialog`, option);
+                const payload = new DialogPayload(markRaw(ValidationErrorDialog), ['name must be non-empty.']);
+                store.dispatch(`${dialogKey}/open`, payload);
 
                 return;
             }
