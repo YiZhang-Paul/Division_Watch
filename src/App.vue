@@ -9,7 +9,12 @@
         <settings-manager class="settings-manager" v-if="activeView === viewOption.Settings"></settings-manager>
     </div>
 
-    <component v-if="activePayload" :is="activePayload.component" v-bind="activePayload.data"></component>
+    <component v-if="activePayload"
+        class="dialog-panel"
+        :is="activePayload.component"
+        :data="activePayload.data">
+    </component>
+
     <agent-watch v-if="isSoundSettingsLoaded" class="agent-watch"></agent-watch>
 </template>
 
@@ -143,6 +148,10 @@ html, body {
     height: 100vh;
     background-color: rgba(227, 227, 227, 0.05);
     backdrop-filter: blur(5px);
+}
+
+.dialog-panel {
+    position: absolute;
 }
 
 .agent-watch {
