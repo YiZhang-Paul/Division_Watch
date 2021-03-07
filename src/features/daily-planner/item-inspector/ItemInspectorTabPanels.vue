@@ -178,7 +178,7 @@ export default class ItemInspectorTabPanels extends Vue.with(ItemInspectorTabPan
         }
 
         .placeholder-panel {
-            width: 85%;
+            width: 80%;
         }
     }
 }
