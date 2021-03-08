@@ -38,8 +38,10 @@ export default class ValidationErrorDialog extends Vue.with(ValidationErrorDialo
 .errors {
     display: flex;
     flex-direction: column;
+    align-items: center;
     align-self: flex-start;
     padding-top: 0.25rem;
+    width: 100%;
     font-size: 0.45rem;
     opacity: 0;
     animation: revealContent 0.2s ease 0.5s forwards;

@@ -45,7 +45,9 @@ export default class DeleteTaskDialog extends Vue.with(DeleteTaskDialogProp) {
 <style lang="scss" scoped>
 .content {
     display: flex;
+    justify-content: center;
     align-items: center;
+    width: 100%;
     height: 1rem;
     font-size: 0.45rem;
     opacity: 0;
