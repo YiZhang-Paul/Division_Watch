@@ -1,7 +1,7 @@
 <template>
     <div class="estimation-skulls-container" :class="{ 'dark-mode': isDarkMode }">
         <div class="image-wrapper">
-            <img src="../../assets/images/rogue_skull.png" />
+            <img src="../../assets/images/rogue_skull.png" draggable="false" />
         </div>
 
         <span v-if="showCounter">{{ estimationText }}</span>

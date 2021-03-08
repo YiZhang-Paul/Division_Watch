@@ -4,7 +4,7 @@
 
         <div class="content">
             <div class="icon-wrapper">
-                <img src="../../../assets/icons/sharpshooter.svg" />
+                <img src="../../../assets/icons/sharpshooter.svg" draggable="false" />
             </div>
 
             <div class="items-due">
