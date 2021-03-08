@@ -135,6 +135,7 @@ html, body {
     transition: opacity 0.2s;
 
     &.invisible {
+        pointer-events: none;
         opacity: 0;
     }
 }
