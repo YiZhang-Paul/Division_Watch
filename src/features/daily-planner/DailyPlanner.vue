@@ -179,6 +179,8 @@ export default class DailyPlanner extends Vue {
         if (source.parent) {
             this.onItemSelect(this.candidates.find(_ => _.id === source.parent) ?? null);
         }
+
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
     }
 
     private selectPreviousItem(item: TaskItem): void {

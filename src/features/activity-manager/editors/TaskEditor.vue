@@ -80,7 +80,7 @@
                 <draggable class="drag-wrapper"
                     v-model="task.checklist"
                     handle=".list-handle"
-                    @change="onTaskChange('checklist', task.checklist)"
+                    @change="onChecklistSort(task.checklist)"
                     item-key="description">
 
                     <template #item="{ element, index }">
@@ -226,6 +226,11 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
     public onChecklistChange(index: number, item: ChecklistItem): void {
         const checklist = this.task?.checklist ?? [];
         this.onTaskChange('checklist', GenericUtility.replaceAt(checklist, item, index));
+    }
+
+    public onChecklistSort(items: ChecklistItem[]): void {
+        this.onTaskChange('checklist', items);
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('item_add', SoundType.UI));
     }
 
     public onChecklistDelete(index: number): void {
