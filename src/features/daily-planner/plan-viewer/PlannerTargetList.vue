@@ -22,6 +22,7 @@
                         <compact-task-summary-card class="compact-task-summary-card"
                             :task="element"
                             :useCancelEvent="true"
+                            @mouseenter="onCardHover()"
                             @cancel="onPlannedItemRemove(element)">
                         </compact-task-summary-card>
                     </div>
@@ -56,6 +57,7 @@
                         <compact-task-summary-card class="compact-task-summary-card"
                             :task="element"
                             :useCancelEvent="true"
+                            @mouseenter="onCardHover()"
                             @cancel="onPotentialItemRemove(element)">
                         </compact-task-summary-card>
                     </div>
@@ -76,7 +78,9 @@ import { DragVertical } from 'mdue';
 import Draggable from 'vuedraggable';
 
 import store from '../../../store';
+import { soundKey } from '../../../store/sound/sound.state';
 import { dailyPlanKey } from '../../../store/daily-plan/daily-plan.state';
+import { SoundOption } from '../../../core/data-model/generic/sound-option';
 // eslint-disable-next-line no-unused-vars
 import { DailyPlan } from '../../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
@@ -84,6 +88,7 @@ import { TaskItem } from '../../../core/data-model/task-item/task-item';
 import CompactTaskSummaryCard from '../../../shared/cards/CompactTaskSummaryCard.vue';
 import ItemGroupPanel from '../../../shared/panels/ItemGroupPanel.vue';
 import PlaceholderPanel from '../../../shared/panels/PlaceholderPanel.vue';
+import { SoundType } from '../../../core/enums/sound-type.enum';
 
 class PlannerTargetListProp {
     public plan = prop<DailyPlan>({ default: null });
@@ -122,6 +127,10 @@ export default class PlannerTargetList extends Vue.with(PlannerTargetListProp) {
 
     set potentialItems(value: TaskItem[]) {
         this.$emit('potential:change', value.map(_ => _.id));
+    }
+
+    public onCardHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public onPlannedItemRemove(item: TaskItem): void {

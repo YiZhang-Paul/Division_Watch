@@ -61,6 +61,7 @@
                     v-for="task of childTasks"
                     :key="task.id"
                     :task="task"
+                    @mouseenter="onCardHover()"
                     @click="$emit('child:open', task)"
                     @delete="$emit('child:delete', task)">
                 </compact-task-summary-card>
@@ -88,6 +89,7 @@
 
                             <checklist-card class="checklist-card"
                                 :item="element"
+                                @mouseenter="onCardHover()"
                                 @change="onChecklistChange(index, $event)"
                                 @delete="onChecklistDelete(index)">
                             </checklist-card>
@@ -205,6 +207,10 @@ export default class TaskEditor extends Vue.with(TaskEditorProp) {
         const completed = this.task.checklist.filter(_ => _.isCompleted).length;
 
         return `Checklist (${completed}/${this.task.checklist.length})`;
+    }
+
+    public onCardHover(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('button_hover', SoundType.UI));
     }
 
     public onChildTaskAdded(name: string): void {
