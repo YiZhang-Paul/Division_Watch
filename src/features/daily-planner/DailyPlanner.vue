@@ -29,6 +29,7 @@ import { Options, Vue } from 'vue-class-component';
 import { markRaw } from 'vue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { dialogKey } from '../../store/dialog/dialog.state';
 import { dailyPlanKey } from '../../store/daily-plan/daily-plan.state';
@@ -41,8 +42,10 @@ import { GoalOptions } from '../../core/data-model/generic/goal-options';
 import { DailyPlan } from '../../core/data-model/generic/daily-plan';
 // eslint-disable-next-line no-unused-vars
 import { TaskItem } from '../../core/data-model/task-item/task-item';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { DialogPayload } from '../../core/data-model/generic/dialog-payload';
 import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import PlanViewer from './plan-viewer/PlanViewer.vue';
 import ItemInspector from './item-inspector/ItemInspector.vue';
@@ -106,6 +109,7 @@ export default class DailyPlanner extends Vue {
     }
 
     public closePanel(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_close', SoundType.UI));
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 

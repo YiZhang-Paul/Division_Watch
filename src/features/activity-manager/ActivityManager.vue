@@ -34,6 +34,7 @@ import { markRaw } from 'vue';
 import { Ammunition, Biohazard, Target } from 'mdue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { categoryKey } from '../../store/category/category.state';
 import { taskItemKey } from '../../store/task-item/task-item.state';
@@ -46,7 +47,9 @@ import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import TaskActions from './editors/TaskActions.vue';
 import CategoryActions from './editors/CategoryActions.vue';
@@ -104,6 +107,7 @@ export default class ActivityManager extends Vue {
     }
 
     public closePanel(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_close', SoundType.UI));
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 }

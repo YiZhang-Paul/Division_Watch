@@ -32,13 +32,16 @@ import { markRaw } from 'vue';
 import { TimerSand, VolumeHigh } from 'mdue';
 
 import store from '../../store';
+import { soundKey } from '../../store/sound/sound.state';
 import { mainViewKey } from '../../store/main-view/main-view.state';
 import { TabGroupOption } from '../../core/data-model/generic/tab-group-option';
+import { SoundOption } from '../../core/data-model/generic/sound-option';
 import TitlePanel from '../../shared/panels/TitlePanel.vue';
 import ViewPanel from '../../shared/panels/ViewPanel.vue';
 import MenuButton from '../../shared/controls/MenuButton.vue';
 import CompactTabGroup from '../../shared/controls/CompactTabGroup.vue';
 import { ViewOption } from '../../core/enums/view-option.enum';
+import { SoundType } from '../../core/enums/sound-type.enum';
 
 import SessionSettingsManager from './SessionSettingsManager.vue';
 import SoundSettingsManager from './SoundSettingsManager.vue';
@@ -70,6 +73,7 @@ export default class SettingsManager extends Vue {
     }
 
     public closePanel(): void {
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_close', SoundType.UI));
         store.commit(`${mainViewKey}/setActiveView`, ViewOption.Inactive);
     }
 }

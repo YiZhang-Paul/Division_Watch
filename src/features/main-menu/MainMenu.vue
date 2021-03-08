@@ -132,6 +132,7 @@ export default class MainMenu extends Vue.with(MainMenuProp) {
     public onClose(): void {
         this.isClosing = true;
         this.closingStage = 0;
+        store.dispatch(`${soundKey}/playSound`, new SoundOption('panel_close', SoundType.UI));
     }
 
     private isVisibleSquare(rowIndex: number, columnIndex: number): boolean {
