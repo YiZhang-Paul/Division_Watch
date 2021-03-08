@@ -64,7 +64,12 @@ class ItemInspectorProp {
         ItemInspectorTabPanels
     },
     watch: {
-        item(): void { this.activeTab = 0; }
+        item(current: TaskItem): void {
+            if (current) {
+                this.activeTab = 0;
+                store.dispatch(`${soundKey}/playSound`, this.sound);
+            }
+        }
     },
     emits: [
         'register:planned',
@@ -74,11 +79,12 @@ class ItemInspectorProp {
     ]
 })
 export default class ItemInspector extends Vue.with(ItemInspectorProp) {
+    public readonly sound = new SoundOption('tab_open', SoundType.UI);
     public isLoaded = false;
     public activeTab = 0;
 
     public mounted(): void {
-        store.dispatch(`${soundKey}/playSound`, new SoundOption('tab_open', SoundType.UI));
+        store.dispatch(`${soundKey}/playSound`, this.sound);
         setTimeout(() => this.isLoaded = true, 500);
     }
 }
